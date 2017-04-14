@@ -1,0 +1,21 @@
+{
+  "name": "narutoninpou",
+  "version": "1.0.0",
+  "description": "A three-sided MOBA themed in Naruto Universe",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "naruto",
+    "ninpou",
+    "dota",
+    "wc3"
+  ],
+  "author": "Abner M. C. Araujo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
