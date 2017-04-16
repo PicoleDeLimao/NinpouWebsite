@@ -7,11 +7,11 @@ app.config(['$stateProvider', function($stateProvider) {
 		controller: 'RootCtrl',
 		templateUrl: 'app/components/root/view.html',
 		resolve: {
-			user: ['$q', '$http', '$rootScope', '$location', function($q, $http, $rootScope, $location) {
+			user: ['$q', '$http', '$rootScope', function($q, $http, $rootScope) {
 				var deferred = $q.defer();
 				if ($location.search().token) {
 					localStorage.setItem('token', $location.search().token);
-					localStorage.path('home');
+					window.location.href = '/';
 				}
 				$http.get('/users/me').then(function(response) {
 					$rootScope.user = response.data;
