@@ -7,7 +7,7 @@ app.config(['$stateProvider', function($stateProvider) {
 		controller: 'RootCtrl',
 		templateUrl: 'app/components/root/view.html',
 		resolve: {
-			user: ['$q', '$http', '$rootScope', function($q, $http, $rootScope) {
+			user: ['$q', '$http', '$rootScope', '$location', function($q, $http, $rootScope, $location) {
 				var deferred = $q.defer();
 				if ($location.search().token) {
 					localStorage.setItem('token', $location.search().token);
