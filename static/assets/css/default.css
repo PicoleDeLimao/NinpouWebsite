@@ -6,22 +6,15 @@ body {
 	background-size: cover;
 }
 
-.menuDrop {
+.menu-drop {
 	background-color: white;
 	border: 1px solid rgba(0, 0, 0, 0.12);	
 }
 
-.menuDrop .md-button {
+.menu-drop .md-button {
 	display: block;
 	padding: 0px;
 	border: 0px;
-}
-
-ul li {
-	border-right: 1px solid rgba(0, 0, 0, 0.12);		
-	margin-top: 0;
-	margin-left: 0;
-	height: 50px;
 }
 
 md-content {
@@ -34,4 +27,15 @@ md-nav-ink-bar {
 
 .md-nav-bar {
 	background-color: white !important;
+}
+
+.md-nav-bar ul li {
+	border-right: 1px solid rgba(0, 0, 0, 0.12);		
+	margin-top: 0;
+	margin-left: 0;
+	height: 50px;
+}
+
+.nav-right {
+	margin-right: 10px;
 }

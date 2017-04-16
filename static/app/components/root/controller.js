@@ -2,7 +2,7 @@
 
 var app = angular.module('Ninpou');
 
-app.controller('RootCtrl', function($scope, $state) {
+app.controller('RootCtrl', function($scope, $state, $timeout) {
 	$scope.goto = function(state) {
 		$scope.currentNavItem = state;
 		$scope.wc3MenuActive = false;
@@ -22,5 +22,11 @@ app.controller('RootCtrl', function($scope, $state) {
 		$scope.wc3MenuActive = false;
 		$scope.dota2MenuActive = true;
 	};
-	$scope.go = $state.go;
+	$scope.go = function(state) {
+		$state.go(state);
+		$timeout(function() {
+			$scope.wc3MenuActive = false;
+			$scope.dota2MenuActive = false;
+		});
+	};
 });

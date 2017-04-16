@@ -3,19 +3,27 @@
 		<md-nav-item md-nav-click="goto('home')" name="home">Home</md-nav-item>
 		<md-nav-item md-nav-click="goto('blog')" name="blog">Blog</md-nav-item>
 		<md-nav-item md-nav-click="showWC3Menu()" name="wc3">
-			Warcraft III
-			<div class="menuDrop" ng-if="wc3MenuActive">
+			Warcraft III <i class="fa fa-caret-down" aria-hidden="true"></i>
+			<div class="menu-drop" ng-if="wc3MenuActive">
 				<md-button ng-click="go('root.wc3.heroes')">Heroes</md-button>
 				<md-button ng-click="go('root.wc3.items')">Items</md-button>
 			</div>
 		</md-nav-item>
 		<md-nav-item md-nav-click="showDota2Menu()" name="dota2">
-			Dota 2
-			<div class="menuDrop" ng-if="dota2MenuActive">
+			Dota 2 <i class="fa fa-caret-down" aria-hidden="true"></i>
+			<div class="menu-drop" ng-if="dota2MenuActive">
 				<md-button ng-click="go('root.dota2.heroes')">Heroes</md-button>
 				<md-button ng-click="go('root.dota2.items')">Items</md-button>
 			</div>
 		</md-nav-item>
-		<md-nav-item md-nav-click="goto('forum')" name="forum">Forum<md-nav-item>
+		<md-nav-item md-nav-click="goto('forum')" name="forum">Forum</md-nav-item>
+		<span flex></span>
+		<div class="nav-right">
+			<a href="https://www.facebook.com/ninpouofficial/">
+				<md-button aria-label="Facebook page">
+					<i class="fa fa-facebook" aria-hidden="true"></i>
+				</md-button>
+			</a>
+		</div>
 	</md-nav-bar>
 </md-content> 
