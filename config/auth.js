@@ -69,6 +69,7 @@ module.exports = {
 	authenticate: function(strategy, params) {
 		params = params || { };
 		params.session = false;
+		strategy = strategy || 'jwt';
 		return passport.authenticate(strategy, params)
 	},
 	initialize: function() {

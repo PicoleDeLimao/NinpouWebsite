@@ -7,14 +7,14 @@ var jwt = require('jsonwebtoken');
 
 router.post('/local', auth.authenticate('local'), function(req, res) {
 	var token = jwt.sign({ openID: req.user.openID }, auth.secretOrKey);
-	res.json({ user: req.user, token: token });
+	res.send(token);
 });
 
 router.get('/steam', auth.authenticate('steam'));
 
 router.get('/steam/return', auth.authenticate('steam', { failureRedirect: '/' }), function(req, res) {
 	var token = jwt.sign({ openID: req.user.openID }, auth.secretOrKey);
-	res.json({ user: req.user, token: token });
+	res.redirect('/#/home?token=' + token);
 });
 
 module.exports = router;

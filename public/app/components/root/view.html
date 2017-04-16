@@ -2,28 +2,38 @@
 	<md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
 		<md-nav-item md-nav-click="goto('home')" name="home">Home</md-nav-item>
 		<md-nav-item md-nav-click="goto('blog')" name="blog">Blog</md-nav-item>
-		<md-nav-item md-nav-click="showWC3Menu()" name="wc3">
+		<md-nav-item md-nav-click="setMenu('wc3')" name="wc3">
 			Warcraft III <i class="fa fa-caret-down" aria-hidden="true"></i>
-			<div class="menu-drop" ng-if="wc3MenuActive">
+			<div class="menu-drop" ng-show="isMenu('wc3')">
 				<md-button ng-click="go('root.wc3.heroes')">Heroes</md-button>
 				<md-button ng-click="go('root.wc3.items')">Items</md-button>
 			</div>
 		</md-nav-item>
-		<md-nav-item md-nav-click="showDota2Menu()" name="dota2">
+		<md-nav-item md-nav-click="setMenu('dota2')" name="dota2">
 			Dota 2 <i class="fa fa-caret-down" aria-hidden="true"></i>
-			<div class="menu-drop" ng-if="dota2MenuActive">
+			<div class="menu-drop" ng-show="isMenu('dota2')">
 				<md-button ng-click="go('root.dota2.heroes')">Heroes</md-button>
 				<md-button ng-click="go('root.dota2.items')">Items</md-button>
 			</div>
 		</md-nav-item>
 		<md-nav-item md-nav-click="goto('forum')" name="forum">Forum</md-nav-item>
 		<span flex></span>
-		<div class="nav-right">
+		<div layout-align="center center" layout="row">
 			<a href="https://www.facebook.com/ninpouofficial/">
 				<md-button aria-label="Facebook page">
 					<i class="fa fa-facebook" aria-hidden="true"></i>
 				</md-button>
 			</a>
 		</div>
+		<div ng-if="!user">
+			<a href="/auth/steam"><img src="assets/img/steam_signin.png" /></a>
+		</div>
+		<md-nav-item ng-if="user" class="nav-user" md-nav-click="setMenu('profile')" name="profile">
+			<img ng-src="{{ user.profilePhoto }}" /> <i class="fa fa-caret-down" aria-hidden="true"></i> 
+			<div class="menu-drop" ng-show="isMenu('profile')" layout="column" layout-align="center center">
+				<md-button ng-click="go('root.profile')">{{ user.displayName }}</md-button>
+				<md-button ng-click="go('logout')">Logout</md-button>
+			</div>
+		</md-nav-item>
 	</md-nav-bar>
 </md-content> 

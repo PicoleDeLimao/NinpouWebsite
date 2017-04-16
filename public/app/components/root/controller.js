@@ -2,11 +2,10 @@
 
 var app = angular.module('Ninpou');
 
-app.controller('RootCtrl', function($scope, $state, $timeout) {
+app.controller('RootCtrl', ['$scope', '$state', '$timeout', function($scope, $state, $timeout) {
 	$scope.goto = function(state) {
 		$scope.currentNavItem = state;
-		$scope.wc3MenuActive = false;
-		$scope.dota2MenuActive = false;
+		$scope.menu = null;
 		$state.go('root.' + state);
 	};
 	if ($state.current.name.split('.').length < 2) {
@@ -14,19 +13,16 @@ app.controller('RootCtrl', function($scope, $state, $timeout) {
 	} else {
 		$scope.currentNavItem = $state.current.name.split('.')[1];
 	}
-	$scope.showWC3Menu = function() {
-		$scope.wc3MenuActive = true;
-		$scope.dota2MenuActive = false;
+	$scope.setMenu = function(menu) {
+		$scope.menu = menu;
 	};
-	$scope.showDota2Menu = function() {
-		$scope.wc3MenuActive = false;
-		$scope.dota2MenuActive = true;
+	$scope.isMenu = function(menu) {
+		return $scope.menu == menu;
 	};
 	$scope.go = function(state) {
 		$state.go(state);
 		$timeout(function() {
-			$scope.wc3MenuActive = false;
-			$scope.dota2MenuActive = false;
+			$scope.menu = '';
 		});
 	};
-});
+}]);

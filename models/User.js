@@ -6,7 +6,7 @@ var userSchema = mongoose.Schema({
 	steamProfileUrl: String,
 	profilePhoto: String,
 	countryCode: String,
-	openID: String
+	openID: { type: String, unique: true }	
 });
 
 var User = mongoose.model('User', userSchema);

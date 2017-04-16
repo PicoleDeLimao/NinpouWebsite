@@ -1,11 +1,26 @@
 'use strict';
 
-app.config(function($stateProvider) {
+app.config(['$stateProvider', function($stateProvider) {
 	var rootState = {
 		name: 'root',
 		url: '',
 		controller: 'RootCtrl',
-		templateUrl: 'app/components/root/view.html'
+		templateUrl: 'app/components/root/view.html',
+		resolve: {
+			user: ['$q', '$http', '$rootScope', '$location', function($q, $http, $rootScope, $location) {
+				var deferred = $q.defer();
+				if ($location.search().token) {
+					localStorage.setItem('token', $location.search().token);
+				}
+				$http.get('/users/me').then(function(response) {
+					$rootScope.user = response.data;
+					deferred.resolve();
+				}, function() {
+					deferred.resolve();
+				});
+				return deferred.promise;
+			}]
+		}
 	};
 	var homeState = {
 		name: 'root.home',
@@ -69,4 +84,4 @@ app.config(function($stateProvider) {
 	$stateProvider.state(dota2HeroesState);
 	$stateProvider.state(dota2ItemsState);
 	$stateProvider.state(forumState);
-});
+}]);
