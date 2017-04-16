@@ -13,9 +13,11 @@
     "dota",
     "wc3"
   ],
-  "author": "Abner M. C. Araujo",
+  "author": "PicoleDeLimao",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "passport": "^0.3.2",
+    "passport-steam": "^1.0.8"
   }
 }
