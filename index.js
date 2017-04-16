@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(auth.initialize());
 
-var mongooseConnection = process.env.DATABASE_URL || 'mongodb://localhost/narutoninpou';
+console.log(mongooseConnection + "...");
 mongoose.connect(mongooseConnection);
 
 var db = mongoose.connection;
@@ -26,3 +26,4 @@ var port = process.env.PORT || 8080;
 app.listen(port, function() {
 	console.log('Listening on port ' + port + '...');
 });
+
