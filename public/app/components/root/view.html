@@ -24,10 +24,10 @@
 					<i class="fa fa-facebook" aria-hidden="true"></i>
 				</md-button>
 			</a>
-		</div>
-		<div ng-if="!user">
-			<a href="/auth/steam"><img src="assets/img/steam_signin.png" /></a>
-		</div>
+			<div ng-if="!user">
+				<a href="/auth/steam"><img src="assets/img/steam_signin.png" /></a>
+			</div>
+		</div>		
 		<md-nav-item ng-if="user" class="nav-user" md-nav-click="setMenu('profile')" name="profile">
 			<img ng-src="{{ user.profilePhoto }}" /> <i class="fa fa-caret-down" aria-hidden="true"></i> 
 			<div class="menu-drop" ng-show="isMenu('profile')" layout="column" layout-align="center center">

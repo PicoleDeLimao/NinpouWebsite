@@ -11,6 +11,7 @@ app.config(['$stateProvider', function($stateProvider) {
 				var deferred = $q.defer();
 				if ($location.search().token) {
 					localStorage.setItem('token', $location.search().token);
+					localStorage.path('home');
 				}
 				$http.get('/users/me').then(function(response) {
 					$rootScope.user = response.data;
@@ -74,6 +75,14 @@ app.config(['$stateProvider', function($stateProvider) {
 		controller: 'ForumCtrl',
 		templateUrl: 'app/components/forum/root/view.html'
 	};
+	var logoutState = {
+		name: 'logout',
+		url: '/logout',
+		controller: function() {
+			localStorage.clear();
+			window.location.href = '/';
+		}
+	};
 	$stateProvider.state(rootState);
 	$stateProvider.state(homeState);
 	$stateProvider.state(blogState);
@@ -84,4 +93,5 @@ app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state(dota2HeroesState);
 	$stateProvider.state(dota2ItemsState);
 	$stateProvider.state(forumState);
+	$stateProvider.state(logoutState);
 }]);
