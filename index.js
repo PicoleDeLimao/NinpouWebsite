@@ -15,13 +15,13 @@ passport.use('steam', new SteamStrategy({
     /*User.findByOpenID({ openId: identifier }, function (err, user) {
       return done(err, user);
     });*/
-	return done(null, { profile: profile, done: done });
+	return done(null, { profile: profile, identifier: identifier });
   }
 ));
 
 app.get('/auth/steam', passport.authenticate('steam'));
 
-app.get('/auth/steam/return', function(req, res) {
+app.get('/auth/steam/return', passport.authenticate('steam', { failureRedirect: '/' }), function(req, res) {
 	res.json(req.user);
 });
 
