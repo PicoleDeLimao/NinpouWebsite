@@ -1,0 +1,37 @@
+body {
+	background: url('../img/background.jpg') no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+.menuDrop {
+	background-color: white;
+	border: 1px solid rgba(0, 0, 0, 0.12);	
+}
+
+.menuDrop .md-button {
+	display: block;
+	padding: 0px;
+	border: 0px;
+}
+
+ul li {
+	border-right: 1px solid rgba(0, 0, 0, 0.12);		
+	margin-top: 0;
+	margin-left: 0;
+	height: 50px;
+}
+
+md-content {
+	display: inline;
+}
+
+md-nav-ink-bar {
+	position: inherit;
+}
+
+.md-nav-bar {
+	background-color: white !important;
+}
