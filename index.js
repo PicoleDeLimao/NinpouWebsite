@@ -1,7 +1,9 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 
 var app = express();
 app.use(express.static('static'));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var passport = require('passport');
 var SteamStrategy = require('passport-steam').Strategy;
@@ -18,6 +20,8 @@ passport.use('steam', new SteamStrategy({
 	return done(null, { profile: profile, identifier: identifier });
   }
 ));
+
+app.use(passport.initialize());
 
 app.get('/auth/steam', passport.authenticate('steam'));
 
