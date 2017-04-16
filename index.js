@@ -11,7 +11,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(auth.initialize());
 
-console.log(mongooseConnection + "...");
+var mongooseConnection = process.env.DATABASE_URL || 'mongodb://localhost/narutoninpou';
+console.log(mongooseConnection + '...');
 mongoose.connect(mongooseConnection);
 
 var db = mongoose.connection;
