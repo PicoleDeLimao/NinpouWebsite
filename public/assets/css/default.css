@@ -1,4 +1,4 @@
-body {
+#root {
 	background: url('../img/background.jpg') no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
@@ -27,6 +27,7 @@ md-nav-ink-bar {
 
 .md-nav-bar {
 	background-color: white !important;
+	z-index: 100 !important;
 }
 
 .md-nav-bar ul li {
