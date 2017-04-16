@@ -14,7 +14,7 @@ router.get('/steam', auth.authenticate('steam'));
 
 router.get('/steam/return', auth.authenticate('steam', { failureRedirect: '/' }), function(req, res) {
 	var token = jwt.sign({ openID: req.user.openID }, auth.secretOrKey);
-	res.redirect('/?token=' + token);
+	res.redirect('/#/home?token=' + token);
 });
 
 module.exports = router;
