@@ -19,6 +19,16 @@ app.config(['$stateProvider', function($stateProvider) {
 			}]
 		}
 	};
+	var loginState = {
+		name: 'login',
+		url: '/login',
+		controller: ['$location', function($location) {
+			if ($location.search().token) {
+				localStorage.setItem('token', $location.search().token);
+				window.location.href = '/';
+			}
+		}]
+	};
 	var homeState = {
 		name: 'root.home',
 		url: '/home',
@@ -80,6 +90,7 @@ app.config(['$stateProvider', function($stateProvider) {
 		}
 	};
 	$stateProvider.state(rootState);
+	$stateProvider.state(loginState);
 	$stateProvider.state(homeState);
 	$stateProvider.state(blogState);
 	$stateProvider.state(wc3State);

@@ -2,11 +2,7 @@
 
 var app = angular.module('Ninpou');
 
-app.controller('RootCtrl', ['$scope', '$state', '$timeout', '$location', function($scope, $state, $timeout, $location) {
-	if ($location.search().token) {
-		localStorage.setItem('token', $location.search().token);
-		window.location.href = '/';
-	}
+app.controller('RootCtrl', ['$scope', '$state', '$timeout', function($scope, $state, $timeout) {
 	$scope.goto = function(state) {
 		$scope.currentNavItem = state;
 		$scope.menu = null;
