@@ -5,5 +5,5 @@ app.use(express.static('static'));
 
 var port = process.env.PORT || 8080;
 app.listen(port, function() {
-	console.log('Listening to ' + ip + ' on port ' + port + '...');
+	console.log('Listening on port ' + port + '...');
 });
