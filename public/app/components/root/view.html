@@ -16,7 +16,7 @@
 				<md-button ng-click="go('root.dota2.items')">Items</md-button>
 			</div>
 		</md-nav-item>
-		<md-nav-item md-nav-click="goto('forum')" name="forum">Forum</md-nav-item>
+		<md-nav-item md-nav-click="goto('forum.home')" name="forum">Forum</md-nav-item>
 		<span flex></span>
 		<div layout-align="center center" layout="row">
 			<a href="https://www.facebook.com/ninpouofficial/">
@@ -38,12 +38,12 @@
 	</md-nav-bar>
 </header>
 	
-<md-content id="root">
-	<div id="root" layout-fill>
-		<md-content class="md-padding blog-panel" layout="column" layout-align="center center">
-			<main class="md-padding" layout-fill>
-				<ui-view></ui-view>
-			</main>
-		</md-content>
-	</div>
+<div id="background"></div>
+
+<md-content>
+	<md-content class="md-padding main-panel" layout="column">
+		<main class="md-padding" layout="column" layout-fill>
+			<ui-view></ui-view>
+		</main>
+	</md-content>
 </md-content> 

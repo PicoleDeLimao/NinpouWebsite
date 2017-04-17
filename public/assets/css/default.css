@@ -1,10 +1,12 @@
-#root {
+#background {
+	position: fixed; 
 	background: url('../img/background.jpg') no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
-	margin-top: 50px;
+	width: 100%; 
+	height: 100%;
 }
 
 .menu-drop {
@@ -49,11 +51,48 @@ md-nav-ink-bar {
 	width: 100%;
 }
 
-.blog-panel {
+.main-panel {
 	background: transparent;
 }
 
-.blog-panel main {
+.main-panel main {
 	background-color: white;
 	border: 1px solid rgba(0, 0, 0, 0.12);
+	margin-top: 50px;
+}
+
+a {
+	text-decoration: none;
+}
+
+#forum section {
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	border-radius: 1px;
+	margin-bottom: 10px;
+}
+
+#forum section h3 {
+	background-color: #ededed;
+	padding: 0;
+	margin: 0;
+	padding: 10px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+#forum section h3 img {
+	height: 25px;
+	margin-right: 5px;
+}
+
+#forum article {
+	padding: 5px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+#forum article img {
+	width: 100%;
+}
+
+#forum article h4, #forum article p {
+	margin: 5px;
 }

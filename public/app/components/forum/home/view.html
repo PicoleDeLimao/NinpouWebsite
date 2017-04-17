@@ -1,0 +1,26 @@
+<div id="forum">
+	<a href=""><p><i class="fa fa-star"></i> View new replies</p></a>
+	<section ng-repeat="category in categories">
+		<h3 layout="row" layout-align="right center">
+			<img ng-src="{{ category.icon }}" aria-label="{{ category.name }}" /> 
+			{{ category.name }}
+		</h3>
+		<article layout="row" ng-repeat="section in category.sections">
+			<div flex="5" layout="column" layout-align="center center">
+				<img ng-src="{{ section.icon }}" aria-label="{{ section.title }}" />
+			</div>
+			<div class="description" flex="35">
+				<a ng-href="{{ section.url }}"><h4>{{ section.title }}</h4></a>
+				<p>{{ section.description }}</p>
+			</div>
+			<div class="stats" flex="20" style="text-align: right;">
+				<p>0 threads</p>
+				<p>0 replies</p>
+			</div>
+			<div class="latest" flex="40">
+				<a href=""><p>A thread</p></a>
+				<p><a href="">PicoleDeLimao</a> - 0 minutes ago</p>
+			</div>
+		</article>
+	</section>
+</div>

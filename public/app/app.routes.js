@@ -29,6 +29,14 @@ app.config(['$stateProvider', function($stateProvider) {
 			}
 		}]
 	};
+	var logoutState = {
+		name: 'logout',
+		url: '/logout',
+		controller: function() {
+			localStorage.clear();
+			window.location.href = '/';
+		}
+	};
 	var homeState = {
 		name: 'root.home',
 		url: '/home',
@@ -79,18 +87,18 @@ app.config(['$stateProvider', function($stateProvider) {
 		name: 'root.forum',
 		url: '/forum',
 		controller: 'ForumCtrl',
-		templateUrl: 'app/components/forum/root/view.html'
+		templateUrl: 'app/components/forum/root/view.html',
+		abstract: true
 	};
-	var logoutState = {
-		name: 'logout',
-		url: '/logout',
-		controller: function() {
-			localStorage.clear();
-			window.location.href = '/';
-		}
+	var forumHomeState = {
+		name: 'root.forum.home',
+		url: '/home',
+		controller: 'ForumHomeCtrl',
+		templateUrl: 'app/components/forum/home/view.html'
 	};
 	$stateProvider.state(rootState);
 	$stateProvider.state(loginState);
+	$stateProvider.state(logoutState);
 	$stateProvider.state(homeState);
 	$stateProvider.state(blogState);
 	$stateProvider.state(wc3State);
@@ -100,5 +108,5 @@ app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state(dota2HeroesState);
 	$stateProvider.state(dota2ItemsState);
 	$stateProvider.state(forumState);
-	$stateProvider.state(logoutState);
+	$stateProvider.state(forumHomeState);
 }]);
