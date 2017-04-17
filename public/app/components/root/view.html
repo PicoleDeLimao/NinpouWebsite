@@ -1,4 +1,4 @@
-<md-content id="root" layout-fill>
+<header class="header">
 	<md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
 		<md-nav-item md-nav-click="goto('home')" name="home">Home</md-nav-item>
 		<md-nav-item md-nav-click="goto('blog')" name="blog">Blog</md-nav-item>
@@ -36,7 +36,14 @@
 			</div>
 		</md-nav-item>
 	</md-nav-bar>
-	<div id="root" layout-fill>
+</header>
 	
+<md-content id="root">
+	<div id="root" layout-fill>
+		<md-content class="md-padding blog-panel" layout="column" layout-align="center center">
+			<main class="md-padding" layout-fill>
+				<ui-view></ui-view>
+			</main>
+		</md-content>
 	</div>
 </md-content> 

@@ -14,7 +14,11 @@ app.controller('RootCtrl', ['$scope', '$state', '$timeout', function($scope, $st
 		$scope.currentNavItem = $state.current.name.split('.')[1];
 	}
 	$scope.setMenu = function(menu) {
-		$scope.menu = menu;
+		if ($scope.menu == menu) {
+			$scope.menu = null;
+		} else {
+			$scope.menu = menu;
+		}
 	};
 	$scope.isMenu = function(menu) {
 		return $scope.menu == menu;

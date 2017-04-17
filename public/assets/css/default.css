@@ -4,6 +4,7 @@
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
+	margin-top: 50px;
 }
 
 .menu-drop {
@@ -39,4 +40,20 @@ md-nav-ink-bar {
 
 .nav-user img {
 	height: 30px;
+}
+
+.header {
+	top: 0; 
+	position: fixed; 
+	z-index: 999; 
+	width: 100%;
+}
+
+.blog-panel {
+	background: transparent;
+}
+
+.blog-panel main {
+	background-color: white;
+	border: 1px solid rgba(0, 0, 0, 0.12);
 }
