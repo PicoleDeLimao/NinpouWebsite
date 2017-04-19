@@ -40,7 +40,7 @@ router.post('/:section_name', auth.authenticate(), function(req, res) {
 		if (err) return res.status(400).json(err);
 		req.section.update({ $inc: { numThreads: 1 }, $set: { lastThread: thread._id } }, function(err) {
 			if (err) return res.status(500).json(err);
-			return res.status(201).json({ _id: thread._id });
+			return res.status(201).json(thread);
 		});
 	});
 });
@@ -55,7 +55,46 @@ router.get('/:id', function(req, res) {
 });
 
 router.put('/:thread_id', auth.authenticate(), function(req, res) {
-	
+	if (req.thread.createdBy != req.user._id && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to edit this thread' });
+	if (req.body.contents) req.thread.contents = req.body.contents;
+	if (req.body.title) req.thread.title = req.body.title;
+	req.thread.save(function(err) {
+		if (err) return res.status(400).json(err);
+		return res.json(req.thread);
+	});
+});
+
+router.delete('/:thread_id', auth.authenticate(), function(req, res) {
+	if (req.thread.createdBy != req.user._id && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to remove this thread' });
+	req.thread.remove(function(err) {
+		if (err) return res.status(500).json(err);
+		Section.findById(req.thread.section, function(err, section) {
+			if (err) return res.status(500).json(err);
+			section.update({ $inc: { numThreads: -1, numReplies: -req.thread.replies.length } }, function(err) {
+				if (err) return res.status(500).json(err);
+				return res.json(req.thread);
+			});
+		});
+	});
+});
+
+router.post('/:thread_id/move/:section_name', auth.authenticate(), function(req, res) {
+	if (!req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to perform this action' });
+	var oldSection = req.thread.section;
+	req.thread.section = req.section._id;
+	req.thread.save(function(err) {
+		if (err) return res.status(500).json(err);
+		Section.findById(oldSection, function(err, section) {
+			if (err) return res.status(500).json(err);
+			section.update({ $inc: { numThreads: -1, numReplies: -req.thread.replies.length } }, function(err) {
+				if (err) return res.status(500).json(err);
+				req.section.update({ $inc: { numThreads: 1, numReplies: req.thread.replies.length } }, function(err) {
+					if (err) return res.status(500).json(err);
+					return res.json(req.thread);
+				});
+			});
+		});
+	});
 });
 
 router.post('/:thread_id/replies', auth.authenticate(), function(req, res) {
@@ -94,7 +133,13 @@ router.delete('/:thread_id/replies/:reply_id', auth.authenticate(), function(req
 	reply.remove();
 	req.thread.save(function(err) {
 		if (err) return res.status(500).json(err);
-		return res.json(reply);
+		Section.findById(req.thread.section, function(err, section) {
+			if (err) return res.status(500).json(err);
+			section.update({ $inc: { numReplies: -1 } }, function(err) {
+				if (err) return res.status(500).json(err);
+				return res.json(reply);
+			});
+		});
 	});
 });
 
