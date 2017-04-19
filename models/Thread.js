@@ -1,10 +1,16 @@
 var mongoose = require('mongoose');
 
+var replySchema = mongoose.Schema({
+	createdBy: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
+	contents: { type: String, required: true, maxlength: '500' }
+});
+
 var threadSchema = mongoose.Schema({
 	createdBy: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
-	section: { type: String, required: true, enum: ['announcements', 'general', 'wc3_suggestions', 'wc3_report', 'wc3_tips', 'dota2_suggestions', 'dota2_report', 'dota2_tips'] },
+	section: { type: mongoose.Schema.ObjectId, ref: 'Section', required: true, index: true, select: false },
 	title: { type: String, required: true, maxlength: '70' },
-	content: { type: String, required: true, maxlength: '1000' },
+	contents: { type: String, required: true, maxlength: '1000' },
+	replies: { type: [replySchema], select: false }
 });
 
 var Thread = mongoose.model('Thread', threadSchema);

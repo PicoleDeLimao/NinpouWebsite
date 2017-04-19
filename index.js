@@ -23,6 +23,7 @@ db.once('open', function() {
 app.use('/auth', require('./routes/auth'));
 app.use('/users', require('./routes/users'));
 app.use('/threads', require('./routes/threads'));
+app.use('/sections', require('./routes/sections'));
 
 var port = process.env.PORT || 8080;
 app.listen(port, function() {
