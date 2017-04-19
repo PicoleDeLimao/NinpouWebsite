@@ -10,7 +10,8 @@ var threadSchema = mongoose.Schema({
 	section: { type: mongoose.Schema.ObjectId, ref: 'Section', required: true, index: true, select: false },
 	title: { type: String, required: true, maxlength: '70' },
 	contents: { type: String, required: true, maxlength: '1000' },
-	replies: { type: [replySchema], select: false }
+	replies: { type: [replySchema], select: false },
+	sticky: { type: Boolean, required: true, default: false }
 });
 
 var Thread = mongoose.model('Thread', threadSchema);

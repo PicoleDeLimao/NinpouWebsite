@@ -40,7 +40,10 @@ router.post('/:section_name', auth.authenticate(), function(req, res) {
 		if (err) return res.status(400).json(err);
 		req.section.update({ $inc: { numThreads: 1 }, $set: { lastThread: thread._id } }, function(err) {
 			if (err) return res.status(500).json(err);
-			return res.status(201).json(thread);
+			req.user.update({ $inc: { numThreads: 1 } }, function(err) {
+				if (err) return res.status(500).json(err);
+				return res.status(201).json(thread);
+			});
 		});
 	});
 });
@@ -72,7 +75,10 @@ router.delete('/:thread_id', auth.authenticate(), function(req, res) {
 			if (err) return res.status(500).json(err);
 			section.update({ $inc: { numThreads: -1, numReplies: -req.thread.replies.length } }, function(err) {
 				if (err) return res.status(500).json(err);
-				return res.json(req.thread);
+				req.user.update({ $inc: { numThreads: -1 } }, function(err) {
+					if (err) return res.status(500).json(err);
+					return res.json(req.thread);
+				});
 			});
 		});
 	});
@@ -109,7 +115,10 @@ router.post('/:thread_id/replies', auth.authenticate(), function(req, res) {
 			if (err) return res.status(500).json(err);
 			section.update({ $inc: { numReplies: 1 } }, function(err) {
 				if (err) return res.status(500).json(err);
-				return res.status(201).json(reply);
+				req.user.update({ $inc: { numReplies: 1 } }, function(err) {
+					if (err) return res.status(500).json(err);
+					return res.status(201).json(reply);
+				});
 			});
 		});
 	});
@@ -137,7 +146,10 @@ router.delete('/:thread_id/replies/:reply_id', auth.authenticate(), function(req
 			if (err) return res.status(500).json(err);
 			section.update({ $inc: { numReplies: -1 } }, function(err) {
 				if (err) return res.status(500).json(err);
-				return res.json(reply);
+				req.user.update({ $inc: { numReplies: -1 } }, function(err) {
+					if (err) return res.status(500).json(err);
+					return res.json(reply);
+				});
 			});
 		});
 	});

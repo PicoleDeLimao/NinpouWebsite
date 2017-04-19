@@ -21,6 +21,7 @@ router.get('/:section_name', function(req, res) {
 		query['_id'] = { $lt: req.query.lastSeen };
 	}
 	Thread.find(query).sort({ _id: -1 }).limit(20).exec(function(err, threads) {
+		if (err) return res.status(500).json(err);
 		return res.json(threads);
 	});
 });
@@ -34,6 +35,13 @@ router.get('/:section_name/stats', function(req, res) {
 	} else {
 		return res.json({ numThreads: req.section.numThreads || 0, numReplies: req.section.numReplies || 0 });
 	}
+});
+
+router.get('/:section_name/sticky', function(req, res) {
+	Thread.find({ section: req.section._id, sticky: true }, function(err, threads) {
+		if (err) return res.status(500).json(err);
+		return res.json(threads);
+	});
 });
 
 module.exports = router;

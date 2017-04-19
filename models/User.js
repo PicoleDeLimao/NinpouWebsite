@@ -7,7 +7,9 @@ var userSchema = mongoose.Schema({
 	profilePhoto: String,
 	countryCode: String,
 	openID: { type: String, unique: true, required: true, query: false },
-	isAdmin: { type: Boolean, default: false }
+	isAdmin: { type: Boolean, default: false },
+	numThreads: { type: Number, required: true, default: 0 },
+	numReplies: { type: Number, required: true, default: 0 }
 });
 
 var User = mongoose.model('User', userSchema);
