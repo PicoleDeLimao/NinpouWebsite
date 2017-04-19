@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('Ninpou', ['ngMaterial', 'ui.router']);
+var app = angular.module('Ninpou', ['ngMaterial', 'ui.router', 'angularMoment']);
 
 app.config(['$mdThemingProvider', function($mdThemingProvider) {
 	$mdThemingProvider.theme('default')

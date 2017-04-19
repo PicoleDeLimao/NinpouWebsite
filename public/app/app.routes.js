@@ -94,7 +94,19 @@ app.config(['$stateProvider', function($stateProvider) {
 		name: 'root.forum.home',
 		url: '/home',
 		controller: 'ForumHomeCtrl',
-		templateUrl: 'app/components/forum/home/view.html'
+		templateUrl: 'app/components/forum/home/view.html',
+		resolve: {
+			CategoriesData: ['$q', '$http', function($q, $http) {
+				var deferred = $q.defer();
+				$http.get('/sections')
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
 	};
 	$stateProvider.state(rootState);
 	$stateProvider.state(loginState);

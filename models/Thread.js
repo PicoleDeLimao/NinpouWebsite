@@ -11,7 +11,9 @@ var threadSchema = mongoose.Schema({
 	title: { type: String, required: true, maxlength: '70' },
 	contents: { type: String, required: true, maxlength: '1000' },
 	replies: { type: [replySchema], select: false },
-	sticky: { type: Boolean, required: true, default: false }
+	sticky: { type: Boolean, required: true, default: false },
+	lastReply: { type: replySchema },
+	numReplies: { type: Number, required: true, default: 0, min: 0 }
 });
 
 var Thread = mongoose.model('Thread', threadSchema);

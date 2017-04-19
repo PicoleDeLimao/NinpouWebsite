@@ -109,6 +109,8 @@ router.post('/:thread_id/replies', auth.authenticate(), function(req, res) {
 		contents: req.body.contents
 	};
 	req.thread.replies.push(reply);
+	req.thread.lastReply = reply; 
+	req.thread.numReplies = (req.thread.numReplies || 0) + 1;
 	req.thread.save(function(err) {
 		if (err) return res.status(400).json(err);
 		Section.findById(req.thread.section, function(err, section) {
@@ -140,6 +142,7 @@ router.delete('/:thread_id/replies/:reply_id', auth.authenticate(), function(req
 	if (!reply) return res.status(404).json({ error: 'Reply not found' });
 	else if (reply.createdBy != req.user._id && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to remove this reply' });
 	reply.remove();
+	--req.thread.numReplies;
 	req.thread.save(function(err) {
 		if (err) return res.status(500).json(err);
 		Section.findById(req.thread.section, function(err, section) {

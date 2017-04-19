@@ -15,12 +15,23 @@ router.param('section_name', function(req, res, done, name) {
 	});
 });
 
+router.get('/', function(req, res) {
+	Section.find({}).populate({ path: 'lastThread', populate: [{ path: 'createdBy' }, { path: 'lastReply.createdBy' }] }).exec(function(err, sections) {
+		if (err) return res.status(500).json(err);
+		var obj = { };
+		for (var i = 0; i < sections.length; i++) {
+			obj[sections[i].name] = sections[i];
+		}
+		return res.json(obj);
+	});
+});
+
 router.get('/:section_name', function(req, res) {
 	var query = { section: req.section._id };
 	if (req.query.lastSeen) {
 		query['_id'] = { $lt: req.query.lastSeen };
 	}
-	Thread.find(query).sort({ _id: -1 }).limit(20).exec(function(err, threads) {
+	Thread.find(query).populate([{ path: 'createdBy' }, { path: 'lastReply.createdBy' }]).sort({ _id: -1 }).limit(20).exec(function(err, threads) {
 		if (err) return res.status(500).json(err);
 		return res.json(threads);
 	});
@@ -28,12 +39,12 @@ router.get('/:section_name', function(req, res) {
 
 router.get('/:section_name/stats', function(req, res) {
 	if (req.section.lastThread) {
-		Thread.findById(req.section.lastThread, function(err, thread) {
+		Thread.findById(req.section.lastThread).populate([{ path: 'createdBy' }, { path: 'lastReply.createdBy' }]).exec(function(err, thread) {
 			if (err) return res.status(500).json(err);
-			return res.json({ numThreads: req.section.numThreads || 0, numReplies: req.section.numReplies || 0, lastThread: thread });
+			return res.json({ numThreads: req.section.numThreads, numReplies: req.section.numReplies, lastThread: thread });
 		});
 	} else {
-		return res.json({ numThreads: req.section.numThreads || 0, numReplies: req.section.numReplies || 0 });
+		return res.json({ numThreads: req.section.numThreads, numReplies: req.section.numReplies });
 	}
 });
 
