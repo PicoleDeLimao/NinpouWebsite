@@ -129,7 +129,13 @@ a {
 	box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2),
 	  0 13px 19px 2px rgba(0, 0, 0, 0.14),
 	  0 5px 24px 4px rgba(0, 0, 0, 0.12);
-	width: 500px;	
+	 width: 500px;
+}
+
+@media (max-device-width: 500px) {
+	.dialog {
+		width: 300px;
+	}
 }
 
 .dialog textarea {
@@ -137,4 +143,134 @@ a {
 	max-height: 200px;
 	resize: none;
 	overflow-y: scroll;
+}
+
+.arrow {
+	position: relative;
+	background: #f8f8f8;
+	border: 1px solid #e1e1e1;
+}
+
+.arrow:after, .arrow:before {
+	left: 100%;
+	top: 5%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.arrow:after {
+	border-color: rgba(248, 248, 248, 0);
+	border-left-color: #f8f8f8;
+	border-width: 10px;
+	margin-top: -10px;
+}
+
+.arrow:before {
+	border-color: rgba(225, 225, 225, 0);
+	border-left-color: #e1e1e1;
+	border-width: 11px;
+	margin-top: -11px;
+}
+
+.reply {
+	background-color: rgba(0, 0, 0, 0.01);
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	padding: 5px;
+	margin-bottom: 10px;
+}
+
+.reply .profile {
+	background-color: rgba(0, 0, 0, 0.03);
+	border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.reply .profile img {
+	width: 100%;
+}
+
+.reply .profile .avatar {
+	width: 80%;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 2px;
+}
+
+.reply .profile p {
+	margin: 5px;
+	font-size: 0.8em;
+}
+
+.reply .profile h5 {
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.06);
+	margin: 0;
+	padding: 10px;
+}
+
+.reply .profile .steam {
+	margin-bottom: -5px;
+}
+
+.reply .body {
+	margin-left: 15px;
+	margin-right: 10px;
+	margin-top: -10px;
+}
+
+.reply-box {
+	background-color: rgba(0, 0, 0, 0.06); 
+	border: 1px solid rgba(0, 0, 0, 0.12); 
+	margin-bottom: 10px; 
+	padding: 5px;
+	margin-left: 50px;
+}
+
+.reply-box-arrow {
+	position: relative;
+	background: #efefef;
+	border: 1px solid #e0e0e0;
+}
+.reply-box-arrow:after, .reply-box-arrow:before {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.reply-box-arrow:after {
+	border-color: rgba(239, 239, 239, 0);
+	border-right-color: #efefef;
+	border-width: 30px;
+	margin-top: -30px;
+}
+.reply-box-arrow:before {
+	border-color: rgba(224, 224, 224, 0);
+	border-right-color: #e0e0e0;
+	border-width: 31px;
+	margin-top: -31px;
+}
+
+.reply-box textarea {
+	height: 200px;
+	max-height: 200px;
+	resize: none;
+	overflow-y: scroll;
+}
+
+.reply-box-avatar {
+	width: 100%; 
+	border: 1px solid rgba(0, 0, 0, 0.06); 
+	padding: 3px;
 }

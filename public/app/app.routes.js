@@ -136,6 +136,24 @@ app.config(['$stateProvider', function($stateProvider) {
 			}]
 		}
 	};
+	var forumThreadsState = {
+		name: 'root.forum.threads',
+		url: '/threads/:id',
+		controller: 'ForumThreadsCtrl',
+		templateUrl: 'app/components/forum/threads/view.html',
+		resolve: {
+			Thread: ['$q', '$http', '$stateParams', function($q, $http, $stateParams) {
+				var deferred = $q.defer();
+				$http.get('/threads/' + $stateParams.id)
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
+	};
 	$stateProvider.state(rootState);
 	$stateProvider.state(loginState);
 	$stateProvider.state(logoutState);
@@ -150,4 +168,5 @@ app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state(forumState);
 	$stateProvider.state(forumHomeState);
 	$stateProvider.state(forumSectionsState);
+	$stateProvider.state(forumThreadsState);
 }]);

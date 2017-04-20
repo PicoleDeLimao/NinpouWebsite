@@ -9,21 +9,21 @@
 		</h3>
 		<article layout="row" ng-repeat="section in category.sections">
 			<div flex="5" layout="column" layout-align="center center">
-				<img ng-src="{{ section.icon }}" aria-label="{{ section.title }}" />
+				<img ng-src="{{ sectionData[section].icon }}" aria-label="{{ sectionData[section].title }}" />
 			</div>
-			<div class="description" flex="35">
-				<a href ui-sref="{{ section.url }}"><h4>{{ section.title }}</h4></a>
-				<p>{{ section.description }}</p>
+			<div class="description" flex="35" flex-xs="60">
+				<a href ui-sref="{{ sectionData[section].url }}"><h4>{{ sectionData[section].title }}</h4></a>
+				<p>{{ sectionData[section].description }}</p>
 			</div>
-			<div class="stats" flex="20" style="text-align: right;">
-				<p>{{ getData(section.name).numThreads || 0 | number }} threads</p>
-				<p>{{ getData(section.name).numReplies || 0 | number }} replies</p>
+			<div class="stats" flex="20" hide-xs style="text-align: right;">
+				<p>{{ getData(sectionData[section].name).numThreads || 0 | number }} threads</p>
+				<p>{{ getData(sectionData[section].name).numReplies || 0 | number }} replies</p>
 			</div>
-			<div class="latest" flex="40" ng-if="getData(section.name).lastThread">
-				<a href ui-sref="root.forum.threads({ thread: getData(section.name).lastThread._id })"><p>{{ getData(section.name).lastThread.title }}</p></a>
+			<div class="latest" flex="40" ng-if="getData(sectionData[section].name).lastThread">
+				<a href ui-sref="root.forum.threads({ thread: getData(sectionData[section].name).lastThread._id })"><p>{{ getData(sectionData[section].name).lastThread.title }}</p></a>
 				<p>
-					<i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(getLastUpdate(section.name).date)"></time> by
-					<a href ui-sref="root.forum.profile({ id: getLastUpdate(section.name).user._id })">{{ getLastUpdate(section.name).user.displayName }}</a> 
+					<i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(getLastUpdate(sectionData[section].name).date)"></time> by
+					<a href ui-sref="root.forum.profile({ id: getLastUpdate(sectionData[section].name).user._id })">{{ getLastUpdate(sectionData[section].name).user.displayName }}</a> 
 				</p>
 			</div>
 		</article>

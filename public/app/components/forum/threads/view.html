@@ -1,0 +1,45 @@
+<h3>{{ thread.title }}</h3>
+<p>Posted on <a href ui-sref="root.forum.home">Forum</a> / <a href ui-sref="root.forum.sections({ section: thread.section.name })">{{ sectionData[thread.section.name].title }}</a></p>
+
+<div class="reply" layout="row">
+	<div class="profile arrow" layout="column" flex-lg="10" flex-md="20" flex-sm="30" flex-xs="40">
+		<img ng-src="{{ thread.createdBy.profilePhoto }}" ng-alt="{{ thread.createdBy.displayName }}" class="avatar" />
+		<a href ui-sref="root.profile({ id: thread.createdBy._id })"><h5>{{ thread.createdBy.displayName }}</h5></a>
+		<p layout="row">Threads <span flex></span>{{ thread.createdBy.numThreads || 0 | number}}</p>
+		<p layout="row">Replies <span flex></span>{{ thread.createdBy.numReplies || 0 | number}}</p>
+		<p layout="row" ng-if="thread.createdBy.countryCode">Country <span flex></span><span class="flag-icon flag-icon-{{ thread.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
+		<a ng-href="{{ thread.createdBy.steamProfileUrl }}" target="_blank"><img ng-src="assets/img/steam.png" class="steam" /></a>
+	</div>
+	<div class="body" layout="column" flex-lg="90" flex-md="80" flex-sm="70" flex-xs="60">
+		<p>{{ thread.contents }}</p>
+	</div>
+</div>
+
+<div layout="row">
+	<div flex="5" layout="column" layout-align="center center">
+		<img ng-src="{{ user.profilePhoto }}" ng-alt="{{ user.displayName }}" class="reply-box-avatar" />
+	</div>
+	<div class="reply-box reply-box-arrow" ng-if="user" flex="95">
+		<form ng-submit="sendReply(contents)" id="myForm">
+			<md-input-container class="md-block">
+				<label>Reply</label>
+				<textarea rows="3" ng-model="contents" required md-maxlength="500"></textarea>
+				<md-button type="submit" class="md-primary md-raised"><i class="fa fa-send"></i> Send reply</md-button>
+			</md-input-container>
+		</form>
+	</div>
+</div>
+
+<div class="reply" layout="row" ng-repeat="reply in thread.replies">
+	<div class="profile arrow" layout="column" flex-lg="10" flex-md="20" flex-sm="30" flex-xs="40">
+		<img ng-src="{{ reply.createdBy.profilePhoto }}" ng-alt="{{ reply.createdBy.displayName }}" class="avatar" />
+		<a href ui-sref="root.profile({ id: reply.createdBy._id })"><h5>{{ reply.createdBy.displayName }}</h5></a>
+		<p layout="row">Threads <span flex></span>{{ reply.createdBy.numThreads || 0 | number}}</p>
+		<p layout="row">Replies <span flex></span>{{ reply.createdBy.numReplies || 0 | number}}</p>
+		<p layout="row">Country <span flex></span><span class="flag-icon flag-icon-{{ reply.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
+		<a ng-href="{{ reply.createdBy.steamProfileUrl }}" target="_blank"><img ng-src="assets/img/steam.png" class="steam" /></a>
+	</div>
+	<div class="body" layout="column" flex-lg="90" flex-md="80" flex-sm="70" flex-xs="60">
+		<p>{{ reply.contents }}</p>
+	</div>
+</div>

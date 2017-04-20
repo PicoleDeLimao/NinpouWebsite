@@ -6,7 +6,7 @@
 		<span class="pages">
 			<md-button ng-repeat="page in pages" ng-class="{ 'active': page == currentPage }" ng-disabled="page == currentPage" ng-click="loadPage(page)">{{ page }}</md-button>
 		</span>
-		<md-button ng-click="refresh()" ng-disabled="refreshing" style="float: right;"><i class="fa fa-refresh"></i> {{ refreshText }}</md-button>
+		<md-button ng-click="refresh()" ng-disabled="refreshing" style="float: right;" hide-xs><i class="fa fa-refresh"></i> {{ refreshText }}</md-button>
 	</p>
 	<md-list>
 		<md-list-item class="md-2-line thread sticky" ng-repeat="thread in sticky">
@@ -30,7 +30,7 @@
 				<h3><a href ui-sref="root.forum.threads({ id: thread._id })">{{ thread.title }}</a></h3>
 				<p>Thread started by <a href ui-sref="root.profile({ id: thread.createdBy._id })">{{ thread.createdBy.displayName }}</a><p>
 			</div>
-			<div class="md-list-item-text" flex="33" style="text-align: right;">
+			<div class="md-list-item-text" flex="33" flex-xs="0" style="text-align: right;">
 				<h3>{{ thread.numReplies || 0 | number }} replies</h3>
 				<p>{{ thread.numViews || 0 | number }} views</p>
 			</div>
