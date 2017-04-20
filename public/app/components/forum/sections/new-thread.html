@@ -1,0 +1,20 @@
+<div role="dialog" aria-label="Create new thread" layout="column" class="dialog">
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<h2>Create new thread</h2>
+		</div>
+	</md-toolbar>
+	<form ng-submit="ctrl.createNewThread()">
+		<md-input-container class="md-block">
+			<label>Title</label>
+			<input ng-model="ctrl.title" md-autofocus ng-minlength="3" md-maxlength="70" required>
+		</md-input-container>
+		<md-input-container class="md-block">
+			<label>Contents</label>
+			<textarea ng-model="ctrl.contents" md-maxlength="1000" rows="5" required></textarea>
+		</md-input-container>
+		<div layout="row">
+			<input type="submit" flex class="md-button md-primary" value="Create new thread" />
+		</div>
+	</form>
+</div>

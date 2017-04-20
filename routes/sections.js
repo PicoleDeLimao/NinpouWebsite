@@ -16,7 +16,7 @@ router.param('section_name', function(req, res, done, name) {
 });
 
 router.get('/', function(req, res) {
-	Section.find({}).populate({ path: 'lastThread', populate: [{ path: 'createdBy' }, { path: 'lastReply.createdBy' }] }).exec(function(err, sections) {
+	Section.find({}).populate({ path: 'lastThread', populate: { path: 'lastUpdate.updatedBy' } }).exec(function(err, sections) {
 		if (err) return res.status(500).json(err);
 		var obj = { };
 		for (var i = 0; i < sections.length; i++) {
@@ -27,29 +27,18 @@ router.get('/', function(req, res) {
 });
 
 router.get('/:section_name', function(req, res) {
-	var query = { section: req.section._id };
-	if (req.query.lastSeen) {
-		query['_id'] = { $lt: req.query.lastSeen };
-	}
-	Thread.find(query).populate([{ path: 'createdBy' }, { path: 'lastReply.createdBy' }]).sort({ _id: -1 }).limit(20).exec(function(err, threads) {
+	var query = { section: req.section._id, sticky: false };
+	var page = req.query.page ? parseInt(req.query.page) || 0 : 0;
+	var numDocsPerPage = req.query.limit ? parseInt(req.query.limit) || 20 : 20;
+	if (numDocsPerPage > 100 || numDocsPerPage < 1) numDocsPerPage = 20;
+	Thread.find(query).populate(['createdBy', 'lastUpdate.updatedBy']).sort({ 'lastUpdate._id': -1 }).skip(page * numDocsPerPage).limit(numDocsPerPage).exec(function(err, threads) {
 		if (err) return res.status(500).json(err);
-		return res.json(threads);
+		return res.json({ threads: threads, section: req.section });
 	});
 });
 
-router.get('/:section_name/stats', function(req, res) {
-	if (req.section.lastThread) {
-		Thread.findById(req.section.lastThread).populate([{ path: 'createdBy' }, { path: 'lastReply.createdBy' }]).exec(function(err, thread) {
-			if (err) return res.status(500).json(err);
-			return res.json({ numThreads: req.section.numThreads, numReplies: req.section.numReplies, lastThread: thread });
-		});
-	} else {
-		return res.json({ numThreads: req.section.numThreads, numReplies: req.section.numReplies });
-	}
-});
-
 router.get('/:section_name/sticky', function(req, res) {
-	Thread.find({ section: req.section._id, sticky: true }, function(err, threads) {
+	Thread.find({ section: req.section._id, sticky: true }).populate(['createdBy', 'lastUpdate.updatedBy']).exec(function(err, threads) {
 		if (err) return res.status(500).json(err);
 		return res.json(threads);
 	});

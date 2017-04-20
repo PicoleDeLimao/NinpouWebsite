@@ -1,8 +1,6 @@
 <div id="forum">
 	<span layout="row">
 		<a href=""><md-button><i class="fa fa-star"></i> View new replies</a></md-button>
-		<span flex></span>
-		<md-button ng-click="refresh()" ng-disabled="refreshing"><i class="fa fa-refresh"></i> {{ refreshText }}</md-button>
 	</span>
 	<section ng-repeat="category in categories">
 		<h3 layout="row" layout-align="right center">
@@ -14,18 +12,18 @@
 				<img ng-src="{{ section.icon }}" aria-label="{{ section.title }}" />
 			</div>
 			<div class="description" flex="35">
-				<a ng-href="{{ section.url }}"><h4>{{ section.title }}</h4></a>
+				<a href ui-sref="{{ section.url }}"><h4>{{ section.title }}</h4></a>
 				<p>{{ section.description }}</p>
 			</div>
 			<div class="stats" flex="20" style="text-align: right;">
-				<p>{{ getData(section.name).numThreads || 0 }} threads</p>
-				<p>{{ getData(section.name).numReplies || 0 }} replies</p>
+				<p>{{ getData(section.name).numThreads || 0 | number }} threads</p>
+				<p>{{ getData(section.name).numReplies || 0 | number }} replies</p>
 			</div>
 			<div class="latest" flex="40" ng-if="getData(section.name).lastThread">
-				<a ng-href="#/forum/threads/{{ getData(section.name).lastThread._id }}"><p>{{ getData(section.name).lastThread.title }}</p></a>
+				<a href ui-sref="root.forum.threads({ thread: getData(section.name).lastThread._id })"><p>{{ getData(section.name).lastThread.title }}</p></a>
 				<p>
 					<i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(getLastUpdate(section.name).date)"></time> by
-					<a ng-href="#/profile/{{ getLastUpdate(section.name).user._id }}">{{ getLastUpdate(section.name).user.displayName }}</a> 
+					<a href ui-sref="root.forum.profile({ id: getLastUpdate(section.name).user._id })">{{ getLastUpdate(section.name).user.displayName }}</a> 
 				</p>
 			</div>
 		</article>

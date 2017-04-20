@@ -26,14 +26,14 @@ function($scope, $http, CategoriesData, MongoService) {
 			name: 'announcements',
 			title: 'Announcements',
 			description: 'Discuss the latest news and updates from Ninpou Community.',
-			url: '#/forum/sections/announcements',
+			url: 'root.forum.sections({ section: "announcements" })',
 			icon: 'assets/img/forum-section-announcements.png'
 		},
 		{
 			name: 'general',
 			title: 'General discussion',
 			description: 'Talk about everything else not covered by other sections.',
-			url: '#/forum/sections/general',
+			url: 'root.forum.sections({ section: "general" })',
 			icon: 'assets/img/forum-section-general.png'
 		}
 		]
@@ -46,21 +46,21 @@ function($scope, $http, CategoriesData, MongoService) {
 			name: 'wc3_suggestions',
 			title: 'Suggestions',
 			description: 'Want to suggest something to improve the game? You\'re welcome here!',
-			url: '#/forum/sections/wc3/suggestions',
+			url: 'root.forum.sections({ section: "wc3_suggestions" })',
 			icon: 'assets/img/forum-section-suggestions.png'
 		},
 		{
 			name: 'wc3_reports',
 			title: 'Bug report',
 			description: 'Found a bug? Report it here with as much detail as possible.',
-			url: '#/forum/sections/wc3/report',
+			url: 'root.forum.sections({ section: "wc3_reports" })',
 			icon: 'assets/img/forum-section-report.png'
 		},
 		{
 			name: 'wc3_tips',
 			title: 'Tips and strategies',
 			description: 'Got a strategy and want to share it? Post it here and help new players!',
-			url: '#/forum/sections/wc3/tips',
+			url: 'root.forum.sections({ section: "wc3_tips" })',
 			icon: 'assets/img/forum-section-tips.png'
 		}
 		]
@@ -73,21 +73,21 @@ function($scope, $http, CategoriesData, MongoService) {
 			name: 'dota2_suggestions',
 			title: 'Suggestions',
 			description: 'Want to suggest something to improve the game? You\'re welcome here!',
-			url: '#/forum/sections/dota2/suggestions',
+			url: 'root.forum.sections({ section: "dota2_suggestions" })',
 			icon: 'assets/img/forum-section-suggestions.png'
 		},
 		{
 			name: 'dota2_reports',
 			title: 'Bug report',
 			description: 'Found a bug? Report it here with as much detail as possible.',
-			url: '#/forum/sections/dota2/report',
+			url: 'root.forum.sections({ section: "dota2_reports" })',
 			icon: 'assets/img/forum-section-report.png'
 		},
 		{
 			name: 'dota2_tips',
 			title: 'Tips and strategies',
 			description: 'Got a strategy and want to share it? Post it here and help new players!',
-			url: '#/forum/sections/dota2/tips',
+			url: 'root.forum.sections({ section: "dota2_tips" })',
 			icon: 'assets/img/forum-section-tips.png'
 		}
 		]
@@ -97,8 +97,11 @@ function($scope, $http, CategoriesData, MongoService) {
 		return $scope.categoriesData[sectionName];
 	};
 	$scope.getLastUpdate = function(sectionName) {
-		var data = $scope.categoriesData[sectionName];
-		return MongoService.getLastThreadUpdate(data.lastThread);
+		var thread = $scope.categoriesData[sectionName].lastThread;
+		return {
+			user: thread.lastUpdate.updatedBy,
+			date: MongoService.oidToDate(thread.lastUpdate._id)
+		};
 	};
 	$scope.timeAgo = function(time) {
 		return moment(time).fromNow();

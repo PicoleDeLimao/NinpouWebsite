@@ -108,6 +108,34 @@ app.config(['$stateProvider', function($stateProvider) {
 			}]
 		}
 	};
+	var forumSectionsState = {
+		name: 'root.forum.sections',
+		url: '/sections/:section',
+		controller: 'ForumSectionsCtrl',
+		templateUrl: 'app/components/forum/sections/view.html',
+		resolve: {
+			Threads: ['$q', '$http', '$stateParams', function($q, $http, $stateParams) {
+				var deferred = $q.defer();
+				$http.get('/sections/' + $stateParams.section + '?limit=10')
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}],
+			StickyThreads: ['$q', '$http', '$stateParams', function($q, $http, $stateParams) {
+				var deferred = $q.defer();
+				$http.get('/sections/' + $stateParams.section + '/sticky')
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
+	};
 	$stateProvider.state(rootState);
 	$stateProvider.state(loginState);
 	$stateProvider.state(logoutState);
@@ -121,4 +149,5 @@ app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state(dota2ItemsState);
 	$stateProvider.state(forumState);
 	$stateProvider.state(forumHomeState);
+	$stateProvider.state(forumSectionsState);
 }]);

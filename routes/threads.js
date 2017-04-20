@@ -34,7 +34,10 @@ router.post('/:section_name', auth.authenticate(), function(req, res) {
 		createdBy: req.user._id,
 		section: req.section._id,
 		title: req.body.title,
-		contents: req.body.contents
+		contents: req.body.contents,
+		lastUpdate: {
+			updatedBy: req.user._id
+		}
 	});
 	thread.save(function(err) {
 		if (err) return res.status(400).json(err);
@@ -52,7 +55,10 @@ router.get('/:id', function(req, res) {
 	if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).json({ error: 'Thread not found' });
 	Thread.findById(req.params.id, '+replies').populate('replies.createdBy').exec(function(err, thread) {
 		if (!thread) return res.status(404).json({ error: 'Thread not found' });
-		return res.json(thread);
+		thread.update({ $inc: { numViews: 1 } }, function(err) {
+			if (err) return res.status(500).json(err);
+			return res.json(thread);
+		});
 	});
 	
 });
@@ -109,8 +115,10 @@ router.post('/:thread_id/replies', auth.authenticate(), function(req, res) {
 		contents: req.body.contents
 	};
 	req.thread.replies.push(reply);
-	req.thread.lastReply = reply; 
 	req.thread.numReplies = (req.thread.numReplies || 0) + 1;
+	req.thread.lastUpdate = {
+		updatedBy: req.user._id
+	};
 	req.thread.save(function(err) {
 		if (err) return res.status(400).json(err);
 		Section.findById(req.thread.section, function(err, section) {

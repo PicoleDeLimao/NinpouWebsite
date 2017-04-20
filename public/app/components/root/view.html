@@ -31,7 +31,7 @@
 		<md-nav-item ng-if="user" class="nav-user" md-nav-click="setMenu('profile')" name="profile">
 			<img ng-src="{{ user.profilePhoto }}" /> <i class="fa fa-caret-down" aria-hidden="true"></i> 
 			<div class="menu-drop" ng-show="isMenu('profile')" layout="column" layout-align="center center">
-				<md-button ng-click="go('root.profile')">{{ user.displayName }}</md-button>
+				<a href ui-sref="root.profile({ id: user._id })"><md-button>{{ user.displayName }}</md-button></a>
 				<md-button ng-click="go('logout')">Logout</md-button>
 			</div>
 		</md-nav-item>

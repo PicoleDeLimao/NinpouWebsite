@@ -1,0 +1,46 @@
+<md-content>
+	<h3><a href ui-sref="root.forum.home">Forum</a> / {{ sectionsData[section.name].title }}</h3>
+	<p>{{ sectionsData[section.name].description }}</p>
+	<md-button class="md-raised md-primary" ng-click="createNewThread()" ng-if="user && (!section.adminOnly || user.isAdmin)"><i class="fa fa-plus"></i> Create new thread</md-button>
+	<p>
+		<span class="pages">
+			<md-button ng-repeat="page in pages" ng-class="{ 'active': page == currentPage }" ng-disabled="page == currentPage" ng-click="loadPage(page)">{{ page }}</md-button>
+		</span>
+		<md-button ng-click="refresh()" ng-disabled="refreshing" style="float: right;"><i class="fa fa-refresh"></i> {{ refreshText }}</md-button>
+	</p>
+	<md-list>
+		<md-list-item class="md-2-line thread sticky" ng-repeat="thread in sticky">
+			<img ng-src="{{ thread.createdBy.profilePhoto }}" class="md-avatar" ng-alt="{{ thread.createdBy.displayName }}" />
+			<div class="md-list-item-text" flex="33">
+				<h3><a href ui-sref="root.forum.threads({ id: thread._id })">{{ thread.title }}</a></h3>
+				<p>Thread started by <a href ui-sref="root.profile({ id: thread.createdBy._id })">{{ thread.createdBy.displayName }}</a><p>
+			</div>
+			<div class="md-list-item-text" flex="33" style="text-align: right;">
+				<h3>{{ thread.numReplies || 0 | number }} replies</h3>
+				<p>{{ thread.numViews || 0 | number }} views</p>
+			</div>
+			<div class="md-list-item-text" flex="33" style="text-align: right;">
+				<h3>Last reply: <a href ui-sref="root.profile({ id: thread.lastUpdate.updatedBy._id })">{{ thread.lastUpdate.updatedBy.displayName }}</a></h3>
+				<p><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(thread.lastUpdate._id)"></time></p>
+			</div>
+		</md-list-item>
+		<md-list-item class="md-2-line thread" ng-repeat="thread in threads">
+			<img ng-src="{{ thread.createdBy.profilePhoto }}" class="md-avatar" ng-alt="{{ thread.createdBy.displayName }}" />
+			<div class="md-list-item-text" flex="33">
+				<h3><a href ui-sref="root.forum.threads({ id: thread._id })">{{ thread.title }}</a></h3>
+				<p>Thread started by <a href ui-sref="root.profile({ id: thread.createdBy._id })">{{ thread.createdBy.displayName }}</a><p>
+			</div>
+			<div class="md-list-item-text" flex="33" style="text-align: right;">
+				<h3>{{ thread.numReplies || 0 | number }} replies</h3>
+				<p>{{ thread.numViews || 0 | number }} views</p>
+			</div>
+			<div class="md-list-item-text" flex="33" style="text-align: right;">
+				<h3>Last reply: <a href ui-sref="root.profile({ id: thread.lastUpdate.updatedBy._id })">{{ thread.lastUpdate.updatedBy.displayName }}</a></h3>
+				<p><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(thread.lastUpdate._id)"></time></p>
+			</div>
+		</md-list-item>
+	</md-list>
+	<p><span class="pages">
+		<md-button ng-repeat="page in pages" ng-class="{ 'active': page == currentPage }" ng-disabled="page == currentPage" ng-click="loadPage(page)">{{ page }}</md-button>
+	</span></p>
+</md-content>
