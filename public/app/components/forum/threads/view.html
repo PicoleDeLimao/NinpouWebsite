@@ -3,13 +3,15 @@
 
 <div class="reply" layout="row">
 	<div class="profile arrow" layout="column" flex-lg="10" flex-gt="10" flex-md="15" flex-sm="20" flex-xs="30">
-		<img ng-src="{{ thread.createdBy.profilePhoto }}" ng-alt="{{ thread.createdBy.displayName }}" class="avatar" />
+		<div class="avatar">
+			<md-tooltip md-direction="right">
+				<p layout="row">Threads: <span flex></span>{{ thread.createdBy.numThreads || 0 | number}}</p>
+				<p layout="row">Replies: <span flex></span>{{ thread.createdBy.numReplies || 0 | number}}</p>
+				<p layout="row">Country: <span flex></span><span class="flag-icon flag-icon-{{ thread.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
+			</md-tooltip>
+			<img ng-src="{{ thread.createdBy.profilePhoto }}" ng-alt="{{ thread.createdBy.displayName }}" />
+		</div>
 		<a href ui-sref="root.profile({ id: thread.createdBy._id })"><h5>{{ thread.createdBy.displayName }}</h5></a>
-		<md-tooltip md-direction="right">
-			<p layout="row">Threads: <span flex></span>{{ thread.createdBy.numThreads || 0 | number}}</p>
-			<p layout="row">Replies: <span flex></span>{{ thread.createdBy.numReplies || 0 | number}}</p>
-			<p layout="row">Country: <span flex></span><span class="flag-icon flag-icon-{{ thread.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
-		</md-tooltip>
 	</div>
 	<div class="body" layout="column" flex-lg="90" flex-gt="90" flex-md="85" flex-sm="80" flex-xs="70" >
 		<div show-more ng-if="!ctrl.editThread"><p ks-nl2br ks-bbcode>{{ thread.contents }}</p></div>
@@ -59,16 +61,19 @@
 
 <div class="reply" layout="row" ng-repeat="reply in replies" ng-init="ctrl.editReplies = { }">
 	<div class="profile arrow" layout="column" flex-lg="10" flex-gt="10" flex-md="15" flex-sm="20" flex-xs="30">
-		<img ng-src="{{ reply.createdBy.profilePhoto }}" ng-alt="{{ reply.createdBy.displayName }}" class="avatar" />
+		<div class="avatar">
+			<md-tooltip md-direction="right">
+				<p layout="row">Threads: <span flex></span>{{ reply.createdBy.numThreads || 0 | number}}</p>
+				<p layout="row">Replies: <span flex></span>{{ reply.createdBy.numReplies || 0 | number}}</p>
+				<p layout="row">Country: <span flex></span><span class="flag-icon flag-icon-{{ reply.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
+			</md-tooltip>
+			<img ng-src="{{ reply.createdBy.profilePhoto }}" ng-alt="{{ reply.createdBy.displayName }}" />
+			
+		</div>
 		<a href ui-sref="root.profile({ id: reply.createdBy._id })"><h5>{{ reply.createdBy.displayName }}</h5></a>
-		<md-tooltip md-direction="right">
-			<p layout="row">Threads: <span flex></span>{{ reply.createdBy.numThreads || 0 | number}}</p>
-			<p layout="row">Replies: <span flex></span>{{ reply.createdBy.numReplies || 0 | number}}</p>
-			<p layout="row">Country: <span flex></span><span class="flag-icon flag-icon-{{ reply.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
-		</md-tooltip>
 	</div>
 	<div class="body" layout="column" flex-lg="90" flex-gt="90" flex-md="85" flex-sm="80" flex-xs="70">
-		<p ng-if="!ctrl.editReplies[reply._id]" ks-nl2br ks-bbcode>{{ reply.contents }}</p>
+		<div show-more ng-if="!ctrl.editReplies[reply._id]"><p ks-nl2br ks-bbcode>{{ reply.contents }}</p></div>
 		<span ng-show="!ctrl.editReplies[reply._id]" flex></span>
 		<p ng-show="!ctrl.editReplies[reply._id]" class="md-caption" style="text-align: right;"><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(reply._id)"></time></p>
 		<div ng-if="ctrl.editReplies[reply._id]">
@@ -76,7 +81,7 @@
 			<bbcode-buttons element-id="reply-text-area-{{ reply._id }}" model-name="ctrl[reply._id]"></bbcode-buttons>
 			<md-input-container class="md-block">
 				<label>Contents</label>
-				<textarea rows="3" ng-model="ctrl[reply._id]" ng-init="ctrl[reply._id]=reply.contents" id="reply-text-area-{{ reply._id }}" required md-maxlength="500"></textarea>
+				<textarea rows="3" ng-model="ctrl[reply._id]" ng-init="ctrl[reply._id]=reply.contents" id="reply-text-area-{{ reply._id }}" required md-maxlength="5000"></textarea>
 			</md-input-container>
 		</div>
 		<div layout="row" class="pages" ng-if="reply.createdBy._id == user._id || (user && user.isAdmin)" style="margin-bottom: 10px;">
