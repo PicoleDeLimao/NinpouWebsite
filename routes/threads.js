@@ -160,6 +160,7 @@ router.put('/:thread_id/replies/:reply_id', auth.authenticate(), function(req, r
 	if (!reply) return res.status(404).json({ error: 'Reply not found' });
 	else if (reply.createdBy.toString() != req.user._id.toString() && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to edit this reply' });
 	reply.contents = req.body.contents;
+	reply.lastEdit = new Date();
 	req.thread.save(function(err) {
 		if (err) return res.status(400).json(err);
 		return res.json(reply);

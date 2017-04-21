@@ -70,6 +70,9 @@ function($scope, $stateParams, $state, $http, $timeout, $mdDialog, Thread, Mongo
 		if (!time) return;
 		return moment(MongoService.oidToDate(time)).fromNow();
 	};
+	$scope.timeAgoDate = function(date) {
+		return moment(date).fromNow();
+	};
 	$scope.saveThread = function() {
 		$http({
 			method: 'PUT',
@@ -97,6 +100,7 @@ function($scope, $stateParams, $state, $http, $timeout, $mdDialog, Thread, Mongo
 		})
 		.then(function(response) {
 			reply.contents = ctrl[reply._id];
+			reply.lastEdit = new Date();
 			ctrl.editReplies[reply._id] = false;
 		}, function(response) {
 			

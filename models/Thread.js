@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 
 var replySchema = mongoose.Schema({
 	createdBy: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
-	contents: { type: String, required: true, maxlength: '5000' }
+	contents: { type: String, required: true, maxlength: '5000' },
+	lastEdit: Date
 });
 
 var updateSchema = mongoose.Schema({

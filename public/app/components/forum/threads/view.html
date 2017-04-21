@@ -74,7 +74,10 @@
 	<div class="body" layout="column" flex-lg="90" flex-gt="90" flex-md="85" flex-sm="80" flex-xs="70">
 		<div show-more ng-if="!ctrl.editReplies[reply._id]"><p ks-nl2br ks-bbcode>{{ reply.contents }}</p></div>
 		<span ng-show="!ctrl.editReplies[reply._id]" flex></span>
-		<p ng-show="!ctrl.editReplies[reply._id]" class="md-caption" style="text-align: right;"><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(reply._id)"></time></p>
+		<p ng-show="!ctrl.editReplies[reply._id]" class="md-caption" style="text-align: right;">
+			<i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(reply._id)"></time><br/>
+			<i ng-if="reply.lastEdit">Last edit: <time ng-bind="timeAgoDate(reply.lastEdit)"></time></i>
+		</p>
 		<div ng-if="ctrl.editReplies[reply._id]">
 			<br/>
 			<bbcode-buttons element-id="reply-text-area-{{ reply._id }}" model-name="ctrl[reply._id]"></bbcode-buttons>
