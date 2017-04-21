@@ -4,8 +4,8 @@ var app = angular.module('Ninpou', ['ngMaterial', 'ngAnimate', 'ui.router', 'ang
 
 app.config(['$mdThemingProvider', function($mdThemingProvider) {
 	$mdThemingProvider.theme('default')
-		.primaryPalette('pink')
-		.accentPalette('deep-purple');
+		.primaryPalette('deep-purple')
+		.accentPalette('pink');
 }]);
 
 // Token interceptor

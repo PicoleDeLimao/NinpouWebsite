@@ -1,4 +1,5 @@
-<header class="header">
+<!-- Normal header -->
+<header class="header" hide-xs>
 	<md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
 		<md-nav-item md-nav-click="goto('home')" name="home">Home</md-nav-item>
 		<md-nav-item md-nav-click="goto('blog')" name="blog">Blog</md-nav-item>
@@ -37,7 +38,56 @@
 		</md-nav-item>
 	</md-nav-bar>
 </header>
-	
+
+<!-- Responsive header -->
+<header class="header" hide-gt-xs>
+	<md-nav-bar md-selected-nav-item="sidebarNavItem" nav-bar-aria-label="navigation links">
+		<md-nav-item md-nav-click="openSidenav()" name="sidebar"><i class="fa fa-bars"></i> Menu</md-nav-item>
+		<span flex></span>
+		<div layout-align="center center" layout="row">
+			<div ng-if="!user">
+				<a href="/auth/steam"><img src="assets/img/steam_signin.png" /></a>
+			</div>
+		</div>	
+		<md-nav-item ng-if="user" class="nav-user" md-nav-click="setMenu('profile')" name="profile">
+			<img ng-src="{{ user.profilePhoto }}" /> <i class="fa fa-caret-down" aria-hidden="true"></i> 
+			<div class="menu-drop" ng-show="isMenu('profile')" layout="column" layout-align="center center">
+				<a href ui-sref="root.profile({ id: user._id })"><md-button>{{ user.displayName }}</md-button></a>
+				<md-button ng-click="go('logout')">Logout</md-button>
+			</div>
+		</md-nav-item>
+	</md-nav-bar>
+</header>
+
+<md-sidenav
+	class="md-sidenav-left"
+	md-component-id="left"
+	md-whiteframe="4">
+	<md-toolbar class="md-theme-indigo">
+		<div class="md-toolbar-tools">
+			<md-button ng-click="closeSidenav()" aria-label="Close"><i class="fa fa-bars"></i></md-button>
+			<h1>Menu</h1>
+		</div>
+	</md-toolbar>
+	<md-content layout-padding layout="column">
+		<md-button ng-click="goto('home')" class="md-primary">Home</md-button>
+		<md-button ng-click="goto('blog')" class="md-primary">Blog</md-button>
+		<md-button ng-click="goto('forum.home')" class="md-primary">Forum</md-button>
+		<md-divider></md-divider>
+		<p style="text-align: center;">Warcraft III</p>
+		<div layout="row" layout-align="center">
+			<md-button ng-click="goto('wc3.heroes')" class="md-primary">Heroes</md-button>
+			<md-button ng-click="goto('wc3.items')" class="md-primary">Items</md-button>
+		</div>
+		<md-divider></md-divider>
+		<p style="text-align: center;">Dota 2</p>
+		<div layout="row" layout-align="center">
+			<md-button ng-click="goto('dota2.heroes')" class="md-primary">Heroes</md-button>
+			<md-button ng-click="goto('dota2.items')" class="md-primary">Items</md-button>
+		</div>
+	</md-content>
+</md-sidenav>
+
 <div id="background"></div>
 
 <md-content>

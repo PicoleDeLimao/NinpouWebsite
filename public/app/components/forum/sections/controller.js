@@ -5,6 +5,7 @@ var app = angular.module('Ninpou');
 app.controller('ForumSectionsCtrl', ['$scope', '$stateParams', '$http', '$mdPanel', 'Threads', 'StickyThreads', 'MongoService', 'SectionData', 'NumThreadsPerPage',
 function($scope, $stateParams, $http, $mdPanel, Threads, StickyThreads, MongoService, SectionData, NumThreadsPerPage) {
 	window.scrollTo(0,0);
+	
 	$scope.threads = Threads.threads;
 	$scope.section = Threads.section;
 	$scope.sectionsData = SectionData;
@@ -15,6 +16,7 @@ function($scope, $stateParams, $http, $mdPanel, Threads, StickyThreads, MongoSer
 	for (var i = 1; i <= $scope.numPages; i++) {
 		$scope.pages.push(i);
 	}
+	
 	$scope.loadPage = function(page) {
 		$http.get('/sections/' + $stateParams.section + '?page=' + (page - 1) + '&limit=' + NumThreadsPerPage)
 		.then(function(response) {

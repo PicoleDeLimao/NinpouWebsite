@@ -2,8 +2,11 @@
 
 var app = angular.module('Ninpou');
 
-app.controller('RootCtrl', ['$scope', '$state', '$timeout', function($scope, $state, $timeout) {
+app.controller('RootCtrl', ['$scope', '$state', '$timeout', '$mdSidenav', function($scope, $state, $timeout, $mdSidenav) {
 	$scope.goto = function(state) {
+		if ($mdSidenav('left').isOpen()) {
+			$scope.closeSidenav();
+		}
 		$scope.currentNavItem = state;
 		$scope.menu = null;
 		$state.go('root.' + state);
@@ -28,5 +31,17 @@ app.controller('RootCtrl', ['$scope', '$state', '$timeout', function($scope, $st
 		$timeout(function() {
 			$scope.menu = '';
 		});
+	};
+	$scope.toggleLeft = buildToggler('left');
+	function buildToggler(componentId) {
+		return function() {
+			$mdSidenav(componentId).toggle();
+		};
+    }
+	$scope.openSidenav = function() {
+		$scope.toggleLeft();
+	};
+	$scope.closeSidenav = function() {
+		$scope.toggleLeft();
 	};
 }]);
