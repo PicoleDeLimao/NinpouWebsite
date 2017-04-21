@@ -19,7 +19,8 @@ var threadSchema = mongoose.Schema({
 	sticky: { type: Boolean, required: true, default: false },
 	numReplies: { type: Number, required: true, default: 0, min: 0 },
 	numViews: { type: Number, required: true, default: 0, min: 0 },
-	lastUpdate: { type: updateSchema, required: true }
+	lastUpdate: { type: updateSchema, required: true },
+	lastEdit: Date
 });
 
 var Thread = mongoose.model('Thread', threadSchema);

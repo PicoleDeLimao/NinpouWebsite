@@ -85,6 +85,7 @@ function($scope, $stateParams, $state, $http, $timeout, $mdDialog, Thread, Mongo
 		.then(function(response) {
 			$scope.thread.title = ctrl.threadTitle;
 			$scope.thread.contents = ctrl.threadContents;
+			$scope.thread.lastEdit = new Date();
 			ctrl.editThread = false;
 		}, function(response) {
 			

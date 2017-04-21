@@ -16,7 +16,10 @@
 	<div class="body" layout="column" flex-lg="90" flex-gt="90" flex-md="85" flex-sm="80" flex-xs="70" >
 		<div show-more ng-if="!ctrl.editThread"><p ks-nl2br ks-bbcode>{{ thread.contents }}</p></div>
 		<span ng-show="!ctrl.editThread" flex></span>
-		<p ng-show="!ctrl.editThread" class="md-caption" style="text-align: right;"><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(thread._id)"></time></p>
+		<p ng-show="!ctrl.editThread" class="md-caption" style="text-align: right;">
+			<i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(thread._id)"></time><br/>
+			<i ng-if="thread.lastEdit">Last edit: <time ng-bind="timeAgoDate(thread.lastEdit)"></time></i>
+		</p>
 		<div ng-if="ctrl.editThread">
 			<br/>
 			<md-input-container class="md-block">

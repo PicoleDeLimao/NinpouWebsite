@@ -80,6 +80,7 @@ router.put('/:thread_id', auth.authenticate(), function(req, res) {
 	if (req.thread.createdBy.toString() != req.user._id.toString() && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to edit this thread' });
 	if (req.body.contents) req.thread.contents = req.body.contents;
 	if (req.body.title) req.thread.title = req.body.title;
+	req.thread.lastEdit = new Date();
 	req.thread.save(function(err) {
 		if (err) return res.status(400).json(err);
 		return res.json(req.thread);
