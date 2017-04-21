@@ -47,7 +47,7 @@ md-nav-ink-bar {
 .header {
 	top: 0; 
 	position: fixed; 
-	z-index: 999; 
+	z-index: 10; 
 	width: 100%;
 }
 
@@ -99,6 +99,16 @@ a {
 
 .thread {
 	border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.thread.ng-enter {
+	-webkit-transition: 1s;
+    transition: 1s;
+    opacity: 0;
+}
+
+.thread.ng-enter-active {
+	opacity: 1;
 }
 
 .sticky {
@@ -153,7 +163,7 @@ a {
 
 .arrow:after, .arrow:before {
 	left: 100%;
-	top: 5%;
+	top: 10%;
 	border: solid transparent;
 	content: " ";
 	height: 0;
@@ -181,6 +191,16 @@ a {
 	border: 1px solid rgba(0, 0, 0, 0.12);
 	padding: 5px;
 	margin-bottom: 10px;
+}
+
+.reply.ng-enter {
+	-webkit-transition: 1s;
+    transition: 1s;
+    opacity: 0;
+}
+
+.reply.ng-enter-active {
+	opacity: 1;
 }
 
 .reply .profile {
@@ -211,8 +231,16 @@ a {
 .reply .profile h5 {
 	text-align: center;
 	background-color: rgba(0, 0, 0, 0.06);
-	margin: 0;
+	border: 1px solid rgba(0, 0, 0, 0.09);
+	margin: 2px;
 	padding: 10px;
+}
+
+
+@media (max-device-width: 500px) {
+	.reply .profile h5 {
+		font-size: 0.5em;
+	}
 }
 
 .reply .profile .steam {
@@ -223,6 +251,11 @@ a {
 	margin-left: 15px;
 	margin-right: 10px;
 	margin-top: -10px;
+}
+
+.reply .body img {
+	max-width: 100%;
+	max-height: 500px;
 }
 
 .reply-box {
@@ -262,7 +295,7 @@ a {
 	margin-top: -31px;
 }
 
-.reply-box textarea {
+.reply-box textarea, #thread-text-area {
 	height: 200px;
 	max-height: 200px;
 	resize: none;
@@ -273,4 +306,12 @@ a {
 	width: 100%; 
 	border: 1px solid rgba(0, 0, 0, 0.06); 
 	padding: 3px;
+}
+
+md-tooltip .md-content {
+    height: auto;
+}
+
+.md-dialog-container {
+	z-index: 1000 !important;
 }

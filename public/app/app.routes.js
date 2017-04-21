@@ -140,6 +140,7 @@ app.config(['$stateProvider', function($stateProvider) {
 		name: 'root.forum.threads',
 		url: '/threads/:id',
 		controller: 'ForumThreadsCtrl',
+		controllerAs: 'ctrl',
 		templateUrl: 'app/components/forum/threads/view.html',
 		resolve: {
 			Thread: ['$q', '$http', '$stateParams', function($q, $http, $stateParams) {

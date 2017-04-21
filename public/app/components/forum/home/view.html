@@ -20,7 +20,7 @@
 				<p>{{ getData(sectionData[section].name).numReplies || 0 | number }} replies</p>
 			</div>
 			<div class="latest" flex="40" ng-if="getData(sectionData[section].name).lastThread">
-				<a href ui-sref="root.forum.threads({ thread: getData(sectionData[section].name).lastThread._id })"><p>{{ getData(sectionData[section].name).lastThread.title }}</p></a>
+				<a href ui-sref="root.forum.threads({ id: getData(sectionData[section].name).lastThread._id })"><p>{{ getData(sectionData[section].name).lastThread.title }}</p></a>
 				<p>
 					<i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(getLastUpdate(sectionData[section].name).date)"></time> by
 					<a href ui-sref="root.forum.profile({ id: getLastUpdate(sectionData[section].name).user._id })">{{ getLastUpdate(sectionData[section].name).user.displayName }}</a> 

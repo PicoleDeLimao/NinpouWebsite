@@ -108,6 +108,14 @@ router.post('/:thread_id/move/:section_name', auth.authenticate(), function(req,
 	});
 });
 
+router.get('/:id/replies', function(req, res) {
+	if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).json({ error: 'Thread not found' });
+	Thread.findById(req.params.id, '+replies').populate('replies.createdBy').exec(function(err, thread) {
+		if (err) return res.status(500).json(err);
+		return res.json(thread.replies);
+	});
+});
+
 router.post('/:thread_id/replies', auth.authenticate(), function(req, res) {
 	var reply = {
 		createdBy: req.user._id,
