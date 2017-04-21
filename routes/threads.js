@@ -6,6 +6,7 @@ var router = express.Router();
 var auth = require('../config/auth');
 var Thread = require('../models/Thread');
 var Section = require('../models/Section');
+var User = require('../models/User');
 
 router.param('section_name', function(req, res, done, name) {
 	Section.findOne({ name: name }, function(err, section) {
@@ -76,7 +77,7 @@ router.get('/:id', function(req, res) {
 });
 
 router.put('/:thread_id', auth.authenticate(), function(req, res) {
-	if (req.thread.createdBy != req.user._id && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to edit this thread' });
+	if (req.thread.createdBy.toString() != req.user._id.toString() && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to edit this thread' });
 	if (req.body.contents) req.thread.contents = req.body.contents;
 	if (req.body.title) req.thread.title = req.body.title;
 	req.thread.save(function(err) {
@@ -86,14 +87,14 @@ router.put('/:thread_id', auth.authenticate(), function(req, res) {
 });
 
 router.delete('/:thread_id', auth.authenticate(), function(req, res) {
-	if (req.thread.createdBy != req.user._id && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to remove this thread' });
+	if (req.thread.createdBy.toString() != req.user._id.toString() && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to remove this thread' });
 	req.thread.remove(function(err) {
 		if (err) return res.status(500).json(err);
 		Section.findById(req.thread.section, function(err, section) {
 			if (err) return res.status(500).json(err);
 			section.update({ $inc: { numThreads: -1, numReplies: -req.thread.replies.length } }, function(err) {
 				if (err) return res.status(500).json(err);
-				req.user.update({ $inc: { numThreads: -1 } }, function(err) {
+				User.update({ _id: req.thread.createdBy }, { $inc: { numThreads: -1 } }, function(err) {
 					if (err) return res.status(500).json(err);
 					return res.json(req.thread);
 				});
@@ -157,7 +158,7 @@ router.post('/:thread_id/replies', auth.authenticate(), function(req, res) {
 router.put('/:thread_id/replies/:reply_id', auth.authenticate(), function(req, res) {
 	var reply = req.thread.replies.id(req.params.reply_id);
 	if (!reply) return res.status(404).json({ error: 'Reply not found' });
-	else if (reply.createdBy != req.user._id && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to edit this reply' });
+	else if (reply.createdBy.toString() != req.user._id.toString() && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to edit this reply' });
 	reply.contents = req.body.contents;
 	req.thread.save(function(err) {
 		if (err) return res.status(400).json(err);
@@ -168,7 +169,7 @@ router.put('/:thread_id/replies/:reply_id', auth.authenticate(), function(req, r
 router.delete('/:thread_id/replies/:reply_id', auth.authenticate(), function(req, res) {
 	var reply = req.thread.replies.id(req.params.reply_id);
 	if (!reply) return res.status(404).json({ error: 'Reply not found' });
-	else if (reply.createdBy != req.user._id && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to remove this reply' });
+	else if (reply.createdBy.toString() != req.user._id.toString() && !req.user.isAdmin) return res.status(403).json({ error: 'You don\'t have permission to remove this reply' });
 	reply.remove();
 	--req.thread.numReplies;
 	req.thread.save(function(err) {
@@ -177,7 +178,7 @@ router.delete('/:thread_id/replies/:reply_id', auth.authenticate(), function(req
 			if (err) return res.status(500).json(err);
 			section.update({ $inc: { numReplies: -1 } }, function(err) {
 				if (err) return res.status(500).json(err);
-				req.user.update({ $inc: { numReplies: -1 } }, function(err) {
+				User.update({ _id: reply.createdBy }, { $inc: { numReplies: -1 } }, function(err) {
 					if (err) return res.status(500).json(err);
 					return res.json(reply);
 				});

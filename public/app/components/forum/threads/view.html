@@ -68,7 +68,6 @@
 				<p layout="row">Country: <span flex></span><span class="flag-icon flag-icon-{{ reply.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
 			</md-tooltip>
 			<img ng-src="{{ reply.createdBy.profilePhoto }}" ng-alt="{{ reply.createdBy.displayName }}" />
-			
 		</div>
 		<a href ui-sref="root.profile({ id: reply.createdBy._id })"><h5>{{ reply.createdBy.displayName }}</h5></a>
 	</div>
