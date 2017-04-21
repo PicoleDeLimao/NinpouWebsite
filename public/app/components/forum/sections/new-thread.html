@@ -9,7 +9,9 @@
 			<label>Title</label>
 			<input ng-model="ctrl.title" md-autofocus ng-minlength="3" md-maxlength="70" required>
 		</md-input-container>
-		<bbcode-buttons element-id="contents" model-name="ctrl.contents"></bbcode-buttons>
+		<div style="padding-left: 5px; padding-right: 5px;">
+			<bbcode-buttons element-id="contents" model-name="ctrl.contents"></bbcode-buttons>
+		</div>
 		<md-input-container class="md-block">
 			<label>Contents</label>
 			<textarea ng-model="ctrl.contents" md-maxlength="10000" rows="5" id="contents" required></textarea>
