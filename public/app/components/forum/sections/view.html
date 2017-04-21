@@ -8,7 +8,7 @@
 		</span>
 		<md-button ng-click="refresh()" ng-disabled="refreshing" style="float: right;" hide-xs><i class="fa fa-refresh"></i> {{ refreshText }}</md-button>
 	</p>
-	<md-list layout="column">
+	<md-list layout="column" layout-fill>
 		<md-list-item class="md-2-line thread sticky" ng-repeat="thread in sticky" layout="row" layout-fill>
 			<img ng-src="{{ thread.createdBy.profilePhoto }}" class="md-avatar" ng-alt="{{ thread.createdBy.displayName }}" />
 			<div class="md-list-item-text" flex="33" flex-xs="50">

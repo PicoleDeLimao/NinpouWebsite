@@ -44,7 +44,7 @@
 		<form ng-submit="sendReply('reply-text-area')">
 			<md-input-container class="md-block">
 				<label>Reply</label>
-				<textarea rows="3" ng-model="ctrl.replyContents" id="reply-text-area" required autofocus md-maxlength="500"></textarea>
+				<textarea rows="3" ng-model="ctrl.replyContents" id="reply-text-area" required autofocus md-maxlength="5000"></textarea>
 				<md-button type="submit" class="md-primary md-raised"><i class="fa fa-send"></i> Send reply</md-button>
 			</md-input-container>
 		</form>
