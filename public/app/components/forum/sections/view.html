@@ -8,14 +8,14 @@
 		</span>
 		<md-button ng-click="refresh()" ng-disabled="refreshing" style="float: right;" hide-xs><i class="fa fa-refresh"></i> {{ refreshText }}</md-button>
 	</p>
-	<md-list>
-		<md-list-item class="md-2-line thread sticky" ng-repeat="thread in sticky">
+	<md-list layout="column">
+		<md-list-item class="md-2-line thread sticky" ng-repeat="thread in sticky" layout="row" layout-fill>>
 			<img ng-src="{{ thread.createdBy.profilePhoto }}" class="md-avatar" ng-alt="{{ thread.createdBy.displayName }}" />
 			<div class="md-list-item-text" flex="33" flex-xs="50">
 				<h3><a href ui-sref="root.forum.threads({ id: thread._id })">{{ thread.title }}</a></h3>
 				<p>Thread started by <a href ui-sref="root.profile({ id: thread.createdBy._id })">{{ thread.createdBy.displayName }}</a><p>
 			</div>
-			<div class="md-list-item-text" flex="33" flex-xs="0">
+			<div class="md-list-item-text" flex="33" flex-xs="0" style="text-align: right;">
 				<h3>{{ thread.numReplies || 0 | number }} replies</h3>
 				<p>{{ thread.numViews || 0 | number }} views</p>
 			</div>
@@ -24,14 +24,13 @@
 				<p><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(thread.lastUpdate._id)"></time></p>
 			</div>
 		</md-list-item>
-		<md-list-item class="md-2-line thread" ng-repeat="thread in threads">
+		<md-list-item class="md-2-line thread" ng-repeat="thread in threads" layout="row" layout-fill>>
 			<img ng-src="{{ thread.createdBy.profilePhoto }}" class="md-avatar" ng-alt="{{ thread.createdBy.displayName }}" />
 			<div class="md-list-item-text" flex="33" flex-xs="50">
 				<h3><a href ui-sref="root.forum.threads({ id: thread._id })">{{ thread.title }}</a></h3>
 				<p>Thread started by <a href ui-sref="root.profile({ id: thread.createdBy._id })">{{ thread.createdBy.displayName }}</a><p>
-				
 			</div>
-			<div class="md-list-item-text" flex="33" flex-xs="0">
+			<div class="md-list-item-text" flex="33" flex-xs="0" style="text-align: right;">
 				<h3>{{ thread.numReplies || 0 | number }} replies</h3>
 				<p>{{ thread.numViews || 0 | number }} views</p>
 			</div>

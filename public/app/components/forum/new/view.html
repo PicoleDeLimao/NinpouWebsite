@@ -6,8 +6,8 @@
 		</span>
 		<md-button ng-click="refresh()" ng-disabled="refreshing" style="float: right;" hide-xs><i class="fa fa-refresh"></i> {{ refreshText }}</md-button>
 	</p>
-	<md-list>
-		<md-list-item class="md-3-line thread" ng-repeat="thread in threads">
+	<md-list layout-fill layout="column">
+		<md-list-item class="md-3-line thread" ng-repeat="thread in threads" layout="row" layout-fill>
 			<img ng-src="{{ thread.createdBy.profilePhoto }}" class="md-avatar" ng-alt="{{ thread.createdBy.displayName }}" />
 			<div class="md-list-item-text" flex="33" flex-xs="50">
 				<h3><a href ui-sref="root.forum.threads({ id: thread._id })">{{ thread.title }}</a></h3>
