@@ -14,13 +14,15 @@
 				<p>Thread started by <a href ui-sref="root.profile({ id: thread.createdBy._id })">{{ thread.createdBy.displayName }}</a><p>
 				<p><i class="fa fa-level-up"></i> On section <a href ui-sref="root.forum.sections({ section: thread.section.name })">{{ sections[thread.section.name].title }}</a></p>
 			</div>
-			<div class="md-list-item-text" flex="33" flex-xs="0" style="text-align: right;">
+			<div class="md-list-item-text" flex="33" flex-xs="0">
 				<h3>{{ thread.numReplies || 0 | number }} replies</h3>
 				<p>{{ thread.numViews || 0 | number }} views</p>
+				<p></p>
 			</div>
 			<div class="md-list-item-text" flex="33" flex-xs="50" style="text-align: right;">
 				<h3>Last reply: <a href ui-sref="root.profile({ id: thread.lastUpdate.updatedBy._id })">{{ thread.lastUpdate.updatedBy.displayName }}</a></h3>
 				<p><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(thread.lastUpdate._id)"></time></p>
+				<p></p>
 			</div>
 		</md-list-item>
 	</md-list>

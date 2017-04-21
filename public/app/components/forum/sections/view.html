@@ -15,7 +15,7 @@
 				<h3><a href ui-sref="root.forum.threads({ id: thread._id })">{{ thread.title }}</a></h3>
 				<p>Thread started by <a href ui-sref="root.profile({ id: thread.createdBy._id })">{{ thread.createdBy.displayName }}</a><p>
 			</div>
-			<div class="md-list-item-text" flex="33" flex-xs="0" style="text-align: right;">
+			<div class="md-list-item-text" flex="33" flex-xs="0">
 				<h3>{{ thread.numReplies || 0 | number }} replies</h3>
 				<p>{{ thread.numViews || 0 | number }} views</p>
 			</div>
@@ -29,8 +29,9 @@
 			<div class="md-list-item-text" flex="33" flex-xs="50">
 				<h3><a href ui-sref="root.forum.threads({ id: thread._id })">{{ thread.title }}</a></h3>
 				<p>Thread started by <a href ui-sref="root.profile({ id: thread.createdBy._id })">{{ thread.createdBy.displayName }}</a><p>
+				
 			</div>
-			<div class="md-list-item-text" flex="33" flex-xs="0" style="text-align: right;">
+			<div class="md-list-item-text" flex="33" flex-xs="0">
 				<h3>{{ thread.numReplies || 0 | number }} replies</h3>
 				<p>{{ thread.numViews || 0 | number }} views</p>
 			</div>
