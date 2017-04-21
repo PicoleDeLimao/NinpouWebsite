@@ -60,6 +60,38 @@ function($scope, $stateParams, $http, $mdPanel, Threads, StickyThreads, MongoSer
 
 					});
 				};
+				ctrl.addTagToTextAreaSelection = function(startTag, endTag) {
+					var textArea = document.getElementById('contents');
+					var start = textArea.selectionStart;
+					var finish = textArea.selectionEnd;
+					var preSelection = textArea.value.substring(0, start);
+					var selection = textArea.value.substring(start, finish);
+					var postSelection = textArea.value.substring(finish, textArea.value.length);
+					textArea.value = preSelection + startTag + selection + endTag + postSelection;
+					textArea.focus();
+					ctrl.contents = textArea.value;
+				};
+				ctrl.bold = function() {
+					ctrl.addTagToTextAreaSelection('[b]', '[/b]');
+				};
+				ctrl.italic = function() {
+					ctrl.addTagToTextAreaSelection('[i]', '[/i]');
+				};
+				ctrl.underline = function() {
+					ctrl.addTagToTextAreaSelection('[u]', '[/u]');
+				};
+				ctrl.strike = function() {
+					ctrl.addTagToTextAreaSelection('[s]', '[/s]');
+				};
+				ctrl.picture = function() {
+					ctrl.addTagToTextAreaSelection('[img]', '[/img]');
+				};
+				ctrl.link = function() {
+					ctrl.addTagToTextAreaSelection('[url]http://', '[/url]');
+				};
+				ctrl.center = function() {
+					ctrl.addTagToTextAreaSelection('[center]', '[/center]');
+				};
 			}],
 			controllerAs: 'ctrl',
 			disableParentScroll: true,
