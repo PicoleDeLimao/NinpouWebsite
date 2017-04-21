@@ -155,6 +155,24 @@ app.config(['$stateProvider', function($stateProvider) {
 			}]
 		}
 	};
+	var forumNewState = {
+		name: 'root.forum.new',
+		url: '/new',
+		controller: 'ForumNewCtrl',
+		templateUrl: 'app/components/forum/new/view.html',
+		resolve: {
+			Threads: ['$q', '$http', function($q, $http) {
+				var deferred = $q.defer();
+				$http.get('/threads/new?limit=10')
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
+	};
 	$stateProvider.state(rootState);
 	$stateProvider.state(loginState);
 	$stateProvider.state(logoutState);
@@ -170,4 +188,5 @@ app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state(forumHomeState);
 	$stateProvider.state(forumSectionsState);
 	$stateProvider.state(forumThreadsState);
+	$stateProvider.state(forumNewState);
 }]);

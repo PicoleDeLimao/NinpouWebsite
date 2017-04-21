@@ -26,6 +26,19 @@ router.param('thread_id', function(req, res, done, id) {
 	});
 });
 
+router.get('/new', function(req, res) {
+	var page = req.query.page ? parseInt(req.query.page) || 0 : 0;
+	var numDocsPerPage = req.query.limit ? parseInt(req.query.limit) || 20 : 20;
+	if (numDocsPerPage > 100 || numDocsPerPage < 1) numDocsPerPage = 20;
+	Thread.find({ }).count().exec(function(err, numThreads) {
+		if (err) return res.status(500).json(err);
+		Thread.find({ }, '+section').populate(['createdBy', 'lastUpdate.updatedBy', 'section']).sort({ 'lastUpdate._id': -1 }).skip(page * numDocsPerPage).limit(numDocsPerPage).exec(function(err, threads) {
+			if (err) return res.status(500).json(err);
+			return res.json({ threads: threads, numThreads: numThreads });
+		});
+	});
+});
+
 router.post('/:section_name', auth.authenticate(), function(req, res) {
 	if (req.section.adminOnly && !req.user.isAdmin) {
 		return res.status(403).json({ error: 'Only admins can create threads in this section' });

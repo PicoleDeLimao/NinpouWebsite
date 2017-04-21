@@ -97,6 +97,7 @@ function($scope, $stateParams, $state, $http, $timeout, $mdDialog, Thread, Mongo
 		});
 	};
 	$scope.timeAgo = function(time) {
+		if (!time) return;
 		return moment(MongoService.oidToDate(time)).fromNow();
 	};
 	$scope.saveThread = function() {

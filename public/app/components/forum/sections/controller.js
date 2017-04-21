@@ -10,8 +10,8 @@ function($scope, $stateParams, $http, $mdPanel, Threads, StickyThreads, MongoSer
 	$scope.sectionsData = SectionData;
 	$scope.sticky = StickyThreads;
 	$scope.currentPage = 1;
-	$scope.numDocsPerPage = 10;
-	$scope.numPages = Math.ceil($scope.section.numThreads / $scope.numDocsPerPage);
+	$scope.numDocsPerPage = $scope.threads.length;
+	$scope.numPages = Math.min(10, Math.ceil($scope.section.numThreads / $scope.numDocsPerPage));
 	$scope.pages = [];
 	for (var i = 1; i <= $scope.numPages; i++) {
 		$scope.pages.push(i);
@@ -21,7 +21,7 @@ function($scope, $stateParams, $http, $mdPanel, Threads, StickyThreads, MongoSer
 		.then(function(response) {
 			$scope.threads = response.data.threads;
 			$scope.currentPage = page;
-			$scope.numPages = Math.ceil(response.data.section.numThreads / $scope.numDocsPerPage);
+			$scope.numPages = Math.min(10, Math.ceil(response.data.section.numThreads / $scope.numDocsPerPage));
 			$scope.pages = [];
 			for (var i = 1; i <= $scope.numPages; i++) {
 				$scope.pages.push(i);
@@ -107,6 +107,7 @@ function($scope, $stateParams, $http, $mdPanel, Threads, StickyThreads, MongoSer
 		$mdPanel.open(config);
 	};
 	$scope.timeAgo = function(time) {
+		if (!time) return;
 		return moment(MongoService.oidToDate(time)).fromNow();
 	};
 }]);
