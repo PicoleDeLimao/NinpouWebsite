@@ -12,7 +12,7 @@
 		</md-tooltip>
 	</div>
 	<div class="body" layout="column" flex-lg="90" flex-gt="90" flex-md="85" flex-sm="80" flex-xs="70" >
-		<p ng-if="!ctrl.editThread" ks-nl2br ks-bbcode>{{ thread.contents }}</p>
+		<div show-more ng-if="!ctrl.editThread"><p ks-nl2br ks-bbcode>{{ thread.contents }}</p></div>
 		<span ng-show="!ctrl.editThread" flex></span>
 		<p ng-show="!ctrl.editThread" class="md-caption" style="text-align: right;"><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(thread._id)"></time></p>
 		<div ng-if="ctrl.editThread">
@@ -21,18 +21,10 @@
 				<label>Title</label>
 				<input type="text" ng-model="ctrl.threadTitle" ng-init="ctrl.threadTitle=thread.title" required ng-minlength="3" md-maxlength="70">
 			</md-input-container>
-			<div class="pages">
-				<md-button ng-click="bold('thread-text-area', 'threadContents')"><b>B</b></md-button>
-				<md-button ng-click="italic('thread-text-area', 'threadContents')"><i>I</i></md-button>
-				<md-button ng-click="underline('thread-text-area', 'threadContents')"><u>U</u></md-button>
-				<md-button ng-click="strike('thread-text-area', 'threadContents')"><strike>S</strike></md-button>
-				<md-button ng-click="center('thread-text-area', 'threadContents')" aria-label="Center"><i class="fa fa-align-center"></i></md-button>
-				<md-button ng-click="picture('thread-text-area', 'threadContents')" aria-label="Picture"><i class="fa fa-picture-o"></i></md-button>
-				<md-button ng-click="link('thread-text-area', 'threadContents')" aria-label="Link"><i class="fa fa-link"></i></md-button>
-			</div>
+			<bbcode-buttons element-id="thread-text-area" model-name="ctrl.threadContents"></bbcode-buttons>
 			<md-input-container class="md-block">
 				<label>Contents</label>
-				<textarea rows="3" ng-model="ctrl.threadContents" ng-init="ctrl.threadContents=thread.contents" id="thread-text-area" required md-maxlength="1000"></textarea>
+				<textarea rows="3" ng-model="ctrl.threadContents" ng-init="ctrl.threadContents=thread.contents" id="thread-text-area" required md-maxlength="10000"></textarea>
 			</md-input-container>
 		</div>
 		<div layout="row" class="pages" ng-if="thread.createdBy._id == user._id || (user && user.isAdmin)" style="margin-bottom: 10px;">
@@ -48,15 +40,7 @@
 
 <div layout="row" ng-if="user">
 	<div class="reply-box reply-box-arrow" flex>
-		<div class="pages">
-			<md-button ng-click="bold('reply-text-area', 'replyContents')"><b>B</b></md-button>
-			<md-button ng-click="italic('reply-text-area', 'replyContents')"><i>I</i></md-button>
-			<md-button ng-click="underline('reply-text-area', 'replyContents')"><u>U</u></md-button>
-			<md-button ng-click="strike('reply-text-area', 'replyContents')"><strike>S</strike></md-button>
-			<md-button ng-click="center('reply-text-area', 'replyContents')" aria-label="Center"><i class="fa fa-align-center"></i></md-button>
-			<md-button ng-click="picture('reply-text-area', 'replyContents')" aria-label="Picture"><i class="fa fa-picture-o"></i></md-button>
-			<md-button ng-click="link('reply-text-area', 'replyContents')" aria-label="Link"><i class="fa fa-link"></i></md-button>
-		</div>
+		<bbcode-buttons element-id="reply-text-area" model-name="ctrl.replyContents"></bbcode-buttons>
 		<form ng-submit="sendReply('reply-text-area')">
 			<md-input-container class="md-block">
 				<label>Reply</label>
@@ -89,15 +73,7 @@
 		<p ng-show="!ctrl.editReplies[reply._id]" class="md-caption" style="text-align: right;"><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(reply._id)"></time></p>
 		<div ng-if="ctrl.editReplies[reply._id]">
 			<br/>
-			<div class="pages">
-				<md-button ng-click="bold('reply-text-area-' + reply._id, reply._id)"><b>B</b></md-button>
-				<md-button ng-click="italic('reply-text-area-' + reply._id, reply._id)"><i>I</i></md-button>
-				<md-button ng-click="underline('reply-text-area-' + reply._id, reply._id)"><u>U</u></md-button>
-				<md-button ng-click="strike('reply-text-area-' + reply._id, reply._id)"><strike>S</strike></md-button>
-				<md-button ng-click="center('reply-text-area-' + reply._id, reply._id)" aria-label="Center"><i class="fa fa-align-center"></i></md-button>
-				<md-button ng-click="picture('reply-text-area-' + reply._id, reply._id)" aria-label="Picture"><i class="fa fa-picture-o"></i></md-button>
-				<md-button ng-click="link('reply-text-area-' + reply._id, reply._id)" aria-label="Link"><i class="fa fa-link"></i></md-button>
-			</div>
+			<bbcode-buttons element-id="reply-text-area-{{ reply._id }}" model-name="ctrl[reply._id]"></bbcode-buttons>
 			<md-input-container class="md-block">
 				<label>Contents</label>
 				<textarea rows="3" ng-model="ctrl[reply._id]" ng-init="ctrl[reply._id]=reply.contents" id="reply-text-area-{{ reply._id }}" required md-maxlength="500"></textarea>

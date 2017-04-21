@@ -114,9 +114,9 @@ app.config(['$stateProvider', function($stateProvider) {
 		controller: 'ForumSectionsCtrl',
 		templateUrl: 'app/components/forum/sections/view.html',
 		resolve: {
-			Threads: ['$q', '$http', '$stateParams', function($q, $http, $stateParams) {
+			Threads: ['$q', '$http', '$stateParams', 'NumThreadsPerPage', function($q, $http, $stateParams, NumThreadsPerPage) {
 				var deferred = $q.defer();
-				$http.get('/sections/' + $stateParams.section + '?limit=10')
+				$http.get('/sections/' + $stateParams.section + '?limit=' + NumThreadsPerPage)
 				.then(function(response) {
 					deferred.resolve(response.data);
 				}, function(response) {
@@ -161,9 +161,9 @@ app.config(['$stateProvider', function($stateProvider) {
 		controller: 'ForumNewCtrl',
 		templateUrl: 'app/components/forum/new/view.html',
 		resolve: {
-			Threads: ['$q', '$http', function($q, $http) {
+			Threads: ['$q', '$http', 'NumThreadsPerPage', function($q, $http, NumThreadsPerPage) {
 				var deferred = $q.defer();
-				$http.get('/threads/new?limit=10')
+				$http.get('/threads/new?limit=' + NumThreadsPerPage)
 				.then(function(response) {
 					deferred.resolve(response.data);
 				}, function(response) {

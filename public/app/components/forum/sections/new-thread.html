@@ -9,18 +9,10 @@
 			<label>Title</label>
 			<input ng-model="ctrl.title" md-autofocus ng-minlength="3" md-maxlength="70" required>
 		</md-input-container>
-		<div class="pages" style="margin-left: 5px; margin-right: 5px;">
-			<md-button ng-click="ctrl.bold()"><b>B</b></md-button>
-			<md-button ng-click="ctrl.italic()"><i>I</i></md-button>
-			<md-button ng-click="ctrl.underline()"><u>U</u></md-button>
-			<md-button ng-click="ctrl.strike()"><strike>S</strike></md-button>
-			<md-button ng-click="ctrl.center()" aria-label="Center"><i class="fa fa-align-center"></i></md-button>
-			<md-button ng-click="ctrl.picture()" aria-label="Picture"><i class="fa fa-picture-o"></i></md-button>
-			<md-button ng-click="ctrl.link()" aria-label="Link"><i class="fa fa-link"></i></md-button>
-		</div>
+		<bbcode-buttons element-id="contents" model-name="ctrl.contents"></bbcode-buttons>
 		<md-input-container class="md-block">
 			<label>Contents</label>
-			<textarea ng-model="ctrl.contents" md-maxlength="1000" rows="5" id="contents" required></textarea>
+			<textarea ng-model="ctrl.contents" md-maxlength="10000" rows="5" id="contents" required></textarea>
 		</md-input-container>
 		<div layout="row">
 			<input type="submit" flex class="md-button md-primary" value="Create new thread" />

@@ -29,3 +29,7 @@ app.factory('httpTokenInterceptor', ['$q', '$timeout', function($q, $timeout) {
 app.config(['$httpProvider', function($httpProvider) {
 	$httpProvider.interceptors.push('httpTokenInterceptor');
 }]);
+
+// Constants
+app.constant('NumThreadsPerPage', 10);
+app.constant('NumRepliesPerPage', 10);

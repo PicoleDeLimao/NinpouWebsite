@@ -315,3 +315,20 @@ md-tooltip .md-content {
 .md-dialog-container {
 	z-index: 1000 !important;
 }
+
+.show-more-container {
+    overflow: hidden;
+}
+
+.show-more-collapse, .show-more-expand {
+    text-align: center;
+    display: none;
+}
+
+.show-more-expanded > .show-more-collapse {
+    display: inherit;
+}
+
+.show-more-collapsed > .show-more-expand {
+    display: inherit;
+}

@@ -2,24 +2,23 @@
 
 var app = angular.module('Ninpou');
 
-app.controller('ForumNewCtrl', ['$scope', '$http', 'Threads', 'MongoService', 'SectionData',
-function($scope, $http, Threads, MongoService, SectionData) {
+app.controller('ForumNewCtrl', ['$scope', '$http', 'Threads', 'NumThreadsPerPage', 'MongoService', 'SectionData',
+function($scope, $http, Threads, NumThreadsPerPage, MongoService, SectionData) {
 	window.scrollTo(0,0);
 	$scope.threads = Threads.threads;
 	$scope.sections = SectionData;
 	$scope.currentPage = 1;
-	$scope.numDocsPerPage = $scope.threads.length;
-	$scope.numPages = Math.ceil(Threads.numThreads / $scope.numDocsPerPage);
+	$scope.numPages = Math.ceil(Threads.numThreads / NumThreadsPerPage);
 	$scope.pages = [];
 	for (var i = 1; i <= $scope.numPages; i++) {
 		$scope.pages.push(i);
 	}
 	$scope.loadPage = function(page) {
-		$http.get('/threads/new?page=' + (page - 1) + '&limit=' + $scope.numDocsPerPage)
+		$http.get('/threads/new?page=' + (page - 1) + '&limit=' + NumThreadsPerPage)
 		.then(function(response) {
 			$scope.threads = response.data.threads;
 			$scope.currentPage = page;
-			$scope.numPages = Math.ceil(response.data.numThreads / $scope.numDocsPerPage);
+			$scope.numPages = Math.ceil(response.data.numThreads / NumThreadsPerPage);
 			$scope.pages = [];
 			for (var i = 1; i <= $scope.numPages; i++) {
 				$scope.pages.push(i);

@@ -13,7 +13,7 @@ var threadSchema = mongoose.Schema({
 	createdBy: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
 	section: { type: mongoose.Schema.ObjectId, ref: 'Section', required: true, index: true, select: false },
 	title: { type: String, required: true, maxlength: '70' },
-	contents: { type: String, required: true, maxlength: '1000' },
+	contents: { type: String, required: true, maxlength: '10000' },
 	replies: { type: [replySchema], select: false },
 	sticky: { type: Boolean, required: true, default: false },
 	numReplies: { type: Number, required: true, default: 0, min: 0 },
