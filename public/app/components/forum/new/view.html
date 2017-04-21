@@ -7,9 +7,9 @@
 		<md-button ng-click="refresh()" ng-disabled="refreshing" style="float: right;" hide-xs><i class="fa fa-refresh"></i> {{ refreshText }}</md-button>
 	</p>
 	<md-list>
-		<md-list-item class="md-2-line thread" ng-repeat="thread in threads">
+		<md-list-item class="md-3-line thread" ng-repeat="thread in threads">
 			<img ng-src="{{ thread.createdBy.profilePhoto }}" class="md-avatar" ng-alt="{{ thread.createdBy.displayName }}" />
-			<div class="md-list-item-text" flex="33">
+			<div class="md-list-item-text" flex="33" flex-xs="50">
 				<h3><a href ui-sref="root.forum.threads({ id: thread._id })">{{ thread.title }}</a></h3>
 				<p>Thread started by <a href ui-sref="root.profile({ id: thread.createdBy._id })">{{ thread.createdBy.displayName }}</a><p>
 				<p><i class="fa fa-level-up"></i> On section <a href ui-sref="root.forum.sections({ section: thread.section.name })">{{ sections[thread.section.name].title }}</a></p>
@@ -18,7 +18,7 @@
 				<h3>{{ thread.numReplies || 0 | number }} replies</h3>
 				<p>{{ thread.numViews || 0 | number }} views</p>
 			</div>
-			<div class="md-list-item-text" flex="33" style="text-align: right;">
+			<div class="md-list-item-text" flex="33" flex-xs="50" style="text-align: right;">
 				<h3>Last reply: <a href ui-sref="root.profile({ id: thread.lastUpdate.updatedBy._id })">{{ thread.lastUpdate.updatedBy.displayName }}</a></h3>
 				<p><i class="fa fa-clock-o"></i> <time ng-bind="timeAgo(thread.lastUpdate._id)"></time></p>
 			</div>
