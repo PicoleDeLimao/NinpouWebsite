@@ -333,3 +333,61 @@ md-tooltip .md-content {
 .show-more-collapsed > .show-more-expand {
     display: inherit;
 }
+
+.profile {
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	padding: 5px;
+	background-color: rgba(0, 0, 0, 0.03);
+}
+
+.profile .avatar {
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	padding: 5px;
+	background-color: white;
+	padding-bottom: 1px;
+}
+
+.profile img {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.profile .steam {
+	width: 100%;
+}
+
+.profile table {
+	width: 100%;
+	background-color: white;
+	border: 1px solid #e1e1e1;
+}
+
+.profile td {
+	padding: 10px;
+}
+
+.profile td:first-child {
+	background-color: #e1e1e1;
+}
+
+/*
+.profile .stats {
+	margin-left: 3px;
+	padding: 5px;
+	background-color: white;
+}
+
+.profile .stats-topics {
+	font-weight: bold;
+	background-color: rgba(0, 0, 0, 0.03);
+	padding-right: 10px;
+}
+
+.profile .stats-stats {
+	padding-left: 10px;
+}
+
+.profile .stats, .profile .stats-topics {
+	border: 1px solid rgba(0, 0, 0, 0.12);
+}*/

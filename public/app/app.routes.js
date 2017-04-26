@@ -49,6 +49,66 @@ app.config(['$stateProvider', function($stateProvider) {
 		controller: 'BlogCtrl',
 		templateUrl: 'app/components/blog/view.html'
 	};
+	var profileState = {
+		name: 'root.profile',
+		url: '/profile/:id',
+		controller: 'ProfileCtrl',
+		templateUrl: 'app/components/profile/view.html',
+		resolve: {
+			Profile: ['$q', '$http', '$stateParams', function($q, $http, $stateParams) {
+				var deferred = $q.defer();
+				$http.get('/users/' + $stateParams.id)
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
+	};
+	var profileInfoState = {
+		name: 'root.profile.info',
+		url: '/profile/:id/info',
+		controller: 'ProfileInfoCtrl',
+		templateUrl: 'app/components/profile/info/view.html'
+	};
+	var profileThreadsState = {
+		name: 'root.profile.threads',
+		url: '/profile/:id/threads',
+		controller: 'ProfileThreadsCtrl',
+		templateUrl: 'app/components/profile/threads/view.html',
+		resolve: {
+			Threads: ['$q', '$http', '$stateParams', 'NumThreadsPerPage', function($q, $http, $stateParams, NumThreadsPerPage) {
+				var deferred = $q.defer();
+				$http.get('/users/' + $stateParams.id + '/threads?limit=' + NumThreadsPerPage)
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
+	};
+	var profileRepliesState = {
+		name: 'root.profile.replies',
+		url: '/profile/:id/replies',
+		controller: 'ProfileThreadsCtrl',
+		templateUrl: 'app/components/profile/threads/view.html',
+		resolve: {
+			Threads: ['$q', '$http', '$stateParams', 'NumThreadsPerPage', function($q, $http, $stateParams, NumThreadsPerPage) {
+				var deferred = $q.defer();
+				$http.get('/users/' + $stateParams.id + '/replies?limit=' + NumThreadsPerPage)
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
+	};
 	var wc3State = {
 		name: 'root.wc3',
 		url: '/wc3',
@@ -178,6 +238,10 @@ app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state(logoutState);
 	$stateProvider.state(homeState);
 	$stateProvider.state(blogState);
+	$stateProvider.state(profileState);
+	$stateProvider.state(profileInfoState);
+	$stateProvider.state(profileThreadsState);
+	$stateProvider.state(profileRepliesState);
 	$stateProvider.state(wc3State);
 	$stateProvider.state(wc3HeroesState);
 	$stateProvider.state(wc3ItemsState);

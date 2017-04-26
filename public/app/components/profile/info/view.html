@@ -1,0 +1,35 @@
+<div layout="row">
+	<div flex="20" layout="column">
+		<div class="avatar">
+			<img ng-src="{{ profile.profilePhoto }}" ng-alt="{{ profile.displayName }}" />
+		</div>
+		<a ng-href="{{ profile.steamProfileUrl }}" target="_blank" nf-if="profile.steamProfileUrl">
+			<img src="assets/img/steam.png" alt="Steam account" class="steam" />
+		</a>
+	</div>
+	<div flex="80" layout="column" style="padding-left: 5px; padding-right: 5px;">
+		<table flex frame="border" rules="all">
+			<tr>
+				<td width="40%" align="right"><b>Bio:</b></td>
+				<td width="60%">{{ profile.bio }}</td>
+			</tr>
+			<tr>
+				<td width="40%" align="right"><b>Member since:</b></td>
+				<td width="60%">{{ oidToDate(profile._id) | date }}</td>
+			</tr>
+			<tr>
+				<td width="40%" align="right"><b>Last access:</b></td>
+				<td width="60%"><time ng-bind="timeAgoDate(profile.lastAccess)"></time></td>
+			</tr>
+			<tr>
+				<td width="40%" align="right"><b>Number of threads:</b></td>
+				<td width="60%">{{ profile.numThreads || 0 | number }}</td>
+			</tr>
+			<tr>
+				<td width="40%" align="right"><b>Number of replies:</b></td>
+				<td width="60%">{{ profile.numReplies || 0 | number }}</td>
+			</tr>
+		</table>
+		<a href ui-sref="root.edit_profile" ng-if="user._id == profile._id"><md-button>Edit profile</md-button></a>
+	</div>
+</div>

@@ -35,7 +35,7 @@ router.get('/new', function(req, res) {
 		if (err) return res.status(500).json(err);
 		Thread.find({ }, '+section').populate(['createdBy', 'lastUpdate.updatedBy', 'section']).sort({ 'lastUpdate._id': -1 }).skip(page * numDocsPerPage).limit(numDocsPerPage).exec(function(err, threads) {
 			if (err) return res.status(500).json(err);
-			return res.json({ threads: threads, numThreads: numThreads });
+			return res.json({ threads: threads, numThreads: Math.min(100, numThreads) });
 		});
 	});
 });

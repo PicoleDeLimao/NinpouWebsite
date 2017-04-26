@@ -1,0 +1,22 @@
+
+<md-toolbar class="md-hue-2">
+	<div class="md-toolbar-tools">
+		<h2><span class="flag-icon flag-icon-{{ profile.countryCode.toLowerCase() }} flag-icon-squared"></span> {{ profile.displayName }}</h2> 
+	</div>
+</md-toolbar>
+
+<md-tabs md-selected="selectedIndex">
+	<md-tab id="info">
+		<md-tab-label>Info</md-tab-label>
+	</md-tab>
+	<md-tab id="threads">
+		<md-tab-label>View threads</md-tab-label>
+	</md-tab>
+	<md-tab id="replies">
+		<md-tab-label>View replies</md-tab-label>
+	</md-tab>
+</md-tabs>
+
+<div layout="row" class="profile" layout-fill>
+	<ui-view layout-fill></ui-view>
+</div>

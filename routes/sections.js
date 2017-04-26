@@ -31,7 +31,8 @@ router.get('/:section_name', function(req, res) {
 	var page = req.query.page ? parseInt(req.query.page) || 0 : 0;
 	var numDocsPerPage = req.query.limit ? parseInt(req.query.limit) || 20 : 20;
 	if (numDocsPerPage > 100 || numDocsPerPage < 1) numDocsPerPage = 20;
-	Thread.find(query).populate(['createdBy', 'lastUpdate.updatedBy']).sort({ 'lastUpdate._id': -1 }).skip(page * numDocsPerPage).limit(numDocsPerPage).exec(function(err, threads) {
+	Thread.find(query).populate(['createdBy', 'lastUpdate.updatedBy']).sort({ 'lastUpdate._id': -1 }).skip(page * numDocsPerPage)
+	.limit(numDocsPerPage).exec(function(err, threads) {
 		if (err) return res.status(500).json(err);
 		return res.json({ threads: threads, section: req.section });
 	});
