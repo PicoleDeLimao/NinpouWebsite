@@ -30,11 +30,20 @@
 	</section>
 	<section hide-xs>
 		<h3 class="md-subhead"><b><i class="fa fa-line-chart"></i> FORUM STATISTICS</b></h3>
-		<article layout="row" layout-padding>
+		<article layout-padding layout="row">
 			<span flex="25"><i class="fa fa-stack-exchange"></i> Threads: {{ stats.numThreads | number }}</span>
 			<span flex="25"><i class="fa fa-comments"></i> Replies: {{ stats.numReplies | number }}</span>
 			<span flex="25"><i class="fa fa-users"></i> Users: {{ stats.numUsers | number }}</span>
 			<span flex="25">Last registered user: <a href ui-sref="root.profile({ id: stats.lastUser._id })">{{ stats.lastUser.displayName }}</a></span>
 		</article>
+		<article>
+			<p>Users active in the past 15 minutes:</p>
+			<div layout-padding>
+				<span ng-repeat="user in stats.lastLoggedInUsers" style="margin-right: 10px;">
+					<a href ui-sref="root.profile({ id: user._id })">{{ user.displayName }}</a>
+				</span>
+			</div>
+		</article>
+		
 	</section>
 </div>

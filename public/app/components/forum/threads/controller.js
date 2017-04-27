@@ -6,7 +6,6 @@ app.controller('ForumThreadsCtrl', ['$scope', '$stateParams', '$state', '$http',
 function($scope, $stateParams, $state, $http, $timeout, $mdDialog, Thread, MongoService, SectionData, NumRepliesPerPage) {
 	var ctrl = this;
 	window.scrollTo(0,0);
-	
 	$scope.thread = Thread;
 	$scope.sectionData = SectionData;
 	$scope.currentPage = 1;
@@ -16,7 +15,6 @@ function($scope, $stateParams, $state, $http, $timeout, $mdDialog, Thread, Mongo
 	for (var i = 1; i <= $scope.numPages; i++) {
 		$scope.pages.push(i);
 	}
-	
 	$scope.sendReply = function(id) {
 		var el = document.getElementById(id);
 		$http({
@@ -33,7 +31,6 @@ function($scope, $stateParams, $state, $http, $timeout, $mdDialog, Thread, Mongo
 			console.log(response);
 		});
 	};
-	
 	$scope.loadReplies = function(page) {
 		$scope.currentPage = page;
 		$scope.replies = $scope.thread.replies.slice((page - 1) * NumRepliesPerPage, page * NumRepliesPerPage);
@@ -142,5 +139,11 @@ function($scope, $stateParams, $state, $http, $timeout, $mdDialog, Thread, Mongo
 		}, function() {
 			
 		});
+	};
+	$scope.isOnline = function(user) {
+		if (!user || !user.lastAccess) return false;
+		var time = new Date(user.lastAccess).getTime();
+		var past15min = new Date().getTime() - 1000 * 60 * 15;
+		return time > past15min;
 	};
 }]);
