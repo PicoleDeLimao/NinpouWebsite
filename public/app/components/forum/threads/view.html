@@ -7,13 +7,12 @@
 			<md-tooltip md-direction="right">
 				<p layout="row">Threads: <span flex></span>{{ thread.createdBy.numThreads || 0 | number}}</p>
 				<p layout="row">Replies: <span flex></span>{{ thread.createdBy.numReplies || 0 | number}}</p>
-				<p layout="row">Country: <span flex></span><span class="flag-icon flag-icon-{{ thread.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
+				<p layout="row" ng-if="thread.createdBy.countryCode">Country: <span flex></span><span class="flag-icon flag-icon-{{ thread.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
+				<p layout="row">Online: <span ng-if="isOnline(thread.createdBy)" style="color: green;"><i class="fa fa-circle"></i></span><span ng-if="!isOnline(thread.createdBy)"><i class="fa fa-circle-o"></i></span></p>
 			</md-tooltip>
 			<img ng-src="{{ thread.createdBy.profilePhoto }}" ng-alt="{{ thread.createdBy.displayName }}" />
 		</div>
-		<a href ui-sref="root.profile({ id: thread.createdBy._id })"><h5>{{ thread.createdBy.displayName }} 
-			<span ng-if="isOnline(thread.createdBy)" style="color: green;"><i class="fa fa-circle"></i></span><span ng-if="!isOnline(thread.createdBy)"><i class="fa fa-circle-o"></i></span>
-		</h5></a>
+		<a href ui-sref="root.profile({ id: thread.createdBy._id })"><h5>{{ thread.createdBy.displayName }}</h5></a>
 	</div>
 	<div class="body" layout="column" flex-lg="90" flex-gt="90" flex-md="85" flex-sm="80" flex-xs="70" >
 		<div show-more ng-if="!ctrl.editThread"><p ks-nl2br ks-bbcode>{{ thread.contents }}</p></div>
@@ -70,13 +69,12 @@
 			<md-tooltip md-direction="right">
 				<p layout="row">Threads: <span flex></span>{{ reply.createdBy.numThreads || 0 | number}}</p>
 				<p layout="row">Replies: <span flex></span>{{ reply.createdBy.numReplies || 0 | number}}</p>
-				<p layout="row">Country: <span flex></span><span class="flag-icon flag-icon-{{ reply.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
+				<p layout="row" ng-if="reply.createdBy.countryCode">Country: <span flex></span><span class="flag-icon flag-icon-{{ reply.createdBy.countryCode.toLowerCase() }} flag-icon-squared"></span></p>
+				<p layout="row">Online: <span ng-if="isOnline(reply.createdBy)" style="color: green;"><i class="fa fa-circle"></i></span><span ng-if="!isOnline(reply.createdBy)"><i class="fa fa-circle-o"></i></span></p>
 			</md-tooltip>
 			<img ng-src="{{ reply.createdBy.profilePhoto }}" ng-alt="{{ reply.createdBy.displayName }}" />
 		</div>
-		<a href ui-sref="root.profile({ id: reply.createdBy._id })"><h5>{{ reply.createdBy.displayName }}
-			<span ng-if="isOnline(thread.createdBy)" style="color: green;"><i class="fa fa-circle"></i></span><span ng-if="!isOnline(thread.createdBy)"><i class="fa fa-circle-o"></i></span>
-		</h5></a>
+		<a href ui-sref="root.profile({ id: reply.createdBy._id })"><h5>{{ reply.createdBy.displayName }}</h5></a>
 	</div>
 	<div class="body" layout="column" flex-lg="90" flex-gt="90" flex-md="85" flex-sm="80" flex-xs="70">
 		<div show-more ng-if="!ctrl.editReplies[reply._id]"><p ks-nl2br ks-bbcode>{{ reply.contents }}</p></div>
