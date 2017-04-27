@@ -28,4 +28,13 @@
 			</div>
 		</article>
 	</section>
+	<section hide-xs>
+		<h3 class="md-subhead"><b><i class="fa fa-line-chart"></i> FORUM STATISTICS</b></h3>
+		<article layout="row" layout-padding>
+			<span flex="25"><i class="fa fa-stack-exchange"></i> Threads: {{ stats.numThreads | number }}</span>
+			<span flex="25"><i class="fa fa-comments"></i> Replies: {{ stats.numReplies | number }}</span>
+			<span flex="25"><i class="fa fa-users"></i> Users: {{ stats.numUsers | number }}</span>
+			<span flex="25">Last registered user: <a href ui-sref="root.profile({ id: stats.lastUser._id })">{{ stats.lastUser.displayName }}</a></span>
+		</article>
+	</section>
 </div>

@@ -2,10 +2,11 @@
 
 var app = angular.module('Ninpou');
 
-app.controller('ForumHomeCtrl', ['$scope', '$http', 'CategoriesData', 'MongoService', 'SectionData',
-function($scope, $http, CategoriesData, MongoService, SectionData) {
+app.controller('ForumHomeCtrl', ['$scope', '$http', 'CategoriesData', 'Stats', 'MongoService', 'SectionData',
+function($scope, $http, CategoriesData, Stats, MongoService, SectionData) {
 	window.scrollTo(0,0);
 	$scope.categoriesData = CategoriesData;
+	$scope.stats = Stats;
 	$scope.refreshText = 'Refresh';
 	$scope.refresh = function() {
 		$scope.refreshText = 'Refreshing...';

@@ -165,6 +165,16 @@ app.config(['$stateProvider', function($stateProvider) {
 					deferred.reject(response.data);
 				});
 				return deferred.promise;
+			}],
+			Stats: ['$q', '$http', function($q, $http) {
+				var deferred = $q.defer();
+				$http.get('/forum/stats')
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
 			}]
 		}
 	};

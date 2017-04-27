@@ -24,6 +24,7 @@ app.use('/auth', require('./routes/auth'));
 app.use('/users', require('./routes/users'));
 app.use('/threads', require('./routes/threads'));
 app.use('/sections', require('./routes/sections'));
+app.use('/forum', require('./routes/forum'));
 
 var port = process.env.PORT || 8080;
 app.listen(port, function() {
