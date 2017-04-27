@@ -20,7 +20,10 @@ app.controller('ProfileCtrl', ['$scope', '$state', '$stateParams', 'Profile', 'M
 			$scope.selectedIndex = 1;
 		} else if ($state.is('root.profile.replies')) {
 			$scope.selectedIndex = 2;
+		} else if ($state.is('root.profile.info')) {
+			$scope.selectedIndex = 0;
 		} else {
+			$state.go('root.profile.info');
 			$scope.selectedIndex = 0;
 		}
 	});

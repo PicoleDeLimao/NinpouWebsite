@@ -25,7 +25,7 @@ app.config(['$stateProvider', function($stateProvider) {
 		controller: ['$location', function($location) {
 			if ($location.search().token) {
 				localStorage.setItem('token', $location.search().token);
-				window.location.href = '/';
+				window.location.href = '/#/forum/home';
 			}
 		}]
 	};
