@@ -13,8 +13,8 @@ const steamKey = '4F0A5B487C0DC223F3AB365BC8A297D5';
 const jwtSecretOrKey = '1R3@LlYL1k3C@k3';
 
 passport.use('steam', new SteamStrategy({
-		returnURL: 'https://narutoninpou.herokuapp.com/auth/steam/return',
-		realm: 'https://narutoninpou.herokuapp.com',
+		returnURL: 'http://www.narutoninpou.com/auth/steam/return',
+		realm: 'http://www.narutoninpou.com',
 		apiKey: steamKey,
 		session: false
 	},
