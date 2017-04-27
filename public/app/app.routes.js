@@ -69,13 +69,13 @@ app.config(['$stateProvider', function($stateProvider) {
 	};
 	var profileInfoState = {
 		name: 'root.profile.info',
-		url: '/profile/:id/info',
+		url: '/info',
 		controller: 'ProfileInfoCtrl',
 		templateUrl: 'app/components/profile/info/view.html'
 	};
 	var profileThreadsState = {
 		name: 'root.profile.threads',
-		url: '/profile/:id/threads',
+		url: '/threads',
 		controller: 'ProfileThreadsCtrl',
 		templateUrl: 'app/components/profile/threads/view.html',
 		resolve: {
@@ -93,7 +93,7 @@ app.config(['$stateProvider', function($stateProvider) {
 	};
 	var profileRepliesState = {
 		name: 'root.profile.replies',
-		url: '/profile/:id/replies',
+		url: '/replies',
 		controller: 'ProfileThreadsCtrl',
 		templateUrl: 'app/components/profile/threads/view.html',
 		resolve: {

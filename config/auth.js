@@ -9,7 +9,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('../models/User');
 
-const steamKey = 'AC040EDC422800862F06B3659F1860FA';
+const steamKey = '4F0A5B487C0DC223F3AB365BC8A297D5';
 const jwtSecretOrKey = '1R3@LlYL1k3C@k3';
 
 passport.use('steam', new SteamStrategy({

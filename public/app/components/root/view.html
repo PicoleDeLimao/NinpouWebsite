@@ -33,7 +33,6 @@
 			<img ng-src="{{ user.profilePhoto }}" /> <i class="fa fa-caret-down" aria-hidden="true"></i> 
 			<div class="menu-drop" ng-show="isMenu('profile')" layout="column" layout-align="center center">
 				<a href ui-sref="root.profile({ id: user._id })"><md-button>{{ user.displayName }}</md-button></a>
-				<a href ui-sref="root.edit_profile"><md-button>Edit profile</md-button></a>
 				<md-button ng-click="go('logout')">Logout</md-button>
 			</div>
 		</md-nav-item>
@@ -54,7 +53,6 @@
 			<img ng-src="{{ user.profilePhoto }}" /> <i class="fa fa-caret-down" aria-hidden="true"></i> 
 			<div class="menu-drop" ng-show="isMenu('profile')" layout="column" layout-align="center center">
 				<a href ui-sref="root.profile({ id: user._id })"><md-button>{{ user.displayName }}</md-button></a>
-				<a href ui-sref="root.edit_profile"><md-button>Edit profile</md-button></a>
 				<md-button ng-click="go('logout')">Logout</md-button>
 			</div>
 		</md-nav-item>
