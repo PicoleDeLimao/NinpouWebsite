@@ -47,7 +47,19 @@ app.config(['$stateProvider', function($stateProvider) {
 		name: 'root.blog',
 		url: '/blog',
 		controller: 'BlogCtrl',
-		templateUrl: 'app/components/blog/view.html'
+		templateUrl: 'app/components/blog/view.html',
+		resolve: {
+			Posts: ['$q', '$http', '$stateParams', 'NumThreadsPerPage', function($q, $http, $stateParams, NumThreadsPerPage) {
+				var deferred = $q.defer();
+				$http.get('/sections/announcements?limit=' + NumThreadsPerPage)
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
 	};
 	var profileState = {
 		name: 'root.profile',

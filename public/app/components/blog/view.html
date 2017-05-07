@@ -1,1 +1,17 @@
-<h1>Hello world</h1>
+<md-list flex class="md-padding">
+	<md-list-item class="md-4-line md-long-text" ng-repeat="post in posts">
+		<div class="md-list-item-text">
+			<a href ui-sref="root.forum.threads({ id: post._id })"><h3>{{ post.title }}</h3></a>
+			<p>{{ getDate(post._id) | date }} | <a href ui-sref="root.forum.threads({ id: post._id })"><i class="fa fa-comments"></i> {{ post.numReplies | number }} replies</a></p>
+			<p ks-nl2br ks-bbcode>{{ limit(post.contents) }}</p>
+			<center><a href ui-sref="root.forum.threads({ id: post._id })" ng-if="readMore(post.contents)"><md-button class="md-primary">Read more</md-button></a></center>
+		</div>
+		<md-divider ng-if="!$last"></md-divider>
+	</md-list-item>
+</md-list>
+
+<div layout="row">
+	<md-button class="md-primary md-raised" ng-click="previousPage()" ng-disabled="page==numPages"><i class="fa fa-arrow-left"></i> Older</md-button>
+	<span flex></span>
+	<md-button class="md-primary md-raised" ng-click="nextPage()" ng-disabled="page==1"><i class="fa fa-arrow-right"></i> Newer</md-button>
+</div>
