@@ -16,6 +16,12 @@ app.controller('RootCtrl', ['$scope', '$state', '$timeout', '$mdSidenav', functi
 	} else {
 		$scope.currentNavItem = $state.current.name.split('.')[1];
 	}
+	$scope.$watch(function() {
+		return $state.current.name;
+	}, function(newValue, oldValue) {
+		var state = newValue.split('.')[1];
+		$scope.currentNavItem = state;
+	});
 	$scope.setMenu = function(menu) {
 		if ($scope.menu == menu) {
 			$scope.menu = null;
