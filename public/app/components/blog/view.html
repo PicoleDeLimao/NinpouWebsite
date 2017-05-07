@@ -2,7 +2,7 @@
 	<md-list-item class="md-4-line md-long-text" ng-repeat="post in posts">
 		<div class="md-list-item-text">
 			<a href ui-sref="root.forum.threads({ id: post._id })"><h3>{{ post.title }}</h3></a>
-			<p>{{ getDate(post._id) | date }} | <a href ui-sref="root.forum.threads({ id: post._id })"><i class="fa fa-comments"></i> {{ post.numReplies | number }} replies</a></p>
+			<p class="md-caption">{{ getDate(post._id) | date }} | <a href ui-sref="root.forum.threads({ id: post._id })"><i class="fa fa-comments"></i> {{ post.numReplies | number }} replies</a></p>
 			<p ks-nl2br ks-bbcode>{{ limit(post.contents) }}</p>
 			<center><a href ui-sref="root.forum.threads({ id: post._id })" ng-if="readMore(post.contents)"><md-button class="md-primary">Read more</md-button></a></center>
 		</div>
