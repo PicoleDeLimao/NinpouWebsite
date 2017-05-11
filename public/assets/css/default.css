@@ -370,3 +370,25 @@ md-tooltip .md-content {
 .profile td:first-child {
 	background-color: #e1e1e1;
 }
+
+.blog-post {
+	border: 1px solid rgb(103,58,183);
+	background-color: rgb(103,58,183);
+	margin-bottom: 10px;
+	border-radius: 2px;
+}
+
+.blog-post h3 {
+	color: white;
+	margin-left: 5px;
+}
+
+.blog-post .content {
+	width: 100% !important;
+	background-color: white;
+	color: black;
+}
+
+.blog-post .content p {
+	padding: 5px;
+}
