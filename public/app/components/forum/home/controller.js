@@ -26,11 +26,11 @@ function($scope, $http, CategoriesData, Stats, MongoService, SectionData) {
 		icon: 'assets/img/forum-community-icon.png',
 		sections: ['announcements', 'general']
 	},
-	{
+	/*{
 		name: 'DOTA 2',
 		icon: 'assets/img/forum-dota2-icon.png',
 		sections: ['dota2_suggestions', 'dota2_reports', 'dota2_tips']
-	},
+	},*/
 	{
 		name: 'WARCRAFT 3',
 		icon: 'assets/img/forum-wc3-icon.png',

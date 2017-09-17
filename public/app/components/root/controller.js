@@ -12,7 +12,7 @@ app.controller('RootCtrl', ['$scope', '$state', '$timeout', '$mdSidenav', functi
 		$state.go('root.' + state);
 	};
 	if ($state.current.name.split('.').length < 2) {
-		$scope.goto('home');
+		$scope.goto('forum.home');
 	} else {
 		$scope.currentNavItem = $state.current.name.split('.')[1];
 	}

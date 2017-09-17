@@ -121,39 +121,17 @@ app.config(['$stateProvider', function($stateProvider) {
 			}]
 		}
 	};
-	var wc3State = {
-		name: 'root.wc3',
-		url: '/wc3',
-		abstract: true
-	};
-	var wc3HeroesState = {
-		name: 'root.wc3.heroes',
+	var heroesState = {
+		name: 'root.heroes',
 		url: '/heroes',
-		controller: 'WC3HeroesCtrl',
-		templateUrl: 'app/components/wc3/heroes/view.html'
+		controller: 'HeroesCtrl',
+		templateUrl: 'app/components/heroes/view.html'
 	};
-	var wc3ItemsState = {
-		name: 'root.wc3.items',
+	var itemsState = {
+		name: 'root.items',
 		url: '/items',
-		controller: 'WC3ItemsCtrl',
-		templateUrl: 'app/components/wc3/items/view.html'
-	};
-	var dota2State = {
-		name: 'root.dota2',
-		url: '/dota2',
-		abstract: true
-	};
-	var dota2HeroesState = {
-		name: 'root.dota2.heroes',
-		url: '/heroes',
-		controller: 'Dota2HeroesCtrl',
-		templateUrl: 'app/components/dota2/heroes/view.html'
-	};
-	var dota2ItemsState = {
-		name: 'root.dota2.items',
-		url: '/items',
-		controller: 'Dota2ItemsCtrl',
-		templateUrl: 'app/components/dota2/items/view.html'
+		controller: 'ItemsCtrl',
+		templateUrl: 'app/components/items/view.html'
 	};
 	var forumState = {
 		name: 'root.forum',
@@ -264,12 +242,8 @@ app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state(profileInfoState);
 	$stateProvider.state(profileThreadsState);
 	$stateProvider.state(profileRepliesState);
-	$stateProvider.state(wc3State);
-	$stateProvider.state(wc3HeroesState);
-	$stateProvider.state(wc3ItemsState);
-	$stateProvider.state(dota2State);
-	$stateProvider.state(dota2HeroesState);
-	$stateProvider.state(dota2ItemsState);
+	$stateProvider.state(heroesState);
+	$stateProvider.state(itemsState);
 	$stateProvider.state(forumState);
 	$stateProvider.state(forumHomeState);
 	$stateProvider.state(forumSectionsState);

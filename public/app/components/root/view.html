@@ -1,8 +1,9 @@
 <!-- Normal header -->
 <header class="header" hide-xs>
 	<md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
-		<md-nav-item md-nav-click="goto('home')" name="home">Home</md-nav-item>
+		<!--<md-nav-item md-nav-click="goto('home')" name="home">Home</md-nav-item>-->
 		<md-nav-item md-nav-click="goto('blog')" name="blog">Blog</md-nav-item>
+		<!--
 		<md-nav-item md-nav-click="setMenu('dota2')" name="dota2">
 			Dota 2 <i class="fa fa-caret-down" aria-hidden="true"></i>
 			<div class="menu-drop" ng-show="isMenu('dota2')">
@@ -17,8 +18,19 @@
 				<md-button ng-click="go('root.wc3.items')">Items</md-button>
 			</div>
 		</md-nav-item>
+		-->
+		<md-nav-item md-nav-click="goto('heroes')" name="heroes">Heroes</md-nav-item>
+		<md-nav-item md-nav-click="goto('items')" name="items">Items</md-nav-item>
 		<md-nav-item md-nav-click="goto('forum.home')" name="forum">Forum</md-nav-item>
 		<span flex></span>
+		<div layout-align="center center" layout="row">
+			<a href="/opt_NinpouStorm5.1.w3x" download>
+				<md-button class="md-primary md-raised" aria-label="Facebook page">
+					<i class="fa fa-download" aria-hidden="true"></i>
+					Download
+				</md-button>
+			</a>
+		</div>
 		<div layout-align="center center" layout="row">
 			<a href="https://www.facebook.com/ninpouofficial/">
 				<md-button aria-label="Facebook page">
@@ -71,8 +83,10 @@
 	<md-content layout-padding layout="column">
 		<md-button ng-click="goto('home')" class="md-primary">Home</md-button>
 		<md-button ng-click="goto('blog')" class="md-primary">Blog</md-button>
+		<md-button ng-click="goto('heroes')" class="md-primary">Heroes</md-button>
+		<md-button ng-click="goto('items')" class="md-primary">Items</md-button>
 		<md-button ng-click="goto('forum.home')" class="md-primary">Forum</md-button>
-		<md-divider></md-divider>
+		<!--<md-divider></md-divider>
 		<p style="text-align: center;">Dota 2</p>
 		<div layout="row" layout-align="center">
 			<md-button ng-click="goto('dota2.heroes')" class="md-primary">Heroes</md-button>
@@ -83,7 +97,7 @@
 		<div layout="row" layout-align="center">
 			<md-button ng-click="goto('wc3.heroes')" class="md-primary">Heroes</md-button>
 			<md-button ng-click="goto('wc3.items')" class="md-primary">Items</md-button>
-		</div>
+		</div>-->
 	</md-content>
 </md-sidenav>
 
