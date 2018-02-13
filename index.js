@@ -26,9 +26,10 @@ app.use('/users', require('./routes/users'));
 app.use('/threads', require('./routes/threads'));
 app.use('/sections', require('./routes/sections'));
 app.use('/forum', require('./routes/forum'));
+app.use('/games', require('./routes/games'));
 
 app.get('/latest', function(req, res) {
-	res.sendFile(path.resolve('public/opt_NinpouStorm5.0.w3x'));
+	res.redirect('https://goo.gl/dx2w7x');
 });
 
 var port = process.env.PORT || 8080;
