@@ -392,3 +392,17 @@ md-tooltip .md-content {
 .blog-post .content p {
 	padding: 5px;
 }
+
+.blog-post.ng-enter {
+	-webkit-transition: 1s;
+    transition: 1s;
+    opacity: 0;
+}
+
+.blog-post.ng-enter-active {
+	opacity: 1;
+}
+
+.game-list {
+	
+}

@@ -133,6 +133,24 @@ app.config(['$stateProvider', function($stateProvider) {
 		controller: 'ItemsCtrl',
 		templateUrl: 'app/components/items/view.html'
 	};
+	var gamesState = {
+		name: 'root.games',
+		url: '/games',
+		controller: 'GamesCtrl',
+		templateUrl: 'app/components/games/view.html',
+		resolve: {
+			Games: ['$q', '$http', '$stateParams', function($q, $http, $stateParams) {
+				var deferred = $q.defer();
+				$http.get('/games')
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
+	};
 	var forumState = {
 		name: 'root.forum',
 		url: '/forum',
@@ -244,6 +262,7 @@ app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state(profileRepliesState);
 	$stateProvider.state(heroesState);
 	$stateProvider.state(itemsState);
+	$stateProvider.state(gamesState);
 	$stateProvider.state(forumState);
 	$stateProvider.state(forumHomeState);
 	$stateProvider.state(forumSectionsState);

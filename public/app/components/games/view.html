@@ -1,0 +1,56 @@
+<md-list flex>
+	<md-list-item class="md-4-line md-long-text blog-post" ng-if="games.length==0">
+		<h3><i class="fa fa-times-circle"></i> No game being hosted currently. :(</h3>
+	</md-list-item>
+	<md-list-item class="md-4-line md-long-text blog-post" ng-repeat="game in games">
+		<div class="md-list-item-text" layout="column" layout-fill>
+			<h3 ng-click="show(game)"><i class="fa fa-plus" ng-if="!game.show"></i><i class="fa fa-minus" ng-if="game.show"></i> {{ game.gamename }} ({{ game.players }}/{{ game.slots.length }})</h3>
+			<div class="content game-list" ng-if="game.show">
+				<p><b>Map:</b> {{ game.map }}</p>
+				<md-list flex>
+					<md-list-item>
+						<div class="md-list-item-text" layout="row" flex>
+							<div layout="col" flex="33"><b>Username</b></div>
+							<div layout="col" flex="33"><b>Realm</b></div>
+							<div layout="col" flex="33"><b>Ping</b></div>
+						</div>
+						<md-divider ></md-divider>
+					</md-list-item>
+					<div ng-repeat="team in teams">
+						<md-list-item>
+							<div class="md-list-item-text" layout="row" flex>
+								<p><b>{{ team.name }}</b></p>
+							</div>
+							<md-divider ></md-divider>
+						</md-list-item>
+						<md-list-item ng-repeat="slot in indices(game.slots, team.begin, team.end)">
+							<div class="md-list-item-text" flex>
+								<span ng-if="slot.username" layout="row" flex>
+									<div layout="col" flex="33">{{ slot.username }}</div>
+									<div layout="col" flex="33">{{ slot.realm }}</div>
+									<div layout="col" flex="33">{{ slot.ping }}</div>
+								</span>
+								<span ng-if="!slot.username">
+									Empty
+								</span>
+							</div>
+							<md-divider ></md-divider>
+						</md-list-item>
+					</div>
+				</md-list>
+				<center><a href ui-sref="root.forum.threads({ id: post._id })" ng-if="false"><md-button class="md-primary">Read more</md-button></a></center>
+			</div>
+		</div>
+		<!--<md-divider ng-if="!$last"></md-divider>-->
+	</md-list-item>
+</md-list>
+
+<div layout="row">
+	<md-button class="md-primary md-raised" ng-click="refresh()" ng-disabled="refreshing" aria-label="Refresh"><i class="fa fa-retweet"></i> <span ng-if="!refreshing">Refresh</span><span ng-if="refreshing">Refreshing</span></md-button> 
+	<md-button ng-disabled="true">Updated each 30 seconds. (Via <a href="https://entgaming.net/">ENT Gaming</a>)</span></md-button> 
+</div>
+
+<br/><br/>
+
+</div>
+<iframe src="https://titanembeds.com/embed/340159330940747826" height="600" width="100%" frameborder="0" padding="10px"></iframe>

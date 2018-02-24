@@ -50,28 +50,30 @@ function getGameInfo(id, players, slots, callback) {
 
 router.get('/', function(req, res) {
 	var games = [];
-	var count = 0; 
 	https.get('https://entgaming.net/forum/games_fast.php', function(response) {
 		var data = '';
 		response.on('data', function(chunk) {
 			data += chunk;
 		});
 		response.on('end', function() {
-			var games = data.split('\n');
-			var count = games.length;
-			for (var i = 0; i < games.length; i++) {
-				if (games[i] && games[i].split('|').length > 4) {
-					var id = games[i].split('|')[0];
-					var players = games[i].split('|')[2];
-					var slots = games[i].split('|')[3];
+			var gamesData = data.split('\n');
+			var count = gamesData.length;
+			var countRequests = 0;
+			for (var i = 0; i < gamesData.length; i++) {
+				if (gamesData[i] && gamesData[i].split('|').length > 4) {
+					var id = gamesData[i].split('|')[0];
+					var players = gamesData[i].split('|')[2];
+					var slots = gamesData[i].split('|')[3];
+					countRequests += 1;
 					getGameInfo(id, players, slots, function(err, game) {
 						if (err) return res.status(500).end();
+						--countRequests;
 						if (game != null) {
 							games.push(game);
 						}
-						++count; 
-						if (count == games.length) {
-							return res.json(games);
+						if (countRequests == 0)
+						{
+							return res.status(200).json(games);
 						}
 					});
 				}
