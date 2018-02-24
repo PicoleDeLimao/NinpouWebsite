@@ -29,7 +29,7 @@ app.use('/forum', require('./routes/forum'));
 app.use('/games', require('./routes/games'));
 
 app.get('/latest', function(req, res) {
-	res.redirect('https://drive.google.com/file/d/1Dr2ABu-BSU9RCB6D20otWB02fmeqMH6J/view?usp=sharing');
+	res.redirect('https://drive.google.com/file/d/1V_EgoDd3phzFgWipMa0CEPpytceZDS_O/view?usp=sharing');
 });
 
 var port = process.env.PORT || 8080;
