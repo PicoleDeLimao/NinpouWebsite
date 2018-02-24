@@ -34,7 +34,8 @@ function getGameInfo(id, players, slots, callback) {
 		response.on('end', function() {
 			if (data.split('<b>Map</b>: ').length > 1) {
 				var map = data.split('<b>Map</b>: ')[1].split('</h2>')[0];
-				if (map.toLowerCase().indexOf('ninpou') != -1) {
+				var gamename = data.split('<b>Gamename</b>: ')[1].split('\t<br />')[0];
+				if (gamename.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('nns') != -1) {
 					var info = parseGameInfoData(data);
 					info['map'] = map;
 					info['players'] = players;
