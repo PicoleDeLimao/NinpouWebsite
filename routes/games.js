@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var express = require('express');
 var https = require('https');
 var router = express.Router();
+var Game = require('../models/Game');
 
 function parseGameInfoData(data) {
 	var gamename = data.split('<b>Gamename</b>: ')[1].split('\t<br />')[0];
@@ -39,7 +40,16 @@ function getGameInfo(id, players, slots, callback) {
 					var info = parseGameInfoData(data);
 					info['map'] = map;
 					info['players'] = players;
-					return callback(null, info);
+					var obj = {
+						id: map + id, 
+						gamename: gamename,
+						map: map, 
+						slots: info.slots 
+					};
+					Game.update({ id: map + id }, obj, { upsert: true }, function(err) {
+						if (err) return callback(err);
+						return callback(null, info);
+					});
 				}
 			}
 			return callback(null, null);
