@@ -7,6 +7,8 @@
 			<h3 ng-click="show(game)"><i class="fa fa-plus" ng-if="!game.show"></i><i class="fa fa-minus" ng-if="game.show"></i> {{ game.gamename }} ({{ game.players }}/{{ game.slots.length }})</h3>
 			<div class="content game-list" ng-if="game.show">
 				<p><b>Map:</b> {{ game.map }}</p>
+				<p><b>Owner:</b> {{ game.owner }}</p>
+				<p><b>Duration:</b> {{ game.duration }}</p>
 				<md-list flex>
 					<md-list-item>
 						<div class="md-list-item-text" layout="row" flex>

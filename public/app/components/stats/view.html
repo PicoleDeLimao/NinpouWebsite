@@ -1,0 +1,12 @@
+<md-list flex>
+	<md-list-item class="md-4-line md-long-text blog-post">
+		<h3>Record game</h3>
+	</md-list-item>
+	<br/>
+	<md-input-container layout-fill>
+		<label>Game name</label>
+		<md-select ng-model="selectedGame">
+			<md-option ng-repeat="game in games" ng-value="game.id">[<time ng-bind="timeAgo(getData(game._id))"></time>] {{ game.gamename }}</md-option>
+		</md-select>
+	</md-input-container> 
+</md-list>

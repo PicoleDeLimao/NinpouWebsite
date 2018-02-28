@@ -27,6 +27,7 @@ app.use('/threads', require('./routes/threads'));
 app.use('/sections', require('./routes/sections'));
 app.use('/forum', require('./routes/forum'));
 app.use('/games', require('./routes/games'));
+app.use('/stats', require('./routes/stats'));
 
 app.get('/latest', function(req, res) {
 	res.redirect('https://drive.google.com/file/d/1V_EgoDd3phzFgWipMa0CEPpytceZDS_O/view?usp=sharing');

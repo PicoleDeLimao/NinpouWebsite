@@ -27,7 +27,7 @@ function parseGameInfoData(data) {
 }
 
 function getGameInfo(id, players, slots, callback) {
-	https.get('https://entgaming.net/forum/slots_fast.php?id=' + id, function(response) {
+	https.get({ hostname: 'entgaming.net', path: '/forum/slots_fast.php?id=' + id + '&ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
 		var data = '';
 		response.on('data', function(chunk) {
 			data += chunk;
@@ -35,15 +35,21 @@ function getGameInfo(id, players, slots, callback) {
 		response.on('end', function() {
 			if (data.split('<b>Map</b>: ').length > 1) {
 				var map = data.split('<b>Map</b>: ')[1].split('</h2>')[0];
-				var gamename = data.split('<b>Gamename</b>: ')[1].split('\t<br />')[0];
+				var owner = data.split('<b>Owner</b>: ').length > 1 ? data.split('<b>Owner</b>: ')[1].split('\t')[0] : '';
+				var duration = data.split('<b>Duration</b>: ')[1].split('\t')[0];
+				var gamename = data.split('<b>Gamename</b>: ')[1].split('\t')[0];
 				if (gamename.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('nns') != -1) {
 					var info = parseGameInfoData(data);
 					info['map'] = map;
+					info['owner'] = owner;
+					info['duration'] = duration;
 					info['players'] = players;
 					var obj = {
 						id: map + id, 
 						gamename: gamename,
 						map: map, 
+						owner: owner,
+						duration: duration,
 						slots: info.slots 
 					};
 					Game.update({ id: map + id }, obj, { upsert: true }, function(err) {
@@ -61,7 +67,7 @@ function getGameInfo(id, players, slots, callback) {
 
 router.get('/', function(req, res) {
 	var games = [];
-	https.get('https://entgaming.net/forum/games_fast.php', function(response) {
+	https.get({ hostname: 'entgaming.net', path: '/forum/games_fast.php' + '?ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
 		var data = '';
 		response.on('data', function(chunk) {
 			data += chunk;

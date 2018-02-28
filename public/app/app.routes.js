@@ -151,6 +151,24 @@ app.config(['$stateProvider', function($stateProvider) {
 			}]
 		}
 	};
+	var statsState = {
+		name: 'root.stats',
+		url: '/stats',
+		controller: 'StatsCtrl',
+		templateUrl: 'app/components/stats/view.html',
+		resolve: {
+			Games: ['$q', '$http', '$stateParams', function($q, $http, $stateParams) {
+				var deferred = $q.defer();
+				$http.get('/stats/games')
+				.then(function(response) {
+					deferred.resolve(response.data);
+				}, function(response) {
+					deferred.reject(response.data);
+				});
+				return deferred.promise;
+			}]
+		}
+	};
 	var forumState = {
 		name: 'root.forum',
 		url: '/forum',
@@ -263,6 +281,7 @@ app.config(['$stateProvider', function($stateProvider) {
 	$stateProvider.state(heroesState);
 	$stateProvider.state(itemsState);
 	$stateProvider.state(gamesState);
+	$stateProvider.state(statsState);
 	$stateProvider.state(forumState);
 	$stateProvider.state(forumHomeState);
 	$stateProvider.state(forumSectionsState);
