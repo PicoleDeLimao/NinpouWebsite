@@ -235,7 +235,7 @@ router.get('/players/:username', function(req, res) {
 	});
 });
 
-router.get('/hero/:map/:hero_id', function(req, res) {
+router.get('/heroes/:map/:hero_id', function(req, res) {
 	HeroStat.findOne({ hero: req.params.hero_id, map: req.params.map }, function(err, stat) {
 		if (err) return res.status(500).json(err);
 		else if (!stat) return res.status(400).json({ error: 'Hero not found.' });
