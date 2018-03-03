@@ -132,6 +132,17 @@ function getSlotId(playerId) {
 	else return playerId - 2;
 };
 
+function AgrestiCoullLower(n, k) {
+	//float conf = 0.05;  // 95% confidence interval
+	var kappa = 2.24140273; // In general, kappa = ierfc(conf/2)*sqrt(2)
+	var kest=k+Math.pow(kappa,2)/2;
+	var nest=n+Math.pow(kappa,2);
+	var pest=kest/nest;
+	var radius=kappa*Math.sqrt(pest*(1-pest)/nest);
+	return Math.max(0,pest-radius); // Lower bound
+	// Upper bound is min(1,pest+radius)
+};
+
 router.post('/:game_id', function(req, res) {
 	Game.findById(req.params.game_id, function(err, game) {
 		if (err) return res.status(500).json({ error: 'Game not found.' });
@@ -188,19 +199,26 @@ router.post('/:game_id', function(req, res) {
 				} else if (!game.slots[index].username) {
 					addStat(index + 1);
 				} else {
-					Stat.update({ username: game.slots[index].username.toLowerCase(), map: game.map }, {
+					Stat.update({ username: game.slots[index].username.toLowerCase() }, {
 						username: game.slots[index].username.toLowerCase(),
-						map: game.map,
 						$inc: { kills: game.slots[index].kills, deaths: game.slots[index].deaths, assists: game.slots[index].assists, gpm: game.slots[index].gpm, wins: game.slots[index].win ? 1 : 0, games: 1 }
-					}, { upsert: true, setDefaultsOnInsert: true }, function(err) {
+					}, { upsert: true, setDefaultsOnInsert: true }, function(err, stat) {
 						if (err) res.status(500).json(err);
-						HeroStat.update({ hero: game.slots[index].hero, map: game.map }, {
-							hero: game.slots[index].hero,
-							map: game.map,
-							$inc: { kills: game.slots[index].kills, deaths: game.slots[index].deaths, assists: game.slots[index].assists, gpm: game.slots[index].gpm, wins: game.slots[index].win ? 1 : 0, games: 1 }
-						}, { upsert: true, setDefaultsOnInsert: true }, function(err) {
-							if (err) res.status(500).json(err);
-							addStat(index + 1);
+						stat.score = AgrestiCoullLower(stat.wins, stat.games);
+						stat.save(function(err) {
+							if (err) return res.status(500).json(err);
+							HeroStat.update({ hero: game.slots[index].hero, map: game.map }, {
+								hero: game.slots[index].hero,
+								map: game.map,
+								$inc: { kills: game.slots[index].kills, deaths: game.slots[index].deaths, assists: game.slots[index].assists, gpm: game.slots[index].gpm, wins: game.slots[index].win ? 1 : 0, games: 1 }
+							}, { upsert: true, setDefaultsOnInsert: true }, function(err, stat) {
+								if (err) return res.status(500).json(err);
+								stat.score = AgrestiCoullLower(stat.wins, stat.games);
+								stat.save(function(err) {
+									if (err) return res.status(500).json(err);
+									addStat(index + 1);
+								});
+							});
 						});
 					});
 				}
@@ -209,10 +227,26 @@ router.post('/:game_id', function(req, res) {
 	});
 });
 
-router.get('/games', function(req, res) {
-	Game.find({ recorded: false }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
+router.get('/players/:username', function(req, res) {
+	Stat.findOne({ username: req.params.username }, function(err, stat) {
 		if (err) return res.status(500).json(err);
-		return res.status(200).json(games);
+		else if (!stat) return res.status(400).json({ error: 'Player not found.' });
+		return res.json(stat);
+	});
+});
+
+router.get('/hero/:map/:hero_id', function(req, res) {
+	HeroStat.findOne({ hero: req.params.hero_id, map: req.params.map }, function(err, stat) {
+		if (err) return res.status(500).json(err);
+		else if (!stat) return res.status(400).json({ error: 'Hero not found.' });
+		return res.json(stat);
+	});
+});
+
+router.get('/ranking', function(req, res) {
+	Stat.find({ }).sort({ score: -1 }).limit(10).exec(function(err, stats) {
+		if (err) return res.status(500).json(err);
+		return res.json(stats);
 	});
 });
 

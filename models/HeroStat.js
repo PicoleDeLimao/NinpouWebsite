@@ -8,7 +8,8 @@ var herostatSchema = mongoose.Schema({
 	assists: { type: Number, default: 0 },
 	gpm: { type: Number, default: 0 },
 	wins: { type: Number, default: 0 },
-	games: { type: Number, default: 0 }
+	games: { type: Number, default: 0 },
+	score: { type: Number, default: 0 }
 });
 
 herostatSchema.index({ hero: 1, map: 1 }, { unique: true });
