@@ -248,8 +248,7 @@ router.get('/players/:username', function(req, res) {
 		else if (!stat) return res.status(400).json({ error: 'Player not found.' });
 		Stat.find({ score: { $gt: stat.score } }).count().exec(function(err, count) {
 			if (err) return res.status(500).json(err);
-			stat.ranking = count + 1;
-			return res.json(stat);
+			return res.json({ 'stat': stat, 'ranking': count + 1 });
 		});
 	});
 });
