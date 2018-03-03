@@ -66,6 +66,14 @@ function getGameInfo(id, players, slots, callback) {
 }
 
 router.get('/', function(req, res) {
+	https.get({ hostname: 'tonton-bot.herokuapp.com', path: '/?ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
+		var data = '';
+		response.on('data', function(chunk) {
+			data += chunk;
+		});
+	}).on('error', function(err) {
+		
+	});
 	var games = [];
 	https.get({ hostname: 'entgaming.net', path: '/forum/games_fast.php' + '?ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
 		var data = '';
@@ -98,6 +106,20 @@ router.get('/', function(req, res) {
 		});
 	}).on('error', function(err) {
 		return res.status(500).end();
+	});
+});
+
+router.get('/:game_id', function(req, res) {
+	Game.findById(req.params.game_id, function(err, game) {
+		if (err) return res.status(500).json(err);
+		return res.json(game);
+	});
+});
+
+router.get('/last', function(req, res) {
+	Game.find({ recorded: false }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
+		if (err) return res.status(500).json(err);
+		return res.json(games);
 	});
 });
 

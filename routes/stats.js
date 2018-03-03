@@ -133,20 +133,20 @@ function getSlotId(playerId) {
 };
 
 router.post('/:game_id', function(req, res) {
-	Game.findOne({ id: req.params.game_id }, function(err, game) {
-		if (err) return res.status(500).json(err);
-		var code = req.body.contents;
-		if (code.indexOf("0") == -1) return res.status(400).json({ error: 'Invalid code.' });
-		var count = Number.parseInt(code.slice(0, code.indexOf('0')));
-		if (isNaN(count)) return res.status(400).json({ error: 'Invalid code.' });
-		var body = code.slice(code.indexOf('0') + 1);
-		var winningTeam = decodeInt(res, body[0]);
+	Game.findById(req.params.game_id, function(err, game) {
+		if (err) return res.status(500).json({ error: 'Game not found.' });
+		if (game.recorded) return res.status(400).json({ error: 'Game was already recorded.' });
+		if (game.slots.length != 9) return res.status(400).json({ error: 'Invalid game.' });
+		var body = req.body.contents;
+		if (body.length < 11) return res.status(400).json({ error: 'Invalid code.' });
+		var count = decodeInt(res, body[0]);
+		var winningTeam = decodeInt(res, body[1]);
 		var playerIndex = 0;
 		var sum = 0;
-		for (var i = 1; i < body.length; i++) {
+		for (var i = 2; i < body.length; i++) {
 			var state = body[i];
 			var player_id = decodePlayerId(res, playerIndex);
-			var id = getSlotId(id);
+			var id = getSlotId(player_id);
 			if (state == '0') {
 				if (game.slots[id].username) {
 					return res.status(400).json({ error: 'Invalid code.' });
@@ -160,7 +160,7 @@ router.post('/:game_id', function(req, res) {
 				var kills = decodeInt(res, body[++i]);
 				var deaths = decodeInt(res, body[++i]);
 				var assists = decodeInt(res, body[++i]);
-				var gpm = decodeInt(res, body[++i]) * 1000;
+				var gpm = decodeInt(res, body[++i]);
 				game.slots[id].hero = hero;
 				game.slots[id].kills = kills;
 				game.slots[id].deaths = deaths;
@@ -172,7 +172,7 @@ router.post('/:game_id', function(req, res) {
 				} else {
 					game.slots[id].state = 'LEFT';
 				}
-				sum += kills + deaths;
+				sum += gpm / 10;
 			} else {
 				return res.status(400).json({ error: 'Invalid code.' });
 			}

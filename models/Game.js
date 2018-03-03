@@ -12,6 +12,8 @@ var gameSchema = mongoose.Schema({
 		hero: { type: Number },
 		kills: { type: Number },
 		deaths: { type: Number },
+		assists: { type: Number },
+		gpm: { type: Number },
 		win: { type: Boolean },
 		state: { type: String, enum: ['LEFT', 'EMPTY', 'PLAYING'] }
 	}],

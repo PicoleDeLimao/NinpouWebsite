@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var statSchema = mongoose.Schema({
+var playerStatSchema = mongoose.Schema({
 	username: { type: String, required: true },
 	map: { type: String, required: true },
 	kills: { type: Number, default: 0 },
@@ -11,7 +11,7 @@ var statSchema = mongoose.Schema({
 	games: { type: Number, default: 0 }
 });
  
-statSchema.index({ username: 1, map: 1 }, { unique: true });
+playerStatSchema.index({ username: 1, map: 1 }, { unique: true });
 
-var State = mongoose.model('Stat', statSchema);
-module.exports = State;
+var PlayerState = mongoose.model('PlayerStat', playerStatSchema);
+module.exports = PlayerState;
