@@ -183,13 +183,15 @@ router.post('/:game_id', function(req, res) {
 				} else {
 					game.slots[id].state = 'LEFT';
 				}
-				sum += gpm / 10;
+				sum += Math.floor(gpm / 10);
 			} else {
 				return res.status(400).json({ error: 'Invalid code.' });
 			}
 			++playerIndex;
 		}
-		if (sum + 1 != count) return res.status(400).json({ error: 'Invalid code.' });
+		if (sum + 1 != count) {
+			return res.status(400).json({ error: 'Invalid code.' });
+		}
 		game.recorded = true;
 		game.save(function(err) {
 			if (err) return res.status(500).json(err);
@@ -202,21 +204,27 @@ router.post('/:game_id', function(req, res) {
 					Stat.update({ username: game.slots[index].username.toLowerCase() }, {
 						username: game.slots[index].username.toLowerCase(),
 						$inc: { kills: game.slots[index].kills, deaths: game.slots[index].deaths, assists: game.slots[index].assists, gpm: game.slots[index].gpm, wins: game.slots[index].win ? 1 : 0, games: 1 }
-					}, { upsert: true, setDefaultsOnInsert: true }, function(err, stat) {
+					}, { upsert: true, setDefaultsOnInsert: true }, function(err) {
 						if (err) res.status(500).json(err);
-						stat.score = AgrestiCoullLower(stat.wins, stat.games);
-						stat.save(function(err) {
+						Stat.findOne({ username : game.slots[index].username.toLowerCase() }, function(err, stat) {
 							if (err) return res.status(500).json(err);
-							HeroStat.update({ hero: game.slots[index].hero, map: game.map }, {
-								hero: game.slots[index].hero,
-								map: game.map,
-								$inc: { kills: game.slots[index].kills, deaths: game.slots[index].deaths, assists: game.slots[index].assists, gpm: game.slots[index].gpm, wins: game.slots[index].win ? 1 : 0, games: 1 }
-							}, { upsert: true, setDefaultsOnInsert: true }, function(err, stat) {
+							stat.score = AgrestiCoullLower(stat.games || 1, stat.wins || 0);
+							stat.save(function(err) {
 								if (err) return res.status(500).json(err);
-								stat.score = AgrestiCoullLower(stat.wins, stat.games);
-								stat.save(function(err) {
+								HeroStat.update({ hero: game.slots[index].hero, map: game.map }, {
+									hero: game.slots[index].hero,
+									map: game.map,
+									$inc: { kills: game.slots[index].kills, deaths: game.slots[index].deaths, assists: game.slots[index].assists, gpm: game.slots[index].gpm, wins: game.slots[index].win ? 1 : 0, games: 1 }
+								}, { upsert: true, setDefaultsOnInsert: true }, function(err) {
 									if (err) return res.status(500).json(err);
-									addStat(index + 1);
+									HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
+										if (err) return res.status(500).json(err);
+										stat.score = AgrestiCoullLower(stat.games || 1, stat.wins || 0);
+										stat.save(function(err) {
+											if (err) return res.status(500).json(err);
+											addStat(index + 1);
+										});
+									});
 								});
 							});
 						});
