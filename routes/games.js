@@ -109,17 +109,17 @@ router.get('/', function(req, res) {
 	});
 });
 
-router.get('/:game_id', function(req, res) {
-	Game.findById(req.params.game_id, function(err, game) {
-		if (err) return res.status(500).json(err);
-		return res.json(game);
-	});
-});
-
 router.get('/last', function(req, res) {
 	Game.find({ recorded: false }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
 		if (err) return res.status(500).json(err);
 		return res.json(games);
+	});
+});
+
+router.get('/:game_id', function(req, res) {
+	Game.findById(req.params.game_id, function(err, game) {
+		if (err) return res.status(500).json(err);
+		return res.json(game);
 	});
 });
 
