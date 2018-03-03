@@ -145,9 +145,9 @@ function AgrestiCoullLower(n, k) {
 
 router.post('/:game_id', function(req, res) {
 	Game.findById(req.params.game_id, function(err, game) {
-		if (err) return res.status(500).json({ error: 'Game not found.' });
-		if (game.recorded) return res.status(400).json({ error: 'Game was already recorded.' });
-		if (game.slots.length != 9) return res.status(400).json({ error: 'Invalid game.' });
+		if (err || !game) return res.status(500).json({ error: 'Game not found.' });
+		else if (game.recorded) return res.status(400).json({ error: 'Game was already recorded.' });
+		else if (game.slots.length != 9) return res.status(400).json({ error: 'Invalid game.' });
 		var body = req.body.contents;
 		if (body.length < 11) return res.status(400).json({ error: 'Invalid code.' });
 		var count = decodeInt(res, body[0]);
