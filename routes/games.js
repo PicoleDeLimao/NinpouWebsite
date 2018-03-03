@@ -110,7 +110,7 @@ router.get('/', function(req, res) {
 });
 
 router.get('/last', function(req, res) {
-	Game.find({ recorded: false }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
+	Game.find({ $or: [{ recorded: false }, {recorded: { $exists: false } }] }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
 		if (err) return res.status(500).json(err);
 		return res.json(games);
 	});
