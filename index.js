@@ -30,7 +30,7 @@ app.use('/games', require('./routes/games'));
 app.use('/stats', require('./routes/stats'));
 
 app.get('/latest', function(req, res) {
-	res.redirect('https://drive.google.com/file/d/15klEG8QtuHwHnXZCMYRBMxOa6ijpDE5w/view?usp=sharing');
+	res.redirect('https://drive.google.com/file/d/1mjTmNEAaG8wKK8NxGjW7QDAJIy65ONZc/view?usp=sharing');
 });
 
 var port = process.env.PORT || 8080;
