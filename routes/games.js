@@ -96,7 +96,7 @@ router.get('/', function(req, res) {
 					getGameInfo(id, players, slots, progress, function(err, game) {
 						if (err) return res.status(500).end();
 						--countRequests;
-						if (game != null && !game.progress) {
+						if (game != null) {
 							games.push(game);
 						}
 						if (countRequests == 0)
