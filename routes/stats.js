@@ -147,7 +147,7 @@ router.post('/:game_id', function(req, res) {
 	Game.findById(req.params.game_id, function(err, game) {
 		if (err || !game) return res.status(500).json({ error: 'Game not found.' });
 		else if (game.recorded) return res.status(400).json({ error: 'Game was already recorded.' });
-		else if (game.slots.length != 9) return res.status(400).json({ error: 'Invalid game.' });
+		else if (game.slots.length != 9 || !game.progress) return res.status(400).json({ error: 'Invalid game.' });
 		var body = req.body.contents;
 		if (body.length < 11) return res.status(400).json({ error: 'Invalid code.' });
 		var count = decodeInt(res, body[0]);
@@ -243,7 +243,7 @@ router.post('/:game_id', function(req, res) {
 });
 
 router.get('/players/:username', function(req, res) {
-	Stat.findOne({ username: req.params.username }, function(err, stat) {
+	Stat.findOne({ username: req.params.username.toLowerCase() }, function(err, stat) {
 		if (err) return res.status(500).json(err);
 		else if (!stat) return res.status(400).json({ error: 'Player not found.' });
 		Stat.find({ score: { $gt: stat.score } }).count().exec(function(err, count) {

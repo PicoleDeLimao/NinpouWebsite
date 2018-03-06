@@ -17,6 +17,8 @@ var gameSchema = mongoose.Schema({
 		win: { type: Boolean },
 		state: { type: String, enum: ['LEFT', 'EMPTY', 'PLAYING'] }
 	}],
+	players: { type: Number },
+	progress: { type: Boolean, default: false },
 	recorded: { type: Boolean, default: false }
 });
 

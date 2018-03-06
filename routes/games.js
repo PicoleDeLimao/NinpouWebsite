@@ -26,7 +26,7 @@ function parseGameInfoData(data) {
 	};
 }
 
-function getGameInfo(id, players, slots, callback) {
+function getGameInfo(id, players, slots, progress, callback) {
 	https.get({ hostname: 'entgaming.net', path: '/forum/slots_fast.php?id=' + id + '&ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
 		var data = '';
 		response.on('data', function(chunk) {
@@ -50,7 +50,9 @@ function getGameInfo(id, players, slots, callback) {
 						map: map, 
 						owner: owner,
 						duration: duration,
-						slots: info.slots 
+						slots: info.slots,
+						players: players,
+						progress: progress 
 					};
 					Game.update({ id: map + id }, obj, { upsert: true }, function(err) {
 						if (err) return callback(err);
@@ -75,7 +77,7 @@ router.get('/', function(req, res) {
 		
 	});
 	var games = [];
-	https.get({ hostname: 'entgaming.net', path: '/forum/games_fast.php' + '?ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
+	https.get({ hostname: 'entgaming.net', path: '/forum/games_all_fast.php' + '?ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
 		var data = '';
 		response.on('data', function(chunk) {
 			data += chunk;
@@ -89,11 +91,12 @@ router.get('/', function(req, res) {
 					var id = gamesData[i].split('|')[0];
 					var players = gamesData[i].split('|')[2];
 					var slots = gamesData[i].split('|')[3];
+					var progress = gamesData[i].split('|')[4] == '0';
 					countRequests += 1;
-					getGameInfo(id, players, slots, function(err, game) {
+					getGameInfo(id, players, slots, progress, function(err, game) {
 						if (err) return res.status(500).end();
 						--countRequests;
-						if (game != null) {
+						if (game != null && !game.progress) {
 							games.push(game);
 						}
 						if (countRequests == 0)
@@ -110,7 +113,7 @@ router.get('/', function(req, res) {
 });
 
 router.get('/last', function(req, res) {
-	Game.find({ $or: [{ recorded: false }, {recorded: { $exists: false } }] }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
+	Game.find({ $or: [{ recorded: false }, {recorded: { $exists: false } }], players: 9, progress: true }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
 		if (err) return res.status(500).json(err);
 		return res.json(games);
 	});
