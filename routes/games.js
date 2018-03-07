@@ -26,6 +26,24 @@ function parseGameSlots(data) {
 	};
 }
 
+function getGameDuration(id, callback) {
+	https.get({ hostname: 'entgaming.net', path: '/forum/slots_fast.php?id=' + id + '&ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
+		var data = '';
+		response.on('data', function(chunk) {
+			data += chunk;
+		});
+		response.on('end', function() {
+			if (data.split('<b>Map</b>: ').length > 1) {
+				var duration = data.split('<b>Duration</b>: ')[1].split('\t')[0];
+				return callback(null, duration);
+			}
+			return callback(true);
+		});
+	}).on('error', function(err) {
+		callback(err);
+	});
+}
+
 function getGameInfo(id, players, slots, progress, callback) {
 	https.get({ hostname: 'entgaming.net', path: '/forum/slots_fast.php?id=' + id + '&ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
 		var data = '';
@@ -135,11 +153,19 @@ setInterval(function() {
 						(function(id, progress) {
 							Game.findOne({ id: id }, function(err, game) {
 								if (!err && game) {
-									game.progress = progress;
-									game.save(function(err) {
-										if (!err && progress) games.push(game);
-										--count;
-										if (count <= 0) inProgressGames = games;
+									getGameDuration(id, function(err, duration) {
+										if (err) {
+											--count;
+											if (count <= 0) inProgressGames = games;
+										} else {
+											game.duration = duration;
+											game.progress = progress;
+											game.save(function(err) {
+												if (!err && progress) games.push(game);
+												--count;
+												if (count <= 0) inProgressGames = games;
+											});
+										}
 									});
 								} else {
 									--count;
