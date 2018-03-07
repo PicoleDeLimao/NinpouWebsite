@@ -186,7 +186,7 @@ router.get('/last', function(req, res) {
 });
 
 router.get('/:game_id', function(req, res) {
-	Game.findById(req.params.game_id, function(err, game) {
+	Game.find({ id: req.params.game_id }, function(err, game) {
 		if (err) return res.status(500).json(err);
 		return res.json(game);
 	});
