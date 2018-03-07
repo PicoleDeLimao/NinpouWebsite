@@ -145,7 +145,7 @@ function AgrestiCoullLower(n, k) {
 
 router.post('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
-		if (err || !game) return res.status(500).json({ error: 'Game not found.' });
+		if (err || !game) return res.status(400).json({ error: 'Game not found.' });
 		else if (game.recorded) return res.status(400).json({ error: 'Game was already recorded.' });
 		else if (game.slots.length != 9 || !game.progress) return res.status(400).json({ error: 'Invalid game.' });
 		var body = req.body.contents;
@@ -239,6 +239,52 @@ router.post('/:game_id', function(req, res) {
 			})(0);
 			return res.status(200).end();
 		});
+	});
+});
+
+router.delete('/:game_id', function(req, res) {
+	Game.findOne({ id: req.params.game_id }, function(err, game) {
+		if (err || !game) return res.status(400).json({ error: 'Game not found.' });
+		else if (!game.recorded) return res.status(400).json({ error: 'Game was not recorded.' });
+		(function resetScore(index) {
+			if (index >= game.slots.length) {
+				game.recorded = false;
+				game.save(function(err) {
+					if (err) return res.status(500).json(err);
+					return res.status(200).send();
+				});
+			} else if (game.slots[index].username) {
+				Stat.findOne({ username: game.slots[index].username.toLowerCase() }, function(err, stat) {
+					if (err) return res.status(500).json(err);
+					stat.kills -= game.slots[index].kills;
+					stat.deaths -= game.slots[index].deaths;
+					stat.assists -= game.slots[index].assists;
+					stat.gpm -= game.slots[index].gpm;
+					if (game.slots[index].win) stat.wins -= 1;
+					stat.games -= 1;
+					stat.score = AgrestiCoullLower(stat.games, stat.wins);
+					stat.save(function(err) {
+						if (err) return res.status(500).json(err);
+						HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
+							if (err) return res.status(500).json(err);
+							stat.kills -= game.slots[index].kills;
+							stat.deaths -= game.slots[index].deaths;
+							stat.assists -= game.slots[index].assists;
+							stat.gpm -= game.slots[index].gpm;
+							if (game.slots[index].win) stat.wins -= 1;
+							stat.games -= 1;
+							stat.score = AgrestiCoullLower(stat.games, stat.wins);
+							stat.save(function(err) {
+								if (err) return res.status(500).json(err);
+								resetScore(index + 1);
+							});
+						});
+					});
+				});
+			} else {
+				resetScore(index + 1);
+			}
+		})(0);
 	});
 });
 

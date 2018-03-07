@@ -10,6 +10,7 @@ function parseGameSlots(data) {
 	var gamename = data.split('<b>Gamename</b>: ')[1].split('\t<br />')[0];
 	var gameSlots = [];
 	var slots = data.split('<tr>');
+	var players = 0;
 	for (var i = 2; i < slots.length; i++) {
 		if (slots[i].indexOf('<td colspan="3" class="slot">') != -1) {
 			gameSlots.push({ 'username': null, 'realm': null, 'ping': null });
@@ -18,11 +19,15 @@ function parseGameSlots(data) {
 			var realm = slots[i].split('<td class="slot">')[2].split('</td>')[0];
 			var ping = slots[i].split('<td class="slot">')[3].split('</td>')[0];
 			gameSlots.push({ 'username': username, 'realm': realm, 'ping': ping });
+			if (username) {
+				++players;
+			}
 		}
 	}
 	return {
 		'gamename': gamename,
-		'slots': gameSlots
+		'slots': gameSlots,
+		'players': players 
 	};
 }
 
@@ -44,7 +49,7 @@ function getGameDuration(id, callback) {
 	});
 }
 
-function getGameInfo(id, players, slots, progress, callback) {
+function getGameInfo(id, callback) {
 	https.get({ hostname: 'entgaming.net', path: '/forum/slots_fast.php?id=' + id + '&ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
 		var data = '';
 		response.on('data', function(chunk) {
@@ -62,8 +67,6 @@ function getGameInfo(id, players, slots, progress, callback) {
 					info['map'] = map;
 					info['owner'] = owner;
 					info['duration'] = duration;
-					info['players'] = players;
-					info['progress'] = progress;
 					var obj = {
 						id: id,
 						gamename: gamename,
@@ -71,8 +74,7 @@ function getGameInfo(id, players, slots, progress, callback) {
 						owner: owner,
 						duration: duration,
 						slots: info.slots,
-						players: players,
-						progress: progress 
+						players: inf.players,
 					};
 					Game.update({ id: id }, obj, { upsert: true }, function(err) {
 						if (err) return callback(err);
@@ -103,12 +105,9 @@ setInterval(function() {
 			for (var i = 0; i < gamesData.length; i++) {
 				if (gamesData[i] && gamesData[i].split('|').length > 4) {
 					var id = gamesData[i].split('|')[0];
-					var players = gamesData[i].split('|')[2];
-					var slots = gamesData[i].split('|')[3];
-					var progress = gamesData[i].split('|')[4] == '0';
 					var gamename = gamesData[i].split('|')[5];
 					if (gamename.indexOf('[ENT]') == -1) {
-						getGameInfo(id, players, slots, progress, function(err, game) {
+						getGameInfo(id, function(err, game) {
 							if (err) {
 								console.log('Error[2]: ' + err);
 								return;
@@ -213,7 +212,7 @@ router.get('/last', function(req, res) {
 		return res.json(games);
 	});
 });
-
+ 
 router.get('/:game_id', function(req, res) {
 	Game.find({ id: req.params.game_id }, function(err, game) {
 		if (err) return res.status(500).json(err);
