@@ -33,7 +33,7 @@ function getGameDuration(id, callback) {
 			data += chunk;
 		});
 		response.on('end', function() {
-			if (data.split('<b>Map</b>: ').length > 1) {
+			if (data.split('<b>Duration</b>: ').length > 1) {
 				var duration = data.split('<b>Duration</b>: ')[1].split('\t')[0];
 				return callback(null, duration);
 			}
@@ -217,7 +217,7 @@ router.get('/last', function(req, res) {
 router.get('/:game_id', function(req, res) {
 	Game.find({ id: req.params.game_id }, function(err, game) {
 		if (err) return res.status(500).json(err);
-		return res.json(game);
+		return res.json(game[0]);
 	});
 });
 
