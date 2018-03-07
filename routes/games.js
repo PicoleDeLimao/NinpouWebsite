@@ -151,6 +151,9 @@ setInterval(function() {
 						--count;
 						if (count <= 0) inProgressGames = games;
 					}
+				} else {
+					--count;
+					if (count <= 0) inProgressGames = games;
 				}
 			}
 		});
