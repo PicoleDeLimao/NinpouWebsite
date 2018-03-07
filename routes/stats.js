@@ -144,7 +144,7 @@ function AgrestiCoullLower(n, k) {
 };
 
 router.post('/:game_id', function(req, res) {
-	Game.findById(req.params.game_id, function(err, game) {
+	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err || !game) return res.status(500).json({ error: 'Game not found.' });
 		else if (game.recorded) return res.status(400).json({ error: 'Game was already recorded.' });
 		else if (game.slots.length != 9 || !game.progress) return res.status(400).json({ error: 'Invalid game.' });
