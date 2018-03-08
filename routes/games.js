@@ -74,7 +74,7 @@ function getGameInfo(id, callback) {
 						owner: owner,
 						duration: duration,
 						slots: info.slots,
-						players: inf.players,
+						players: info.players,
 					};
 					Game.update({ id: id }, obj, { upsert: true }, function(err) {
 						if (err) return callback(err);
