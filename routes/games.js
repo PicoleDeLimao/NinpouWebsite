@@ -5,30 +5,57 @@ var express = require('express');
 var https = require('https');
 var router = express.Router();
 var Game = require('../models/Game');
+var Stat = require('../models/Stat');
 
-function parseGameSlots(data) {
+function parseGameSlots(data, callback) {
 	var gamename = data.split('<b>Gamename</b>: ')[1].split('\t<br />')[0];
 	var gameSlots = [];
 	var slots = data.split('<tr>');
 	var players = 0;
+	var count = slots.length - 2;
 	for (var i = 2; i < slots.length; i++) {
 		if (slots[i].indexOf('<td colspan="3" class="slot">') != -1) {
-			gameSlots.push({ 'username': null, 'realm': null, 'ping': null });
+			gameSlots[i - 2] = { 'username': null, 'realm': null, 'ping': null };
+			--count;
+			if (count <= 0) return callback(null, {
+				'gamename': gamename,
+				'slots': gameSlots,
+				'players': players 
+			});
 		} else {
 			var username = slots[i].split('<td class="slot">')[1].split('</td>')[0];
 			var realm = slots[i].split('<td class="slot">')[2].split('</td>')[0];
 			var ping = slots[i].split('<td class="slot">')[3].split('</td>')[0];
-			gameSlots.push({ 'username': username, 'realm': realm, 'ping': ping });
 			if (username) {
 				++players;
+				(function(index, username, realm, ping) {
+					Stat.findOne({ username: username.toLowerCase() }, function(err, stat) {
+						if (err) return callback(err);
+						if (stat) {
+							gameSlots[index - 2] = { 'username': username, 'realm': realm, 'ping': ping, 'score': stat.score };
+						} else {
+							gameSlots[index - 2] = { 'username': username, 'realm': realm, 'ping': ping, 'score': 0 };
+						}
+						--count;
+						if (count <= 0) return callback(null, {
+							'gamename': gamename,
+							'slots': gameSlots,
+							'players': players 
+						});
+					});
+				})(i, username, realm, ping);
+			} else {
+				gameSlots[i - 2] = { 'username': username, 'realm': realm, 'ping': ping, 'score': 0 };
+				--count;
+				if (count <= 0) return callback(null, {
+					'gamename': gamename,
+					'slots': gameSlots,
+					'players': players 
+				});
 			}
+			
 		}
 	}
-	return {
-		'gamename': gamename,
-		'slots': gameSlots,
-		'players': players 
-	};
 }
 
 function getGameDuration(id, callback) {
@@ -62,23 +89,25 @@ function getGameInfo(id, callback) {
 				var duration = data.split('<b>Duration</b>: ')[1].split('\t')[0];
 				var gamename = data.split('<b>Gamename</b>: ')[1].split('\t')[0];
 				if (gamename.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('nns') != -1) {
-					var info = parseGameSlots(data);
-					info['id'] = id;
-					info['map'] = map;
-					info['owner'] = owner;
-					info['duration'] = duration;
-					var obj = {
-						id: id,
-						gamename: gamename,
-						map: map, 
-						owner: owner,
-						duration: duration,
-						slots: info.slots,
-						players: info.players,
-					};
-					Game.update({ id: id }, obj, { upsert: true }, function(err) {
+					parseGameSlots(data, function(err, info) {
 						if (err) return callback(err);
-						return callback(null, info);
+						info['id'] = id;
+						info['map'] = map;
+						info['owner'] = owner;
+						info['duration'] = duration;
+						var obj = {
+							id: id,
+							gamename: gamename,
+							map: map, 
+							owner: owner,
+							duration: duration,
+							slots: info.slots,
+							players: info.players,
+						};
+						Game.update({ id: id }, obj, { upsert: true }, function(err) {
+							if (err) return callback(err);
+							return callback(null, info);
+						});
 					});
 				}
 			}
