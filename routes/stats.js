@@ -134,7 +134,7 @@ function getSlotId(playerId) {
 
 function AgrestiCoullLower(n, k) {
 	//float conf = 0.05;  // 95% confidence interval
-	var kappa = 3;//2.24140273; // In general, kappa = ierfc(conf/2)*sqrt(2)
+	var kappa = 5;//2.24140273; // In general, kappa = ierfc(conf/2)*sqrt(2)
 	var kest=k+Math.pow(kappa,2)/2;
 	var nest=n+Math.pow(kappa,2);
 	var pest=kest/nest;
