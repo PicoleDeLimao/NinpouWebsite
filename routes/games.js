@@ -177,7 +177,7 @@ setInterval(function() {
 					var id = gamesData[i].split('|')[0];
 					var progress = gamesData[i].split('|')[4] == '0';
 					var gamename = gamesData[i].split('|')[5];
-					if (gamename.indexOf('[ENT]') == -1) {
+					if (gamename.indexOf('[ENT]') == -1 && progress) {
 						(function(id, progress) {
 							Game.findOne({ id: id }, function(err, game) {
 								if (!err && game) {
