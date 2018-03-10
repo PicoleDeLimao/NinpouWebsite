@@ -189,9 +189,25 @@ setInterval(function() {
 											game.duration = duration;
 											game.progress = progress;
 											game.save(function(err) {
-												if (!err && progress) games.push(game);
-												--count;
-												if (count <= 0) inProgressGames = games;
+												var usernames = [];
+												var usernameSlots = { };
+												for (var i = 0; i < game.slots.length; i++) {
+													if (game.slots[i].username) {
+														usernames.push(game.slots[i].username.toLowerCase());
+														usernameSlots[game.slots[i].username.toLowerCase()] = i;
+													}
+													game.slots[i].score = 0;
+												}
+												Stat.find({ username: { $in: usernames } }, function(err, stats) {
+													if (!err) {
+														for (var i = 0; i < stats.length; i++) {
+															game.slots[usernameSlots[stats[i].username]].score = stats[i].score;
+														}
+													}
+													games.push(game);
+													--count;
+													if (count <= 0) inProgressGames = games;
+												});
 											});
 										}
 									});
