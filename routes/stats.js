@@ -143,6 +143,23 @@ function AgrestiCoullLower(n, k) {
 	// Upper bound is min(1,pest+radius)
 };
 
+function calculateScore(stat) {
+	return Math.pow(AgrestiCoullLower(stat.games, stat.wins), 2) * (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) / 1068.0;
+};
+
+router.get('/reset_score', function(req, res) {
+	Stat.find({ }, function(err, stats) {
+		if (err) return;
+		for (var i = 0; i < stats.length; i++) {
+			stats[i].score = calculateScore(stats[i]);
+			stats[i].save(function(err) {
+				
+			});
+		}
+	});
+	res.send();
+}); 
+
 router.post('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err || !game) return res.status(400).json({ error: 'Game not found.' });
@@ -212,7 +229,7 @@ router.post('/:game_id', function(req, res) {
 						stat.gpm += game.slots[index].gpm;
 						if (game.slots[index].win) stat.wins += 1;
 						stat.games += 1;
-						stat.score = AgrestiCoullLower(stat.games, stat.wins);
+						stat.score = calculateScore(stat);
 						stat.save(function(err) {
 							if (err) return res.status(500).json(err);
 							HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
@@ -262,7 +279,7 @@ router.delete('/:game_id', function(req, res) {
 					stat.gpm -= game.slots[index].gpm;
 					if (game.slots[index].win) stat.wins -= 1;
 					stat.games -= 1;
-					stat.score = AgrestiCoullLower(stat.games, stat.wins);
+					stat.score = calculateScore(stat);
 					stat.save(function(err) {
 						if (err) return res.status(500).json(err);
 						HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
