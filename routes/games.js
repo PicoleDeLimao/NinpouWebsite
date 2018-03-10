@@ -258,6 +258,13 @@ router.get('/last', function(req, res) {
 	});
 });
  
+router.get('/recorded', function(req, res) {
+	Game.find({ recorded: true }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
+		if (err) return res.status(500).json(err);
+		return res.json(games);
+	});
+});
+ 
 router.get('/:game_id', function(req, res) {
 	Game.find({ id: req.params.game_id }, function(err, game) {
 		if (err) return res.status(500).json(err);
