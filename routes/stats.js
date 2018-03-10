@@ -144,7 +144,7 @@ function AgrestiCoullLower(n, k) {
 };
 
 function calculateScore(stat) {
-	var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) / 1068.0 / Math.max(1, 100 - AgrestiCoullLower(stat.games, stat.wins) * 100); 
+	var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2 * AgrestiCoullLower(stat.games, stat.wins)) / 1068.0 / Math.max(1, 100 - AgrestiCoullLower(stat.games, stat.wins) * 100) * (stat.gpm / stat.games * 100) * 10; 
 	if (isNaN(score)) return 0;
 	return score;
 }; 
