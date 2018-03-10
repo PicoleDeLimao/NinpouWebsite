@@ -144,7 +144,7 @@ function AgrestiCoullLower(n, k) {
 };
 
 function calculateScore(stat) {
-	return Math.pow(AgrestiCoullLower(stat.games, stat.wins), 2) * (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) / 1068.0;
+	return (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) / 1068.0 / (100 - AgrestiCoullLower(stat.games, stat.wins) * 100); 
 };
 
 router.get('/reset_score', function(req, res) {
