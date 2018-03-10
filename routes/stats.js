@@ -259,10 +259,18 @@ router.post('/:game_id', function(req, res) {
 	});
 });
 
+function dateFromObjectId(objectId) {
+	return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
+};
+
 router.delete('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err || !game) return res.status(400).json({ error: 'Game not found.' });
 		else if (!game.recorded) return res.status(400).json({ error: 'Game was not recorded.' });
+		var date = dateFromObjectId(game._id);
+		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+		var diffDays = Math.round(Math.abs(((new Date()).getTime() - date.getTime())/(oneDay)));
+		if (diffDays > 2) return res.status(400).json({ error: 'You can\'t unrecord games older than one day.' });
 		(function resetScore(index) {
 			if (index >= game.slots.length) {
 				game.recorded = false;
