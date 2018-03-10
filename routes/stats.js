@@ -144,7 +144,9 @@ function AgrestiCoullLower(n, k) {
 };
 
 function calculateScore(stat) {
-	return (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) / 1068.0 / Math.max(1, 100 - AgrestiCoullLower(stat.games, stat.wins) * 100); 
+	var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) / 1068.0 / Math.max(1, 100 - AgrestiCoullLower(stat.games, stat.wins) * 100); 
+	if (isNaN(score)) return 0;
+	return score;
 }; 
 
 router.get('/reset_score', function(req, res) {
@@ -267,7 +269,7 @@ router.delete('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err || !game) return res.status(400).json({ error: 'Game not found.' });
 		else if (!game.recorded) return res.status(400).json({ error: 'Game was not recorded.' });
-		var date = dateFromObjectId(game._id);
+		var date = dateFromObjectId(game._id.toString());
 		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
 		var diffDays = Math.round(Math.abs(((new Date()).getTime() - date.getTime())/(oneDay)));
 		if (diffDays > 2) return res.status(400).json({ error: 'You can\'t unrecord games older than one day.' });
@@ -298,7 +300,7 @@ router.delete('/:game_id', function(req, res) {
 							stat.gpm -= game.slots[index].gpm;
 							if (game.slots[index].win) stat.wins -= 1;
 							stat.games -= 1;
-							stat.score = AgrestiCoullLower(stat.games, stat.wins);
+							stat.score = calculateScore(stat);
 							stat.save(function(err) {
 								if (err) return res.status(500).json(err);
 								resetScore(index + 1);
