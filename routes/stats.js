@@ -339,7 +339,7 @@ router.delete('/:game_id', function(req, res) {
 });
 
 router.get('/players/:username', function(req, res) {
-	Alias.find({ alias: req.params.username.toLowerCase() }, function(err, alias) {
+	Alias.find({ $or: [{ alias: req.params.username.toLowerCase() }, { username: req.params.username.toLowerCase() }] }, function(err, alias) {
 		if (err) return res.status(500).json(err);
 		var usernames = [];
 		if (alias.length > 0) {
@@ -436,7 +436,7 @@ router.get('/ranking', function(req, res) {
 });
  
 router.get('/ranking/:username', function(req, res) {
-	Alias.find({ alias: req.params.username.toLowerCase() }, function(err, alias) {
+	Alias.find({ $or: [{ alias: req.params.username.toLowerCase() }, { username: req.params.username.toLowerCase() }] }, function(err, alias) {
 		if (err) return res.status(500).json(err);
 		var usernames = [];
 		if (alias.length > 0) { 
