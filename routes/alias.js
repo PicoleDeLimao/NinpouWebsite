@@ -10,14 +10,14 @@ router.get('/:alias', function(req, res) {
 	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json(err);
 		else if (!alias) return res.status(404).json({ error: 'Alias not found.' });
-		return res.json(alias[0]);
+		return res.json(alias);
 	});
 });
 
 router.get('/all/:username', function(req, res) {
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json(err);
-		return res.json(alias[0]);
+		return res.json(alias);
 	});
 });
 
