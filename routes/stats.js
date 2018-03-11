@@ -424,8 +424,8 @@ router.get('/ranking', function(req, res) {
 		} 
 		stats.sort(function(a, b) {
 			return b.score - a.score;
-		}); 
-		return res.json(stats.slice(0, 10));
+		});  
+		return res.json({ 'ranking': stats.slice(0, 10), 'index': 0, 'minIndex': 0 });
 	});
 });
  
