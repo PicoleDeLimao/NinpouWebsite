@@ -250,9 +250,9 @@ router.post('/:game_id', function(req, res) {
 							stat.assists += game.slots[index].assists;
 							stat.gpm += game.slots[index].gpm;
 							if (game.slots[index].win) stat.wins += 1;
-							stat.games += 1;
+							stat.games += 1; 
 							stat.score = calculateScore(stat);
-							stat.alias = username;
+							stat.alias = username || stat.alias;
 							stat.save(function(err) {
 								if (err) return res.status(500).json(err);
 								HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
