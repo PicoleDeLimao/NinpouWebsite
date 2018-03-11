@@ -339,20 +339,21 @@ router.delete('/:game_id', function(req, res) {
 });
 
 router.get('/players/:username', function(req, res) {
-	Alias.findOne({ alias: req.params.username.toLowerCase() }, function(err, alias) {
+	Alias.find({ alias: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json(err);
 		var usernames = [];
-		if (alias) {
-			usernames = alias.alias;
+		if (alias.length > 0) {
+			usernames = alias[0].alias;
 		} else {
 			usernames = [req.params.username.toLowerCase()];
 		}
+		console.log(usernames);
 		Stat.find({ username: { $in: usernames } }, function(err, stats) {
 			if (err) return res.status(500).json(err);
 			else if (!stats || stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
 			var allStat = new Stat({ 
-				username: (alias && alias.length > 0 && alias.username) || stats[0].username 
-			});  
+				_id: alias.length > 0 && alias[0].username || stats[0].username 
+			});     
 			for (var i = 0; i < stats.length; i++) {
 				allStat.kills += stats[i].kills;
 				allStat.deaths += stats[i].deaths;
@@ -430,11 +431,11 @@ router.get('/ranking', function(req, res) {
 });
  
 router.get('/ranking/:username', function(req, res) {
-	Alias.findOne({ alias: req.params.username.toLowerCase() }, function(err, alias) {
+	Alias.find({ alias: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json(err);
 		var usernames = [];
-		if (alias) { 
-			usernames = alias.alias;
+		if (alias.length > 0) { 
+			usernames = alias[0].alias;
 		} else {
 			usernames = [req.params.username.toLowerCase()];
 		}
@@ -442,8 +443,8 @@ router.get('/ranking/:username', function(req, res) {
 			if (err) return res.status(500).json(err);
 			else if (!stats || stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
 			var allStat = new Stat({
-				username: (alias && alias.length > 0 && alias.username) || stats[0].username
-			}); 
+				_id: alias.length > 0 && alias[0].username || stats[0].username 
+			});  
 			for (var i = 0; i < stats.length; i++) {
 				allStat.kills += stats[i].kills;
 				allStat.deaths += stats[i].deaths;
@@ -490,7 +491,7 @@ router.get('/ranking/:username', function(req, res) {
 				newRanking.sort(function(a, b) {
 					return b.score - a.score; 
 				}); 
-				var index = null;
+				var index = null; 
 				for (var i = 0; i < newRanking.length; i++) {
 					if (newRanking[i] == allStat) {
 						index = i;
