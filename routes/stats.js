@@ -134,9 +134,9 @@ function getSlotId(playerId) {
 
 function AgrestiCoullLower(n, k) {
 	//float conf = 0.05;  // 95% confidence interval
-	var kappa = 5;//2.24140273; // In general, kappa = ierfc(conf/2)*sqrt(2)
+	var kappa = 10;//2.24140273; // In general, kappa = ierfc(conf/2)*sqrt(2)
 	var kest=k+Math.pow(kappa,2)/2;
-	var nest=n+Math.pow(kappa,2);
+	var nest=n+Math.pow(kappa,2); 
 	var pest=kest/nest;
 	var radius=kappa*Math.sqrt(pest*(1-pest)/nest);
 	return Math.max(0,pest-radius); // Lower bound
@@ -144,7 +144,7 @@ function AgrestiCoullLower(n, k) {
 };
 
 function calculateScore(stat) {
-	var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2 * AgrestiCoullLower(stat.games, stat.wins)) / 1068.0 / Math.max(1, 100 - AgrestiCoullLower(stat.games, stat.wins) * 100) * (stat.gpm / stat.games * AgrestiCoullLower(stat.games, stat.wins) * 100) * 100; 
+	var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2 * AgrestiCoullLower(stat.games, stat.wins)) / 1068.0 / Math.max(1, 100 - AgrestiCoullLower(stat.games, stat.wins) * 100) * (stat.gpm / stat.games * AgrestiCoullLower(stat.games, stat.wins) * 100) * 1000;  
 	if (isNaN(score)) return 0;
 	return score;
 }; 
