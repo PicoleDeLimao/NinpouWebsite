@@ -7,8 +7,8 @@ var Alias = require('../models/Alias');
 var Stat = require('../models/Stat');
 
 router.get('/:alias', function(req, res) {
-	Alias.findOne({ $or: [{username: req.params.alias.toLowerCase(), alias: req.params.alias.toLowerCase() }] }, function(err, alias) {
-		if (err) return res.status(500).json(err);
+	Alias.findOne({ $or: [{username: req.params.alias.toLowerCase() }, { alias: req.params.alias.toLowerCase() }] }, function(err, alias) {
+		if (err) return res.status(500).json(err); 
 		else if (!alias) return res.status(404).json({ error: 'Alias not found.' });
 		return res.json(alias);
 	});
