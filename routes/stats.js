@@ -350,9 +350,9 @@ router.get('/players/:username', function(req, res) {
 		Stat.find({ username: { $in: usernames } }, function(err, stats) {
 			if (err) return res.status(500).json(err);
 			else if (stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
-			var allStat = new Stat({
-				username: stats.length > 1 && alias.alias || stats[0].username 
-			}); 
+			var allStat = new Stat({ 
+				username: alias.length > 0 && alias.username || stats[0].username 
+			});  
 			for (var i = 0; i < stats.length; i++) {
 				allStat.kills += stats[i].kills;
 				allStat.deaths += stats[i].deaths;
@@ -416,7 +416,7 @@ router.get('/ranking', function(req, res) {
 			wins: { $sum: '$wins' },
 			games: { $sum: '$games' } 
 		}
-	}
+	} 
 	], function(err, stats) {
 		if (err) return res.status(500).json(err);
 		for (var i = 0; i < stats.length; i++) {
@@ -442,7 +442,7 @@ router.get('/ranking/:username', function(req, res) {
 			if (err) return res.status(500).json(err);
 			else if (stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
 			var allStat = new Stat({
-				username: stats.length > 1 && alias.alias || stats[0].username
+				username: alias.length > 0 && alias.username || stats[0].username
 			}); 
 			for (var i = 0; i < stats.length; i++) {
 				allStat.kills += stats[i].kills;
