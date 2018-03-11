@@ -12,7 +12,7 @@ function getPlayerAlias(alias, callback) {
 	Alias.findOne({ alias: alias.toLowerCase() }, function(err, alias) {
 		if (err) return callback(err);
 		else if (!alias) return callback(null, null);
-		return callback(alias.username);
+		return callback(null, alias.username);
 	});
 };  
 
@@ -39,7 +39,7 @@ function parseGameSlots(data, callback) {
 				++players;
 				(function(index, username, realm, ping) {
 					Stat.findOne({ username: username.toLowerCase() }, function(err, stat) {
-						if (err) return callback(err);
+						if (err) return callback(err);  
 						getPlayerAlias(username.toLowerCase(), function(err, alias) {
 							if (err) return callback(err);
 							if (stat) {
@@ -59,6 +59,7 @@ function parseGameSlots(data, callback) {
 			} else {
 				gameSlots[i - 2] = { 'username': username, 'realm': realm, 'ping': ping, 'score': 0 };
 				--count;
+				console.log(count); 
 				if (count <= 0) return callback(null, {
 					'gamename': gamename,
 					'slots': gameSlots,
@@ -115,15 +116,18 @@ function getGameInfo(id, callback) {
 							duration: duration,
 							slots: info.slots,
 							players: info.players,
-						};
+						}; 
 						Game.update({ id: id }, obj, { upsert: true }, function(err) {
 							if (err) return callback(err);
 							return callback(null, info);
 						});
 					});
+				} else {
+					return callback(null, null); 
 				}
-			}
-			return callback(null, null);
+			} else {
+				return callback(null, null);
+			} 
 		});
 	}).on('error', function(err) {
 		callback(err);
@@ -147,23 +151,20 @@ setInterval(function() {
 				if (gamesData[i] && gamesData[i].split('|').length > 4) {
 					var id = gamesData[i].split('|')[0];
 					var gamename = gamesData[i].split('|')[5];
-					if (gamename.indexOf('[ENT]') == -1) {
+					if (gamename.toLowerCase().indexOf('[ent]') == -1) {  
 						getGameInfo(id, function(err, game) {
-							if (err) {
-								return;
-							}
-							if (game != null) {
+							if (game != null) { 
 								games.push(game);
-							}
+							} 
 							--count;
 							if (count <= 0) hostedGames = games;
 						});
-					} else {
+					} else { 
 						--count;
 						if (count <= 0) hostedGames = games;
 					}
 				} else {
-					--count;
+					--count; 
 					if (count <= 0) hostedGames = games;
 				}
 			}
@@ -254,7 +255,7 @@ setInterval(function() {
 	});
 }, 10000);
 
-router.get('/', function(req, res) {
+router.get('/', function(req, res) { 
 	return res.json(hostedGames);
 });
 
