@@ -8,6 +8,7 @@ var gameSchema = mongoose.Schema({
 	duration: { type: String },
 	slots: [{
 		username: { type: String },
+		alias: { type: String },
 		realm: { type: String },
 		hero: { type: Number },
 		kills: { type: Number },

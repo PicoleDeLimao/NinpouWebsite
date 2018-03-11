@@ -6,6 +6,15 @@ var https = require('https');
 var router = express.Router();
 var Game = require('../models/Game');
 var Stat = require('../models/Stat');
+var Alias = require('../models/Alias');
+
+function getPlayerAlias(alias, callback) {
+	Alias.findOne({ alias: alias.toLowerCase() }, function(err, alias) {
+		if (err) return callback(err);
+		else if (!alias) return callback(null, null);
+		return callback(alias[0].username);
+	});
+}; 
 
 function parseGameSlots(data, callback) {
 	var gamename = data.split('<b>Gamename</b>: ')[1].split('\t<br />')[0];
@@ -31,16 +40,19 @@ function parseGameSlots(data, callback) {
 				(function(index, username, realm, ping) {
 					Stat.findOne({ username: username.toLowerCase() }, function(err, stat) {
 						if (err) return callback(err);
-						if (stat) {
-							gameSlots[index - 2] = { 'username': username, 'realm': realm, 'ping': ping, 'score': stat.score };
-						} else {
-							gameSlots[index - 2] = { 'username': username, 'realm': realm, 'ping': ping, 'score': 0 };
-						}
-						--count;
-						if (count <= 0) return callback(null, {
-							'gamename': gamename,
-							'slots': gameSlots,
-							'players': players 
+						getPlayerAlias(username.toLowerCase(), function(err, alias) {
+							if (err) return callback(err);
+							if (stat) {
+								gameSlots[index - 2] = { 'username': username, 'alias': alias, 'realm': realm, 'ping': ping, 'score': stat.score };
+							} else {
+								gameSlots[index - 2] = { 'username': username, 'alias': alias, 'realm': realm, 'ping': ping, 'score': 0 };
+							}
+							--count;
+							if (count <= 0) return callback(null, {
+								'gamename': gamename,
+								'slots': gameSlots,
+								'players': players 
+							});
 						});
 					});
 				})(i, username, realm, ping);
@@ -138,7 +150,6 @@ setInterval(function() {
 					if (gamename.indexOf('[ENT]') == -1) {
 						getGameInfo(id, function(err, game) {
 							if (err) {
-								console.log('Error[2]: ' + err);
 								return;
 							}
 							if (game != null) {

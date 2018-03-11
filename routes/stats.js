@@ -6,6 +6,7 @@ var router = express.Router();
 var Game = require('../models/Game');
 var Stat = require('../models/Stat');
 var HeroStat = require('../models/HeroStat');
+var Alias = require('../models/Alias');
 
 var encodedPlayersId = [];
 encodedPlayersId[0] = 6;
@@ -162,6 +163,14 @@ router.get('/reset_score', function(req, res) {
 	res.send();
 }); 
 
+function getPlayerAlias(alias, callback) {
+	Alias.findOne({ alias: alias.toLowerCase() }, function(err, alias) {
+		if (err) return callback(err);
+		else if (!alias) return callback(null);
+		else return callback(null, alias[0].username);
+	});
+};
+
 router.post('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err || !game) return res.status(400).json({ error: 'Game not found.' });
@@ -220,40 +229,45 @@ router.post('/:game_id', function(req, res) {
 				} else if (!game.slots[index].username) {
 					addStat(index + 1);
 				} else {
-					Stat.findOne({ username: game.slots[index].username.toLowerCase() }, function(err, stat) {
+					getPlayerAlias(game.slots[index].username.toLowerCase(), function(err, username) {
 						if (err) return res.status(500).json(err);
-						if (!stat) stat = new Stat({
-							username: game.slots[index].username.toLowerCase()
-						});
-						stat.kills += game.slots[index].kills;
-						stat.deaths += game.slots[index].deaths;
-						stat.assists += game.slots[index].assists;
-						stat.gpm += game.slots[index].gpm;
-						if (game.slots[index].win) stat.wins += 1;
-						stat.games += 1;
-						stat.score = calculateScore(stat);
-						stat.save(function(err) {
+						game.slots[index].username = username || game.slots[index].username;
+						Stat.findOne({ username: game.slots[index].username.toLowerCase() }, function(err, stat) {
 							if (err) return res.status(500).json(err);
-							HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
+							if (!stat) stat = new Stat({
+								username: game.slots[index].username.toLowerCase()
+							});
+							stat.kills += game.slots[index].kills;
+							stat.deaths += game.slots[index].deaths;
+							stat.assists += game.slots[index].assists;
+							stat.gpm += game.slots[index].gpm;
+							if (game.slots[index].win) stat.wins += 1;
+							stat.games += 1;
+							stat.score = calculateScore(stat);
+							stat.save(function(err) {
 								if (err) return res.status(500).json(err);
-								if (!stat) stat = new HeroStat({
-									hero: game.slots[index].hero, 
-									map: game.map
-								});
-								stat.kills += game.slots[index].kills;
-								stat.deaths += game.slots[index].deaths;
-								stat.assists += game.slots[index].assists;
-								stat.gpm += game.slots[index].gpm;
-								if (game.slots[index].win) stat.wins += 1;
-								stat.games += 1;
-								stat.score = AgrestiCoullLower(stat.games, stat.wins);
-								stat.save(function(err) {
+								HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
 									if (err) return res.status(500).json(err);
-									addStat(index + 1);
+									if (!stat) stat = new HeroStat({
+										hero: game.slots[index].hero, 
+										map: game.map
+									});
+									stat.kills += game.slots[index].kills;
+									stat.deaths += game.slots[index].deaths;
+									stat.assists += game.slots[index].assists;
+									stat.gpm += game.slots[index].gpm;
+									if (game.slots[index].win) stat.wins += 1;
+									stat.games += 1;
+									stat.score = AgrestiCoullLower(stat.games, stat.wins);
+									stat.save(function(err) {
+										if (err) return res.status(500).json(err);
+										addStat(index + 1);
+									});
 								});
 							});
 						});
 					});
+					
 				}
 			})(0);
 			return res.status(200).end();
@@ -304,7 +318,7 @@ router.delete('/:game_id', function(req, res) {
 							stat.save(function(err) {
 								if (err) return res.status(500).json(err);
 								resetScore(index + 1);
-							});
+							}); 
 						});
 					});
 				});
