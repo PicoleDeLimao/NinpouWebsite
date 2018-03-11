@@ -150,26 +150,32 @@ function calculateScore(stat) {
 	return score;
 }; 
 
-router.get('/reset_score', function(req, res) {
-	Stat.find({ }, function(err, stats) {
-		if (err) return;
-		for (var i = 0; i < stats.length; i++) {
-			stats[i].score = calculateScore(stats[i]);
-			stats[i].save(function(err) {
-				
-			});
-		}
-	});
-	res.send();
-}); 
-
 function getPlayerAlias(alias, callback) {
 	Alias.findOne({ alias: alias.toLowerCase() }, function(err, alias) {
 		if (err) return callback(err);
-		else if (!alias) return callback(null);
-		else return callback(null, alias[0].username);
+		else if (!alias) return callback(null); 
+		else return callback(null, alias.username);
 	});
 };
+
+router.get('/reset_score', function(req, res) {
+	Stat.find({ }, function(err, stats) {
+		if (err) return;
+		(function next(i) {
+			if (i == stats.length) return;
+			getPlayerAlias(stats[i].username, function(err, alias) {
+				if (err) return;
+				stats[i].alias = alias || stats[i].username;
+				stats[i].score = calculateScore(stats[i]);
+				stats[i].save(function(err) {
+					if (err) return;
+					next(i + 1);
+				});
+			});
+		})(0);
+	});
+	res.send();
+}); 
 
 router.post('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
@@ -231,12 +237,14 @@ router.post('/:game_id', function(req, res) {
 				} else {
 					getPlayerAlias(game.slots[index].username.toLowerCase(), function(err, username) {
 						if (err) return res.status(500).json(err);
-						game.slots[index].username = username || game.slots[index].username;
 						Stat.findOne({ username: game.slots[index].username.toLowerCase() }, function(err, stat) {
 							if (err) return res.status(500).json(err);
-							if (!stat) stat = new Stat({
-								username: game.slots[index].username.toLowerCase()
-							});
+							if (!stat) {
+								stat = new Stat({
+									username: game.slots[index].username.toLowerCase(),
+									alias: username || game.slots[index].username.toLowerCase()
+								});
+							} 
 							stat.kills += game.slots[index].kills;
 							stat.deaths += game.slots[index].deaths;
 							stat.assists += game.slots[index].assists;
@@ -244,6 +252,7 @@ router.post('/:game_id', function(req, res) {
 							if (game.slots[index].win) stat.wins += 1;
 							stat.games += 1;
 							stat.score = calculateScore(stat);
+							stat.alias = username;
 							stat.save(function(err) {
 								if (err) return res.status(500).json(err);
 								HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
@@ -330,29 +339,165 @@ router.delete('/:game_id', function(req, res) {
 });
 
 router.get('/players/:username', function(req, res) {
-	Stat.findOne({ username: req.params.username.toLowerCase() }, function(err, stat) {
+	Alias.findOne({ alias: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json(err);
-		else if (!stat) return res.status(400).json({ error: 'Player not found.' });
-		Stat.find({ score: { $gt: stat.score } }).count().exec(function(err, count) {
+		var usernames = [];
+		if (alias) {
+			usernames = alias.alias;
+		} else {
+			usernames = [req.params.username.toLowerCase()];
+		}
+		Stat.find({ username: { $in: usernames } }, function(err, stats) {
 			if (err) return res.status(500).json(err);
-			return res.json({ 'stat': stat, 'ranking': count + 1 });
+			else if (stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
+			var allStat = new Stat();
+			for (var i = 0; i < stats.length; i++) {
+				allStat.kills += stats[i].kills;
+				allStat.deaths += stats[i].deaths;
+				allStat.assists += stats[i].assists;
+				allStat.gpm += stats[i].gpm;
+				allStat.wins += stats[i].wins;
+				allStat.games += stats[i].games;
+				allStat.score = calculateScore(allStat);
+			}
+			Stat.aggregate([
+			{
+				$group: {
+					_id: '$alias',
+					kills: { $sum: '$kills' },
+					deaths: { $sum: '$deaths' },
+					assists: { $sum: '$assists' },
+					gpm: { $sum: '$gpm' },
+					wins: { $sum: '$wins' },
+					games: { $sum: '$games' }
+				}
+			}
+			], function(err, stats) {
+				if (err) return res.status(500).json(err);
+				for (var i = 0; i < stats.length; i++) {
+					stats[i].score = calculateScore(stats[i]);
+				}
+				stats.sort(function(a, b) {
+					return b.score - a.score; 
+				}); 
+				var ranking = 0;
+				for (var i = 0; i < stats.length; i++) {
+					++ranking;
+					if (stats[i].score <= allStat.score) {
+						break;
+					}
+				}
+				return res.json({ 'stat': allStat, 'ranking': ranking });
+			}); 
 		});
-	});
+	});	
 });
 
 router.get('/heroes/:map/:hero_id', function(req, res) {
 	HeroStat.findOne({ hero: req.params.hero_id, map: req.params.map }, function(err, stat) {
 		if (err) return res.status(500).json(err);
 		else if (!stat) return res.status(400).json({ error: 'Hero not found.' });
+		stat.score = calculateScore(stat);
 		return res.json(stat);
 	});
 });
 
 router.get('/ranking', function(req, res) {
-	Stat.find({ }).sort({ score: -1 }).limit(10).exec(function(err, stats) {
+	Stat.aggregate([
+	{
+		$group: { 
+			_id: '$alias',
+			kills: { $sum: '$kills' },
+			deaths: { $sum: '$deaths' },
+			assists: { $sum: '$assists' },
+			gpm: { $sum: '$gpm' },
+			wins: { $sum: '$wins' },
+			games: { $sum: '$games' } 
+		}
+	}
+	], function(err, stats) {
 		if (err) return res.status(500).json(err);
-		return res.json(stats);
+		for (var i = 0; i < stats.length; i++) {
+			stats[i].score = calculateScore(stats[i]);
+		} 
+		stats.sort(function(a, b) {
+			return b.score - a.score;
+		}); 
+		return res.json(stats.slice(0, 10));
 	});
+});
+ 
+router.get('/ranking/:username', function(req, res) {
+	Alias.findOne({ alias: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json(err);
+		var usernames = [];
+		if (alias) { 
+			usernames = alias.alias;
+		} else {
+			usernames = [req.params.username.toLowerCase()];
+		}
+		Stat.find({ username: { $in: usernames } }, function(err, stats) {
+			if (err) return res.status(500).json(err);
+			else if (stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
+			var allStat = new Stat();
+			for (var i = 0; i < stats.length; i++) {
+				allStat.username = stats.length > 1 && alias.alias || stats[0].username;
+				allStat.kills += stats[i].kills;
+				allStat.deaths += stats[i].deaths;
+				allStat.assists += stats[i].assists;
+				allStat.gpm += stats[i].gpm;
+				allStat.wins += stats[i].wins;
+				allStat.games += stats[i].games;
+				allStat.score = calculateScore(allStat);
+				allStat.alias = stats.length > 1 && alias.alias || stats[0].username;
+			}
+			Stat.aggregate([
+			{
+				$match: { username: { $nin: usernames } }
+			},
+			{
+				$group: { 
+					_id: '$alias',
+					kills: { $sum: '$kills' },
+					deaths: { $sum: '$deaths' },
+					assists: { $sum: '$assists' },
+					gpm: { $sum: '$gpm' },
+					wins: { $sum: '$wins' },
+					games: { $sum: '$games' }
+				}
+			}
+			], function(err, stats) {
+				if (err) return res.status(500).json(err);
+				for (var i = 0; i < stats.length; i++) {
+					stats[i].score = calculateScore(stats[i]);
+				}
+				stats.sort(function(a, b) {
+					return b.score - a.score; 
+				});
+				var ranking = 0;
+				for (var i = 0; i < stats.length; i++) {
+					if (stats[i].score <= allStat.score) {
+						break;
+					}
+					++ranking;
+				} 
+				var minIndex = Math.max(0, ranking - 5);
+				var newRanking = stats.slice(minIndex, minIndex + 10);
+				newRanking.push(allStat);
+				newRanking.sort(function(a, b) {
+					return b.score - a.score; 
+				}); 
+				var index = null;
+				for (var i = 0; i < newRanking.length; i++) {
+					if (newRanking[i] == allStat) {
+						index = i;
+						break;
+					}
+				}
+				return res.json({ 'ranking': newRanking, 'index': index, 'minIndex': minIndex });
+			}); 
+		});
+	});	
 });
 
 module.exports = router;

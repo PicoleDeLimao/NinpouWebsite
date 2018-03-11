@@ -8,7 +8,8 @@ var playerStatSchema = mongoose.Schema({
 	gpm: { type: Number, default: 0 },
 	wins: { type: Number, default: 0 },
 	games: { type: Number, default: 0 },
-	score: { type: Number, default: 0 }
+	score: { type: Number, default: 0 },
+	alias: { type: String }
 });
  
 var PlayerState = mongoose.model('PlayerStat', playerStatSchema);
