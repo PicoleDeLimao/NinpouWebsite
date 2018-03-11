@@ -347,13 +347,18 @@ router.get('/players/:username', function(req, res) {
 		} else {
 			usernames = [req.params.username.toLowerCase()];
 		}
-		console.log(usernames);
 		Stat.find({ username: { $in: usernames } }, function(err, stats) {
 			if (err) return res.status(500).json(err);
 			else if (!stats || stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
-			var allStat = new Stat({ 
-				_id: alias.length > 0 && alias[0].username || stats[0].username 
-			});     
+			var allStat = { 
+				_id: alias.length > 0 && alias[0].username || stats[0].username,
+				kills: 0,
+				deaths: 0,
+				assists: 0,
+				gpm: 0,
+				wins: 0,
+				games: 0
+			};     
 			for (var i = 0; i < stats.length; i++) {
 				allStat.kills += stats[i].kills;
 				allStat.deaths += stats[i].deaths;
@@ -361,8 +366,8 @@ router.get('/players/:username', function(req, res) {
 				allStat.gpm += stats[i].gpm;
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
-				allStat.score = calculateScore(allStat);
 			}
+			allStat.score = calculateScore(allStat);
 			Stat.aggregate([
 			{
 				$group: {
@@ -442,9 +447,15 @@ router.get('/ranking/:username', function(req, res) {
 		Stat.find({ username: { $in: usernames } }, function(err, stats) {
 			if (err) return res.status(500).json(err);
 			else if (!stats || stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
-			var allStat = new Stat({
-				_id: alias.length > 0 && alias[0].username || stats[0].username 
-			});  
+			var allStat = { 
+				_id: alias.length > 0 && alias[0].username || stats[0].username,
+				kills: 0,
+				deaths: 0,
+				assists: 0,
+				gpm: 0,
+				wins: 0,
+				games: 0
+			};       
 			for (var i = 0; i < stats.length; i++) {
 				allStat.kills += stats[i].kills;
 				allStat.deaths += stats[i].deaths;
@@ -452,9 +463,8 @@ router.get('/ranking/:username', function(req, res) {
 				allStat.gpm += stats[i].gpm;
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
-				allStat.score = calculateScore(allStat);
-				allStat.alias = stats.length > 1 && alias.alias || stats[0].username;
 			}
+			allStat.score = calculateScore(allStat);
 			Stat.aggregate([
 			{
 				$match: { username: { $nin: usernames } }
