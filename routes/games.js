@@ -12,9 +12,9 @@ function getPlayerAlias(alias, callback) {
 	Alias.findOne({ alias: alias.toLowerCase() }, function(err, alias) {
 		if (err) return callback(err);
 		else if (!alias) return callback(null, null);
-		return callback(alias[0].username);
+		return callback(alias.username);
 	});
-}; 
+};  
 
 function parseGameSlots(data, callback) {
 	var gamename = data.split('<b>Gamename</b>: ')[1].split('\t<br />')[0];
