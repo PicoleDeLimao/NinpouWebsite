@@ -135,19 +135,20 @@ function getSlotId(playerId) {
 
 function AgrestiCoullLower(n, k) {
 	//float conf = 0.05;  // 95% confidence interval
-	var kappa = 100;//2.24140273; // In general, kappa = ierfc(conf/2)*sqrt(2)
+	var kappa = 10;//2.24140273; // In general, kappa = ierfc(conf/2)*sqrt(2)
 	var kest=k+Math.pow(kappa,2)/2;
 	var nest=n+Math.pow(kappa,2); 
-	var pest=kest/nest;
+	var pest=kest/nest; 
 	var radius=kappa*Math.sqrt(pest*(1-pest)/nest);
 	return Math.max(0,pest-radius); // Lower bound
 	// Upper bound is min(1,pest+radius)
 };
 
 function calculateScore(stat) {
-	var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2 * AgrestiCoullLower(stat.games, stat.wins)) / 1068.0 / Math.max(1, 100 - AgrestiCoullLower(stat.games, stat.wins) * 100) * (stat.gpm / stat.games * AgrestiCoullLower(stat.games, stat.wins) * 100) * 1000000;  
-	if (isNaN(score)) return 0;
-	return score;
+	stat.chanceWin = stat.chanceWin || AgrestiCoullLower(stat.games, stat.wins);
+	var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) * (stat.gpm / stat.games) * stat.chanceWin * 100;  
+	if (isNaN(score)) return 0;  
+	return score; 
 }; 
 
 function getPlayerAlias(alias, callback) {
@@ -163,14 +164,11 @@ router.get('/reset_score', function(req, res) {
 		if (err) return;
 		(function next(i) {
 			if (i == stats.length) return;
-			getPlayerAlias(stats[i].username, function(err, alias) {
+			stats[i].chanceWin = AgrestiCoullLower(stat.games, stat.wins);
+			stats[i].score = calculateScore(stats[i]);
+			stats[i].save(function(err) {
 				if (err) return;
-				stats[i].alias = alias || stats[i].username;
-				stats[i].score = calculateScore(stats[i]);
-				stats[i].save(function(err) {
-					if (err) return;
-					next(i + 1);
-				});
+				next(i + 1); 
 			});
 		})(0);
 	});
@@ -251,6 +249,7 @@ router.post('/:game_id', function(req, res) {
 							stat.gpm += game.slots[index].gpm;
 							if (game.slots[index].win) stat.wins += 1;
 							stat.games += 1; 
+							stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
 							stat.score = calculateScore(stat);
 							stat.alias = username || stat.alias;
 							stat.save(function(err) {
@@ -267,7 +266,8 @@ router.post('/:game_id', function(req, res) {
 									stat.gpm += game.slots[index].gpm;
 									if (game.slots[index].win) stat.wins += 1;
 									stat.games += 1;
-									stat.score = AgrestiCoullLower(stat.games, stat.wins);
+									stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
+									stat.score = calculateScore(stat);
 									stat.save(function(err) {
 										if (err) return res.status(500).json(err);
 										addStat(index + 1);
@@ -312,6 +312,7 @@ router.delete('/:game_id', function(req, res) {
 					stat.gpm -= game.slots[index].gpm;
 					if (game.slots[index].win) stat.wins -= 1;
 					stat.games -= 1;
+					stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
 					stat.score = calculateScore(stat);
 					stat.save(function(err) {
 						if (err) return res.status(500).json(err);
@@ -323,6 +324,7 @@ router.delete('/:game_id', function(req, res) {
 							stat.gpm -= game.slots[index].gpm;
 							if (game.slots[index].win) stat.wins -= 1;
 							stat.games -= 1;
+							stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
 							stat.score = calculateScore(stat);
 							stat.save(function(err) {
 								if (err) return res.status(500).json(err);
@@ -357,7 +359,9 @@ router.get('/players/:username', function(req, res) {
 				assists: 0,
 				gpm: 0,
 				wins: 0,
-				games: 0
+				games: 0,
+				chanceWin: 0,
+				score: 0
 			};     
 			for (var i = 0; i < stats.length; i++) {
 				allStat.kills += stats[i].kills;
@@ -367,6 +371,7 @@ router.get('/players/:username', function(req, res) {
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
 			}
+			allStat.chanceWin = AgrestiCoullLower(allStat.games, allStat.wins);
 			allStat.score = calculateScore(allStat);
 			Stat.aggregate([
 			{
@@ -383,6 +388,7 @@ router.get('/players/:username', function(req, res) {
 			], function(err, stats) {
 				if (err) return res.status(500).json(err);
 				for (var i = 0; i < stats.length; i++) {
+					stats[i].chanceWin = AgrestiCoullLower(stats[i].games, stats[i].wins);
 					stats[i].score = calculateScore(stats[i]);
 				}
 				stats.sort(function(a, b) {
@@ -405,6 +411,7 @@ router.get('/heroes/:map/:hero_id', function(req, res) {
 	HeroStat.findOne({ hero: req.params.hero_id, map: req.params.map }, function(err, stat) {
 		if (err) return res.status(500).json(err);
 		else if (!stat) return res.status(400).json({ error: 'Hero not found.' });
+		stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
 		stat.score = calculateScore(stat);
 		return res.json(stat);
 	});
@@ -426,6 +433,7 @@ router.get('/ranking', function(req, res) {
 	], function(err, stats) {
 		if (err) return res.status(500).json(err);
 		for (var i = 0; i < stats.length; i++) {
+			stats[i].chanceWin = AgrestiCoullLower(stats[i].games, stats[i].wins);
 			stats[i].score = calculateScore(stats[i]);
 		} 
 		stats.sort(function(a, b) {
@@ -464,6 +472,7 @@ router.get('/ranking/:username', function(req, res) {
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
 			}
+			allStat.chanceWin = AgrestiCoullLower(allStat.games, allStat.wins);
 			allStat.score = calculateScore(allStat);
 			Stat.aggregate([
 			{
@@ -483,6 +492,7 @@ router.get('/ranking/:username', function(req, res) {
 			], function(err, stats) {
 				if (err) return res.status(500).json(err);
 				for (var i = 0; i < stats.length; i++) {
+					stats[i].chanceWin = AgrestiCoullLower(stats[i].games, stats[i].wins);
 					stats[i].score = calculateScore(stats[i]);
 				}
 				stats.sort(function(a, b) {
