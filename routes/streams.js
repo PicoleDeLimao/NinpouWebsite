@@ -3,13 +3,13 @@
 var mongoose = require('mongoose');
 var express = require('express');
 var router = express.Router();
-var http = require('https');
+var https = require('https');
 
 var channels = ['twofacekami', 'shiroshura', 'ryusei6', 'brookfest', 'avengerruler', 'teoman7777', 'ghost_tobi'];
 var liveChannels = [];
-
+ 
 setInterval(function() {
-	newLiveChannels = [];
+	var newLiveChannels = [];
 	var count = channels.length;
 	for (var i = 0; i < channels.length; i++) {
 		var channel = channels[i];
@@ -20,7 +20,7 @@ setInterval(function() {
 			});
 			res.on('end', function() {
 				try {
-					data = JSON.parse(body);
+					var data = JSON.parse(body);
 					if (data['stream'] && data['stream']['game'] == 'Warcraft III: The Frozen Throne') {
 						newLiveChannels.push(data); 
 					}
