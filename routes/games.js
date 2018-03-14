@@ -167,7 +167,11 @@ function getGameInfo(id, progress, callback) {
 						}; 
 						Game.update({ id: id }, obj, { upsert: true }, function(err) {
 							if (err) return callback(err);
-							return callback(null, info);
+							Game.findOne({ id: id }, function(err, game) {
+								if (err) return callback(err);
+								info['_id'] = game._id;
+								return callback(null, info);
+							});
 						});
 					});
 				} else {
