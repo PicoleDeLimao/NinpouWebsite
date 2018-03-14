@@ -10,7 +10,7 @@ var liveChannels = [];
  
 setInterval(function() {
 	var newLiveChannels = [];
-	var count = channels.length;
+	var count = channels.length - 1;
 	for (var i = 0; i < channels.length; i++) {
 		var channel = channels[i];
 		var request = https.request({ host: 'api.twitch.tv', path: '/kraken/streams/' + channel + '?client_id=waz727qcznt48ovp7uo05xckyylxmb', method: 'GET' }, function(res) {
@@ -21,20 +21,20 @@ setInterval(function() {
 			res.on('end', function() {
 				try {
 					var data = JSON.parse(body);
-					if (data['stream'] && data['stream']['game'] == 'Warcraft III: The Frozen Throne') {
+					if (data['stream']) {// && data['stream']['game'] == 'Warcraft III: The Frozen Throne') {
 						newLiveChannels.push(data); 
-					}
+					} 
 				} catch (err) {
 					console.log(err); 
 				}
-				--count;
+				--count; 
 				if (count <= 0) liveChannels = newLiveChannels; 
 			}); 
 		}); 
 		request.on('error', function(err) {
 			console.log(err); 
-			//--count;
-			//if (count <= 0) liveChannels = newLiveChannels; 
+			--count; 
+			if (count <= 0) liveChannels = newLiveChannels; 
 		});
 		request.end();
 	}
