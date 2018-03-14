@@ -29,6 +29,7 @@ app.use('/forum', require('./routes/forum'));
 app.use('/alias', require('./routes/alias'));
 app.use('/games', require('./routes/games'));
 app.use('/stats', require('./routes/stats'));
+app.use('/streams', require('./routes/streams')); 
 
 app.get('/latest', function(req, res) {
 	res.redirect('https://drive.google.com/file/d/1mjTmNEAaG8wKK8NxGjW7QDAJIy65ONZc/view?usp=sharing');
