@@ -105,7 +105,6 @@ function parseGameSlots(data, callback) {
 			} else {
 				gameSlots[i - 2] = { 'username': username, 'realm': realm, 'ping': ping, 'score': 0 };
 				--count;
-				console.log(count); 
 				if (count <= 0) return callback(null, {
 					'gamename': gamename,
 					'slots': gameSlots,
@@ -154,25 +153,47 @@ function getGameInfo(id, progress, callback) {
 						info['map'] = map;
 						info['owner'] = owner;
 						info['duration'] = duration;
-						info['progress'] = progress; 
-						var obj = {
-							id: id,
-							gamename: gamename,
-							map: map, 
-							owner: owner,
-							duration: duration,
-							slots: info.slots,
-							players: info.players,
-							progress: progress
-						}; 
-						Game.update({ id: id }, obj, { upsert: true }, function(err) {
+						info['progress'] = progress;  
+						Game.findOne({ id: id }, function(err, game) {
 							if (err) return callback(err);
-							Game.findOne({ id: id }, function(err, game) {
+							else if (game) {
+								if (progress) {
+									game.gamename = gamename;
+									game.map = map;
+									game.owner = owner;
+									game.duration = duration;
+									game.progress = true; 
+									if (info.slots.length == game.slots.length) {
+										game.slots = info.slots;
+										game.players = info.players;
+									}
+								} else {
+									game.gamename = gamename;
+									game.map = map;
+									game.owner = owner;
+									game.duration = duration;
+									game.slots = info.slots;
+									game.players = info.players,
+									game.progress = false; 
+								}
+							} else {
+								var game = new Game({
+									id: id,
+									gamename: gamename,
+									map: map, 
+									owner: owner,
+									duration: duration,
+									slots: info.slots,
+									players: info.players,
+									progress: progress
+								});
+							}
+							game.save(function(err) {
 								if (err) return callback(err);
 								info['_id'] = game._id;
 								return callback(null, info);
-							});
-						});
+							}); 
+						}); 
 					});
 				} else {
 					return callback(null, null); 
