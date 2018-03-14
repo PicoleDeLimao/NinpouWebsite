@@ -13,7 +13,7 @@ setInterval(function() {
 	var count = channels.length;
 	for (var i = 0; i < channels.length; i++) {
 		var channel = channels[i];
-		var request = https.request({ host: 'api.twitch.tv', path: '/kraken/streams/' + channel + '?client_id=waz727qcznt48ovp7uo05xckyylxmb', method: 'GET', function(res) {
+		var request = https.request({ host: 'api.twitch.tv', path: '/kraken/streams/' + channel + '?client_id=waz727qcznt48ovp7uo05xckyylxmb', method: 'GET' }, function(res) {
 			var body = '';
 			res.on('data', function(chunk) {
 				body += chunk;
