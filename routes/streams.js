@@ -5,7 +5,7 @@ var express = require('express');
 var router = express.Router();
 var https = require('https');
 
-var channels = ['twofacekami', 'shiroshura', 'ryusei6', 'brookfest', 'avengerruler', 'teoman7777', 'ghost_tobi'];
+var channels = ['twofacekami', 'shiroshura', 'ryusei6', 'brookfest', 'avengerruler', 'teoman7777', 'ghost_tobi', 'manpons'];
 var liveChannels = [];
  
 setInterval(function() {
