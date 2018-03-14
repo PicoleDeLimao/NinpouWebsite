@@ -8,6 +8,52 @@ var Game = require('../models/Game');
 var Stat = require('../models/Stat');
 var Alias = require('../models/Alias');
 
+var cookie = '';
+
+function getCookie() {
+	var request = https.request({ host: 'entgaming.net', path: '/forum/ucp.php?mode=login', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': 0 } }, function(res) {
+		var body = '';
+		res.on('data', function(chunk) {
+			body += chunk;
+		});
+		res.on('end', function() {
+			var sid = body.split('<p><a href="./ucp.php?mode=register&amp;sid=')[1].split('"')[0];
+			var dataToSend = 'username=NinpouStorm&password=N1nP0uR0cKs!!!&autologin=on&sid=' + sid + '&login=Login';
+			var request = https.request({ host: 'entgaming.net', path: '/forum/ucp.php?mode=login', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(dataToSend) } }, function(res) {
+				res.on('data', function(chunk) {
+					
+				});
+				res.on('end', function() {
+					var cookies = res.headers['set-cookie'];
+					cookie = '';
+					for (var i = 0; i < cookies.length; i++) {
+						cookie += cookies[i].split(';')[0];
+						if (i != cookies.length - 1)
+							cookie += '; ';
+					}
+					console.log('Cookie: ' + cookie);
+				});
+			});
+			request.on('error', function(err) {
+				console.log(err);
+			});
+			request.write(dataToSend);
+			request.end();
+		});
+	});
+	request.on('error', function(err) {
+		console.log(err); 
+	});
+	request.end();
+};
+
+getCookie();
+
+setInterval(function() {
+	getCookie();
+}, 60*60*1000);
+
+ 
 function getPlayerAlias(alias, callback) {
 	Alias.findOne({ alias: alias.toLowerCase() }, function(err, alias) {
 		if (err) return callback(err);
@@ -89,7 +135,7 @@ function getGameDuration(id, callback) {
 	});
 }
 
-function getGameInfo(id, callback) {
+function getGameInfo(id, progress, callback) {
 	https.get({ hostname: 'entgaming.net', path: '/forum/slots_fast.php?id=' + id + '&ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
 		var data = '';
 		response.on('data', function(chunk) {
@@ -108,6 +154,7 @@ function getGameInfo(id, callback) {
 						info['map'] = map;
 						info['owner'] = owner;
 						info['duration'] = duration;
+						info['progress'] = progress; 
 						var obj = {
 							id: id,
 							gamename: gamename,
@@ -116,6 +163,7 @@ function getGameInfo(id, callback) {
 							duration: duration,
 							slots: info.slots,
 							players: info.players,
+							progress: progress
 						}; 
 						Game.update({ id: id }, obj, { upsert: true }, function(err) {
 							if (err) return callback(err);
@@ -150,9 +198,10 @@ setInterval(function() {
 			for (var i = 0; i < gamesData.length; i++) {
 				if (gamesData[i] && gamesData[i].split('|').length > 4) {
 					var id = gamesData[i].split('|')[0];
+					var progress = gamesData[i].split('|')[4] == '0';
 					var gamename = gamesData[i].split('|')[5];
 					if (gamename.toLowerCase().indexOf('[ent]') == -1) {  
-						getGameInfo(id, function(err, game) {
+						getGameInfo(id, progress, function(err, game) {
 							if (game != null) { 
 								games.push(game);
 							} 
@@ -193,34 +242,14 @@ setInterval(function() {
 						(function(id, progress) {
 							Game.findOne({ id: id }, function(err, game) {
 								if (!err && game) {
-									getGameDuration(id, function(err, duration) {
-										if (err) {
+									getGameInfo(id, progress, function(err, game) {
+										if (err) { 
 											--count;
 											if (count <= 0) inProgressGames = games;
 										} else {
-											game.duration = duration;
-											game.progress = progress;
-											game.save(function(err) {
-												var usernames = [];
-												var usernameSlots = { };
-												for (var i = 0; i < game.slots.length; i++) {
-													if (game.slots[i].username) {
-														usernames.push(game.slots[i].username.toLowerCase());
-														usernameSlots[game.slots[i].username.toLowerCase()] = i;
-													}
-													game.slots[i].score = 0;
-												}
-												Stat.find({ username: { $in: usernames } }, function(err, stats) {
-													if (!err) {
-														for (var i = 0; i < stats.length; i++) {
-															game.slots[usernameSlots[stats[i].username]].score = stats[i].score;
-														}
-													}
-													games.push(game);
-													--count;
-													if (count <= 0) inProgressGames = games;
-												});
-											});
+											games.push(game);
+											--count;
+											if (count <= 0) inProgressGames = games;
 										}
 									});
 								} else {
@@ -258,6 +287,34 @@ setInterval(function() {
 router.get('/', function(req, res) { 
 	return res.json(hostedGames);
 });
+ 
+router.post('/', function(req, response) {
+	var dataToSend = 'owner=' + req.body.owner + '&map=:fqna5&location=' + req.body.realm;
+	var request = https.request({ host: 'entgaming.net', path: '/link/host.php', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(dataToSend), 'cookie': cookie } }, function(res) {
+		var body = '';
+		res.on('data', function(chunk) { 
+			body += chunk;
+		});
+		res.on('end', function() {
+			if (res.statusCode != 200) {
+				return response.status(500).send(); 
+			} else {
+				var gamename = body.split('GAMENAME:');
+				if (gamename.length > 1) {
+					var name = gamename[1].split('</b>')[0];
+					return response.status(201).json({ 'gamename': name });
+				} else {
+					return response.status(400).send();
+				}
+			}
+		});
+	}); 
+	request.on('error', function(err) {
+		return response.status(500).json({ 'error': err }); 
+	});
+	request.write(dataToSend);
+	request.end(); 
+});
 
 router.get('/progress', function(req, res) {
 	return res.json(inProgressGames);
@@ -278,9 +335,10 @@ router.get('/recorded', function(req, res) {
 });
  
 router.get('/:game_id', function(req, res) {
-	Game.find({ id: req.params.game_id }, function(err, game) {
+	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err) return res.status(500).json(err);
-		return res.json(game[0]);
+		else if (!game) return res.status(404).json({ 'error': 'Game not found.' });
+		return res.json(game);
 	});
 });
 

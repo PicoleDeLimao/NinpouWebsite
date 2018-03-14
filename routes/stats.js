@@ -177,7 +177,7 @@ router.get('/reset_score', function(req, res) {
 
 router.post('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
-		if (err || !game) return res.status(400).json({ error: 'Game not found.' });
+		if (err || !game) return res.status(404).json({ error: 'Game not found.' });
 		else if (game.recorded) return res.status(400).json({ error: 'Game was already recorded.' });
 		else if (game.slots.length != 9 || !game.progress) return res.status(400).json({ error: 'Invalid game.' });
 		var body = req.body.contents;
@@ -288,9 +288,9 @@ function dateFromObjectId(objectId) {
 	return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
 };
 
-router.delete('/:game_id', function(req, res) {
+router.delete('/:game_id', function(req, res) { 
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
-		if (err || !game) return res.status(400).json({ error: 'Game not found.' });
+		if (err || !game) return res.status(404).json({ error: 'Game not found.' });
 		else if (!game.recorded) return res.status(400).json({ error: 'Game was not recorded.' });
 		var date = dateFromObjectId(game._id.toString());
 		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
