@@ -40,6 +40,9 @@ setInterval(function() {
 			});
 			request.end();
 		}
+		if (streams.length == 0) {
+			liveChannels = newLiveChannels;  
+		}
 	}); 
 }, 60000);
 
