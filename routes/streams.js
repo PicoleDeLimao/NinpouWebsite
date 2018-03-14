@@ -30,11 +30,11 @@ setInterval(function() {
 				--count;
 				if (count <= 0) liveChannels = newLiveChannels; 
 			}); 
-		});
+		}); 
 		request.on('error', function(err) {
 			console.log(err); 
-			--count;
-			if (count <= 0) liveChannels = newLiveChannels; 
+			//--count;
+			//if (count <= 0) liveChannels = newLiveChannels; 
 		});
 		request.end();
 	}
