@@ -4,11 +4,11 @@ var mongoose = require('mongoose');
 var express = require('express');
 var router = express.Router();
 var https = require('https');
-
-var channels = ['twofacekami', 'shiroshura', 'ryusei6', 'brookfest', 'avengerruler', 'teoman7777', 'ghost_tobi', 'manpons'];
+ 
+var channels = ['twofacekami', 'shiroshura', 'ryusei6', 'brookfest', 'avengerruler', 'teoman7777', 'ghost_tobi'];
 var liveChannels = [];
  
-setInterval(function() {
+setInterval(function() { 
 	var newLiveChannels = [];
 	var count = channels.length - 1;
 	for (var i = 0; i < channels.length; i++) {
@@ -21,7 +21,7 @@ setInterval(function() {
 			res.on('end', function() {
 				try {
 					var data = JSON.parse(body);
-					if (data['stream']) {// && data['stream']['game'] == 'Warcraft III: The Frozen Throne') {
+					if (data['stream']) && data['stream']['game'] == 'Warcraft III: The Frozen Throne') {
 						newLiveChannels.push(data); 
 					} 
 				} catch (err) {
@@ -37,8 +37,8 @@ setInterval(function() {
 			if (count <= 0) liveChannels = newLiveChannels; 
 		});
 		request.end();
-	}
-}, 10000);
+	} 
+}, 60000);
 
 router.get('/', function(req, res) {
 	return res.json(liveChannels);
