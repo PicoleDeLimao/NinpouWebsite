@@ -23,7 +23,7 @@ setInterval(function() {
 				res.on('end', function() {
 					try {
 						var data = JSON.parse(body); 
-						if (data['stream']) && data['stream']['game'] == 'Warcraft III: The Frozen Throne') {
+						if (data['stream'] && data['stream']['game'] == 'Warcraft III: The Frozen Throne') {
 							newLiveChannels.push(data); 
 						} 
 					} catch (err) {
