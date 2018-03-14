@@ -7,7 +7,7 @@ var https = require('https');
  
 var channels = ['twofacekami', 'shiroshura', 'ryusei6', 'brookfest', 'avengerruler', 'teoman7777', 'ghost_tobi'];
 var liveChannels = [];
- 
+  
 setInterval(function() { 
 	var newLiveChannels = [];
 	var count = channels.length - 1;
@@ -21,12 +21,12 @@ setInterval(function() {
 			res.on('end', function() {
 				try {
 					var data = JSON.parse(body);
-					if (data['stream']) && data['stream']['game'] == 'Warcraft III: The Frozen Throne') {
+					if (data['stream'] && data['stream']['game'] == 'Warcraft III: The Frozen Throne') {
 						newLiveChannels.push(data); 
 					} 
 				} catch (err) {
 					console.log(err); 
-				}
+				} 
 				--count; 
 				if (count <= 0) liveChannels = newLiveChannels; 
 			}); 
