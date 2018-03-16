@@ -114,7 +114,11 @@ router.post('/:username/play', function(req, res) {
 		if (doneToday) {
 			return res.status(400).json({ 'error': 'You already completed this mission today! **Oink!**' });
 		} else { 
-			Game.find({ 'slots.username': { $in: req.user.alias } }).sort('_-id').limit(1).exec(function(err, games) {
+			var aliases = [];
+			for (var i = 0; i < req.user.alias.length; i++) {
+				aliases.push(new RegExp(['^', req.user.alias[i], '$'].join(''), 'i'));
+			}  
+			Game.find({ 'slots.username': { $in: aliases }, recorded: true }).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
 					return res.status(400).json({ 'error': 'You didn\'t play any game today! **Oink!**' });
 				} else {
@@ -158,8 +162,12 @@ router.post('/:username/win', function(req, res) {
 		var doneThisWeek = missions.length > 0 && isWithinAWeek(moment(dateFromObjectId(missions[0]._id.toString())));
 		if (doneToday) {
 			return res.status(400).json({ 'error': 'You already completed this mission today! **Oink!**' });
-		} else { 
-			Game.find({ 'slots.username': { $in: req.user.alias }, 'slots.win': true }).sort('_-id').limit(1).exec(function(err, games) {
+		} else {  
+			var aliases = [];
+			for (var i = 0; i < req.user.alias.length; i++) {
+				aliases.push(new RegExp(['^', req.user.alias[i], '$'].join(''), 'i'));
+			}  
+			Game.find({ 'slots.username': { $in: aliases }, 'slots.win': true, recorded: true }).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
 					return res.status(400).json({ 'error': 'You didn\'t win any game today! **Oink!**' });
 				} else {
