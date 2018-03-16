@@ -7,6 +7,7 @@ var Game = require('../models/Game');
 var Stat = require('../models/Stat');
 var HeroStat = require('../models/HeroStat');
 var Alias = require('../models/Alias');
+var Calculator = require('./calculator');
 
 var encodedPlayersId = [];
 encodedPlayersId[0] = 6;
@@ -15,7 +16,7 @@ encodedPlayersId[2] = 0;
 encodedPlayersId[3] = 9;
 encodedPlayersId[4] = 5;
 encodedPlayersId[5] = 4;
-encodedPlayersId[6] = 2;
+encodedPlayersId[6] = 2; 
 encodedPlayersId[7] = 1;
 encodedPlayersId[8] = 8;
 
@@ -133,24 +134,6 @@ function getSlotId(playerId) {
 	else return playerId - 2;
 };
 
-function AgrestiCoullLower(n, k) {
-	//float conf = 0.05;  // 95% confidence interval
-	var kappa = 10;//2.24140273; // In general, kappa = ierfc(conf/2)*sqrt(2)
-	var kest=k+Math.pow(kappa,2)/2;
-	var nest=n+Math.pow(kappa,2);
-	var pest=kest/nest;
-	var radius=kappa*Math.sqrt(pest*(1-pest)/nest);
-	return Math.max(0,pest-radius); // Lower bound
-	// Upper bound is min(1,pest+radius)
-};
-
-function calculateScore(stat) {
-	stat.chanceWin = stat.chanceWin || AgrestiCoullLower(stat.games, stat.wins);
-	var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) * (stat.gpm * 100 / stat.games) * stat.chanceWin;   
-	if (isNaN(score)) return 0;  
-	return score; 
-}; 
-
 function getPlayerAlias(alias, callback) {
 	Alias.findOne({ alias: alias.toLowerCase() }, function(err, alias) {
 		if (err) return callback(err);
@@ -164,8 +147,8 @@ router.get('/reset_score', function(req, res) {
 		if (err) return;
 		(function next(i) {
 			if (i == stats.length) return;
-			stats[i].chanceWin = AgrestiCoullLower(stat.games, stat.wins);
-			stats[i].score = calculateScore(stats[i]);
+			stats[i].chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+			stats[i].score = Calculator.calculateScore(stats[i]);
 			stats[i].save(function(err) {
 				if (err) return;
 				next(i + 1); 
@@ -249,8 +232,8 @@ router.post('/:game_id', function(req, res) {
 							stat.gpm += game.slots[index].gpm;
 							if (game.slots[index].win) stat.wins += 1;
 							stat.games += 1; 
-							stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
-							stat.score = calculateScore(stat);
+							stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+							stat.score = Calculator.calculateScore(stat);
 							stat.alias = username || stat.alias;
 							stat.save(function(err) {
 								if (err) return res.status(500).json(err);
@@ -266,8 +249,8 @@ router.post('/:game_id', function(req, res) {
 									stat.gpm += game.slots[index].gpm;
 									if (game.slots[index].win) stat.wins += 1;
 									stat.games += 1;
-									stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
-									stat.score = calculateScore(stat);
+									stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+									stat.score = Calculator.calculateScore(stat);
 									stat.save(function(err) {
 										if (err) return res.status(500).json(err);
 										addStat(index + 1);
@@ -312,8 +295,8 @@ router.delete('/:game_id', function(req, res) {
 					stat.gpm -= game.slots[index].gpm;
 					if (game.slots[index].win) stat.wins -= 1;
 					stat.games -= 1;
-					stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
-					stat.score = calculateScore(stat);
+					stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+					stat.score = Calculator.calculateScore(stat);
 					stat.save(function(err) {
 						if (err) return res.status(500).json(err);
 						HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
@@ -324,8 +307,8 @@ router.delete('/:game_id', function(req, res) {
 							stat.gpm -= game.slots[index].gpm;
 							if (game.slots[index].win) stat.wins -= 1;
 							stat.games -= 1;
-							stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
-							stat.score = calculateScore(stat);
+							stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+							stat.score = Calculator.calculateScore(stat);
 							stat.save(function(err) {
 								if (err) return res.status(500).json(err);
 								resetScore(index + 1);
@@ -371,8 +354,8 @@ router.get('/players/:username', function(req, res) {
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
 			}
-			allStat.chanceWin = AgrestiCoullLower(allStat.games, allStat.wins);
-			allStat.score = calculateScore(allStat);
+			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
+			allStat.score = Calculator.calculateScore(allStat);
 			Stat.aggregate([
 			{
 				$group: {
@@ -388,8 +371,8 @@ router.get('/players/:username', function(req, res) {
 			], function(err, stats) {
 				if (err) return res.status(500).json(err);
 				for (var i = 0; i < stats.length; i++) {
-					stats[i].chanceWin = AgrestiCoullLower(stats[i].games, stats[i].wins);
-					stats[i].score = calculateScore(stats[i]);
+					stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
+					stats[i].score = Calculator.calculateScore(stats[i]);
 				}
 				stats.sort(function(a, b) {
 					return b.score - a.score; 
@@ -411,8 +394,8 @@ router.get('/heroes/:map/:hero_id', function(req, res) {
 	HeroStat.findOne({ hero: req.params.hero_id, map: req.params.map }, function(err, stat) {
 		if (err) return res.status(500).json(err);
 		else if (!stat) return res.status(400).json({ error: 'Hero not found.' });
-		stat.chanceWin = AgrestiCoullLower(stat.games, stat.wins);
-		stat.score = calculateScore(stat);
+		stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+		stat.score = Calculator.calculateScore(stat);
 		return res.json(stat);
 	});
 });
@@ -433,8 +416,8 @@ router.get('/ranking', function(req, res) {
 	], function(err, stats) {
 		if (err) return res.status(500).json(err);
 		for (var i = 0; i < stats.length; i++) {
-			stats[i].chanceWin = AgrestiCoullLower(stats[i].games, stats[i].wins);
-			stats[i].score = calculateScore(stats[i]);
+			stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
+			stats[i].score = Calculator.calculateScore(stats[i]);
 		} 
 		stats.sort(function(a, b) {
 			return b.score - a.score;
@@ -472,8 +455,8 @@ router.get('/ranking/:username', function(req, res) {
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
 			}
-			allStat.chanceWin = AgrestiCoullLower(allStat.games, allStat.wins);
-			allStat.score = calculateScore(allStat);
+			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
+			allStat.score = Calculator.calculateScore(allStat);
 			Stat.aggregate([
 			{
 				$match: { username: { $nin: usernames } }
@@ -492,8 +475,8 @@ router.get('/ranking/:username', function(req, res) {
 			], function(err, stats) {
 				if (err) return res.status(500).json(err);
 				for (var i = 0; i < stats.length; i++) {
-					stats[i].chanceWin = AgrestiCoullLower(stats[i].games, stats[i].wins);
-					stats[i].score = calculateScore(stats[i]);
+					stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
+					stats[i].score = Calculator.calculateScore(stats[i]);
 				}
 				stats.sort(function(a, b) {
 					return b.score - a.score; 
