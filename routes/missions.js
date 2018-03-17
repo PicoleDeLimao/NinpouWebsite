@@ -84,7 +84,7 @@ router.post('/:username/gamble', function(req, res) {
 			} 
 			var amount = req.body.amount;
 			var won = Math.round(Math.random()) == 0;
-			var streak = doneYesterday && mission.won;
+			var streak = doneYesterday && missions.length > 0 && missions[0].won;
 			if (won) amount *= 2;
 			else amount = -amount;
 			if (won && streak) amount *= 2;
@@ -104,7 +104,7 @@ router.post('/:username/gamble', function(req, res) {
 		} 
 	});
 });
-
+ 
 // play
 router.post('/:username/play', function(req, res) {
 	Mission.find({ username: req.user.username, name: 'play' }).sort('-_id').limit(1).exec(function(err, missions) {
