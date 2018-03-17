@@ -2,6 +2,7 @@
 
 var Discord = require('discord.js');
 var http = require('http');
+var moment = require('moment');
 
 // Initialize Discord Bot
 var bot = new Discord.Client();
