@@ -160,7 +160,8 @@ setInterval(function() {
 			}
 			if (!contains) {
 				ev.onlineStreams[_id].message.delete();
-				ev.onlineStreams[_id].embed.delete();
+				if (ev.onlineStreams[stream._id].embed)
+					ev.onlineStreams[_id].embed.delete();
 				delete ev.onlineStreams[_id];
 			}
 		}  
@@ -179,7 +180,8 @@ setInterval(function() {
 						.setThumbnail(stream.channel.logo)
 						.setFooter(stream.viewers + ' viewers | Started '  + m.fromNow());
 				if (ev.onlineStreams.hasOwnProperty(stream._id)) {
-					ev.onlineStreams[stream._id].embed.edit(msgEmbed);
+					if (ev.onlineStreams[stream._id].embed)
+						ev.onlineStreams[stream._id].embed.edit(msgEmbed);
 				} else {  
 					ev.channel.send(msg).then(function(msg) {
 						ev.onlineStreams[stream._id] = { message: msg };
