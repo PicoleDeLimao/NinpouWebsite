@@ -160,10 +160,10 @@ setInterval(function() {
 			}
 			if (!contains) {
 				ev.onlineStreams[_id].message.delete();
-				if (ev.onlineStreams[stream._id].embed)
+				if (ev.onlineStreams[_id].embed)
 					ev.onlineStreams[_id].embed.delete();
 				delete ev.onlineStreams[_id];
-			}
+			} 
 		}  
 		console.log(ev.onlineStreams);
 		for (var i = 0; i < onlineStreams.length; i++) {
@@ -186,9 +186,9 @@ setInterval(function() {
 				} else {  
 					ev.channel.send(msg).then(function(msg) {
 						ev.onlineStreams[stream._id] = { message: msg };
-						//ev.channel.send(msgEmbed).then(function(msg) {
-						//	ev.onlineStreams[stream._id].embed = msg;
-						//}); 
+						ev.channel.send(msgEmbed).then(function(msg) {
+							ev.onlineStreams[stream._id].embed = msg;
+						}); 
 					}); 
 				}
 			})(onlineStreams[i]);
