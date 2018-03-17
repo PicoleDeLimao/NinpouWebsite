@@ -298,17 +298,6 @@ setInterval(function() {
 	});
 }, 10000);
 
-setInterval(function() {
-	https.get({ hostname: 'tonton-bot.herokuapp.com', path: '/?ie=' + (new Date()).getTime(), headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate', 'Expires': '-1', 'Pragma': 'no-cache' } }, function(response) {
-		var data = '';
-		response.on('data', function(chunk) {
-			data += chunk;
-		});
-	}).on('error', function(err) {
-		console.log('Error: ' + err);
-	});
-}, 10000);
-
 router.get('/', function(req, res) { 
 	return res.json(hostedGames);
 });

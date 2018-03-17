@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.1",
+    "discord.js": "^11.3.2",
     "express": "^4.15.2",
     "i": "^0.3.6",
     "jsonwebtoken": "^7.3.0",

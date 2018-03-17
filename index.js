@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var path = require('path');
 var auth = require('./config/auth');
+var bot = require('./bot/bot');
 
 var app = express();
 app.use(express.static('public'));
