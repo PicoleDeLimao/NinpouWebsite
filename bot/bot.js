@@ -185,9 +185,9 @@ setInterval(function() {
 				} else {  
 					ev.channel.send(msg).then(function(msg) {
 						ev.onlineStreams[stream._id] = { message: msg };
-						ev.channel.send(msgEmbed).then(function(msg) {
-							ev.onlineStreams[stream._id].embed = msg;
-						});
+						//ev.channel.send(msgEmbed).then(function(msg) {
+						//	ev.onlineStreams[stream._id].embed = msg;
+						//}); 
 					}); 
 				}
 			})(onlineStreams[i]);
