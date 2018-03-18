@@ -51,7 +51,7 @@ setInterval(function() {
 		});
 		res.on('end', function() {
 			try {
-				games = JSON.parse(body);
+				var games = JSON.parse(body);
 				hostedGames = [];
 				for (var i = 0; i < games.length; i++) {
 					if (games[i]) {
@@ -79,7 +79,7 @@ setInterval(function() {
 		});
 		res.on('end', function() {
 			try {
-				games = JSON.parse(body); 
+				var games = JSON.parse(body); 
 				inProgressGames = [];
 				for (var i = 0; i < games.length; i++) {
 					if (games[i]) {
@@ -118,8 +118,8 @@ setInterval(function() {
 			body += data; 
 		});
 		res.on('end', function() {
-			try {
-				streams = JSON.parse(body); 
+			try { 
+				var streams = JSON.parse(body); 
 				onlineStreams = [];
 				for (var i = 0; i < streams.length; i++) {
 					if (streams[i]) {
@@ -139,9 +139,9 @@ setInterval(function() {
 
 var broadcastings = [];
 setInterval(function() {
-	hostedGames_ = hostedGames;
-	inProgressGames_ = inProgressGames;
-	onlineStreams_ = onlineStreams; 
+	var hostedGames_ = hostedGames;
+	var inProgressGames_ = inProgressGames;
+	var onlineStreams_ = onlineStreams; 
 	for (var channel in broadcastings) {
 		var ev = broadcastings[channel];
 		ev.endingGames = ev.endingGames || [];
