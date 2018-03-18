@@ -51,7 +51,15 @@ setInterval(function() {
 		});
 		res.on('end', function() {
 			try {
-				hostedGames = JSON.parse(body);
+				games = JSON.parse(body);
+				hostedGames = [];
+				for (var i = 0; i < games.length; i++) {
+					if (games[i]) {
+						hostedGames.push(games[i]);
+					} else {
+						console.log(games);
+					}
+				}
 			} catch (err) {
 				console.error(err);
 			}
@@ -71,7 +79,15 @@ setInterval(function() {
 		});
 		res.on('end', function() {
 			try {
-				inProgressGames = JSON.parse(body);
+				games = JSON.parse(body); 
+				inProgressGames = [];
+				for (var i = 0; i < games.length; i++) {
+					if (games[i]) {
+						inProgressGames.push(games[i]);
+					} else {
+						console.log(games);
+					}
+				}
 			} catch (err) {
 				console.error(err);
 			}
@@ -103,7 +119,15 @@ setInterval(function() {
 		});
 		res.on('end', function() {
 			try {
-				onlineStreams = JSON.parse(body);
+				streams = JSON.parse(body); 
+				onlineStreams = [];
+				for (var i = 0; i < streams.length; i++) {
+					if (streams[i]) {
+						onlineStreams.push(streams[i]);
+					} else {
+						console.log(streams);
+					}
+				} 
 			} catch(err) {
 				console.error(err);
 			}
@@ -134,7 +158,7 @@ setInterval(function() {
 		}
 		for (var i = 0; i < inProgressGames.length; i++) {
 			(function(game) {
-				if (game && game.progress) {
+				if (game.progress) {
 					var duration = parseInt(game.duration.split(':')[1]);
 					if (duration >= 40) { 
 						var msg = '@here ' + game.gamename + ' is about to end (' + duration + ' minutes elapsed).';
