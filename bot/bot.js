@@ -192,7 +192,6 @@ setInterval(function() {
 				delete ev.onlineStreams[_id];
 			} 
 		}  
-		console.log(ev.onlineStreams);
 		for (var i = 0; i < onlineStreams_.length; i++) {
 			(function(stream) {
 				var stream = stream.stream; 
