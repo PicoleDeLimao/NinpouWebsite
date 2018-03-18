@@ -139,14 +139,17 @@ setInterval(function() {
 
 var broadcastings = [];
 setInterval(function() {
+	hostedGames_ = hostedGames;
+	inProgressGames_ = inProgressGames;
+	onlineStreams_ = onlineStreams; 
 	for (var channel in broadcastings) {
 		var ev = broadcastings[channel];
 		ev.endingGames = ev.endingGames || [];
-		displayGames(ev, hostedGames, true, false);
+		displayGames(ev, hostedGames_, true, false);
 		for (var id in ev.endingGames) {
 			var contains = false;
-			for (var i = 0; i < inProgressGames.length; i++) {
-				if (inProgressGames[i].id == id) {
+			for (var i = 0; i < inProgressGames_.length; i++) {
+				if (inProgressGames_[i].id == id) {
 					contains = true;
 					break;
 				}
@@ -156,7 +159,7 @@ setInterval(function() {
 				delete ev.endingGames[id];
 			}
 		}
-		for (var i = 0; i < inProgressGames.length; i++) {
+		for (var i = 0; i < inProgressGames_.length; i++) {
 			(function(game) {
 				if (game.progress) {
 					var duration = parseInt(game.duration.split(':')[1]);
@@ -171,13 +174,13 @@ setInterval(function() {
 						}
 					}
 				} 
-			})(inProgressGames[i]);
+			})(inProgressGames_[i]);
 		}
 		ev.onlineStreams = ev.onlineStreams || { };
 		for (var _id in ev.onlineStreams) {
 			var contains = false;
-			for (var i = 0; i < onlineStreams.length; i++) {
-				if (onlineStreams[i].stream._id == _id) {
+			for (var i = 0; i < onlineStreams_.length; i++) {
+				if (onlineStreams_[i].stream._id == _id) {
 					contains = true;
 					break;
 				}
@@ -190,7 +193,7 @@ setInterval(function() {
 			} 
 		}  
 		console.log(ev.onlineStreams);
-		for (var i = 0; i < onlineStreams.length; i++) {
+		for (var i = 0; i < onlineStreams_.length; i++) {
 			(function(stream) {
 				var stream = stream.stream; 
 				var date = new Date(stream.created_at);
@@ -215,7 +218,7 @@ setInterval(function() {
 						}); 
 					}); 
 				}
-			})(onlineStreams[i]);
+			})(onlineStreams_[i]);
 		} 
 	} 
 }, 10000);
