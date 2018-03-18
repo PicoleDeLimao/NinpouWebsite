@@ -134,7 +134,7 @@ setInterval(function() {
 		}
 		for (var i = 0; i < inProgressGames.length; i++) {
 			(function(game) {
-				if (game.progress) {
+				if (game && game.progress) {
 					var duration = parseInt(game.duration.split(':')[1]);
 					if (duration >= 40) { 
 						var msg = '@here ' + game.gamename + ' is about to end (' + duration + ' minutes elapsed).';
@@ -146,7 +146,7 @@ setInterval(function() {
 							});
 						}
 					}
-				}
+				} 
 			})(inProgressGames[i]);
 		}
 		ev.onlineStreams = ev.onlineStreams || { };
