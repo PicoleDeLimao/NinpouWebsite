@@ -10,7 +10,11 @@ module.exports = function(username, callback) {
 		});
 		res.on('end', function() { 
 			if (res.statusCode != 200) { 
-				return callback(true);
+				if (res.statusCode == 404) {
+					return callback(null, []); 
+				} else {
+					return callback(true);
+				}
 			} else {
 				try { 
 					var json = JSON.parse(body);
