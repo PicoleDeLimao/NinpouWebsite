@@ -34,9 +34,9 @@ app.use('/streams', require('./routes/streams'));
 app.use('/missions', require('./routes/missions')); 
 
 app.get('/latest', function(req, res) {
-	res.redirect('https://drive.google.com/file/d/1mjTmNEAaG8wKK8NxGjW7QDAJIy65ONZc/view?usp=sharing');
+	res.redirect('https://drive.google.com/file/d/1aFnoMOPrQlpuv6_7ukJSb_3_E4B4LxBc/view?usp=sharing');
 });
-
+ 
 var port = process.env.PORT || 8080;
 app.listen(port, function() {
 	console.log('Listening on port ' + port + '...');
