@@ -302,8 +302,8 @@ router.get('/', function(req, res) {
 	return res.json(hostedGames);
 });
  
-router.post('/', function(req, response) {
-	var dataToSend = 'owner=' + req.body.owner + '&map=:fqna5&location=' + req.body.realm;
+router.post('/', function(req, response) { 
+	var dataToSend = 'owner=' + req.body.owner + '&map=:3vgwg&location=' + req.body.realm;
 	var request = https.request({ host: 'entgaming.net', path: '/link/host.php', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(dataToSend), 'cookie': cookie } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) { 
