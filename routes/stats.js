@@ -158,7 +158,7 @@ router.get('/reset_score', function(req, res) {
 	res.send();
 }); 
 
-router.post('/:game_id', function(req, res) {
+router.post('/:game_id', function(req, res) {  
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err || !game) return res.status(404).json({ error: 'Game not found.' });
 		else if (game.recorded) return res.status(400).json({ error: 'Game was already recorded.' });
