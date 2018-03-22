@@ -12,7 +12,7 @@ module.exports = function(ev, gameId, code, alias) {
 				ev.channel.send('Couldn\'t fetch game. :( **Oink!**');
 			} 
 		} else if (!record) {
-			ev.channel.send('You can only record a game you played with. :( **Oink!**');
+			ev.channel.send('You can only record a game you played. :( **Oink!**');
 		} else {
 			var dataToSend = '{ "contents": "' + code.replace(/"/g, '\\"') + '" }';
 			var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/' + gameId, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(dataToSend) } }, function(res) {

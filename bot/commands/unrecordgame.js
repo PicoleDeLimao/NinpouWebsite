@@ -12,7 +12,7 @@ module.exports = function(ev, gameId, alias) {
 				ev.channel.send('Couldn\'t fetch game. :( **Oink!**');
 			} 
 		} else if (!record) {
-			ev.channel.send('You can only unrecord a game you played with. :( **Oink!**');
+			ev.channel.send('You can only unrecord a game you played. :( **Oink!**');
 		} else {
 			var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/' + gameId, method: 'DELETE', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 				var body = '';
