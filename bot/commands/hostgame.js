@@ -19,7 +19,7 @@ module.exports = function(ev, owner, realm) {
 					ev.channel.send('Error while hosting game. :( **Oink!**');
 				}  
 			} else if (res.statusCode == 400) { 
-				ev.channel.send('A game is already in lobby! Check #announcements **Oink!**');
+				ev.channel.send('A game is already in lobby! Check #games-hosted **Oink!**');
 			} else {
 				ev.channel.send('Error while hosting game. :( **Oink!**');
 			}

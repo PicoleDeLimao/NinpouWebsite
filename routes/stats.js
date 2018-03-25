@@ -184,6 +184,8 @@ router.post('/:game_id', function(req, res) {
 				if (!game.slots[id].username) {
 					return res.status(400).json({ error: 'Invalid code.' });
 				}
+				var letter = body[++i].toLowerCase();
+				if (letter != game.slots[id].username[0].toLowerCase()) return res.status(400).json({ error: 'This code doesn\'t belong to this game.' }); 
 				var hero = decodeInt(res, body[++i]);
 				var kills = decodeInt(res, body[++i]);
 				var deaths = decodeInt(res, body[++i]);

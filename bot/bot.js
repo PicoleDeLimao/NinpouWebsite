@@ -389,7 +389,7 @@ bot.on('message', function(ev) {
 									hostGame(ev, alias[0], args[0]);
 								}
 							} else if (args.length == 0) {
-								hostGame(ev, alias[0], 'europe');
+								hostGame(ev, alias[0], 'atlanta');
 							} else {
 								ev.channel.send('Me no understand! Use **!host <location>**');
 							}

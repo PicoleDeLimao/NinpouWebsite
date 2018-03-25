@@ -34,8 +34,8 @@ app.use('/streams', require('./routes/streams'));
 app.use('/missions', require('./routes/missions')); 
 
 app.get('/latest', function(req, res) {
-	res.redirect('https://drive.google.com/file/d/1aFnoMOPrQlpuv6_7ukJSb_3_E4B4LxBc/view?usp=sharing');
-});
+	res.redirect('https://drive.google.com/file/d/1hXEcPRWA0JIE7sYTaETQ_4rF6pm1ArVz/view?usp=sharing');
+}); 
  
 app.get('/changelog', function(req, res) {
 	res.redirect('http://www.narutoninpou.com/#/forum/threads/5aa5235173b26d0014e535f8');
