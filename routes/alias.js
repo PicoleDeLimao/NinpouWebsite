@@ -50,5 +50,30 @@ router.put('/:username/:alias', function(req, res) {
 	});
 	
 });
+ 
+router.delete('/:username/:alias', function(req, res) {
+	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json(err);
+		else if (!alias) {
+			return res.status(400).json({ error: 'Alias not found.' });
+		} else {
+			Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+				if (err) return res.status(500).json(err);
+				for (var i = 0; i < alias.alias.length; i++) {
+					if (alias.alias[i].toLowerCase() == req.params.alias.toLowerCase()) {
+						alias.alias.split(i, 1);
+						alias.save(function(err) {
+							if (err) return res.status(500).json(err);
+							return res.status(200).json(alias); 
+						});
+						return;
+					}
+				}
+				return res.status(404).json({ error: 'Alias is not linked to this account.' });
+			});
+		} 
+	});
+	
+});
 
 module.exports = router;

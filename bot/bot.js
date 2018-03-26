@@ -22,6 +22,7 @@ var getAliasOf = require('./commands/getaliasof');
 var getInfo = require('./commands/getinfo');
 var whoIs = require('./commands/whois');
 var addAlias = require('./commands/addalias');
+var removeAlias = require('./commands/removealias');
 var getPlayerName = require('./commands/getplayername');
 var hostGame = require('./commands/hostgame');
 var displayScore = require('./commands/displayscore');
@@ -235,36 +236,43 @@ bot.on('message', function(ev) {
         if (cmd == 'help') {
 			ev.channel.send(
 				'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
-				'< !help >                   : Display this message\n' + 
-				'< !host > [location]        : Host a new game\n' + 
-				'< !lobby >                  : List games in lobby\n' + 
-				'< !progress >               : List games in progress\n' + 
-				'< !last >                   : Fetch last non-recorded played games\n' + 
-				'< !recorded >               : Fetch last recorded played games\n' + 
-				'< !info > <game_id>         : Fetch info about a played game\n' + 
-				'< !record > <game_id> <code>: Record a game\n' +  
-				'< !unrecord > <game_id>     : Unrecord a game\n' +  
-				'< !ranking > [player_name]  : Display player position in Ninpou ranking\n' + 
-				'< !score > [player_name]    : Display a player score in the ranking\n' + 
-				'< !addalias > <player_name> : Add a new alias\n' + 
-				'< !whois > <player_name>    : Check who in discord is using a determined account\n' + 
-				'< !aliasof > <user>         : Display all alias from a user\n' + 
-				'< !addstream > <channel>    : Add a new streaming channel\n' + 
-				'< !removestream > <channel> : Remove a streaming channel\n' + 
-				'< !streams >                : List streaming channels\n' +  
-				'< !missions >               : List available missions\n' + 
-				'< !get > [user]             : Display information about an user\n' +   
-				//'< !give > <user> <amount>   : Give certain amount of gold to some user\n' +   
-				//'< !items >                  : Display items available to be purchased\n' + 
-				//'< !jutsus >                 : Display jutsus available to be purchased\n' +
-				'< !trivia naruto >          : Start a Naruto trivia (use < !trivia > again to disable it)\n' +
-				'< !trivia ninpou >          : Start a Ninpou trivia (use < !trivia > again to disable it)```'
+				'< !help >                     : Display this message\n' + 
+				'< !host > [location] [owner]  : Host a new game\n' + 
+				'< !lobby >                    : List games in lobby\n' + 
+				'< !progress >                 : List games in progress\n' + 
+				'< !last >                     : Fetch last non-recorded played games\n' + 
+				'< !recorded >                 : Fetch last recorded played games\n' + 
+				'< !info > <game_id>           : Fetch info about a played game\n' + 
+				'< !record > <game_id> <code>  : Record a game\n' +  
+				'< !unrecord > <game_id>       : Unrecord a game\n' +  
+				'< !ranking > [player_name]    : Display player position in Ninpou ranking\n' + 
+				'< !score > [player_name]      : Display a player score in the ranking\n' + 
+				'< !addalias > <player_name>   : Add a new alias\n' + 
+				'< !removealias > <player_name>: Remove an alias\n' + 
+				'< !whois > <player_name>      : Check who in discord is using a determined account\n' + 
+				'< !aliasof > <user>           : Display all alias from a user\n' + 
+				'< !addstream > <channel>      : Add a new streaming channel\n' + 
+				'< !removestream > <channel>   : Remove a streaming channel\n' + 
+				'< !streams >                  : List streaming channels\n' +  
+				'< !missions >                 : List available missions\n' + 
+				'< !get > [user]               : Display information about an user\n' +   
+				//'< !give > <user> <amount>     : Give certain amount of gold to some user\n' +   
+				//'< !items >                    : Display items available to be purchased\n' + 
+				//'< !jutsus >                   : Display jutsus available to be purchased\n' +
+				'< !trivia naruto >            : Start a Naruto trivia (use < !trivia > again to disable it)\n' +
+				'< !trivia ninpou >            : Start a Ninpou trivia (use < !trivia > again to disable it)```'
 			);   
 		} else if (cmd == 'addalias') {
 			if (args.length > 0) {
 				addAlias(ev, args[0]);
 			} else {
 				ev.channel.send('Me no understand! Use **!addalias <account>**');
+			} 
+		} else if (cm == 'removealias') {
+			if (args.length > 0) {
+				removeAlias(ev, args[0]);
+			} else {
+				ev.channel.send('Me no understand! Use **!removealias <account>**');
 			} 
 		} else {
 			getAliasOf(ev.author.id, function(err, alias) {
@@ -381,7 +389,14 @@ bot.on('message', function(ev) {
 							}
 							break;
 						case 'host':
-							if (args.length == 1) {
+							if (args.length == 2) {
+								var realm = args[0].toLowerCase();
+								if (realm != 'atlanta' && realm != 'ny' && realm != 'la' && realm != 'europe' && realm != 'au' && realm != 'jp' && realm != 'sg') {
+									ev.channel.send('Invalid location. Valid locations: **atlanta** (Atlanta, U.S. East), **ny** (New York, U.S. East), **la** (Los Angeles, U.S. West), **europe** (Germany), **au** (Australia), **jp** (Japan) and **sg** (Singapore)');
+								} else { 
+									hostGame(ev, args[1], args[0]);
+								}
+							} else if (args.length == 1) {
 								var realm = args[0].toLowerCase();
 								if (realm != 'atlanta' && realm != 'ny' && realm != 'la' && realm != 'europe' && realm != 'au' && realm != 'jp' && realm != 'sg') {
 									ev.channel.send('Invalid location. Valid locations: **atlanta** (Atlanta, U.S. East), **ny** (New York, U.S. East), **la** (Los Angeles, U.S. West), **europe** (Germany), **au** (Australia), **jp** (Japan) and **sg** (Singapore)');
@@ -391,7 +406,7 @@ bot.on('message', function(ev) {
 							} else if (args.length == 0) {
 								hostGame(ev, alias[0], 'atlanta');
 							} else {
-								ev.channel.send('Me no understand! Use **!host <location>**');
+								ev.channel.send('Me no understand! Use **!host <location> <owner>**');
 							}
 							break;
 						case 'lobby':
