@@ -61,7 +61,7 @@ router.delete('/:username/:alias', function(req, res) {
 				if (err) return res.status(500).json(err);
 				for (var i = 0; i < alias.alias.length; i++) {
 					if (alias.alias[i].toLowerCase() == req.params.alias.toLowerCase()) {
-						alias.alias.split(i, 1);
+						alias.alias.splice(i, 1);
 						alias.save(function(err) {
 							if (err) return res.status(500).json(err);
 							return res.status(200).json(alias); 
