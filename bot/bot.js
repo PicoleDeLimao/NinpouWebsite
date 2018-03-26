@@ -268,7 +268,7 @@ bot.on('message', function(ev) {
 			} else {
 				ev.channel.send('Me no understand! Use **!addalias <account>**');
 			} 
-		} else if (cm == 'removealias') {
+		} else if (cmd == 'removealias') {
 			if (args.length > 0) {
 				removeAlias(ev, args[0]);
 			} else {
