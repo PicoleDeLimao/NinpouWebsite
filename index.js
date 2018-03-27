@@ -32,6 +32,7 @@ app.use('/games', require('./routes/games'));
 app.use('/stats', require('./routes/stats'));
 app.use('/streams', require('./routes/streams')); 
 app.use('/missions', require('./routes/missions')); 
+app.use('/items', require('./routes/items'));  
 
 app.get('/latest', function(req, res) {
 	res.redirect('https://drive.google.com/file/d/1hXEcPRWA0JIE7sYTaETQ_4rF6pm1ArVz/view?usp=sharing');

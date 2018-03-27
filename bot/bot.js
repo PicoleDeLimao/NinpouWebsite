@@ -33,6 +33,7 @@ var displayGames = require('./commands/displaygames');
 var displayLastGames = require('./commands/displaylastgames');
 var displayLastRecordedGames = require('./commands/displaylastrecordedgames');
 var displayGameInfo = require('./commands/displaygameinfo');
+var buy = require('./commands/buy');
 
 bot.on('ready', function (evt) {
 	console.error('Logged in as: ' + bot.user.tag);
@@ -257,11 +258,11 @@ bot.on('message', function(ev) {
 				'< !missions >                 : List available missions\n' + 
 				'< !get > [user]               : Display information about an user\n' +   
 				//'< !give > <user> <amount>     : Give certain amount of gold to some user\n' +   
-				//'< !items >                    : Display items available to be purchased\n' + 
+				'< !items >                    : Display items available to be purchased\n' + 
 				//'< !jutsus >                   : Display jutsus available to be purchased\n' +
 				'< !trivia naruto >            : Start a Naruto trivia (use < !trivia > again to disable it)\n' +
 				'< !trivia ninpou >            : Start a Ninpou trivia (use < !trivia > again to disable it)```'
-			);   
+			);    
 		} else if (cmd == 'addalias') {
 			if (args.length > 0) {
 				addAlias(ev, args[0]);
@@ -326,9 +327,8 @@ bot.on('message', function(ev) {
 							break; 
 						// !shop 
 						case 'items':
-							ev.channel.send(
-								'**Oink, oink**!\nWelcome to my marvelous shop. Find all sort of ninja tools here!\```md\n' + 
-								'Use !buy <id> to buy an item\n' +
+							ev.channel.send('**Oink, oink**!\nWelcome to my marvelous shop. Find all sort of ninja tools here!\n' +
+							'```md\nUse !buy <id> to buy an item\n' +
 								'< WEAPONS >\n' + 
 								'[ 1] [    100g] [Old Kunai]                 : +10 attack\n' + 
 								'[ 2] [   1000g] [Sharp Kunai]               : +50 attack\n' + 
@@ -353,8 +353,15 @@ bot.on('message', function(ev) {
 								'[19] [   5000g] [Reinforced Genin Forehead] : +500 hp\n' + 
 								'[20] [  10000g] [Shinigami Mask]            : +1000 hp\n' + 
 								'[21] [  50000g] [Akatsuki Ring]             : +5000 hp\n' + 
-								'[22] [ 100000g] [Rikuudou Necklace]         : +10000 hp```'
-							);
+								'[22] [ 100000g] [Rikuudou Necklace]         : +10000 hp```');
+							break;
+						// !buy 
+						case 'buy':
+							if (args.length == 1) {
+								buy(ev, args[0]); 
+							} else {
+								ev.channel.send('Me no understand! Use **!buy <item_id>**');
+							}
 							break;
 						// !jutsus
 						case 'jutsus':  

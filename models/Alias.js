@@ -5,7 +5,19 @@ var aliasSchema = mongoose.Schema({
 	alias: [String],
 	gold: { type: Number, default: 0 },
 	level: { type: Number, default: 1 },
-	xp: { type: Number, default: 0 } 
+	xp: { type: Number, default: 0 },
+	jutsus: [{
+		id: { type: Number, required: true },
+		level: { type: Number, default: 0 }
+	}
+	], 
+	itemWeapon: { id: Number },
+	itemArmor: { id: Number },
+	itemSupport: { id: Number },
+	itemConsumables: [{
+		id: { type: Number, required: true },
+		amount: { type: Number, default: 0 }
+	}]
 });
 
 var Alias = mongoose.model('Alias', aliasSchema);
