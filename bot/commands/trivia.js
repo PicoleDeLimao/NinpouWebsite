@@ -150,7 +150,7 @@ module.exports = function(bot) {
 		['What is Kimimaro main attribute?', 'Ninjutsu'],
 		['What is the name of Sakura\'s (D) spell?', 'Chakra Enhanced Strength'],
 		['How much does Sakura\'s (E) heal on level 10?', '2000'],
-		['Which Kakashi have the Doton: Doryuheki ability?', 'ANBU Kakashi'],
+		['Which Kakashi have the Doton: Doryuheki ability?', 'ANBU Kakashi'], 
 		['Which Kakashi have the Kamui ability?', 'Jounin Kakashi'],
 		['What is the chance to trigger Suigetsu\'s (D)?', '10%'],
 		['How much health does Sarutobi\'s (T) take from the user?', '20%'],
@@ -244,11 +244,15 @@ module.exports = function(bot) {
 	}
 	
 	function tryAnswer(user, userAnswer, channel) {
-		var answer = trivia[channel.category][channel.questionID][1];
-		if (answer.toLowerCase() == userAnswer) {
-			var scoreboard = scoreToUserAndReturnScoreboard(user, channel);
-			channel.ev.channel.send('Congratulations, **' + user + '**!\n\n' + scoreboard + '\n\n' + returnNewQuestion(channel));
-		} 
+		try {
+			var answer = trivia[channel.category][channel.questionID][1];
+			if (answer.toLowerCase() == userAnswer) {
+				var scoreboard = scoreToUserAndReturnScoreboard(user, channel);
+				channel.ev.channel.send('Congratulations, **' + user + '**!\n\n' + scoreboard + '\n\n' + returnNewQuestion(channel));
+			} 
+		} catch(err) {
+			console.error(err);
+		}
 	}
 	
 	setInterval(function() {
