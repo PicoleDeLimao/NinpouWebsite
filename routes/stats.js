@@ -230,12 +230,22 @@ router.post('/:game_id', function(req, res) {
 									alias: username || game.slots[index].username.toLowerCase()
 								});
 							} 
-							stat.kills += game.slots[index].kills;
-							stat.deaths += game.slots[index].deaths;
-							stat.assists += game.slots[index].assists;
-							stat.gpm += game.slots[index].gpm;
-							if (game.slots[index].win) stat.wins += 1;
-							stat.games += 1; 
+							var today = new Date();
+							if (today.getDay() == 6 || today.getDay() == 0) {
+								stat.kills += game.slots[index].kills * 2;
+								stat.deaths += game.slots[index].deaths * 2;
+								stat.assists += game.slots[index].assists * 2;
+								stat.gpm += game.slots[index].gpm * 2;
+								if (game.slots[index].win) stat.wins += 2;
+								stat.games += 2; 
+							} else {
+								stat.kills += game.slots[index].kills;
+								stat.deaths += game.slots[index].deaths;
+								stat.assists += game.slots[index].assists;
+								stat.gpm += game.slots[index].gpm;
+								if (game.slots[index].win) stat.wins += 1;
+								stat.games += 1; 
+							}
 							stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
 							stat.score = Calculator.calculateScore(stat);
 							stat.alias = username || stat.alias;
@@ -247,12 +257,22 @@ router.post('/:game_id', function(req, res) {
 										hero: game.slots[index].hero, 
 										map: game.map
 									});
-									stat.kills += game.slots[index].kills;
-									stat.deaths += game.slots[index].deaths;
-									stat.assists += game.slots[index].assists;
-									stat.gpm += game.slots[index].gpm;
-									if (game.slots[index].win) stat.wins += 1;
-									stat.games += 1;
+									var today = new Date();
+									if (today.getDay() == 6 || today.getDay() == 0) {
+										stat.kills += game.slots[index].kills * 2;
+										stat.deaths += game.slots[index].deaths * 2;
+										stat.assists += game.slots[index].assists * 2;
+										stat.gpm += game.slots[index].gpm * 2;
+										if (game.slots[index].win) stat.wins += 2;
+										stat.games += 2;
+									} else {
+										stat.kills += game.slots[index].kills;
+										stat.deaths += game.slots[index].deaths;
+										stat.assists += game.slots[index].assists;
+										stat.gpm += game.slots[index].gpm;
+										if (game.slots[index].win) stat.wins += 1;
+										stat.games += 1;
+									} 
 									stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
 									stat.score = Calculator.calculateScore(stat);
 									stat.save(function(err) {

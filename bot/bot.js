@@ -235,7 +235,7 @@ bot.on('message', function(ev) {
         args = args.splice(1);
         
         if (cmd == 'help') {
-			ev.channel.send(
+			ev.channel.send( 
 				'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
 				'< !help >                     : Display this message\n' + 
 				'< !host > [location] [owner]  : Host a new game\n' + 

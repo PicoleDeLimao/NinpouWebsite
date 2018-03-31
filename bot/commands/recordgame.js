@@ -30,7 +30,12 @@ module.exports = function(ev, gameId, code, alias) {
 							ev.channel.send('Error while recording game. :( **Oink!**');
 						}
 					} else { 
-						ev.channel.send('Game recorded! :) **Oink!**');
+						var today = new Date();
+						if (today.getDay() == 6 || today.getDay() == 0) {
+							ev.channel.send('Game recorded! Double XP is on today!! **Oink!**');
+						} else {
+							ev.channel.send('Game recorded! **Oink!**');
+						}
 					}
 				});
 			});
