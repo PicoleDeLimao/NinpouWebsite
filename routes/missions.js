@@ -54,6 +54,10 @@ router.post('/:username/rescue', function(req, res) {
 			var double = Math.round(Math.random() * 10) == 0;
 			if (streak) amount *= 2;
 			if (double) amount *= 2;
+			var today = new Date();
+			if (today.getDay() == 6 || today.getDay() == 0) {
+				amount *= 2;
+			}
 			var mission = new Mission({
 				username: req.user.username, 
 				name: 'rescue'
@@ -88,6 +92,10 @@ router.post('/:username/gamble', function(req, res) {
 			if (won) amount *= 2;
 			else amount = -amount;
 			if (won && streak) amount *= 2;
+			var today = new Date();
+			if (today.getDay() == 6 || today.getDay() == 0) {
+				amount *= 2;
+			}
 			var mission = new Mission({
 				username: req.user.username, 
 				name: 'gamble', 
@@ -126,6 +134,11 @@ router.post('/:username/play', function(req, res) {
 					var xp = 10;
 					var streak = doneYesterday;
 					if (streak) {
+						amount *= 2;
+						xp *= 2;
+					}
+					var today = new Date();
+					if (today.getDay() == 6 || today.getDay() == 0) {
 						amount *= 2;
 						xp *= 2;
 					}
@@ -175,6 +188,11 @@ router.post('/:username/win', function(req, res) {
 					var xp = 20;
 					var streak = doneYesterday;
 					if (streak) {
+						amount *= 2;
+						xp *= 2;
+					}
+					var today = new Date();
+					if (today.getDay() == 6 || today.getDay() == 0) {
 						amount *= 2;
 						xp *= 2;
 					}
@@ -236,6 +254,11 @@ router.post('/:username/top', function(req, res) {
 				if (stats[0]._id == req.user.username) {
 					var amount = 1000;
 					var xp = 100;
+					var today = new Date();
+					if (today.getDay() == 6 || today.getDay() == 0) {
+						amount *= 2;
+						xp *= 2;
+					} 
 					var mission = new Mission({
 						username: req.user.username,
 						name: 'top'

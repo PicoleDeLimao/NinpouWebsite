@@ -21,7 +21,11 @@ module.exports = function(ev) {
 				try {
 					var data = JSON.parse(body);
 					var response = 'You won **' + data.amount + 'g** and **' + data.xp + ' xp**!';
-					if (response.levelup)
+					var today = new Date();
+					if (today.getDay() == 0 || today.getDay() == 6) {
+						response += ' DOUBLE XP TODAY!!';
+					}
+					if (data.levelup)
 						response += ' CONGRATULATIONS!! You leveled up. Your current level is now: ' + data.level;
 					ev.channel.send(response);  
 				} catch (err) {

@@ -25,6 +25,10 @@ module.exports = function(ev) {
 						response += ' STREAK BONUS!';
 					if (data.double) 
 						response += ' DOUBLE BONUS!';
+					var today = new Date();
+					if (today.getDay() == 0 || today.getDay() == 6) {
+						response += ' DOUBLE XP TODAY!!';
+					}
 					ev.channel.send(response); 
 				} catch (err) {
 					console.error(err);

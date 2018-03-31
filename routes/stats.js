@@ -171,7 +171,9 @@ router.post('/:game_id', function(req, res) {
 		var body = req.body.contents;
 		if (body.length < 11) return res.status(400).json({ error: 'Invalid code.' });
 		var count = decodeInt(res, body[0]);
+		if (res.headerSent) return;
 		var winningTeam = decodeInt(res, body[1]);
+		if (res.headerSent) return;
 		var playerIndex = 0;
 		var sum = 0;
 		for (var i = 2; i < body.length; i++) {
@@ -194,7 +196,7 @@ router.post('/:game_id', function(req, res) {
 				if (res.headerSent) return;
 				var kills = decodeInt(res, body[++i]);
 				if (res.headerSent) return;
-				var deaths = decodeInt(res, body[++i]);
+				var deaths = decodeInt(res, body[++i]); 
 				if (res.headerSent) return;
 				var assists = decodeInt(res, body[++i]);
 				if (res.headerSent) return;

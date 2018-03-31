@@ -29,6 +29,10 @@ module.exports = function(ev, amount) {
 						response += 'You won!! You got **' + data.amount + 'g**!';
 						if (data.streak)
 							response += ' STREAK BONUS!';
+						var today = new Date();
+						if (today.getDay() == 0 || today.getDay() == 6) {
+							response += ' DOUBLE XP TODAY!!';
+						}
 					} 
 					ev.channel.send(response);  
 				} catch (err) {
