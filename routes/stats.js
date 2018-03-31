@@ -356,7 +356,7 @@ router.get('/players/:username', function(req, res) {
 		} else {
 			usernames = [req.params.username.toLowerCase()];
 		}
-		Stat.find({ username: { $in: usernames } }).sort('-_id').exec(function(err, stats) {
+		Stat.find({ username: { $in: usernames } }).sort('_id').exec(function(err, stats) {
 			if (err) return res.status(500).json(err);
 			else if (!stats || stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
 			var allStat = { 
@@ -377,7 +377,7 @@ router.get('/players/:username', function(req, res) {
 				allStat.gpm += stats[i].gpm;
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
-			}
+			} 
 			var mostRecentDate = stats.length > 0 && dateFromObjectId(stats[0]._id.toString()) || null;
 			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
 			allStat.score = Calculator.calculateScore(allStat);
