@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var express = require('express');
+var moment = require('moment');
 var router = express.Router();
 var Game = require('../models/Game');
 var Stat = require('../models/Stat');
@@ -353,8 +354,13 @@ router.get('/players/:username', function(req, res) {
 		var usernames = [];
 		if (alias.length > 0) {
 			usernames = alias[0].alias;
-		} else {
-			usernames = [req.params.username.toLowerCase()];
+			var aliases = [];
+			for (var i = 0; i < usernames.length; i++) {
+				aliases.push(new RegExp(['^', usernames[i].toLowerCase(), '$'].join(''), 'i'));
+			}  
+			usernames = aliases; 
+		} else { 
+			usernames = [new RegExp(['^', req.params.username.toLowerCase(), '$'].join(''), 'i')];
 		}
 		Stat.find({ username: { $in: usernames } }).sort('_id').exec(function(err, stats) {
 			if (err) return res.status(500).json(err);
@@ -377,40 +383,43 @@ router.get('/players/:username', function(req, res) {
 				allStat.gpm += stats[i].gpm;
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
-			} 
-			var mostRecentDate = stats.length > 0 && moment(dateFromObjectId(stats[0]._id.toString())).fromNow() || null;
-			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
-			allStat.score = Calculator.calculateScore(allStat);
-			Stat.aggregate([
-			{
-				$group: {
-					_id: '$alias',
-					kills: { $sum: '$kills' },
-					deaths: { $sum: '$deaths' },
-					assists: { $sum: '$assists' },
-					gpm: { $sum: '$gpm' },
-					wins: { $sum: '$wins' },
-					games: { $sum: '$games' }
-				}
-			}
-			], function(err, stats) {
-				if (err) return res.status(500).json(err);
-				for (var i = 0; i < stats.length; i++) {
-					stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
-					stats[i].score = Calculator.calculateScore(stats[i]);
-				}
-				stats.sort(function(a, b) {
-					return b.score - a.score; 
-				}); 
-				var ranking = 0;
-				for (var i = 0; i < stats.length; i++) {
-					++ranking;
-					if (stats[i].score <= allStat.score) {
-						break;
+			}  
+			Game.find({ 'slots.username': { $in: usernames } }).sort('-_id').limit(1).exec(function(err, games) {
+				if (err) return res.status(500).json({ 'error': err }); 
+				var mostRecentDate = games.length > 0 && moment(dateFromObjectId(games[0]._id.toString())).fromNow() || null;
+				allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
+				allStat.score = Calculator.calculateScore(allStat);
+				Stat.aggregate([
+				{
+					$group: {
+						_id: '$alias',
+						kills: { $sum: '$kills' },
+						deaths: { $sum: '$deaths' },
+						assists: { $sum: '$assists' },
+						gpm: { $sum: '$gpm' },
+						wins: { $sum: '$wins' },
+						games: { $sum: '$games' }
 					}
 				}
-				return res.json({ 'stat': allStat, 'ranking': ranking, 'lastGame': mostRecentDate  });
-			}); 
+				], function(err, stats) {
+					if (err) return res.status(500).json(err);
+					for (var i = 0; i < stats.length; i++) {
+						stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
+						stats[i].score = Calculator.calculateScore(stats[i]);
+					}
+					stats.sort(function(a, b) {
+						return b.score - a.score; 
+					}); 
+					var ranking = 0;
+					for (var i = 0; i < stats.length; i++) {
+						++ranking;
+						if (stats[i].score <= allStat.score) {
+							break;
+						}
+					}
+					return res.json({ 'stat': allStat, 'ranking': ranking, 'lastGame': mostRecentDate  });
+				}); 
+			});
 		});
 	});	
 });
