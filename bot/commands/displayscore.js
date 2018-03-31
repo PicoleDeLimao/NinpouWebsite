@@ -1,7 +1,7 @@
 'use strict';
 
 var http = require('http');
-var moment = require('moment
+var moment = require('moment');
 var getPlayerName = require('./getplayername');
 
 module.exports = function(ev, playerName) {
