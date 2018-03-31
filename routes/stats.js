@@ -119,11 +119,13 @@ function decodeInt(res, string) {
 			return i;
 		}
 	}
+	res.headerSent = true;
 	return res.status(400).json({ error: 'Invalid code.' });
 };
 
 function decodePlayerId(res, id) {
 	if (id < 0 || id > 8) {
+		res.headerSent = true;
 		return res.status(400).json({ error: 'Invalid code.' });
 	}
 	return encodedPlayersId[id];
@@ -175,6 +177,7 @@ router.post('/:game_id', function(req, res) {
 		for (var i = 2; i < body.length; i++) {
 			var state = body[i];
 			var player_id = decodePlayerId(res, playerIndex);
+			if (res.headerSent) return;
 			var id = getSlotId(player_id);
 			if (state == '0') {
 				if (game.slots[id].username) {
@@ -188,10 +191,15 @@ router.post('/:game_id', function(req, res) {
 				var letter = body[++i].toLowerCase();
 				if (letter != game.slots[id].username[0].toLowerCase()) return res.status(400).json({ error: 'This code doesn\'t belong to this game.' }); 
 				var hero = decodeInt(res, body[++i]);
+				if (res.headerSent) return;
 				var kills = decodeInt(res, body[++i]);
+				if (res.headerSent) return;
 				var deaths = decodeInt(res, body[++i]);
+				if (res.headerSent) return;
 				var assists = decodeInt(res, body[++i]);
+				if (res.headerSent) return;
 				var gpm = decodeInt(res, body[++i]);
+				if (res.headerSent) return;
 				game.slots[id].hero = hero;
 				game.slots[id].kills = kills;
 				game.slots[id].deaths = deaths;
