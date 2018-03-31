@@ -378,7 +378,7 @@ router.get('/players/:username', function(req, res) {
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
 			}
-			var mostRecentDate = stats.length > 0 && dateFromObjectId(stats[0]._id) || null;
+			var mostRecentDate = stats.length > 0 && dateFromObjectId(stats[0]._id.toString()) || null;
 			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
 			allStat.score = Calculator.calculateScore(allStat);
 			Stat.aggregate([
