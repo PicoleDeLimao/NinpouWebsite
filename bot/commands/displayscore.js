@@ -1,6 +1,7 @@
 'use strict';
 
 var http = require('http');
+var moment = require('moment
 var getPlayerName = require('./getplayername');
 
 module.exports = function(ev, playerName) {
@@ -25,7 +26,8 @@ module.exports = function(ev, playerName) {
 						'Average assists:     <' + Math.round(ranking.stat.assists / ranking.stat.games) + '>\n' + 
 						'Average points:      <' + Math.round(ranking.stat.kills / ranking.stat.games * 10 + ranking.stat.assists / ranking.stat.games * 2 - ranking.stat.deaths / ranking.stat.games * 5) + '>\n' +  
 						'Average gold/minute: <' + Math.round(ranking.stat.gpm * 100 / ranking.stat.games) + '>\n' +  
-						'Chance of winning:   <' + (ranking.stat.chanceWin * 100).toFixed(2) + '%>'; 
+						'Chance of winning:   <' + (ranking.stat.chanceWin * 100).toFixed(2) + '%>\n\n' + 
+						'Last game:           ' + moment(ranking.lastGame).fromNow(); 
 						response += '```';
 						ev.channel.send(response);
 					});
