@@ -40,6 +40,10 @@ router.use('/:username', function(req, res, next) {
 	});
 });
 
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
 // rescue tonton 
 router.post('/:username/rescue', function(req, res) {
 	Mission.find({ username: req.user.username, name: 'rescue' }).sort('-_id').limit(1).exec(function(err, missions) {
@@ -124,7 +128,7 @@ router.post('/:username/play', function(req, res) {
 		} else { 
 			var aliases = [];
 			for (var i = 0; i < req.user.alias.length; i++) {
-				aliases.push(new RegExp(['^', req.user.alias[i], '$'].join(''), 'i'));
+				aliases.push(new RegExp(['^', escapeRegExp(req.user.alias[i]), '$'].join(''), 'i'));
 			}  
 			Game.find({ 'slots.username': { $in: aliases }, recorded: true }).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
@@ -178,7 +182,7 @@ router.post('/:username/win', function(req, res) {
 		} else {  
 			var aliases = [];
 			for (var i = 0; i < req.user.alias.length; i++) {
-				aliases.push(new RegExp(['^', req.user.alias[i], '$'].join(''), 'i'));
+				aliases.push(new RegExp(['^', escapeRegExp(req.user.alias[i]), '$'].join(''), 'i'));
 			}  
 			Game.find({ 'slots.username': { $in: aliases }, 'slots.win': true, recorded: true }).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {

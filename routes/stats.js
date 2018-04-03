@@ -358,6 +358,10 @@ router.delete('/:game_id', function(req, res) {
 	});
 });
 
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
 router.get('/players/:username', function(req, res) {
 	Alias.find({ $or: [{ alias: req.params.username.toLowerCase() }, { username: req.params.username.toLowerCase() }] }, function(err, alias) {
 		if (err) return res.status(500).json(err);
@@ -366,11 +370,11 @@ router.get('/players/:username', function(req, res) {
 			usernames = alias[0].alias;
 			var aliases = [];
 			for (var i = 0; i < usernames.length; i++) {
-				aliases.push(new RegExp(['^', usernames[i].toLowerCase(), '$'].join(''), 'i'));
+				aliases.push(new RegExp(['^', escapeRegExp(usernames[i].toLowerCase()), '$'].join(''), 'i'));
 			}  
 			usernames = aliases; 
 		} else { 
-			usernames = [new RegExp(['^', req.params.username.toLowerCase(), '$'].join(''), 'i')];
+			usernames = [new RegExp(['^', escapeRegExp(req.params.username.toLowerCase()), '$'].join(''), 'i')];
 		}
 		Stat.find({ username: { $in: usernames } }).sort('_id').exec(function(err, stats) {
 			if (err) return res.status(500).json(err);
