@@ -7,9 +7,29 @@ var Alias = require('../models/Alias');
 var Stat = require('../models/Stat');
 var Item = require('../models/Item'); 
 
+router.get('/reset_alias', function(req, res) {
+	Stat.find({ }, function(err, stats) {
+		(function fun(index) {
+			if (index == stats.length) {
+				return res.status(200).send();
+			} else {
+				Alias.findOne({ alias: stats[index].username.toLowerCase() }, function(err, alias) {
+					if (!alias) {
+						stats[index].alias = stats[index].username;
+						stats[index].save(function(err) {
+							
+						});
+					}
+				});
+				fun(index + 1);
+			}
+		})(0);
+	});
+});
+
 router.get('/:alias', function(req, res) {
 	Alias.findOne({ $or: [{username: req.params.alias.toLowerCase() }, { alias: req.params.alias.toLowerCase() }] }).lean().exec(function(err, alias) {
-		if (err) return res.status(500).json(err); 
+		if (err) return res.status(500).json({ 'error': err }); 
 		else if (!alias) return res.status(404).json({ error: 'Alias not found.' }); 
 		alias.itemWeapon = alias.itemWeapon || { id: null };
 		alias.itemArmor = alias.itemArmor || { id: null };
@@ -37,12 +57,12 @@ router.get('/:alias', function(req, res) {
 
 router.put('/:username/:alias', function(req, res) {
 	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
-		if (err) return res.status(500).json(err);
+		if (err) return res.status(500).json({ 'error': err });
 		else if (alias) {
 			return res.status(400).json({ error: 'Alias is already being used.' });
 		} else {
 			Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
-				if (err) return res.status(500).json(err);
+				if (err) return res.status(500).json({ 'error': err });
 				else if (alias) {
 					alias.alias.push(req.params.alias.toLowerCase());
 				} else {
@@ -52,13 +72,13 @@ router.put('/:username/:alias', function(req, res) {
 					});
 				}
 				alias.save(function(err) {
-					if (err) return res.status(500).json(err);
+					if (err) return res.status(500).json({ 'error': err });
 					Stat.findOne({ username: req.params.alias.toLowerCase() }, function(err, stat) {
-						if (err) return res.status(500).json(err);
+						if (err) return res.status(500).json({ 'error': err });
 						else if (stat) {
 							stat.alias = alias.username;
 							stat.save(function(err) {
-								if (err) return res.status(500).json(err);
+								if (err) return res.status(500).json({ 'error': err });
 								return res.status(201).send();
 							});
 						} else {
@@ -74,18 +94,25 @@ router.put('/:username/:alias', function(req, res) {
  
 router.delete('/:username/:alias', function(req, res) {
 	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
-		if (err) return res.status(500).json(err);
+		if (err) return res.status(500).json({ 'error': err });
 		else if (!alias) {
 			return res.status(400).json({ error: 'Alias not found.' });
 		} else {
 			Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
-				if (err) return res.status(500).json(err);
+				if (err) return res.status(500).json({ 'error': err });
 				for (var i = 0; i < alias.alias.length; i++) {
 					if (alias.alias[i].toLowerCase() == req.params.alias.toLowerCase()) {
 						alias.alias.splice(i, 1);
 						alias.save(function(err) {
-							if (err) return res.status(500).json(err);
-							return res.status(200).json(alias); 
+							if (err) return res.status(500).json({ 'error': err });
+							Stat.findOne({ username: req.param.alias.toLowerCase() }, function(err, stat) {
+								if (!stat) return res.status(200).json(alias);
+								stat.alias = stat.username;
+								stat.save(function(err) {
+									if (err) return res.status(500).json({ 'error': err });
+									return res.status(200).json(alias);
+								});
+							});
 						});
 						return;
 					}
