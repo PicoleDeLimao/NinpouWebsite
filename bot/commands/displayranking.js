@@ -20,7 +20,7 @@ module.exports = function(ev, player, attribute, order) {
 				var response = '```md\n';
 				(function next(i, ranking, response) {  
 					if (i == ranking.ranking.length) {  
-						response += '```\n**Score formula:** Average points x Average GPM x Chance of Winning\n\n**Tip:** Now you can display ranking sorted by a certain attribute (kills, deaths, assists, points, gpm, wins, games, chance). Example: !ranking kills or !ranking @Player kills.'; 
+						response += '```\n**Score formula:** Average points x Average GPM x Chance of Winning\n\n**Tip:** Now you can display ranking sorted by a certain attribute (kills, deaths, assists, points, gpm, wins, games, chance). Example: !ranking kills or !ranking @Player kills. You can also reverse the sort order by adding **\'asc\'** or **\'desc\'** as a last parameter.'; 
 						return ev.channel.send(response); 
 					} else {
 						getPlayerName(ev, ranking.ranking[i]._id, function(err, playerName) { 
