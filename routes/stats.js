@@ -450,9 +450,10 @@ router.get('/heroes/:map/:hero_id', function(req, res) {
 
 router.get('/ranking', function(req, res) {
 	var attribute = req.query.sort || 'score';
-	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games') {
+	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games' && attribure != 'points' && attribute != 'chance') {
 		attribute = 'score'; 
 	} 
+	if (attribute == 'chance') attribute = 'chanceWin';
 	Stat.aggregate([
 	{
 		$group: { 
@@ -475,6 +476,7 @@ router.get('/ranking', function(req, res) {
 		for (var i = 0; i < stats.length; i++) {
 			stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
 			stats[i].score = Calculator.calculateScore(stats[i]);
+			stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5) / stats[i].games;
 			stats[i].kills /= stats[i].games;
 			stats[i].deaths /= stats[i].games;
 			stats[i].assists /= stats[i].games;
@@ -489,9 +491,10 @@ router.get('/ranking', function(req, res) {
  
 router.get('/ranking/:username', function(req, res) {
 	var attribute = req.query.sort || 'score';
-	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games') {
+	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games' && attribute != 'points' && attribute != 'chance') {
 		attribute = 'score'; 
 	} 
+	if (attribute == 'chance') attribute = 'chanceWin';
 	Alias.find({ $or: [{ alias: req.params.username.toLowerCase() }, { username: req.params.username.toLowerCase() }] }, function(err, alias) {
 		if (err) return res.status(500).json(err);
 		var usernames = [];
@@ -522,6 +525,7 @@ router.get('/ranking/:username', function(req, res) {
 			}
 			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
 			allStat.score = Calculator.calculateScore(allStat);
+			allStat.points = (allStat.kills * 10 + allStat.assists * 2 - allStat.deaths * 5) / allStat.games;
 			allStat.kills /= allStat.games;
 			allStat.deaths /= allStat.games;
 			allStat.assists /= allStat.games;
@@ -551,11 +555,12 @@ router.get('/ranking/:username', function(req, res) {
 				for (var i = 0; i < stats.length; i++) {
 					stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
 					stats[i].score = Calculator.calculateScore(stats[i]);
+					stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5) / stats[i].games;
 					stats[i].kills /= stats[i].games;
 					stats[i].deaths /= stats[i].games;
 					stats[i].assists /= stats[i].games;
 					stats[i].gpm /= stats[i].games;
-				}
+				} 
 				stats.sort(function(a, b) {
 					return b[attribute] - a[attribute]; 
 				});
