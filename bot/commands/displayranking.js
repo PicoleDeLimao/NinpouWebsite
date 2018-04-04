@@ -3,8 +3,8 @@
 var http = require('http');
 var getPlayerName = require('./getplayername');
 
-module.exports = function(ev, player) { 
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/ranking/' + (player || '') }, function(res) {
+module.exports = function(ev, player, attribute) { 
+	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/ranking/' + (player || '') + '?sort=' + attribute }, function(res) {
 		var statusCode = res.statusCode;
 		if (statusCode != 200) {
 			ev.channel.send('Couldn\'t fetch ranking. :( **Oink!**');
@@ -20,7 +20,7 @@ module.exports = function(ev, player) {
 				var response = '```md\n';
 				(function next(i, ranking, response) {  
 					if (i == ranking.ranking.length) {  
-						response += '```\n**Score formula:** Average points x Average GPM x Chance of Winning'; 
+						response += '```\n**Score formula:** Average points x Average GPM x Chance of Winning\n\n**Tip:** Now you can display ranking sorted by a certain attribute (kills, deaths, assists, gpm, wins, games). Example: !ranking kills or !ranking @Player kills.'; 
 						return ev.channel.send(response); 
 					} else {
 						getPlayerName(ev, ranking.ranking[i]._id, function(err, playerName) { 

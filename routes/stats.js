@@ -449,6 +449,10 @@ router.get('/heroes/:map/:hero_id', function(req, res) {
 });
 
 router.get('/ranking', function(req, res) {
+	var attribute = req.query.sort || 'score';
+	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games') {
+		attribute = 'score'; 
+	}
 	Stat.aggregate([
 	{
 		$group: { 
@@ -460,21 +464,29 @@ router.get('/ranking', function(req, res) {
 			wins: { $sum: '$wins' },
 			games: { $sum: '$games' } 
 		}
-	} 
+	}  
 	], function(err, stats) {
 		if (err) return res.status(500).json(err);
 		for (var i = 0; i < stats.length; i++) {
+			stats[i].kills /= stats[i].games;
+			stats[i].deaths /= stats[i].games;
+			stats[i].assists /= stats[i].games;
+			stats[i].gpm /= stats[i].games;
 			stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
 			stats[i].score = Calculator.calculateScore(stats[i]);
 		} 
 		stats.sort(function(a, b) {
-			return b.score - a.score;
+			return b[attribute] - a[attribute];
 		});  
 		return res.json({ 'ranking': stats.slice(0, 10), 'index': 0, 'minIndex': 0 });
 	});
 });
  
 router.get('/ranking/:username', function(req, res) {
+	var attribute = req.query.sort || 'score';
+	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games') {
+		attribute = 'score'; 
+	} 
 	Alias.find({ $or: [{ alias: req.params.username.toLowerCase() }, { username: req.params.username.toLowerCase() }] }, function(err, alias) {
 		if (err) return res.status(500).json(err);
 		var usernames = [];
@@ -503,6 +515,10 @@ router.get('/ranking/:username', function(req, res) {
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
 			}
+			allStat.kills /= allStat.games;
+			allStat.deaths /= allStat.games;
+			allStat.assists /= allStat.games;
+			allStat.gpm /= allStat.games; 
 			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
 			allStat.score = Calculator.calculateScore(allStat);
 			Stat.aggregate([
@@ -523,15 +539,19 @@ router.get('/ranking/:username', function(req, res) {
 			], function(err, stats) {
 				if (err) return res.status(500).json(err);
 				for (var i = 0; i < stats.length; i++) {
+					stats[i].kills /= stats[i].games;
+					stats[i].deaths /= stats[i].games;
+					stats[i].assists /= stats[i].games;
+					stats[i].gpm /= stats[i].games;
 					stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
 					stats[i].score = Calculator.calculateScore(stats[i]);
 				}
 				stats.sort(function(a, b) {
-					return b.score - a.score; 
+					return b[attribute] - a[attribute]; 
 				});
 				var ranking = 0;
 				for (var i = 0; i < stats.length; i++) {
-					if (stats[i].score <= allStat.score) {
+					if (stats[i][attribute] <= allStat[attribute]) {
 						break;
 					}
 					++ranking;
@@ -540,7 +560,7 @@ router.get('/ranking/:username', function(req, res) {
 				var newRanking = stats.slice(minIndex, minIndex + 10);
 				newRanking.push(allStat);
 				newRanking.sort(function(a, b) {
-					return b.score - a.score; 
+					return b[attribute] - a[attribute]; 
 				}); 
 				var index = null; 
 				for (var i = 0; i < newRanking.length; i++) {

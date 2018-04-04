@@ -449,12 +449,26 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!unrecord <game_id>**');
 							}
 							break;
-						case 'ranking':
-							if (ev.mentions.users.array().length > 0) {
-								displayRanking(ev, ev.mentions.users.array()[0].id);
-							} else {
-								displayRanking(ev, args[0]);
-							}
+						case 'ranking': 
+							if (args.length == 2) { 
+								if (ev.mentions.users.array().length > 0) {
+									displayRanking(ev, ev.mentions.users.array()[0].id, args[1]);
+								} else {  
+									displayRanking(ev, args[0], args[1]);
+								}
+							} else if (args.length == 1) {
+								if (ev.mentions.users.array().length > 0) {
+									displayRanking(ev, ev.mentions.users.array()[0].id, 'score');
+								} else { 
+									if (args[0] == 'kills' || args[0] == 'deaths' || args[0] == 'assists' || args[0] == 'gpm' || args[0] == 'wins' || args[0] == 'games') {
+										displayRanking(ev, null, args[0]);
+									} else {
+										displayRanking(ev, args[0], 'score');
+									}
+								}
+							} else { 
+								displayRanking(ev, null, 'score');
+							} 
 							break;
 						case 'score':
 							if (args.length > 0) {
