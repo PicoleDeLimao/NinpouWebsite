@@ -460,7 +460,7 @@ bot.on('message', function(ev) {
 								if (ev.mentions.users.array().length > 0) {
 									displayRanking(ev, ev.mentions.users.array()[0].id, 'score');
 								} else { 
-									if (args[0] == 'kills' || args[0] == 'deaths' || args[0] == 'assists' || args[0] == 'gpm' || args[0] == 'wins' || args[0] == 'games') {
+									if (args[0] == 'score' || args[0] == 'kills' || args[0] == 'deaths' || args[0] == 'assists' || args[0] == 'gpm' || args[0] == 'wins' || args[0] == 'games') {
 										displayRanking(ev, null, args[0]);
 									} else {
 										displayRanking(ev, args[0], 'score');

@@ -453,6 +453,7 @@ router.get('/ranking', function(req, res) {
 	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games') {
 		attribute = 'score'; 
 	}
+	console.log(attribute); 
 	Stat.aggregate([
 	{
 		$group: { 
@@ -468,12 +469,12 @@ router.get('/ranking', function(req, res) {
 	], function(err, stats) {
 		if (err) return res.status(500).json(err);
 		for (var i = 0; i < stats.length; i++) {
+			stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
+			stats[i].score = Calculator.calculateScore(stats[i]);
 			stats[i].kills /= stats[i].games;
 			stats[i].deaths /= stats[i].games;
 			stats[i].assists /= stats[i].games;
 			stats[i].gpm /= stats[i].games;
-			stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
-			stats[i].score = Calculator.calculateScore(stats[i]);
 		} 
 		stats.sort(function(a, b) {
 			return b[attribute] - a[attribute];
@@ -515,12 +516,12 @@ router.get('/ranking/:username', function(req, res) {
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
 			}
+			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
+			allStat.score = Calculator.calculateScore(allStat);
 			allStat.kills /= allStat.games;
 			allStat.deaths /= allStat.games;
 			allStat.assists /= allStat.games;
 			allStat.gpm /= allStat.games; 
-			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
-			allStat.score = Calculator.calculateScore(allStat);
 			Stat.aggregate([
 			{
 				$match: { username: { $nin: usernames } }
@@ -539,12 +540,12 @@ router.get('/ranking/:username', function(req, res) {
 			], function(err, stats) {
 				if (err) return res.status(500).json(err);
 				for (var i = 0; i < stats.length; i++) {
+					stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
+					stats[i].score = Calculator.calculateScore(stats[i]);
 					stats[i].kills /= stats[i].games;
 					stats[i].deaths /= stats[i].games;
 					stats[i].assists /= stats[i].games;
 					stats[i].gpm /= stats[i].games;
-					stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
-					stats[i].score = Calculator.calculateScore(stats[i]);
 				}
 				stats.sort(function(a, b) {
 					return b[attribute] - a[attribute]; 
