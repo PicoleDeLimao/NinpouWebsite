@@ -3,8 +3,8 @@
 var http = require('http');
 var getPlayerName = require('./getplayername');
 
-module.exports = function(ev, player, attribute) { 
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/ranking/' + (player || '') + '?sort=' + attribute }, function(res) {
+module.exports = function(ev, player, attribute, order) { 
+	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/ranking/' + (player || '') + '?sort=' + attribute + '&order=' + order }, function(res) {
 		var statusCode = res.statusCode;
 		if (statusCode != 200) {
 			ev.channel.send('Couldn\'t fetch ranking. :( **Oink!**');

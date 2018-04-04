@@ -450,10 +450,12 @@ router.get('/heroes/:map/:hero_id', function(req, res) {
 
 router.get('/ranking', function(req, res) {
 	var attribute = req.query.sort || 'score';
-	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games' && attribure != 'points' && attribute != 'chance') {
+	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games' && attribute != 'points' && attribute != 'chance') {
 		attribute = 'score'; 
 	} 
 	if (attribute == 'chance') attribute = 'chanceWin';
+	var sortOrder = req.query.order || 'desc';
+	if (sortOrder != 'asc' && sortOrder != 'desc') sortOrder = 'desc';
 	Stat.aggregate([
 	{
 		$group: { 
@@ -483,7 +485,11 @@ router.get('/ranking', function(req, res) {
 			stats[i].gpm /= stats[i].games;
 		} 
 		stats.sort(function(a, b) {
-			return b[attribute] - a[attribute];
+			if (sortOrder == 'desc') {
+				return b[attribute] - a[attribute];
+			} else {
+				return a[attribute] - b[attribute];
+			}
 		});  
 		return res.json({ 'ranking': stats.slice(0, 10), 'index': 0, 'minIndex': 0 });
 	});
@@ -495,6 +501,8 @@ router.get('/ranking/:username', function(req, res) {
 		attribute = 'score'; 
 	} 
 	if (attribute == 'chance') attribute = 'chanceWin';
+	var sortOrder = req.query.order || 'desc';
+	if (sortOrder != 'asc' && sortOrder != 'desc') sortOrder = 'desc';
 	Alias.find({ $or: [{ alias: req.params.username.toLowerCase() }, { username: req.params.username.toLowerCase() }] }, function(err, alias) {
 		if (err) return res.status(500).json(err);
 		var usernames = [];
@@ -562,7 +570,11 @@ router.get('/ranking/:username', function(req, res) {
 					stats[i].gpm /= stats[i].games;
 				} 
 				stats.sort(function(a, b) {
-					return b[attribute] - a[attribute]; 
+					if (sortOrder == 'desc') {
+						return b[attribute] - a[attribute];
+					} else {
+						return a[attribute] - b[attribute];
+					}
 				});
 				var ranking = 0;
 				for (var i = 0; i < stats.length; i++) {
@@ -575,7 +587,11 @@ router.get('/ranking/:username', function(req, res) {
 				var newRanking = stats.slice(minIndex, minIndex + 10);
 				newRanking.push(allStat);
 				newRanking.sort(function(a, b) {
-					return b[attribute] - a[attribute]; 
+					if (sortOrder == 'desc') {
+						return b[attribute] - a[attribute];
+					} else {
+						return a[attribute] - b[attribute];
+					} 
 				}); 
 				var index = null; 
 				for (var i = 0; i < newRanking.length; i++) {

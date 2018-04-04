@@ -450,18 +450,30 @@ bot.on('message', function(ev) {
 							}
 							break;
 						case 'ranking': 
-							if (args.length == 2) { 
+							if (args.length == 3) {
+								if (ev.mentions.users.array().length > 0) {
+									displayRanking(ev, ev.mentions.users.array()[0].id, args[1], args[2]);
+								} else {  
+									displayRanking(ev, args[0], args[1], args[2]);
+								}
+							} else if (args.length == 2) { 
 								if (ev.mentions.users.array().length > 0) {
 									displayRanking(ev, ev.mentions.users.array()[0].id, args[1]);
 								} else {  
-									displayRanking(ev, args[0], args[1]);
-								}
+									if (args[1] == 'desc' || args[1] == 'asc') {
+										displayRanking(ev, null, args[0], args[1]);
+									} else {
+										displayRanking(ev, args[0], args[1], 'desc');
+									}
+								} 
 							} else if (args.length == 1) {
 								if (ev.mentions.users.array().length > 0) {
-									displayRanking(ev, ev.mentions.users.array()[0].id, 'score');
+									displayRanking(ev, ev.mentions.users.array()[0].id, 'score', 'desc');
 								} else { 
 									if (args[0] == 'score' || args[0] == 'kills' || args[0] == 'deaths' || args[0] == 'assists' || args[0] == 'gpm' || args[0] == 'wins' || args[0] == 'games' || args[0] == 'points' || args[0] == 'chance') {
-										displayRanking(ev, null, args[0]);
+										displayRanking(ev, null, args[0], 'desc');
+									} else if (args[0] == 'desc' || args[0] == 'asc') {
+										displayRanking(ev, null, 'score', args[0]);
 									} else {
 										displayRanking(ev, args[0], 'score');
 									}
