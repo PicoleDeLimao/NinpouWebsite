@@ -9,6 +9,7 @@ var bot = new Discord.Client();
 
 // commands  
 var trivia = require('./commands/trivia')(bot);
+var missionTopTitle = require('./commands/missiontoptitle');
 var missionTop = require('./commands/missiontop'); 
 var missionWin = require('./commands/missionwin');
 var missionGamble = require('./commands/missiongamble'); 
@@ -322,6 +323,24 @@ bot.on('message', function(ev) {
 										break; 
 									case 'top':
 										missionTop(ev);
+										break; 
+									case 'title-score':
+										missionTopTitle(ev, 'score');
+										break;
+									case 'title-kills':
+										missionTopTitle(ev, 'kills');
+										break;
+									case 'title-deaths':
+										missionTopTitle(ev, 'deaths');
+										break;
+									case 'title-assists':
+										missionTopTitle(ev, 'assists');
+										break;
+									case 'title-gpm':
+										missionTopTitle(ev, 'gpm');
+										break;
+									case 'title-games':
+										missionTopTitle(ev, 'games');
 										break; 
 									default:
 										ev.channel.send('Mission not found.');
