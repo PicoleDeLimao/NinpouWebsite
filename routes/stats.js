@@ -394,8 +394,10 @@ function getRankingPositions(players, player) {
 	player.ranking.assists = getRankingPosition(players, player, 'assists');
 	player.ranking.points = getRankingPosition(players, player, 'points');
 	player.ranking.gpm = getRankingPosition(players, player, 'gpm');
-	player.ranking.chance = getRankingPosition(players, player, 'chanceWin');
+	player.ranking.chance = getRankingPosition(players, player, 'chance');
 	player.ranking.score = getRankingPosition(players, player, 'score');
+	player.ranking.games = getRankingPosition(players, player, 'games');
+	player.ranking.wins = getRankingPosition(players, player, 'wins');
 	return player; 
 }; 
   
@@ -525,7 +527,7 @@ router.use('/ranking', function(req, res, next) {
 	next();
 });
 
-router.get('/ranking', function(req, res) { 
+router.get('/ranking', function(req, res) {  
 	getAllPlayersRanking(function(err, stats) {
 		if (err) return res.status(400).json({ 'error': err });
 		stats.sort(function(a, b) { 

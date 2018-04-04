@@ -292,8 +292,14 @@ bot.on('message', function(ev) {
 								'[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> to get double or lose it all\n' +  
 								'[ Daily] [D-Rank] < !mission play >            : Play a recorded game be rewarded with <50g> and <10%> xp (double reward on streak)\n' +  
 								'[ Daily] [C-Rank] < !mission win >             : Win a recorded game be rewarded with <200g> and <20%> xp (double reward on streak)\n' + 
-								'[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <1000g> and <100%> xp```'
-							); 
+								'[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <1000g> and <100%> xp\n' + 
+								'[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
+								'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "God slayer" title\n' + 
+								'[     -] [S-Rank] < !mission title-deaths >    : Be Top-1 on deaths ranking and get the "Untouchable" title\n' + 
+								'[     -] [S-Rank] < !missions title-assists >  : Be Top-1 on assists ranking and get the "Always by your side" title\n' + 
+								'[     -] [S-Rank] < !missions title-gpm>       : Be Top-1 on gpm ranking and get the "Gold farmer" title\n' + 
+								'[     -] [S-Rank] < !missions title-games>     : Be Top-1 on games ranking and get the "Can\'t get enough" title\n```'
+							);  
 							break; 
 						case 'mission':
 							if (args.length > 0) {
