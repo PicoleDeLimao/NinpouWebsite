@@ -457,8 +457,8 @@ bot.on('message', function(ev) {
 									displayRanking(ev, args[0], args[1], args[2]);
 								}
 							} else if (args.length == 2) { 
-								if (ev.mentions.users.array().length > 0) {
-									displayRanking(ev, ev.mentions.users.array()[0].id, args[1]);
+								if (ev.mentions.users.array().length > 0) { 
+									displayRanking(ev, ev.mentions.users.array()[0].id, args[1], '');
 								} else {  
 									if (args[1] == 'desc' || args[1] == 'asc') {
 										displayRanking(ev, null, args[0], args[1]);

@@ -617,11 +617,11 @@ router.get('/ranking/:username', function(req, res) {
 				var ranking = 0;
 				for (var i = 0; i < stats.length; i++) {
 					if (sortOrder == 'desc') {
-						if (stats[i][attribute] >= allStat[attribute]) {
+						if (stats[i][attribute] <= allStat[attribute]) {
 							break;
 						}
 					} else {
-						if (stats[i][attribute] <= allStat[attribute]) {
+						if (stats[i][attribute] >= allStat[attribute]) {
 							break;
 						}
 					}
