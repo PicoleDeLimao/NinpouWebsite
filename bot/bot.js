@@ -463,15 +463,15 @@ bot.on('message', function(ev) {
 									if (args[1] == 'desc' || args[1] == 'asc') {
 										displayRanking(ev, null, args[0], args[1]);
 									} else {
-										displayRanking(ev, args[0], args[1], 'desc');
+										displayRanking(ev, args[0], args[1], '');
 									}
 								} 
 							} else if (args.length == 1) {
 								if (ev.mentions.users.array().length > 0) {
-									displayRanking(ev, ev.mentions.users.array()[0].id, 'score', 'desc');
-								} else { 
+									displayRanking(ev, ev.mentions.users.array()[0].id, 'score', '');
+								} else {  
 									if (args[0] == 'score' || args[0] == 'kills' || args[0] == 'deaths' || args[0] == 'assists' || args[0] == 'gpm' || args[0] == 'wins' || args[0] == 'games' || args[0] == 'points' || args[0] == 'chance') {
-										displayRanking(ev, null, args[0], 'desc');
+										displayRanking(ev, null, args[0], '');
 									} else if (args[0] == 'desc' || args[0] == 'asc') {
 										displayRanking(ev, null, 'score', args[0]);
 									} else {

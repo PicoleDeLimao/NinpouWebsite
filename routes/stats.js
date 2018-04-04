@@ -398,11 +398,16 @@ router.get('/players/:username', function(req, res) {
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
 			}  
+			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
+			allStat.score = Calculator.calculateScore(allStat);
+			allStat.points = (allStat.kills * 10 + allStat.assists * 2 - allStat.deaths * 5) / allStat.games;
+			allStat.kills /= allStat.games;
+			allStat.deaths /= allStat.games;
+			allStat.assists /= allStat.games;
+			allStat.gpm /= allStat.games; 
 			Game.find({ 'slots.username': { $in: usernames } }).sort('-_id').limit(1).exec(function(err, games) {
 				if (err) return res.status(500).json({ 'error': err }); 
-				var mostRecentDate = games.length > 0 && moment(dateFromObjectId(games[0]._id.toString())).fromNow() || null;
-				allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
-				allStat.score = Calculator.calculateScore(allStat);
+				var mostRecentDate = games.length > 0 && moment(dateFromObjectId(games[0]._id.toString())).fromNow() || null; 
 				Stat.aggregate([
 				{
 					$group: {
@@ -417,21 +422,47 @@ router.get('/players/:username', function(req, res) {
 				}
 				], function(err, stats) {
 					if (err) return res.status(500).json(err);
+					for (var i = stats.length - 1; i >= 0; i--) {
+						if (stats[i].games < 10) {
+							stats.splice(i, 1); 
+						} 
+					}
 					for (var i = 0; i < stats.length; i++) {
 						stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
 						stats[i].score = Calculator.calculateScore(stats[i]);
+						stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5) / stats[i].games;
+						stats[i].kills /= stats[i].games;
+						stats[i].deaths /= stats[i].games;
+						stats[i].assists /= stats[i].games;
+						stats[i].gpm /= stats[i].games;
 					}
-					stats.sort(function(a, b) {
-						return b.score - a.score; 
-					}); 
-					var ranking = 0;
-					for (var i = 0; i < stats.length; i++) {
-						++ranking;
-						if (stats[i].score <= allStat.score) {
-							break;
+					var getRankingPosition = function(attribute, ascending) {
+						stats.sort(function(a, b) {
+							if (!ascending) {
+								return b[attribute] - a[attribute]; 
+							} else {
+								return a[attribute] - b[attribute]; 
+							} 
+						}); 
+						var ranking = 0;
+						for (var i = 0; i < stats.length; i++) {
+							++ranking;
+							if (ascending) {
+								if (stats[i][attribute] >= allStat[attribute]) {
+									break;
+								} 
+							} else {
+								if (stats[i][attribute] <= allStat[attribute]) {
+									break;
+								}
+							}
 						}
-					}
-					return res.json({ 'stat': allStat, 'ranking': ranking, 'lastGame': mostRecentDate  });
+						return ranking;
+					};
+					return res.json({ 'stat': allStat, 'ranking': getRankingPosition('score'), 'rankingKills': getRankingPosition('kills'),
+						'rankingDeaths': getRankingPosition('deaths', true), 'rankingAssists': getRankingPosition('assists'),
+						'rankingPoints': getRankingPosition('points'), 'rankingGpm': getRankingPosition('gpm'),
+						'rankingChance': getRankingPosition('chanceWin'), 'lastGame': mostRecentDate  });
 				}); 
 			});
 		});
@@ -450,12 +481,16 @@ router.get('/heroes/:map/:hero_id', function(req, res) {
 
 router.get('/ranking', function(req, res) {
 	var attribute = req.query.sort || 'score';
+	if (attribute == 'deaths' && !req.query.order) {
+		req.query.order = 'asc';
+	} 
 	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games' && attribute != 'points' && attribute != 'chance') {
 		attribute = 'score'; 
 	} 
 	if (attribute == 'chance') attribute = 'chanceWin';
 	var sortOrder = req.query.order || 'desc';
 	if (sortOrder != 'asc' && sortOrder != 'desc') sortOrder = 'desc';
+	
 	Stat.aggregate([
 	{
 		$group: { 
@@ -497,6 +532,9 @@ router.get('/ranking', function(req, res) {
  
 router.get('/ranking/:username', function(req, res) {
 	var attribute = req.query.sort || 'score';
+	if (attribute == 'deaths' && !req.query.order) {
+		req.query.order = 'asc';
+	} 
 	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games' && attribute != 'points' && attribute != 'chance') {
 		attribute = 'score'; 
 	} 
@@ -578,8 +616,14 @@ router.get('/ranking/:username', function(req, res) {
 				});
 				var ranking = 0;
 				for (var i = 0; i < stats.length; i++) {
-					if (stats[i][attribute] <= allStat[attribute]) {
-						break;
+					if (sortOrder == 'desc') {
+						if (stats[i][attribute] >= allStat[attribute]) {
+							break;
+						}
+					} else {
+						if (stats[i][attribute] <= allStat[attribute]) {
+							break;
+						}
 					}
 					++ranking;
 				} 
