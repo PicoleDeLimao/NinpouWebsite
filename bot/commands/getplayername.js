@@ -5,7 +5,18 @@ module.exports = function(ev, name, callback) {
 	if (!isNaN(parseInt(name))) {
 		ev.client.fetchUser(name).then(function(user) {
 			ev.guild.fetchMember(user).then(function(member) { 
-				return callback(null, member.displayName + ' (' + member.highestRole.name.replace('ū', 'uu').replace('ō', 'ou') + ')'); 
+				member.roles.sort(function(a, b) {
+					return b.position - a.position;
+				}); 
+				var roleName = '';
+				member.roles.forEach(function(role) {
+					if (roleName == '') {
+						if (role.hoist) {
+							roleName = role.name;
+						}
+					}
+				}); 
+				return callback(null, member.displayName + ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')'); 
 			}).catch(function(err) { 
 				return callback(null, name);
 			});
