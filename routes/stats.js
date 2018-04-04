@@ -362,10 +362,47 @@ function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
-router.get('/players/:username', function(req, res) {
-	Alias.find({ $or: [{ alias: req.params.username.toLowerCase() }, { username: req.params.username.toLowerCase() }] }, function(err, alias) {
-		if (err) return res.status(500).json(err);
-		var usernames = [];
+function getRankingPosition(players, player, attribute, ascending) {
+	var newPlayers = players.slice();
+	newPlayers.sort(function(a, b) {
+		if (!ascending) {
+			return b[attribute] - a[attribute]; 
+		} else {
+			return a[attribute] - b[attribute]; 
+		} 
+	}); 
+	var ranking = 0;
+	for (var i = 0; i < newPlayers.length; i++) {
+		++ranking;
+		if (ascending) {
+			if (newPlayers[i][attribute] >= player[attribute]) {
+				break;
+			} 
+		} else {
+			if (newPlayers[i][attribute] <= player[attribute]) {
+				break;
+			}
+		}
+	} 
+	return ranking;
+};  
+ 
+function getRankingPositions(players, player) {
+	player.ranking = { };
+	player.ranking.kills = getRankingPosition(players, player, 'kills');
+	player.ranking.deaths = getRankingPosition(players, player, 'deaths', true);
+	player.ranking.assists = getRankingPosition(players, player, 'assists');
+	player.ranking.points = getRankingPosition(players, player, 'points');
+	player.ranking.gpm = getRankingPosition(players, player, 'gpm');
+	player.ranking.chance = getRankingPosition(players, player, 'chanceWin');
+	player.ranking.score = getRankingPosition(players, player, 'score');
+	return player; 
+}; 
+  
+function getPlayerStats(username, callback) {
+	Alias.find({ $or: [{ alias: username.toLowerCase() }, { username: username.toLowerCase() }] }, function(err, alias) {
+		if (err) return callback(err);
+		var usernames = []; 
 		if (alias.length > 0) {
 			usernames = alias[0].alias;
 			var aliases = [];
@@ -374,11 +411,11 @@ router.get('/players/:username', function(req, res) {
 			}  
 			usernames = aliases; 
 		} else { 
-			usernames = [new RegExp(['^', escapeRegExp(req.params.username.toLowerCase()), '$'].join(''), 'i')];
+			usernames = [new RegExp(['^', escapeRegExp(username.toLowerCase()), '$'].join(''), 'i')];
 		}
 		Stat.find({ username: { $in: usernames } }).sort('_id').exec(function(err, stats) {
-			if (err) return res.status(500).json(err);
-			else if (!stats || stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
+			if (err) return callback(err); 
+			else if (!stats || stats.length == 0) return callback('This player haven\'t played yet.');
 			var allStat = { 
 				_id: alias.length > 0 && alias[0].username || stats[0].username,
 				kills: 0,
@@ -403,70 +440,65 @@ router.get('/players/:username', function(req, res) {
 			allStat.points = (allStat.kills * 10 + allStat.assists * 2 - allStat.deaths * 5) / allStat.games;
 			allStat.kills /= allStat.games;
 			allStat.deaths /= allStat.games;
-			allStat.assists /= allStat.games;
-			allStat.gpm /= allStat.games; 
-			Game.find({ 'slots.username': { $in: usernames } }).sort('-_id').limit(1).exec(function(err, games) {
-				if (err) return res.status(500).json({ 'error': err }); 
-				var mostRecentDate = games.length > 0 && moment(dateFromObjectId(games[0]._id.toString())).fromNow() || null; 
-				Stat.aggregate([
-				{
-					$group: {
-						_id: '$alias',
-						kills: { $sum: '$kills' },
-						deaths: { $sum: '$deaths' },
-						assists: { $sum: '$assists' },
-						gpm: { $sum: '$gpm' },
-						wins: { $sum: '$wins' },
-						games: { $sum: '$games' }
-					}
-				}
-				], function(err, stats) {
-					if (err) return res.status(500).json(err);
-					for (var i = stats.length - 1; i >= 0; i--) {
-						if (stats[i].games < 10) {
-							stats.splice(i, 1); 
-						} 
-					}
-					for (var i = 0; i < stats.length; i++) {
-						stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
-						stats[i].score = Calculator.calculateScore(stats[i]);
-						stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5) / stats[i].games;
-						stats[i].kills /= stats[i].games;
-						stats[i].deaths /= stats[i].games;
-						stats[i].assists /= stats[i].games;
-						stats[i].gpm /= stats[i].games;
-					}
-					var getRankingPosition = function(attribute, ascending) {
-						stats.sort(function(a, b) {
-							if (!ascending) {
-								return b[attribute] - a[attribute]; 
-							} else {
-								return a[attribute] - b[attribute]; 
-							} 
-						}); 
-						var ranking = 0;
-						for (var i = 0; i < stats.length; i++) {
-							++ranking;
-							if (ascending) {
-								if (stats[i][attribute] >= allStat[attribute]) {
-									break;
-								} 
-							} else {
-								if (stats[i][attribute] <= allStat[attribute]) {
-									break;
-								}
-							}
-						}
-						return ranking;
-					};
-					return res.json({ 'stat': allStat, 'ranking': getRankingPosition('score'), 'rankingKills': getRankingPosition('kills'),
-						'rankingDeaths': getRankingPosition('deaths', true), 'rankingAssists': getRankingPosition('assists'),
-						'rankingPoints': getRankingPosition('points'), 'rankingGpm': getRankingPosition('gpm'),
-						'rankingChance': getRankingPosition('chanceWin'), 'lastGame': mostRecentDate  });
-				}); 
-			});
+			allStat.assists /= allStat.games; 
+			allStat.gpm = allStat.gpm / allStat.games * 100;
+			allStat.chanceWin *= 100;
+			allStat.usernames = usernames; 
+			return callback(null, allStat);
 		});
-	});	
+	});
+};
+ 
+function getAllPlayersRanking(callback) {
+	Stat.aggregate([
+	{
+		$group: {
+			_id: '$alias',
+			kills: { $sum: '$kills' },
+			deaths: { $sum: '$deaths' },
+			assists: { $sum: '$assists' },
+			gpm: { $sum: '$gpm' },
+			wins: { $sum: '$wins' },
+			games: { $sum: '$games' }
+		}
+	}
+	], function(err, stats) {
+		if (err) return callback(err); 
+		for (var i = 0; i < stats.length; i++) {
+			stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
+			stats[i].score = Calculator.calculateScore(stats[i]);
+			stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5) / stats[i].games;
+			stats[i].kills /= stats[i].games;
+			stats[i].deaths /= stats[i].games;
+			stats[i].assists /= stats[i].games;
+			stats[i].gpm = stats[i].gpm / stats[i].games * 100;
+			stats[i].chanceWin *= 100;
+		}    
+		for (var i = stats.length - 1; i >= 0; i--) {
+			if (stats[i].games < 10) {
+				stats.splice(i, 1); 
+			}   
+		} 
+		for (var i = 0; i < stats.length; i++) { 
+			stats[i] = getRankingPositions(stats, stats[i]);
+		}   
+		return callback(null, stats); 
+	});
+};
+
+router.get('/players/:username', function(req, res) {
+	getPlayerStats(req.params.username, function(err, allStat) {
+		if (err) return res.status(400).json({ 'error': err });
+		Game.find({ 'slots.username': { $in: allStat.usernames } }).sort('-_id').limit(1).exec(function(err, games) {
+			if (err) return res.status(500).json({ 'error': err }); 
+			var mostRecentDate = games.length > 0 && moment(dateFromObjectId(games[0]._id.toString())).fromNow() || null; 
+			getAllPlayersRanking(function(err, stats) {
+				if (err) return res.status(400).json({ 'error': err });
+				allStat = getRankingPositions(stats, allStat);      
+				return res.json({ 'stat': allStat, 'lastGame': mostRecentDate });
+			}); 
+		});
+	});
 });
 
 router.get('/heroes/:map/:hero_id', function(req, res) {
@@ -479,175 +511,67 @@ router.get('/heroes/:map/:hero_id', function(req, res) {
 	});
 });
 
-router.get('/ranking', function(req, res) {
+router.use('/ranking', function(req, res, next) {
 	var attribute = req.query.sort || 'score';
-	if (attribute == 'deaths' && !req.query.order) {
-		req.query.order = 'asc';
-	} 
 	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games' && attribute != 'points' && attribute != 'chance') {
 		attribute = 'score'; 
-	} 
-	if (attribute == 'chance') attribute = 'chanceWin';
-	var sortOrder = req.query.order || 'desc';
-	if (sortOrder != 'asc' && sortOrder != 'desc') sortOrder = 'desc';
-	
-	Stat.aggregate([
-	{
-		$group: { 
-			_id: '$alias',
-			kills: { $sum: '$kills' },
-			deaths: { $sum: '$deaths' },
-			assists: { $sum: '$assists' },
-			gpm: { $sum: '$gpm' },
-			wins: { $sum: '$wins' },
-			games: { $sum: '$games' } 
-		}
+	}   
+	var sortOrder = req.query.order || 'asc';
+	if (sortOrder != 'asc' && sortOrder != 'desc') {
+		sortOrder = 'asc';  
 	}  
-	], function(err, stats) {
-		if (err) return res.status(500).json(err);
-		for (var i = stats.length - 1; i >= 0; i--) {
-			if (stats[i].games < 10) {
-				stats.splice(i, 1); 
-			}
-		}
-		for (var i = 0; i < stats.length; i++) {
-			stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
-			stats[i].score = Calculator.calculateScore(stats[i]);
-			stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5) / stats[i].games;
-			stats[i].kills /= stats[i].games;
-			stats[i].deaths /= stats[i].games;
-			stats[i].assists /= stats[i].games;
-			stats[i].gpm /= stats[i].games;
-		} 
-		stats.sort(function(a, b) {
-			if (sortOrder == 'desc') {
-				return b[attribute] - a[attribute];
+	req.attribute = attribute;
+	req.sortOrder = sortOrder;
+	next();
+});
+
+router.get('/ranking', function(req, res) { 
+	getAllPlayersRanking(function(err, stats) {
+		if (err) return res.status(400).json({ 'error': err });
+		stats.sort(function(a, b) { 
+			if (req.sortOrder == 'desc') {
+				return b.ranking[req.attribute] - a.ranking[req.attribute];
 			} else {
-				return a[attribute] - b[attribute];
+				return a.ranking[req.attribute] - b.ranking[req.attribute];
 			}
 		});  
 		return res.json({ 'ranking': stats.slice(0, 10), 'index': 0, 'minIndex': 0 });
-	});
+	});  
 });
  
-router.get('/ranking/:username', function(req, res) {
-	var attribute = req.query.sort || 'score';
-	if (attribute == 'deaths' && !req.query.order) {
-		req.query.order = 'asc';
-	} 
-	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'gpm' && attribute != 'wins' && attribute != 'games' && attribute != 'points' && attribute != 'chance') {
-		attribute = 'score'; 
-	} 
-	if (attribute == 'chance') attribute = 'chanceWin';
-	var sortOrder = req.query.order || 'desc';
-	if (sortOrder != 'asc' && sortOrder != 'desc') sortOrder = 'desc';
-	Alias.find({ $or: [{ alias: req.params.username.toLowerCase() }, { username: req.params.username.toLowerCase() }] }, function(err, alias) {
-		if (err) return res.status(500).json(err);
-		var usernames = [];
-		if (alias.length > 0) { 
-			usernames = alias[0].alias;
-		} else {
-			usernames = [req.params.username.toLowerCase()];
-		}
-		Stat.find({ username: { $in: usernames } }, function(err, stats) {
-			if (err) return res.status(500).json(err);
-			else if (!stats || stats.length == 0) return res.status(400).json({ error: 'Player not found.' });
-			var allStat = { 
-				_id: alias.length > 0 && alias[0].username || stats[0].username,
-				kills: 0,
-				deaths: 0,
-				assists: 0,
-				gpm: 0,
-				wins: 0,
-				games: 0
-			};       
+router.get('/ranking/:username', function(req, res) { 
+	getPlayerStats(req.params.username, function(err, allStat) {
+		if (err) return res.status(400).json({ 'error': err });
+		getAllPlayersRanking(function(err, stats) {
+			if (err) return res.status(400).json({ 'error': err });
+			allStat = getRankingPositions(stats, allStat); 
+			
+			stats.sort(function(a, b) {
+				if (req.sortOrder == 'desc') {
+					return b.ranking[req.attribute] - a.ranking[req.attribute]; 
+				} else {
+					return a.ranking[req.attribute] - b.ranking[req.attribute]; 
+				} 
+			}); 
+			var ranking = 0;
 			for (var i = 0; i < stats.length; i++) {
-				allStat.kills += stats[i].kills;
-				allStat.deaths += stats[i].deaths;
-				allStat.assists += stats[i].assists;
-				allStat.gpm += stats[i].gpm;
-				allStat.wins += stats[i].wins;
-				allStat.games += stats[i].games;
-			}
-			allStat.chanceWin = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
-			allStat.score = Calculator.calculateScore(allStat);
-			allStat.points = (allStat.kills * 10 + allStat.assists * 2 - allStat.deaths * 5) / allStat.games;
-			allStat.kills /= allStat.games;
-			allStat.deaths /= allStat.games;
-			allStat.assists /= allStat.games;
-			allStat.gpm /= allStat.games; 
-			Stat.aggregate([
-			{
-				$match: { username: { $nin: usernames } }
-			},
-			{
-				$group: { 
-					_id: '$alias',
-					kills: { $sum: '$kills' },
-					deaths: { $sum: '$deaths' },
-					assists: { $sum: '$assists' },
-					gpm: { $sum: '$gpm' },
-					wins: { $sum: '$wins' },
-					games: { $sum: '$games' }
-				}
-			}
-			], function(err, stats) {
-				if (err) return res.status(500).json(err);
-				for (var i = stats.length - 1; i >= 0; i--) {
-					if (stats[i].games < 10) {
-						stats.splice(i, 1); 
-					}
-				} 
-				for (var i = 0; i < stats.length; i++) {
-					stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
-					stats[i].score = Calculator.calculateScore(stats[i]);
-					stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5) / stats[i].games;
-					stats[i].kills /= stats[i].games;
-					stats[i].deaths /= stats[i].games;
-					stats[i].assists /= stats[i].games;
-					stats[i].gpm /= stats[i].games;
-				} 
-				stats.sort(function(a, b) {
-					if (sortOrder == 'desc') {
-						return b[attribute] - a[attribute];
-					} else {
-						return a[attribute] - b[attribute];
-					}
-				});
-				var ranking = 0;
-				for (var i = 0; i < stats.length; i++) {
-					if (sortOrder == 'desc') {
-						if (stats[i][attribute] <= allStat[attribute]) {
-							break;
-						}
-					} else {
-						if (stats[i][attribute] >= allStat[attribute]) {
-							break;
-						}
-					}
-					++ranking;
-				} 
-				var minIndex = Math.max(0, ranking - 5);
-				var newRanking = stats.slice(minIndex, minIndex + 10);
-				newRanking.push(allStat);
-				newRanking.sort(function(a, b) {
-					if (sortOrder == 'desc') {
-						return b[attribute] - a[attribute];
-					} else {
-						return a[attribute] - b[attribute];
+				++ranking;
+				if (req.sortOrder != 'desc') {
+					if (stats[i].ranking[req.attribute] >= allStat.ranking[req.attribute]) {
+						break;
 					} 
-				}); 
-				var index = null; 
-				for (var i = 0; i < newRanking.length; i++) {
-					if (newRanking[i] == allStat) {
-						index = i;
+				} else {  
+					if (stats[i].ranking[req.attribute] <= allStat.ranking[req.attribute]) {
 						break;
 					}
-				}
-				return res.json({ 'ranking': newRanking, 'index': index, 'minIndex': minIndex });
-			}); 
-		});
-	});	
+				} 
+			} 
+			  
+			var minIndex = Math.max(0, ranking - 5); 
+			var newRanking = stats.splice(minIndex, 10); 
+			return res.json({ 'ranking': newRanking, 'index': ranking, 'minIndex': minIndex });
+		}); 
+	}); 
 });
 
 module.exports = router;

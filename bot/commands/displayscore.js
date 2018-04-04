@@ -15,19 +15,20 @@ module.exports = function(ev, playerName) {
 				var ranking = JSON.parse(body);
 				if (statusCode != 200) {
 					ev.channel.send(ranking.error);
-				} else {
+				} else { 
 					getPlayerName(ev, ranking.stat._id, function(err, playerName) {
 						if (err) return ev.channel.send('Couldn\'t fetch player score. :( **Oink!**');
+						var player = ranking.stat;
 						var response = '```md\n';  
-						response += '< ' + playerName + ' > is on ranking <' + ranking.ranking + '> with a score of <' + Math.round(ranking.stat.score) + '> and a win percentage of <' + (ranking.stat.wins / ranking.stat.games * 100).toFixed(2) + '%> out of <' + ranking.stat.games + '> games. More info:\n\n' +   
-						'Average kills:       <' + Math.round(ranking.stat.kills) + '> (Ranking <' + ranking.rankingKills + '>)\n' + 
-						'Average deaths:      <' + Math.round(ranking.stat.deaths) + '> (Ranking <' + ranking.rankingDeaths + '>)\n' + 
-						'Average assists:     <' + Math.round(ranking.stat.assists) + '> (Ranking <' + ranking.rankingAssists + '>)\n' + 
-						'Average points:      <' + Math.round(ranking.stat.points) + '> (Ranking <' + ranking.rankingPoints + '>)\n' +  
-						'Average gold/minute: <' + Math.round(ranking.stat.gpm * 100) + '> (Ranking <' + ranking.rankingGpm + '>)\n' +  
-						'Chance of winning:   <' + (ranking.stat.chanceWin * 100).toFixed(2) + '%> (Ranking <' + ranking.rankingChance + '>)\n\n' + 
+						response += '< ' + playerName + ' > is on ranking <' + player.ranking.score + '> with a score of <' + Math.round(player.score) + '> and a win percentage of <' + (player.wins / player.games * 100).toFixed(2) + '%> out of <' + player.games + '> games. More info:\n\n' +   
+						'Average kills:       <' + Math.round(player.kills) + '> (Ranking <' + player.ranking.kills + '>)\n' + 
+						'Average deaths:      <' + Math.round(player.deaths) + '> (Ranking <' + player.ranking.deaths + '>)\n' + 
+						'Average assists:     <' + Math.round(player.assists) + '> (Ranking <' + player.ranking.assists + '>)\n' + 
+						'Average points:      <' + Math.round(player.points) + '> (Ranking <' + player.ranking.points + '>)\n' +  
+						'Average gold/minute: <' + Math.round(player.gpm) + '> (Ranking <' + player.ranking.gpm + '>)\n' +   
+						'Chance of winning:   <' + (player.chanceWin).toFixed(2) + '%> (Ranking <' + player.ranking.chance + '>)\n\n' + 
 						'Last game:           ' + ranking.lastGame; 
-						response += '```';
+						response += '```';  
 						ev.channel.send(response);
 					});
 				}
