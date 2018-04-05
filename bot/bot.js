@@ -239,32 +239,32 @@ bot.on('message', function(ev) {
         if (cmd == 'help') {
 			ev.channel.send( 
 				'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
-				'< !help >                     : Display this message\n' + 
-				'< !host > [location] [owner]  : Host a new game\n' + 
-				'< !lobby >                    : List games in lobby\n' + 
-				'< !progress >                 : List games in progress\n' + 
-				'< !last >                     : Fetch last non-recorded played games\n' + 
-				'< !recorded >                 : Fetch last recorded played games\n' + 
-				'< !info > <game_id>           : Fetch info about a played game\n' + 
-				'< !record > <game_id> <code>  : Record a game\n' +  
-				'< !unrecord > <game_id>       : Unrecord a game\n' +  
-				'< !ranking > [player_name]    : Display player position in Ninpou ranking\n' + 
-				'< !score > [player_name]      : Display a player score in the ranking\n' + 
-				'< !addalias > <player_name>   : Add a new alias\n' + 
-				'< !removealias > <player_name>: Remove an alias\n' + 
-				'< !whois > <player_name>      : Check who in discord is using a determined account\n' + 
-				'< !aliasof > <user>           : Display all alias from a user\n' + 
-				'< !addstream > <channel>      : Add a new streaming channel\n' + 
-				'< !removestream > <channel>   : Remove a streaming channel\n' + 
-				'< !streams >                  : List streaming channels\n' +  
-				'< !missions >                 : List available missions\n' + 
-				'< !get > [user]               : Display information about an user\n' + 
-				'< !give > <user> <amount>     : Give gold to an user\n' +   
+				'< !help >                       : Display this message\n' + 
+				'< ![h]ost > [location] [owner]  : Host a new game\n' + 
+				'< !lobby >                      : List games in lobby\n' + 
+				'< ![p]rogress >                 : List games in progress\n' + 
+				'< ![l]ast >                     : Fetch last non-recorded played games\n' + 
+				'< !recorded >                   : Fetch last recorded played games\n' + 
+				'< ![i]nfo > <game_id>           : Fetch info about a played game\n' + 
+				'< ![r]ecord > <game_id> <code>  : Record a game\n' +  
+				'< !unrecord > <game_id>         : Unrecord a game\n' +  
+				'< !ra[n]king > [player_name]    : Display player position in Ninpou ranking\n' + 
+				'< ![s]core > [player_name]      : Display a player score in the ranking\n' + 
+				'< !addalias > <player_name>     : Add a new alias\n' + 
+				'< !removealias > <player_name>  : Remove an alias\n' + 
+				'< !whois > <player_name>        : Check who in discord is using a determined account\n' + 
+				'< !aliasof > <user>             : Display all alias from a user\n' + 
+				'< !addstream > <channel>        : Add a new streaming channel\n' + 
+				'< !removestream > <channel>     : Remove a streaming channel\n' + 
+				'< !streams >                    : List streaming channels\n' +  
+				'< !missions >                   : List available missions\n' + 
+				'< ![g]et > [user]               : Display information about an user\n' + 
+				'< !give > <user> <amount>       : Give gold to an user\n' +   
 				//'< !give > <user> <amount>     : Give certain amount of gold to some user\n' +   
-				'< !items >                    : Display items available to be purchased\n' + 
+				'< !items >                      : Display items available to be purchased\n' + 
 				//'< !jutsus >                   : Display jutsus available to be purchased\n' +
-				'< !trivia naruto >            : Start a Naruto trivia (use < !trivia > again to disable it)\n' +
-				'< !trivia ninpou >            : Start a Ninpou trivia (use < !trivia > again to disable it)```'
+				'< !trivia naruto >              : Start a Naruto trivia (use < !trivia > again to disable it)\n' +
+				'< !trivia ninpou >              : Start a Ninpou trivia (use < !trivia > again to disable it)```'
 			);    
 		} else if (cmd == 'addalias') {
 			if (args.length > 0) {
@@ -422,6 +422,7 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!a <answer>**');
 							}
 							break;
+						case 'h':
 						case 'host':
 							if (args.length == 2) {
 								var realm = args[0].toLowerCase();
@@ -446,15 +447,18 @@ bot.on('message', function(ev) {
 						case 'lobby':
 							displayGames(ev, hostedGames, false, false);
 							break; 
+						case 'p':
 						case 'progress':
 							displayGames(ev, inProgressGames, false, true);
 							break; 
+						case 'l':
 						case 'last':
 							displayLastGames(ev);
 							break;
 						case 'recorded':
 							displayLastRecordedGames(ev);
 							break;
+						case 'i':
 						case 'info': 
 							if (args.length == 1) {
 								displayGameInfo(ev, args[0]);
@@ -462,6 +466,7 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!info <game_id>**');
 							}
 							break;
+						case 'r':
 						case 'record':
 							if (args.length == 2) {
 								recordGame(ev, args[0], args[1], alias);
@@ -476,6 +481,8 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!unrecord <game_id>**');
 							}
 							break;
+						case 'n':
+						case 'rank':
 						case 'ranking': 
 							if (args.length == 3) {
 								if (ev.mentions.users.array().length > 0) {
@@ -509,6 +516,7 @@ bot.on('message', function(ev) {
 								displayRanking(ev, null, 'score');
 							} 
 							break;
+						case 's':
 						case 'score':
 							if (args.length > 0) {
 								if (ev.mentions.users.array().length > 0) {
@@ -534,6 +542,7 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!aliasof <user>**');
 							}
 							break;
+						case 'g':
 						case 'get':  
 							if (args.length > 0 && ev.mentions.users.array().length > 0) {
 								getInfo(ev, ev.mentions.users.array()[0].id);
