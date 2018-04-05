@@ -28,7 +28,7 @@ module.exports = function(ev, attribute) {
 							});
 						} else if (attribute == 'kills') {
 							ev.guild.roles.forEach(function(guildRole) {
-								if (guildRole.name.toLowerCase() == 'god slayer') {
+								if (guildRole.name.toLowerCase() == 'solo killer') {
 									role = guildRole;
 								}
 							});
@@ -38,9 +38,9 @@ module.exports = function(ev, attribute) {
 									role = guildRole;
 								}
 							});
-						} else if (attribute == 'assists') {
+						} else if (attribute == 'assists') { 
 							ev.guild.roles.forEach(function(guildRole) {
-								if (guildRole.name.toLowerCase() == 'always by your side') {
+								if (guildRole.name.toLowerCase() == 'guardian angel') {
 									role = guildRole;
 								}
 							});
