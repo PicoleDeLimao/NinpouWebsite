@@ -13,9 +13,9 @@ module.exports = {
 		// Upper bound is min(1,pest+radius)
 	},
 
-	calculateScore(stat) {
-		stat.chanceWin = stat.chanceWin || this.AgrestiCoullLower(stat.games, stat.wins);
-		var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) * (stat.gpm * 100 / stat.games) * stat.chanceWin;   
+	calculateScore(stat) { 
+		stat.chance = stat.chance || this.AgrestiCoullLower(stat.games, stat.wins);
+		var score = (stat.kills / stat.games * 10 - stat.deaths / stat.games * 5 + stat.assists / stat.games * 2) * (stat.gpm * 100 / stat.games) * stat.chance;   
 		if (isNaN(score)) return 0;  
 		return score; 
 	}

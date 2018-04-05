@@ -26,7 +26,7 @@ module.exports = function(ev, playerName) {
 						'Average assists:     <' + Math.round(player.assists) + '> (Ranking <' + player.ranking.assists + '>)\n' + 
 						'Average points:      <' + Math.round(player.points) + '> (Ranking <' + player.ranking.points + '>)\n' +  
 						'Average gold/minute: <' + Math.round(player.gpm) + '> (Ranking <' + player.ranking.gpm + '>)\n' +   
-						'Chance of winning:   <' + (player.chanceWin).toFixed(2) + '%> (Ranking <' + player.ranking.chance + '>)\n\n' + 
+						'Chance of winning:   <' + (player.chance).toFixed(2) + '%> (Ranking <' + player.ranking.chance + '>)\n\n' + 
 						'Last game:           ' + ranking.lastGame; 
 						response += '```';  
 						ev.channel.send(response);

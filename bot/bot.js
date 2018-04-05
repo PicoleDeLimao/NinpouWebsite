@@ -35,6 +35,7 @@ var displayLastGames = require('./commands/displaylastgames');
 var displayLastRecordedGames = require('./commands/displaylastrecordedgames');
 var displayGameInfo = require('./commands/displaygameinfo');
 var buy = require('./commands/buy');
+var giveGold = require('./commands/givegold');
 
 bot.on('ready', function (evt) {
 	console.error('Logged in as: ' + bot.user.tag);
@@ -257,7 +258,8 @@ bot.on('message', function(ev) {
 				'< !removestream > <channel>   : Remove a streaming channel\n' + 
 				'< !streams >                  : List streaming channels\n' +  
 				'< !missions >                 : List available missions\n' + 
-				'< !get > [user]               : Display information about an user\n' +   
+				'< !get > [user]               : Display information about an user\n' + 
+				'< !give > <user> <amount>     : Give gold to an user\n' +   
 				//'< !give > <user> <amount>     : Give certain amount of gold to some user\n' +   
 				'< !items >                    : Display items available to be purchased\n' + 
 				//'< !jutsus >                   : Display jutsus available to be purchased\n' +
@@ -539,6 +541,13 @@ bot.on('message', function(ev) {
 								getInfo(ev, ev.author.id);
 							}
 							break; 
+						case 'give':
+							if (args.length == 2 && ev.mentions.users.array().length > 0) {
+								giveGold(ev, ev.mentions.users.array()[0].id, args[1]);
+							} else {
+								ev.channel.send('Me no understand! Use **!give <user> <amount>**');
+							}
+							break;
 						case 'addstream':
 							if (args.length == 1) {
 								addStream(ev, args[0]);
