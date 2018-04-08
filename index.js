@@ -37,9 +37,9 @@ app.use('/items', require('./routes/items'));
 app.get('/latest', function(req, res) {
 	res.redirect('https://drive.google.com/file/d/1JDjvTvkZTNwRxNQ3BLVxdM0AQy-rOjVp/view?usp=sharing');
 }); 
-  
+   
 app.get('/changelog', function(req, res) {
-	res.redirect('http://www.narutoninpou.com/#/forum/threads/5abba22502a54b0014512e73');
+	res.redirect('http://www.narutoninpou.com/#/forum/threads/5aca6ce4d19def00146652d4');
 });
 
 app.get('/donate', function(req, res) { 
