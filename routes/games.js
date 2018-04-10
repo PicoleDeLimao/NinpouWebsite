@@ -9,6 +9,7 @@ var Stat = require('../models/Stat');
 var Alias = require('../models/Alias');
 
 var cookie = '';
+var code = 'w9nga'; 
 
 function getCookie() {
 	var request = https.request({ host: 'entgaming.net', path: '/forum/ucp.php?mode=login', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': 0 } }, function(res) {
@@ -303,7 +304,7 @@ router.get('/', function(req, res) {
 });
   
 router.post('/', function(req, response) {  
-	var dataToSend = 'owner=' + req.body.owner + '&map=:ytl5h&location=' + req.body.realm;
+	var dataToSend = 'owner=' + req.body.owner + '&map=:' + code + '&location=' + req.body.realm;
 	var request = https.request({ host: 'entgaming.net', path: '/link/host.php', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(dataToSend), 'cookie': cookie } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) { 
