@@ -55,6 +55,20 @@ router.get('/:alias', function(req, res) {
 	});
 });
 
+router.put('/:username/status', function(req, res) {
+	if (!req.params.username) return res.status(404).json({ error: 'Player not found.' });
+	else if (!req.body.status) return res.status(400).json({ error: 'Invalid status.' });
+	else if (req.body.status.length > 300) return res.status(400).json({ error: 'Maximum status length: 300' });
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, user) {
+		if (err || !user) return res.status(404).json({ error: 'Player not found.' });
+		user.status = req.body.status;
+		user.save(function(err) {
+			if (err) return res.status(500).json({ error: err });
+			return res.status(200).send(); 
+		});
+	});
+});
+
 router.put('/:username/:alias', function(req, res) {
 	if (!req.params.username || !req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
 	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
@@ -138,7 +152,7 @@ router.post('/:owner/give', function(req, res) {
 				});
 			});
 		});
-	});
+	}); 
 });
 
 module.exports = router;

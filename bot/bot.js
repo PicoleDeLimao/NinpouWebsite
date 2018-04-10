@@ -36,6 +36,7 @@ var displayLastRecordedGames = require('./commands/displaylastrecordedgames');
 var displayGameInfo = require('./commands/displaygameinfo');
 var buy = require('./commands/buy');
 var giveGold = require('./commands/givegold');
+var setStatus = require('./commands/setstatus');
 
 bot.on('ready', function (evt) {
 	console.error('Logged in as: ' + bot.user.tag);
@@ -257,11 +258,12 @@ bot.on('message', function(ev) {
 				'< !addstream > <channel>        : Add a new streaming channel\n' + 
 				'< !removestream > <channel>     : Remove a streaming channel\n' + 
 				'< !streams >                    : List streaming channels\n' +  
-				'< !missions >                   : List available missions\n' + 
+				'< ![m]issions >                 : List available missions\n' + 
 				'< ![g]et > [user]               : Display information about an user\n' + 
 				'< !give > <user> <amount>       : Give gold to an user\n' +   
 				//'< !give > <user> <amount>     : Give certain amount of gold to some user\n' +   
 				'< !items >                      : Display items available to be purchased\n' + 
+				'< !status > <status>            : Set a status\n' + 
 				//'< !jutsus >                   : Display jutsus available to be purchased\n' +
 				'< !trivia naruto >              : Start a Naruto trivia (use < !trivia > again to disable it)\n' +
 				'< !trivia ninpou >              : Start a Ninpou trivia (use < !trivia > again to disable it)```'
@@ -306,6 +308,7 @@ bot.on('message', function(ev) {
 								'[     -] [S-Rank] < !mission title-chance>     : Be Top-1 on chance of winning ranking and get the "Champion" title\n```'
 							);  
 							break; 
+						case 'm':
 						case 'mission':
 							if (args.length > 0) {
 								switch (args[0]) {
@@ -548,6 +551,13 @@ bot.on('message', function(ev) {
 								aliasOf(ev, ev.mentions.users.array()[0].id);
 							} else { 
 								ev.channel.send('Me no understand! Use **!aliasof <user>**');
+							}
+							break;
+						case 'status':
+							if (args.length > 0) { 
+								setStatus(ev, args.join(' '));
+							} else {
+								ev.channel.send('Me no understand! Use **!status <status>**');
 							}
 							break;
 						case 'g':

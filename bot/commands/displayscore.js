@@ -27,7 +27,10 @@ module.exports = function(ev, playerName) {
 						'Average points:      <' + Math.round(player.points) + '> (Ranking <' + player.ranking.points + '>)\n' +  
 						'Average gold/minute: <' + Math.round(player.gpm) + '> (Ranking <' + player.ranking.gpm + '>)\n' +   
 						'Chance of winning:   <' + (player.chance).toFixed(2) + '%> (Ranking <' + player.ranking.chance + '>)\n\n' + 
-						'Last game:           ' + ranking.lastGame; 
+						'Last game:           ' + ranking.lastGame;
+						if (ranking.user.status) { 
+							response += '\nStatus:\n' + ranking.user.status + '\n';
+						}
 						response += '```';  
 						ev.channel.send(response);
 					});

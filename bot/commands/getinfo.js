@@ -64,8 +64,8 @@ module.exports = function(ev, user) {
 						'Armor:     [' + getArmor(data) + ']\n' +
 						'Weapon:    ' + getItem(data.itemWeapon, spaces) + '\n' +
 						'Cloth:     ' + getItem(data.itemArmor, spaces) + '\n' + 
-						'Accessory: ' + getItem(data.itemSupport, spaces) + '\n' +
-						'```'; 
+						'Accessory: ' + getItem(data.itemSupport, spaces) + '\n\n' + 
+						(data.status ? ('Status:\n' + data.status) : '') + '\n```'; 
 						ev.channel.send(response);
 					}) 
 				} catch (err) {

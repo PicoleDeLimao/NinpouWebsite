@@ -495,9 +495,11 @@ router.get('/players/:username', function(req, res) {
 			if (err) return res.status(500).json({ 'error': err }); 
 			var mostRecentDate = games.length > 0 && moment(dateFromObjectId(games[0]._id.toString())).fromNow() || null; 
 			getAllPlayersRanking(function(err, stats) {
-				if (err) return res.status(400).json({ 'error': err });
-				allStat = getRankingPositions(stats, allStat);      
-				return res.json({ 'stat': allStat, 'lastGame': mostRecentDate });
+				if (err) return res.status(400).json({ 'error': err }); 
+				allStat = getRankingPositions(stats, allStat);       
+				Alias.findOne({ $or: [{username: req.params.username.toLowerCase() }, { alias: req.params.username.toLowerCase() }] }, function(err, user) {
+					return res.json({ 'stat': allStat, 'lastGame': mostRecentDate, 'user': user });
+				});
 			}); 
 		});
 	});

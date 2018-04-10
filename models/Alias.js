@@ -17,7 +17,8 @@ var aliasSchema = mongoose.Schema({
 	itemConsumables: [{
 		id: { type: Number, required: true },
 		amount: { type: Number, default: 0 }
-	}]
+	}],
+	status: { type: String }
 });
 
 var Alias = mongoose.model('Alias', aliasSchema);
