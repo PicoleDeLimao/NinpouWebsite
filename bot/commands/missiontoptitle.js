@@ -44,6 +44,12 @@ module.exports = function(ev, attribute) {
 									role = guildRole;
 								}
 							});
+						} else if (attribute == 'points') {
+							ev.guild.roles.forEach(function(guildRole) {
+								if (guildRole.name.toLowerCase() == 'legend') {
+									role = guildRole;
+								}
+							});
 						} else if (attribute == 'gpm') {
 							ev.guild.roles.forEach(function(guildRole) {
 								if (guildRole.name.toLowerCase() == 'gold farmer') {
@@ -56,12 +62,18 @@ module.exports = function(ev, attribute) {
 									role = guildRole;
 								}
 							});
-						}
+						} else if (attribute == 'chance') {
+							ev.guild.roles.forEach(function(guildRole) {
+								if (guildRole.name.toLowerCase() == 'champion') {
+									role = guildRole;
+								}
+							});
+						} 
 						ev.guild.members.forEach(function(member) {
 							member.removeRole(role.id);
 						});
-						author.addRole(role.id);
-						return ev.channel.send('Done!! **Oink**!!!');
+						author.addRole(role.id);   
+						return ev.channel.send('Congratulations! From ' + ev.guild.memberCount + ' players, you are the best!!!!! **Oink**!!!');
 					} else {
 						return ev.channel.send('You are not top ranking!');
 					}

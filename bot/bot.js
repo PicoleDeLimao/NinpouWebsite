@@ -287,9 +287,9 @@ bot.on('message', function(ev) {
 				} else {
 					alias.push(ev.author.id);
 					switch(cmd) {
-						// !missions 
+						// !missions  
 						case 'missions': 
-							ev.channel.send(
+							ev.channel.send( 
 								'**Oink, oink!**\nHere\'s the list of available missions:\n```md\n' +
 								'[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to be rewarded with double gold, double reward on streak)\n' + 
 								'[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> to get double or lose it all\n' +  
@@ -299,9 +299,11 @@ bot.on('message', function(ev) {
 								'[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
 								'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n' + 
 								'[     -] [S-Rank] < !mission title-deaths >    : Be Top-1 on deaths ranking and get the "Untouchable" title\n' + 
-								'[     -] [S-Rank] < !missions title-assists >  : Be Top-1 on assists ranking and get the "Guardian angel" title\n' + 
-								'[     -] [S-Rank] < !missions title-gpm>       : Be Top-1 on gpm ranking and get the "Gold farmer" title\n' + 
-								'[     -] [S-Rank] < !missions title-games>     : Be Top-1 on games ranking and get the "Can\'t get enough" title\n```'
+								'[     -] [S-Rank] < !mission title-assists >   : Be Top-1 on assists ranking and get the "Guardian angel" title\n' + 
+								'[     -] [S-Rank] < !mission title-points>      : Be Top-1 on points ranking and get the "Legend" title\n' + 
+								'[     -] [S-Rank] < !mission title-gpm>        : Be Top-1 on gpm ranking and get the "Gold farmer" title\n' + 
+								'[     -] [S-Rank] < !mission title-games>      : Be Top-1 on games ranking and get the "Can\'t get enough" title\n' + 
+								'[     -] [S-Rank] < !mission title-chance>     : Be Top-1 on chance of winning ranking and get the "Champion" title\n```'
 							);  
 							break; 
 						case 'mission':
