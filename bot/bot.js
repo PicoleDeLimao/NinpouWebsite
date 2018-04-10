@@ -340,11 +340,17 @@ bot.on('message', function(ev) {
 									case 'title-assists':
 										missionTopTitle(ev, 'assists');
 										break;
+									case 'title-points':
+										missionTopTitle(ev, 'points');
+										break;
 									case 'title-gpm':
 										missionTopTitle(ev, 'gpm');
 										break;
 									case 'title-games':
 										missionTopTitle(ev, 'games');
+										break;
+									case 'title-chance':
+										missionTopTitle(ev, 'chance');
 										break; 
 									default:
 										ev.channel.send('Mission not found.');
