@@ -39,7 +39,7 @@ app.get('/latest', function(req, res) {
 }); 
    
 app.get('/changelog', function(req, res) {
-	res.redirect('http://www.narutoninpou.com/#/forum/threads/5aca6ce4d19def00146652d4');
+	res.redirect('http://www.narutoninpou.com/#/forum/threads/5ae97376511f2c00145fd0ab');
 });
 
 app.get('/donate', function(req, res) { 
