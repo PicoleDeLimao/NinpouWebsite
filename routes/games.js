@@ -336,7 +336,7 @@ router.get('/progress', function(req, res) {
 });
 
 router.get('/last', function(req, res) {
-	Game.find({ $or: [{ recorded: false }, {recorded: { $exists: false } }], players: 9, progress: true }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
+	Game.find({ $or: [{ recorded: false }, {recorded: { $exists: false } }], players: { $gt: 8 }, progress: true }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
 		if (err) return res.status(500).json({ 'error': err });
 		return res.json(games);
 	});
