@@ -7,7 +7,7 @@ function dateFromObjectId(objectId) {
 	return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
 }
 
-function slotToString(slot, largestName, largestRealm, largetScore, recorded) {
+function slotToString(slot, largestName, largestRealm, largetScore, recorded, spectator) {
 	var response = '';
 	if (!slot.username) {
 		var nameSpaces = '';
@@ -28,7 +28,7 @@ function slotToString(slot, largestName, largestRealm, largetScore, recorded) {
 		for (var j = 0; j < largetScore - (Math.round(slot.score) + '').length; j++) {
 			scoreSpaces += ' ';
 		}
-		if (recorded) {
+		if (recorded && !spectator) {
 			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + ']\n'; 
 		} else {
 			response += '[' + nameSpaces + slot.username + ']' + ' [' + realmSpaces + slot.realm + '] [Score: ' + scoreSpaces + Math.round(slot.score) + ']\n';
@@ -56,7 +56,7 @@ module.exports = function(ev, game, callback) {
 					response += '  Hosted; ' + m.fromNow() + '\n';
 				}
 				response += '\nSlots; [' + players + '/' + game.slots.length + ']\n';
-				if (game.slots.length == 9) {
+				if (game.slots.length >= 9) {
 					if (game.recorded) {
 						var points = 0;
 						var win = false;
@@ -117,6 +117,12 @@ module.exports = function(ev, game, callback) {
 					for (var i = 6; i < 9; i++) {
 						response += slotToString(game.slots[i], largestName, largestRealm, largestScore, game.recorded);
 					} 
+					if (game.slots.length > 9) {
+						response += 'Spectators;\n';
+						for (var i = 9; i < game.slots.length; i++) {
+							response += slotToString(game.slots[i], largestName, largestRealm, largestScore, game.recorded, true);
+						}
+					}
 				} else {
 					for (var i = 0; i < game.slots.length; i++) {
 						response += slotToString(game.slots[i], largestName, largestRealm, largestScore);
