@@ -9,7 +9,7 @@ var Stat = require('../models/Stat');
 var Alias = require('../models/Alias');
 
 var cookie = '';
-var code = 'a61df'; 
+var code = '5qg8l'; 
 
 function getCookie() {
 	var request = https.request({ host: 'entgaming.net', path: '/forum/ucp.php?mode=login', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': 0 } }, function(res) {
