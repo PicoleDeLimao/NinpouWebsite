@@ -299,7 +299,7 @@ bot.on('message', function(ev) {
 								'[ Daily] [B-Rank] < !mission farm >            : Play a game with over 3k gpm and be rewarded with <500g> and <20%> xp\n' + 
 								'[ Daily] [B-Rank] < !mission assassin >        : Play a game with over 20 kills and be rewarded with <500g> and <20%> xp\n' + 
 								'[ Daily] [B-Rank] < !mission untouchable >     : Play a game with less 5 deaths and be rewarded with <500g> and <20%> xp \n' + 
-								'[ Daily] [B-Rank] < !mission angel >           : Play a game with over 20 assists and be rewarded with <500g> and <20%> xp\n' + 
+								'[ Daily] [B-Rank] < !mission angel >           : Play a game with over 15 assists and be rewarded with <500g> and <20%> xp\n' + 
 								'[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <1000g> and <100%> xp\n' + 
 								'[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
 								'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n' + 

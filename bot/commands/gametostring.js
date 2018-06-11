@@ -29,7 +29,7 @@ function slotToString(slot, largestName, largestRealm, largetScore, recorded, sp
 			scoreSpaces += ' ';
 		}
 		if (recorded && !spectator) {
-			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + ']\n'; 
+			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + '] [' + (slot.hero && slot.hero.name ? slot.hero.name : 'Unknown' ) + ']\n'; 
 		} else {
 			response += '[' + nameSpaces + slot.username + ']' + ' [' + realmSpaces + slot.realm + '] [Score: ' + scoreSpaces + Math.round(slot.score) + ']\n';
 		}

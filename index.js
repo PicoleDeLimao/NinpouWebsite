@@ -33,6 +33,7 @@ app.use('/stats', require('./routes/stats'));
 app.use('/streams', require('./routes/streams')); 
 app.use('/missions', require('./routes/missions')); 
 app.use('/items', require('./routes/items'));  
+app.use('/heroes', require('./routes/heroes'));  
 
 app.get('/latest', function(req, res) {
 	res.redirect('https://drive.google.com/file/d/1RgSpBQ-mVzn85HWx4pskfRdl4PZjOKfu/view?usp=sharing');

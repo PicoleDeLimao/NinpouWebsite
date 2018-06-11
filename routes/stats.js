@@ -168,7 +168,7 @@ router.post('/:game_id', function(req, res) {
 		else if (game.slots.length < 9 || !game.progress) return res.status(400).json({ error: 'Invalid game.' });
 		var durationHours = parseInt(game.duration.split(':')[0]);
 		var durationMinutes = parseInt(game.duration.split(':')[1]);
-		if (durationHours == 0 && duration < 30) return res.status(400).json({ error: 'You can only record games past 30 minutes.' });
+		if (durationHours == 0 && durationMinutes < 30) return res.status(400).json({ error: 'You can only record games past 30 minutes.' });
 		var body = req.body.contents;
 		if (body.length < 11) return res.status(400).json({ error: 'Invalid code.' });
 		var count = decodeInt(res, body[0]);

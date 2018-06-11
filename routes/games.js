@@ -7,6 +7,7 @@ var router = express.Router();
 var Game = require('../models/Game');
 var Stat = require('../models/Stat');
 var Alias = require('../models/Alias');
+var Hero = require('../models/Hero');
 
 var cookie = '';
 var code = '5qg8l'; 
@@ -353,7 +354,22 @@ router.get('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err) return res.status(500).json({ 'error': err });
 		else if (!game) return res.status(404).json({ 'error': 'Game not found.' });
-		return res.json(game);
+		if (game.recorded) { 
+			(function getHeroOnSlot(slot) {
+				if (slot == game.slots.length) {
+					console.log(game);
+					return res.json(game);
+				} else {
+					Hero.findOne({ id: game.slots[slot].hero }, function(err, hero) {
+						if (err) return res.status(500).json({ 'error': err });
+						game.slots[slot]['hero2'] = hero;
+						getHeroOnSlot(slot + 1);
+					});
+				}
+			})(0);
+		} else {
+			return res.json(game);
+		}
 	});
 });
 
