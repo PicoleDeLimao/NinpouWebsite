@@ -37,10 +37,6 @@ var buy = require('./commands/buy');
 var giveGold = require('./commands/givegold');
 var setStatus = require('./commands/setstatus');
 
-bot.on('ready', function (evt) {
-	console.error('Logged in as: ' + bot.user.tag);
-});
-
 var hostedGames = [];
 var inProgressGames = [];
 var onlineStreams = []; 
@@ -226,6 +222,36 @@ setInterval(function() {
 	} 
 }, 10000);
 
+bot.on('ready', function (evt) {
+	console.error('Logged in as: ' + bot.user.tag);
+	bot.channels.forEach(function(channel) {
+		if (channel.name == 'games-hosted') {
+			channel.fetchMessages().then(function(messages) {
+				var deleted = 0;
+				var count = 0;
+				messages.forEach(function(message) {
+					if (message.author.id == bot.user.id) {
+						++count;
+						message.delete().then(function() {
+							++deleted;
+							if (deleted == count) {
+								channel.send('Broadcasting hosted games.').then(function(ev) {
+									broadcastings[channel] = ev;
+								});
+							}
+						});
+					}
+				});
+				if (count == 0) {
+					channel.send('Broadcasting hosted games.').then(function(ev) {
+						broadcastings[channel] = ev;
+					});
+				}
+			});
+		}
+	});
+
+});
 bot.on('message', function(ev) {
 	var message = ev.content;
 	
