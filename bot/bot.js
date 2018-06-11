@@ -388,7 +388,7 @@ bot.on('message', function(ev) {
 								'[ 3] [   5000g] [Steel Kunai]               : +100 attack\n' + 
 								'[ 4] [  10000g] [Chakra Enhanced Kunai]     : +500 attack\n' + 
 								'[ 5] [  50000g] [Chakra Blades]             : +1000 attack, 10% critical strike\n' + 
-								'[ 6] [ 100000g] [Executioner\'s Blade]      : +5000 attack, 25% critical strike\n' + 
+								'[ 6] [ 100000g] [Executioner\'s Blade]       : +5000 attack, 25% critical strike\n' + 
 								'[ 7] [ 500000g] [Samehada Sword]            : +10000 attack, 25% critical strike, 10% chakra drain\n' + 
 								'[ 8] [1000000g] [Totsuka Sword]             : +50000 attack, 50% critical strike, 20% seal enemy\n' + 
 								'[ 9] [5000000g] [Heaven Sword]              : +100000 attack, 75% critical strike, 10% kill instantly\n' + 

@@ -351,18 +351,17 @@ router.get('/recorded', function(req, res) {
 });
  
 router.get('/:game_id', function(req, res) {
-	Game.findOne({ id: req.params.game_id }, function(err, game) {
+	Game.findOne({ id: req.params.game_id }).lean().exec(function(err, game) {
 		if (err) return res.status(500).json({ 'error': err });
 		else if (!game) return res.status(404).json({ 'error': 'Game not found.' });
 		if (game.recorded) { 
 			(function getHeroOnSlot(slot) {
 				if (slot == game.slots.length) {
-					console.log(game);
 					return res.json(game);
 				} else {
 					Hero.findOne({ id: game.slots[slot].hero }, function(err, hero) {
 						if (err) return res.status(500).json({ 'error': err });
-						game.slots[slot]['hero2'] = hero;
+						game.slots[slot].hero = hero || game.slots[slot].hero;
 						getHeroOnSlot(slot + 1);
 					});
 				}

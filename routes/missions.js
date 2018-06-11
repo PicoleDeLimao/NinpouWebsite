@@ -139,13 +139,13 @@ router.post('/:username/gamble', function(req, res) {
 		if (doneToday) {
 			return res.status(400).json({ 'error': 'You already completed this mission today! **Oink!**' });
 		} else { 
-			req.body.amount = Math.max(req.body.amount, 1000);
+			req.body.amount = Math.min(req.body.amount, 1000);
 			if (!req.body.amount || req.body.amount > req.user.gold) {
 				return res.status(400).json({ 'error': 'You don\'t have this amount to bet! **Oink!**' });
 			} 
 			var amount = req.body.amount;
 			var won = Math.round(Math.random()) == 0;
-			var streak = doneYesterday && missions.length > 0 && missions[0].won;
+			var streak = false;
 			if (won) amount *= 2;
 			else amount = -amount; 
 			var mission = new Mission({
