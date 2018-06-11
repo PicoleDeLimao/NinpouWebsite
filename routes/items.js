@@ -6,10 +6,37 @@ var router = express.Router();
 var moment = require('moment');
 var Alias = require('../models/Alias'); 
 var Item = require('../models/Item');
+var Mission = require('../models/Mission');
 
 router.get('/reset', function(req, res) {
-	Alias.update({}, {'itemSupport': {}, 'itemArmor': {}, 'itemWeapon': {}, 'gold': 0}, {multi: true}, function(err) {
-		res.send(200);
+	Alias.find({ }, function(err, alias) {
+		(function updateAlias(index) {
+			if (index == alias.length) {
+				return;
+			}
+			console.log(alias[index].username);
+			Mission.find({ username: alias[index].username }, function(err, missions) {
+				var gold = 0;
+				for (var i = 0; i < missions.length; i++) {
+					var amount = 0;
+					if (missions[i].name == 'rescue') {
+						amount = 10;
+					} else if (missions[i].name == 'play') {
+						amount = 50;
+					} else if (missions[i].name == 'win') {
+						amount = 200;
+					} else if (missions[i].name == 'top') {
+						amount = 1000;
+					}
+					gold += amount;
+				}
+				alias[index].gold = gold;
+				alias[index].save(function(err) {
+					updateAlias(index + 1);
+				});
+			});
+		})(0);
+		
 	});
 });
 
