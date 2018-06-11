@@ -55,7 +55,7 @@ function dailyGameMission(req, res, name, condition, conditionError, goldReward,
 			for (var i = 0; i < req.user.alias.length; i++) {
 				aliases.push(new RegExp(['^', escapeRegExp(req.user.alias[i]), '$'].join(''), 'i'));
 			}  
-			condition.slots['username'] = { $in: aliases };
+			condition['slots']['$elemMatch']['username'] = { $in: aliases };
 			condition['recorded'] = true;
 			Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
@@ -147,12 +147,7 @@ router.post('/:username/gamble', function(req, res) {
 			var won = Math.round(Math.random()) == 0;
 			var streak = doneYesterday && missions.length > 0 && missions[0].won;
 			if (won) amount *= 2;
-			else amount = -amount;
-			if (won && streak) amount *= 2;
-			var today = new Date();
-			if (today.getDay() == 6 || today.getDay() == 0) {
-				amount *= 2;
-			}
+			else amount = -amount; 
 			var mission = new Mission({
 				username: req.user.username, 
 				name: 'gamble', 
@@ -177,27 +172,27 @@ router.post('/:username/play', function(req, res) {
 
 // win
 router.post('/:username/win', function(req, res) {
-	dailyGameMission(req, res, 'win', { 'slots': { 'win': true } }, 'You didn\'t win any game today! **Oink!**', 200, 20);
+	dailyGameMission(req, res, 'win', { 'slots': { '$elemMatch': { 'win': true } } }, 'You didn\'t win any game today! **Oink!**', 200, 20);
 });
 
 // farm 3k
 router.post('/:username/farm3k', function(req, res) {
-	dailyGameMission(req, res, 'farm3k', { 'slots': { 'gpm': { $gte: 30 } } }, 'You didn\'t play any game with over 3k gpm today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'farm3k', { 'slots': { '$elemMatch': { 'gpm': { $gte: 30 } } } }, 'You didn\'t play any game with over 3k gpm today! **Oink!**', 500, 20);
 });
 
 // kills 20
 router.post('/:username/kills20', function(req, res) {
-	dailyGameMission(req, res, 'kills20', { 'slots': { 'kills': { $gte: 30 } } }, 'You didn\'t play any game with over 20 kills today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'kills20', { 'slots': { '$elemMatch': { 'kills': { $gte: 30 } } } }, 'You didn\'t play any game with over 20 kills today! **Oink!**', 500, 20);
 });
 
 // deaths 5 
 router.post('/:username/deaths5', function(req, res) {
-	dailyGameMission(req, res, 'deaths5', { 'slots': { 'deaths': { $lte: 5 } } }, 'You didn\'t play any game with less 5 deaths today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'deaths5', { 'slots': { '$elemMatch': { 'deaths': { $lte: 5 } } } }, 'You didn\'t play any game with less 5 deaths today! **Oink!**', 500, 20);
 });
 
 // assists 20
 router.post('/:username/assists20', function(req, res) {
-	dailyGameMission(req, res, 'assists20', { 'slots': { 'assists': { $gte: 20 } } }, 'You didn\'t play any game with over 20 assists today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'assists20', { 'slots': { '$elemMatch': { 'assists': { $gte: 20 } } } }, 'You didn\'t play any game with over 20 assists today! **Oink!**', 500, 20);
 });
 
 // top

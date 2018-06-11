@@ -8,7 +8,9 @@ var Alias = require('../models/Alias');
 var Item = require('../models/Item');
 
 router.get('/reset', function(req, res) {
-	Alias.update({}, {'itemSupport': {}, 'itemArmor': {}, 'itemWeapon': {}, 'gold': 0}, {multi: true});
+	Alias.update({}, {'itemSupport': {}, 'itemArmor': {}, 'itemWeapon': {}, 'gold': 0}, {multi: true}, function(err) {
+		res.send(200);
+	});
 });
 
 router.post('/', function(req, res) {
