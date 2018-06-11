@@ -182,22 +182,22 @@ router.post('/:username/win', function(req, res) {
 
 // farm 3k
 router.post('/:username/farm3k', function(req, res) {
-	dailyGameMission(req, res, 'farm3k', { 'slots': { 'gpm': $gte: 30 } }, 'You didn\'t play any game with over 3k gpm today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'farm3k', { 'slots': { 'gpm': { $gte: 30 } } }, 'You didn\'t play any game with over 3k gpm today! **Oink!**', 500, 20);
 });
 
 // kills 20
 router.post('/:username/kills20', function(req, res) {
-	dailyGameMission(req, res, 'kills20', { 'slots': { 'kills': $gte: 30 } }, 'You didn\'t play any game with over 20 kills today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'kills20', { 'slots': { 'kills': { $gte: 30 } } }, 'You didn\'t play any game with over 20 kills today! **Oink!**', 500, 20);
 });
 
 // deaths 5 
 router.post('/:username/deaths5', function(req, res) {
-	dailyGameMission(req, res, 'deaths5', { 'slots': { 'deaths': $lte: 5 } }, 'You didn\'t play any game with less 5 deaths today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'deaths5', { 'slots': { 'deaths': { $lte: 5 } } }, 'You didn\'t play any game with less 5 deaths today! **Oink!**', 500, 20);
 });
 
 // assists 20
 router.post('/:username/assists20', function(req, res) {
-	dailyGameMission(req, res, 'assists20', { 'slots': { 'assists': $gte: 20 } }, 'You didn\'t play any game with over 20 assists today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'assists20', { 'slots': { 'assists': { $gte: 20 } } }, 'You didn\'t play any game with over 20 assists today! **Oink!**', 500, 20);
 });
 
 // top

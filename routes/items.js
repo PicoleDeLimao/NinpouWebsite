@@ -7,6 +7,10 @@ var moment = require('moment');
 var Alias = require('../models/Alias'); 
 var Item = require('../models/Item');
 
+router.get('/reset', function(req, res) {
+	Alias.update({}, {'itemSupport': {}, 'itemArmor': {}, 'itemWeapon': {}, 'gold': 0}, {multi: true});
+});
+
 router.post('/', function(req, res) {
 	var item = new Item(req.body);
 	item.save(function(err) {
