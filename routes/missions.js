@@ -167,7 +167,7 @@ router.post('/:username/gamble', function(req, res) {
  
 // play
 router.post('/:username/play', function(req, res) {
-	dailyGameMission(req, res, 'play', { }, 'You didn\'t play any game today! **Oink!**', 50, 10);
+	dailyGameMission(req, res, 'play', { 'slots': { '$elemMatch': {} } }, 'You didn\'t play any game today! **Oink!**', 50, 10);
 });
 
 // win
