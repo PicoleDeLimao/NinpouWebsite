@@ -11,9 +11,8 @@ var bot = new Discord.Client();
 var trivia = require('./commands/trivia')(bot);
 var missionTopTitle = require('./commands/missiontoptitle');
 var missionTop = require('./commands/missiontop'); 
-var missionWin = require('./commands/missionwin');
 var missionGamble = require('./commands/missiongamble'); 
-var missionPlay = require('./commands/missionplay');
+var missionGame = require('./commands/missiongame');
 var missionRescue = require('./commands/missionrescue');
 var listStreams = require('./commands/liststreams');
 var removeStream = require('./commands/removestream');
@@ -297,6 +296,10 @@ bot.on('message', function(ev) {
 								'[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> to get double or lose it all\n' +  
 								'[ Daily] [D-Rank] < !mission play >            : Play a recorded game be rewarded with <50g> and <10%> xp (double reward on streak)\n' +  
 								'[ Daily] [C-Rank] < !mission win >             : Win a recorded game be rewarded with <200g> and <20%> xp (double reward on streak)\n' + 
+								'[ Daily] [B-Rank] < !mission farm >            : Play a recorded game with over 3k gpm and be rewarded with <500g> and <20%> xp (double reward on streak)\n' + 
+								'[ Daily] [B-Rank] < !mission assassin >        : Play a recorded game with over 20 kills and be rewarded with <500g> and <20%> xp (double reward on streak)\n' + 
+								'[ Daily] [B-Rank] < !mission untouchable >     : Play a recorded game with less 5 deaths and be rewarded with <500g> and <20%> xp (double reward on streak)\n' + 
+								'[ Daily] [B-Rank] < !mission angel >           : Play a recorded game with over 20 assists and be rewarded with <500g> and <20%> xp (double reward on streak)\n' + 
 								'[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <1000g> and <100%> xp\n' + 
 								'[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
 								'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n' + 
@@ -323,11 +326,23 @@ bot.on('message', function(ev) {
 										}
 										break;
 									case 'play':
-										missionPlay(ev);
+										missionGame(ev, 'play');
 										break;
 									case 'win':
-										missionWin(ev);
+										missionGame(ev, 'win');
 										break; 
+									case 'farm':
+										missionGame(ev, 'farm3k');
+										break;
+									case 'assassin':
+										missionGame(ev, 'kills20');
+										break;
+									case 'untouchable':
+										missionGame(ev, 'deaths5');
+										break;
+									case 'angel':
+										missionGame(ev, 'assists20');
+										break;
 									case 'top':
 										missionTop(ev);
 										break; 
