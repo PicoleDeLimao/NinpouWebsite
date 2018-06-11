@@ -292,14 +292,14 @@ bot.on('message', function(ev) {
 						case 'missions': 
 							ev.channel.send( 
 								'**Oink, oink!**\nHere\'s the list of available missions:\n```md\n' +
-								'[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to be rewarded with double gold, double reward on streak)\n' + 
+								'[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to double)\n' + 
 								'[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> to get double or lose it all\n' +  
-								'[ Daily] [D-Rank] < !mission play >            : Play a recorded game be rewarded with <50g> and <10%> xp (double reward on streak)\n' +  
-								'[ Daily] [C-Rank] < !mission win >             : Win a recorded game be rewarded with <200g> and <20%> xp (double reward on streak)\n' + 
-								'[ Daily] [B-Rank] < !mission farm >            : Play a recorded game with over 3k gpm and be rewarded with <500g> and <20%> xp (double reward on streak)\n' + 
-								'[ Daily] [B-Rank] < !mission assassin >        : Play a recorded game with over 20 kills and be rewarded with <500g> and <20%> xp (double reward on streak)\n' + 
-								'[ Daily] [B-Rank] < !mission untouchable >     : Play a recorded game with less 5 deaths and be rewarded with <500g> and <20%> xp (double reward on streak)\n' + 
-								'[ Daily] [B-Rank] < !mission angel >           : Play a recorded game with over 20 assists and be rewarded with <500g> and <20%> xp (double reward on streak)\n' + 
+								'[ Daily] [D-Rank] < !mission play >            : Play a game be rewarded with <50g> and <10%> xp\n' +  
+								'[ Daily] [C-Rank] < !mission win >             : Win a game be rewarded with <200g> and <20%> xp\n' + 
+								'[ Daily] [B-Rank] < !mission farm >            : Play a game with over 3k gpm and be rewarded with <500g> and <20%> xp\n' + 
+								'[ Daily] [B-Rank] < !mission assassin >        : Play a game with over 20 kills and be rewarded with <500g> and <20%> xp\n' + 
+								'[ Daily] [B-Rank] < !mission untouchable >     : Play a game with less 5 deaths and be rewarded with <500g> and <20%> xp \n' + 
+								'[ Daily] [B-Rank] < !mission angel >           : Play a game with over 20 assists and be rewarded with <500g> and <20%> xp\n' + 
 								'[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <1000g> and <100%> xp\n' + 
 								'[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
 								'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n' + 
