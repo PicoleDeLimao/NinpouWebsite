@@ -21,6 +21,8 @@ module.exports = function(ev, mission) {
 				try {
 					var data = JSON.parse(body);
 					var response = 'You won **' + data.amount + 'g** and **' + data.xp + ' xp**!';
+					if (data.streak)
+						response += ' STREAK BONUS!';
 					var today = new Date();
 					if (today.getDay() == 0 || today.getDay() == 6) {
 						response += ' DOUBLE XP TODAY!!';
