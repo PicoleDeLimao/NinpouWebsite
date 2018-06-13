@@ -415,7 +415,7 @@ function getPlayerStats(username, callback) {
 			}  
 			usernames = aliases; 
 		} else { 
-			usernames = [new RegExp(['^', escapeRegExp(username.toLowerCase()), '$'].join(''), 'i')];
+			usernames = [username.toLowerCase()];//[new RegExp(['^', escapeRegExp(username.toLowerCase()), '$'].join(''), 'i')];
 		}
 		Stat.find({ username: { $in: usernames } }).sort('_id').exec(function(err, stats) {
 			if (err) return callback(err); 
@@ -551,7 +551,6 @@ router.get('/ranking/:username', function(req, res) {
 		getAllPlayersRanking(function(err, stats) {
 			if (err) return res.status(400).json({ 'error': err });
 			allStat = getRankingPositions(stats, allStat); 
-			
 			stats.sort(function(a, b) {
 				if (req.sortOrder == 'desc') {
 					return b.ranking[req.attribute] - a.ranking[req.attribute]; 
