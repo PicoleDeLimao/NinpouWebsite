@@ -184,7 +184,7 @@ router.post('/:username/gamble', function(req, res) {
 			if (!req.body.amount || req.body.amount > req.user.gold) {
 				return res.status(400).json({ 'error': 'You don\'t have this amount to bet! **Oink!**' });
 			} 
-			var amount = req.body.amount;
+			var amount = Math.min(req.body.amount, req.user.gold * 0.1);
 			getAvailableMissions(req.user.username, function(missions) {
 				var chance;
 				if (areAllMissionsCompleted(missions)) {
