@@ -531,7 +531,7 @@ bot.on('message', function(ev) {
 							if (args.length == 1) {
 								var criteria = args[0];
 								if (criteria == 'points' || criteria == 'kills' || criteria == 'assists' || criteria == 'gpm' || criteria == 'wins' || criteria == 'chance' || criteria == 'score') {
-									balance(ev, inProgressGames, criteria);
+									balance(ev, hostedGames, criteria);
 								} else {
 									ev.channel.send('Invalid criteria. Available criterias: points, kills, assists, gpm, wins, chance, score.');
 								}
