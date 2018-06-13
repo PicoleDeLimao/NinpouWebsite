@@ -203,7 +203,7 @@ setInterval(function() {
 						.setTitle('Playing ' + stream.game)
 						.setAuthor(stream.channel.name)  
 						.setDescription(stream.channel.status)
-						.setImage(stream.preview.large)
+						.setImage(stream.preview.large + '?_=' + (new Date()).getTime())
 						.setURL(stream.channel.url)
 						.setThumbnail(stream.channel.logo)
 						.setFooter(stream.viewers + ' viewers | Started '  + m.fromNow());
