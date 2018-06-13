@@ -530,7 +530,7 @@ bot.on('message', function(ev) {
 									ev.channel.send('Invalid criteria. Available criterias: points, kills, assists, gpm, wins, chance, score.');
 								}
 							} else if (args.length == 0) {
-								balance(ev, 'points', inProgressGames);
+								balance(ev, 'points', hostedGames);
 							} else {
 								ev.channel.send('Me no understand! Use **!balance <criteria>**');
 							}
