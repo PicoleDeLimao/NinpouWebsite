@@ -269,7 +269,7 @@ bot.on('message', function(ev) {
 				'< !help >                       : Display this message\n' + 
 				'< ![h]ost > [location] [owner]  : Host a new game\n' + 
 				'< !lobby >                      : List games in lobby\n' + 
-				'< !balance > [criteria]         : Display the optimal balance of games in lobby\n' + 
+				'< ![b]alance > [criteria]       : Display the optimal balance of games in lobby\n' + 
 				'< ![p]rogress >                 : List games in progress\n' + 
 				'< ![l]ast >                     : Fetch last non-recorded played games\n' + 
 				'< !recorded >                   : Fetch last recorded played games\n' + 
