@@ -54,7 +54,7 @@ function calculateBalanceRecursive(slots, index, allStates) {
 };
 
 function getOptimalBalance(game, criteria, callback) {
-	if (!game || game.players < 9) return callback(true);
+	if (!game || (typeof game !== 'object') || game.players < 9) return callback(true);
 	var slots = [];
 	var countNonEmptySlots = 0;
 	for (var i = 0; i < 9; i++) {
