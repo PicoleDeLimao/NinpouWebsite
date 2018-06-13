@@ -56,7 +56,7 @@ module.exports = function(ev, user) {
 										data.itemSupport && data.itemSupport.name.length || 0));
 						var response = '```ini\n' + 
 						name + '\n' + 
-						'Gold :     [' + (data.gold || 0) + ']\n' + 
+						'Gold :     [' + (Math.round(data.gold) || 0) + ']\n' + 
 						'Level:     [' + (data.level || 1) + ']\n' + 
 						'XP:        [' + (data.xp || 0) + '%]\n\n' + 
 						'HP:        [' + getHP(data) + ']\n' + 

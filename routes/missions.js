@@ -172,8 +172,9 @@ router.post('/:username/rob', function(req, res) {
 		} else { 
 			Alias.findOne({ username: req.body.user.toLowerCase() }, function(err, anotherUser) {
 				if (err) return res.status(500).json({ 'error': err });
-				var amount = Math.min(req.user.gold * 0.1, anotherUser.gold * 0.1);
-				var won = Math.round(Math.random()) == 0;
+				var amount = Math.round(Math.min(req.user.gold * 0.1, anotherUser.gold * 0.1));
+				var percentage = req.user.level - anotherUser.level;
+				var won = Math.round(Math.random() * 100) < (50 + percentage);
 				if (won) {
 					req.user.gold += amount;
 					anotherUser.gold -= amount;
