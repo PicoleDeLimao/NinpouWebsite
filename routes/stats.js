@@ -415,7 +415,7 @@ function getPlayerStats(username, callback) {
 			}  
 			usernames = aliases; 
 		} else { 
-			usernames = [username.toLowerCase()];//[new RegExp(['^', escapeRegExp(username.toLowerCase()), '$'].join(''), 'i')];
+			usernames = [new RegExp(['^', escapeRegExp(username.toLowerCase()), '$'].join(''), 'i')];
 		}
 		Stat.find({ username: { $in: usernames } }).sort('_id').exec(function(err, stats) {
 			if (err) return callback(err); 
