@@ -4,7 +4,7 @@ var http = require('http');
 
 var missions = {
 	'rescue'   : '[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to double)',
-	'gamble'   : '[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> to get double or lose it all',
+	'gamble'   : '[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> (<75%> if all missions below S-rank are completed) to get double or lose it all (max 10% of your gold)',
 	'rob'      : '[ Daily] [D-Rank] < !mission rob > <user>      : You have <50% + your level - target level> chance to rob <min(10% your gold, 10% user gold)> or lose it to him',
 	'play'     : '[ Daily] [D-Rank] < !mission play >            : Play a game be rewarded with <50g> and <10%> xp',
 	'win'      : '[ Daily] [C-Rank] < !mission win >             : Win a game be rewarded with <200g> and <20%> xp',
@@ -42,12 +42,15 @@ module.exports = function(ev) {
 			} else {  
 				try {
 					var data = JSON.parse(body);
-					var response = '**Oink, oink!**\nHere\'s the list of available missions (' + (data.length + 8) + ' available):\n```md\n';
-					for (var i = 0; i < data.length; i++) {
-						response += missions[data[i]] + '\n';
+					var response = '**Oink, oink!**\nHere\'s the list of available missions (' + (data.missions.length + 8) + ' available):\n```md\n';
+					for (var i = 0; i < data.missions.length; i++) {
+						response += missions[data.missions[i]] + '\n';
 					}
 					response += missionsAllTime;
 					response += '```';
+					if (data.completed) {
+						response += '**You have completed all essential missions. Your chance of gambling has increased by 25%!**\n';
+					}
 					ev.channel.send(response);
 				} catch (err) {
 					console.error(err);
