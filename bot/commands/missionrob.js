@@ -24,9 +24,9 @@ module.exports = function(ev, user) {
 					var data = JSON.parse(body);
 					var response = '';
 					if (data.won) {
-						response += '<@' + user + '> won!! You lost **' + (data.amount) + 'g**!';
-					} else {
 						response += 'You won!! You stole **' + data.amount + 'g** from <@' + user + '>!';
+					} else {
+						response += '<@' + user + '> won!! You lost **' + (data.amount) + 'g**!';
 					} 
 					ev.channel.send(response);
 				} catch (err) {
