@@ -531,12 +531,12 @@ bot.on('message', function(ev) {
 							if (args.length == 1) {
 								var criteria = args[0];
 								if (criteria == 'points' || criteria == 'kills' || criteria == 'assists' || criteria == 'gpm' || criteria == 'wins' || criteria == 'chance' || criteria == 'score') {
-									balance(ev, hostedGames, criteria);
+									balance(ev, inProgressGames, criteria);
 								} else {
 									ev.channel.send('Invalid criteria. Available criterias: points, kills, assists, gpm, wins, chance, score.');
 								}
 							} else if (args.length == 0) {
-								balance(ev, hostedGames, 'points');
+								balance(ev, inProgressGames, 'points');
 							} else {
 								ev.channel.send('Me no understand! Use **!balance <criteria>**');
 							}

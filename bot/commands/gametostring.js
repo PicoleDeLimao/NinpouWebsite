@@ -7,11 +7,15 @@ function dateFromObjectId(objectId) {
 	return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
 }
 
-function scoreOnSlot(slot) {
-	return slot.stat && slot.stat.score || slot.score || 0;
+function criteriaOnSlot(slot, criteria) {
+	return slot.stat && slot.stat[criteria] || slot[criteria] || 0;
 };
 
-function slotToString(slot, largestName, largestRealm, largetScore, recorded, spectator) {
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+function slotToString(slot, largestName, largestRealm, largestCriteria, recorded, spectator, criteria) {
 	var response = '';
 	if (!slot.username) {
 		var nameSpaces = '';
@@ -28,25 +32,26 @@ function slotToString(slot, largestName, largestRealm, largetScore, recorded, sp
 		for (var j = 0; j < largestRealm - slot.realm.length; j++) {
 			realmSpaces += ' ';
 		}
-		var scoreSpaces = '';
-		for (var j = 0; j < largetScore - (Math.round(scoreOnSlot(slot)) + '').length; j++) {
-			scoreSpaces += ' ';
+		var criteriaSpaces = '';
+		for (var j = 0; j < largestCriteria - (Math.round(criteriaOnSlot(slot, criteria)) + '').length; j++) {
+			criteriaSpaces += ' ';
 		}
 		if (recorded && !spectator) {
 			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + '] [' + (slot.hero && slot.hero.name ? slot.hero.name : 'Unknown' ) + ']\n'; 
 		} else {
-			response += '[' + nameSpaces + slot.username + ']' + ' [' + realmSpaces + slot.realm + '] [Score: ' + scoreSpaces + Math.round(scoreOnSlot(slot)) + ']\n';
+			response += '[' + nameSpaces + slot.username + ']' + ' [' + realmSpaces + slot.realm + '] [' + capitalizeFirstLetter(criteria) + ': ' + criteriaSpaces + Math.round(criteriaOnSlot(slot, criteria)) + ']\n';
 		}
 	}
 	return response;
 }
 
-module.exports = function(ev, game, callback) {
+module.exports = function(ev, game, callback, criteria) {
 	var players = 0;
 	var largestName = 5; 
 	var largestRealm = 0;
-	var largestScore = 0;
-	(function next(i, players, largestName, largestRealm, largestScore) {
+	var largestCriteria = 0;
+	criteria = criteria || 'score';
+	(function next(i, players, largestName, largestRealm, largestCriteria) {
 		if (i == game.slots.length) {
 			getPlayerName(ev, game.owner, function(err, ownerName) {
 				var response = '```ini\n';
@@ -75,11 +80,11 @@ module.exports = function(ev, game, callback) {
 							response += 'WINNING TEAM\n';
 						}
 					} else {
-						var averageScore = ((scoreOnSlot(game.slots[0])) + (scoreOnSlot(game.slots[1])) + (scoreOnSlot(game.slots[2]))) / 3;
-						response += 'Konoha;   (Average score: ' + Math.round(averageScore) + ')\n';
+						var averageScore = ((criteriaOnSlot(game.slots[0], criteria)) + (criteriaOnSlot(game.slots[1], criteria)) + (criteriaOnSlot(game.slots[2], criteria))) / 3;
+						response += 'Konoha;   (Average ' + capitalizeFirstLetter(criteria) + ': ' + Math.round(averageScore) + ')\n';
 					} 
 					for (var i = 0; i < 3; i++) {
-						response += slotToString(game.slots[i], largestName, largestRealm, largestScore, game.recorded);
+						response += slotToString(game.slots[i], largestName, largestRealm, largestCriteria, game.recorded, false, criteria);
 					}
 					if (game.recorded) {
 						var points = 0;
@@ -95,11 +100,11 @@ module.exports = function(ev, game, callback) {
 							response += 'WINNING TEAM\n';
 						}
 					} else {
-						var averageScore = ((scoreOnSlot(game.slots[3])) + (scoreOnSlot(game.slots[4])) + (scoreOnSlot(game.slots[5]))) / 3;
-						response += 'Oto;      (Average score: ' + Math.round(averageScore) + ')\n';
+						var averageScore = ((criteriaOnSlot(game.slots[3], criteria)) + (criteriaOnSlot(game.slots[4], criteria)) + (criteriaOnSlot(game.slots[5], criteria))) / 3;
+						response += 'Oto;      (Average ' + capitalizeFirstLetter(criteria) + ': ' + Math.round(averageScore) + ')\n';
 					}
 					for (var i = 3; i < 6; i++) {
-						response += slotToString(game.slots[i], largestName, largestRealm, largestScore, game.recorded);
+						response += slotToString(game.slots[i], largestName, largestRealm, largestCriteria, game.recorded, false, criteria);
 					}
 					if (game.recorded) {
 						var points = 0;
@@ -115,21 +120,21 @@ module.exports = function(ev, game, callback) {
 							response += 'WINNING TEAM\n';
 						}
 					} else {
-						var averageScore = ((scoreOnSlot(game.slots[6])) + (scoreOnSlot(game.slots[7])) + (scoreOnSlot(game.slots[8]))) / 3;
-						response += 'Akatsuki; (Average score: ' + Math.round(averageScore) + ')\n';
+						var averageScore = ((criteriaOnSlot(game.slots[6], criteria)) + (criteriaOnSlot(game.slots[7], criteria)) + (criteriaOnSlot(game.slots[8], criteria))) / 3;
+						response += 'Akatsuki; (Average ' + capitalizeFirstLetter(criteria) + ': ' + Math.round(averageScore) + ')\n';
 					}
 					for (var i = 6; i < 9; i++) {
-						response += slotToString(game.slots[i], largestName, largestRealm, largestScore, game.recorded);
+						response += slotToString(game.slots[i], largestName, largestRealm, largestCriteria, game.recorded, false, criteria);
 					} 
 					if (game.slots.length > 9) {
 						response += 'Spectators;\n';
 						for (var i = 9; i < game.slots.length; i++) {
-							response += slotToString(game.slots[i], largestName, largestRealm, largestScore, game.recorded, true);
+							response += slotToString(game.slots[i], largestName, largestRealm, largestCriteria, game.recorded, true, criteria);
 						}
 					}
 				} else {
 					for (var i = 0; i < game.slots.length; i++) {
-						response += slotToString(game.slots[i], largestName, largestRealm, largestScore);
+						response += slotToString(game.slots[i], largestName, largestRealm, largestCriteria, false, false, criteria);
 					}
 				}
 				response += '```\n'; 
@@ -149,12 +154,12 @@ module.exports = function(ev, game, callback) {
 					if (game.slots[i].realm.length > largestRealm) {
 						largestRealm = game.slots[i].realm.length;
 					}
-					if ((Math.round(scoreOnSlot(game.slots[i])) + '').length > largestScore) {
-						largestScore = (Math.round(scoreOnSlot(game.slots[i])) + '').length;
+					if ((Math.round(criteriaOnSlot(game.slots[i], criteria)) + '').length > largestCriteria) {
+						largestCriteria = (Math.round(criteriaOnSlot(game.slots[i], criteria)) + '').length;
 					}
 				}
-				return next(i + 1, players, largestName, largestRealm, largestScore);
+				return next(i + 1, players, largestName, largestRealm, largestCriteria);
 			});
 		}
-	})(0, players, largestName, largestRealm, largestScore);
+	})(0, players, largestName, largestRealm, largestCriteria);
 }; 

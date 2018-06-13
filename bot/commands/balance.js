@@ -141,7 +141,7 @@ module.exports = function(ev, games, criteria) {
 							}
 						}
 						next(i + 1, response);
-					});
+					}, criteria);
 				}
 			});
 		}
