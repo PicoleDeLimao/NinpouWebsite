@@ -182,7 +182,7 @@ router.post('/:username/farm3k', function(req, res) {
 
 // kills 20
 router.post('/:username/kills20', function(req, res) {
-	dailyGameMission(req, res, 'kills20', { 'slots': { '$elemMatch': { 'kills': { $gte: 30 } } } }, 'You didn\'t play any game with over 20 kills today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'kills20', { 'slots': { '$elemMatch': { 'kills': { $gte: 20 } } } }, 'You didn\'t play any game with over 20 kills today! **Oink!**', 500, 20);
 });
 
 // deaths 5 
