@@ -138,6 +138,12 @@ setInterval(function() {
 	});
 }, 10000);
 
+var previewCacheUrl = '?_=' + (new Date()).getTime();
+
+setInterval(function() {
+	previewCacheUrl = '?_=' + (new Date()).getTime();
+}, 120000);
+
 var broadcastings = [];
 setInterval(function() {
 	var hostedGames_ = hostedGames;
@@ -203,7 +209,7 @@ setInterval(function() {
 						.setTitle('Playing ' + stream.game)
 						.setAuthor(stream.channel.name)  
 						.setDescription(stream.channel.status)
-						.setImage(stream.preview.large + '?_=' + (new Date()).getTime())
+						.setImage(stream.preview.large + previewCacheUrl)
 						.setURL(stream.channel.url)
 						.setThumbnail(stream.channel.logo)
 						.setFooter(stream.viewers + ' viewers | Started '  + m.fromNow());
