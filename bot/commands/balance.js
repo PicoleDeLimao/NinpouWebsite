@@ -54,16 +54,16 @@ function getAllSlotStates(slots, index, allStates) {
 };
 
 function getOptimalBalance(game, criteria, callback) {
-	if (!game || (typeof game !== 'object') || game.players < 9) return callback(true);
+	if (!game || (typeof game !== 'object') || game.slots.length < 9) return callback(true);
 	var slots = [];
-	var countNonEmptySlots = 0;
+	//var countNonEmptySlots = 0;
 	for (var i = 0; i < 9; i++) {
-		if (game.slots[i].username) {
-			slots[countNonEmptySlots] = [i, game.slots[i].stat && game.slots[i].stat[criteria] || 0];
-			++countNonEmptySlots;
-		}
+		//if (game.slots[i].username) {
+			slots[i] = [i, game.slots[i].stat && game.slots[i].stat[criteria] || 0];
+			//++countNonEmptySlots;
+		//}
 	}
-	if (countNonEmptySlots != 9) return callback(true);
+	//if (countNonEmptySlots != 9) return callback(true);
 	var allStates = [];
 	getAllSlotStates(slots, 0, allStates);
 	for (var i = 0; i < allStates.length; i++) {
