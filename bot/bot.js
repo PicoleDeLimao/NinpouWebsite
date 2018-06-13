@@ -326,7 +326,19 @@ bot.on('message', function(ev) {
 					switch(cmd) {
 						// !missions  
 						case 'missions': 
-							displayMissions(ev);
+							if (args[0] == 'titles') {
+								var response = 	'```md\n[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
+												'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n' + 
+												'[     -] [S-Rank] < !mission title-deaths >    : Be Top-1 on deaths ranking and get the "Untouchable" title\n' + 
+												'[     -] [S-Rank] < !mission title-assists >   : Be Top-1 on assists ranking and get the "Guardian angel" title\n' + 
+												'[     -] [S-Rank] < !mission title-points>     : Be Top-1 on points ranking and get the "Legend" title\n' + 
+												'[     -] [S-Rank] < !mission title-gpm>        : Be Top-1 on gpm ranking and get the "Gold farmer" title\n' + 
+												'[     -] [S-Rank] < !mission title-games>      : Be Top-1 on games ranking and get the "Can\'t get enough" title\n' + 
+												'[     -] [S-Rank] < !mission title-chance>     : Be Top-1 on chance of winning ranking and get the "Champion" title```';
+								ev.channel.send(response);
+							} else {
+								displayMissions(ev);
+							}
 							break; 
 						case 'm':
 						case 'mission':
