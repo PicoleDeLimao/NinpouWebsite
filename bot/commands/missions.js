@@ -5,6 +5,7 @@ var http = require('http');
 var missions = {
 	'rescue'   : '[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to double)',
 	'gamble'   : '[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> to get double or lose it all',
+	'rob'      : '[ Daily] [D-Rank] < !mission rob > <user>      : You have <50%> chance to rob <min(10% your gold, 10% user gold)> or lose it to him',
 	'play'     : '[ Daily] [D-Rank] < !mission play >            : Play a game be rewarded with <50g> and <10%> xp',
 	'win'      : '[ Daily] [C-Rank] < !mission win >             : Win a game be rewarded with <200g> and <20%> xp',
 	'farm3k'   : '[ Daily] [B-Rank] < !mission farm >            : Play a game with over 3k gpm and be rewarded with <500g> and <20%> xp',
@@ -23,8 +24,8 @@ var missionsAllTime =	'[     -] [S-Rank] < !mission title-score >     : Be Top-1
 						'[     -] [S-Rank] < !mission title-games>      : Be Top-1 on games ranking and get the "Can\'t get enough" title\n' + 
 						'[     -] [S-Rank] < !mission title-chance>     : Be Top-1 on chance of winning ranking and get the "Champion" title';
 						
-module.exports = function(ev, user) {  
-	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + user + '/available', method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
+module.exports = function(ev) {  
+	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + ev.author.id + '/available', method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
 			body += chunk;

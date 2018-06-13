@@ -12,6 +12,7 @@ var trivia = require('./commands/trivia')(bot);
 var missionTopTitle = require('./commands/missiontoptitle');
 var missionTop = require('./commands/missiontop'); 
 var missionGamble = require('./commands/missiongamble'); 
+var missionRob = require('./commands/missionrob');
 var missionGame = require('./commands/missiongame');
 var missionRescue = require('./commands/missionrescue');
 var listStreams = require('./commands/liststreams');
@@ -325,7 +326,7 @@ bot.on('message', function(ev) {
 					switch(cmd) {
 						// !missions  
 						case 'missions': 
-							displayMissions(ev, ev.author.id);
+							displayMissions(ev);
 							break; 
 						case 'm':
 						case 'mission':
@@ -339,6 +340,13 @@ bot.on('message', function(ev) {
 											missionGamble(ev, args[1]);
 										} else {
 											ev.channel.send('Me no understand! Use **!mission gamble <amount>**');
+										}
+										break;
+									case 'rob':
+										if (ev.mentions.users.array().length == 1) {
+											missionRob(ev, ev.mentions.users.array()[0].id);
+										} else {
+											ev.channel.send('Me no understand! Use **!mission rob <user>**');
 										}
 										break;
 									case 'play':

@@ -2,9 +2,9 @@
 
 var http = require('http');
 
-module.exports = function(ev, amount) {
-	var dataToSend = '{ "amount": ' + amount + ' }';  
-	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + ev.author.id + '/gamble', method: 'POST', 
+module.exports = function(ev, user) {
+	var dataToSend = '{ "user": "' + user + '" }';  
+	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + ev.author.id + '/rob', method: 'POST', 
 		headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(dataToSend) } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
@@ -23,12 +23,12 @@ module.exports = function(ev, amount) {
 				try {
 					var data = JSON.parse(body);
 					var response = '';
-					if (data.amount < 0) {
-						response += 'Tsunade won!! You lost **' + (-data.amount) + 'g**!';
+					if (data.won) {
+						response += '<@' + user + '> won!! You lost **' + (data.amount) + 'g**!';
 					} else {
-						response += 'You won!! You got **' + data.amount + 'g**!';
+						response += 'You won!! You stole **' + data.amount + 'g** from <@' + user + '>!';
 					} 
-					ev.channel.send(response);  
+					ev.channel.send(response);
 				} catch (err) {
 					console.error(err);
 					ev.channel.send('Couldn\'t complete mission. :( **Oink!**');

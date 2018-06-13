@@ -135,7 +135,6 @@ router.post('/:username/rescue', function(req, res) {
 router.post('/:username/gamble', function(req, res) {
 	Mission.find({ username: req.user.username, name: 'gamble' }).sort('-_id').limit(1).exec(function(err, missions) {
 		var doneToday = missions.length > 0 && isToday(moment(dateFromObjectId(missions[0]._id.toString())));
-		var doneYesterday = missions.length > 0 && isYesterday(moment(dateFromObjectId(missions[0]._id.toString())));
 		if (doneToday) {
 			return res.status(400).json({ 'error': 'You already completed this mission today! **Oink!**' });
 		} else { 
@@ -144,8 +143,7 @@ router.post('/:username/gamble', function(req, res) {
 				return res.status(400).json({ 'error': 'You don\'t have this amount to bet! **Oink!**' });
 			} 
 			var amount = req.body.amount;
-			var won = Math.round(Math.random()) == 0;
-			var streak = false;
+			var won = Math.round(Math.random()) == 0; 
 			if (won) amount *= 2;
 			else amount = -amount; 
 			var mission = new Mission({
@@ -158,7 +156,45 @@ router.post('/:username/gamble', function(req, res) {
 				req.user.gold += amount;
 				req.user.save(function(err) {
 					if (err) return res.status(500).json({ 'error': err });
-					return res.status(200).json({ streak: streak, won: won, amount: amount });
+					return res.status(200).json({ streak: false, won: won, amount: amount });
+				});
+			});
+		} 
+	});
+});
+ 
+// gamble 
+router.post('/:username/rob', function(req, res) {
+	Mission.find({ username: req.user.username, name: 'rob' }).sort('-_id').limit(1).exec(function(err, missions) {
+		var doneToday = missions.length > 0 && isToday(moment(dateFromObjectId(missions[0]._id.toString())));
+		if (doneToday) {
+			return res.status(400).json({ 'error': 'You already completed this mission today! **Oink!**' });
+		} else { 
+			Alias.findOne({ username: req.body.user.toLowerCase() }, function(err, anotherUser) {
+				if (err) return res.status(500).json({ 'error': err });
+				var amount = Math.min(req.user.gold * 0.1, anotherUser.gold * 0.1);
+				var won = Math.round(Math.random()) == 0;
+				if (won) {
+					req.user.gold += amount;
+					anotherUser.gold -= amount;
+				} else {
+					req.user.gold -= amount;
+					anotherUser.gold += amount;
+				}
+				var mission = new Mission({
+					username: req.user.username, 
+					name: 'rob', 
+					won: won 
+				}); 
+				mission.save(function(err) {
+					if (err) return res.status(500).json({ 'error': err });
+					req.user.save(function(err) {
+						if (err) return res.status(500).json({ 'error': err });
+						anotherUser.save(function(err) {
+							if (err) return res.status(500).json({ 'error': err });
+							return res.status(200).json({ streak: false, won: won, amount: amount });
+						});
+					});
 				});
 			});
 		} 
@@ -269,7 +305,7 @@ function isMissionAvailable(username, name, frequency, index, callback) {
 };
 
 router.get('/:username/available', function(req, res) {
-	var missions = [['rescue', 'daily'], ['gamble', 'daily'], ['play', 'daily'], ['win', 'daily'], ['farm3k', 'daily'], ['kills20', 'daily'], ['deaths5', 'daily'], ['assists15', 'daily'], ['top', 'weekly']];
+	var missions = [['rescue', 'daily'], ['gamble', 'daily'], ['rob', 'daily'], ['play', 'daily'], ['win', 'daily'], ['farm3k', 'daily'], ['kills20', 'daily'], ['deaths5', 'daily'], ['assists15', 'daily'], ['top', 'weekly']];
 	var availableMissions = [];
 	var evaluatedMissions = 0;
 	for (var i = 0; i < missions.length; i++) {
