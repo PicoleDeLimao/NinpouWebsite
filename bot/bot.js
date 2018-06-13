@@ -37,6 +37,7 @@ var buy = require('./commands/buy');
 var giveGold = require('./commands/givegold');
 var setStatus = require('./commands/setstatus');
 var balance = require('./commands/balance');
+var displayMissions = require('./commands/missions');
 
 var hostedGames = [];
 var inProgressGames = [];
@@ -324,26 +325,7 @@ bot.on('message', function(ev) {
 					switch(cmd) {
 						// !missions  
 						case 'missions': 
-							ev.channel.send( 
-								'**Oink, oink!**\nHere\'s the list of available missions:\n```md\n' +
-								'[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to double)\n' + 
-								'[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> to get double or lose it all\n' +  
-								'[ Daily] [D-Rank] < !mission play >            : Play a game be rewarded with <50g> and <10%> xp\n' +  
-								'[ Daily] [C-Rank] < !mission win >             : Win a game be rewarded with <200g> and <20%> xp\n' + 
-								'[ Daily] [B-Rank] < !mission farm >            : Play a game with over 3k gpm and be rewarded with <500g> and <20%> xp\n' + 
-								'[ Daily] [B-Rank] < !mission assassin >        : Play a game with over 20 kills and be rewarded with <500g> and <20%> xp\n' + 
-								'[ Daily] [B-Rank] < !mission untouchable >     : Play a game with less 5 deaths and be rewarded with <500g> and <20%> xp \n' + 
-								'[ Daily] [B-Rank] < !mission angel >           : Play a game with over 15 assists and be rewarded with <500g> and <20%> xp\n' + 
-								'[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <1000g> and <100%> xp\n' + 
-								'[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
-								'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n' + 
-								'[     -] [S-Rank] < !mission title-deaths >    : Be Top-1 on deaths ranking and get the "Untouchable" title\n' + 
-								'[     -] [S-Rank] < !mission title-assists >   : Be Top-1 on assists ranking and get the "Guardian angel" title\n' + 
-								'[     -] [S-Rank] < !mission title-points>      : Be Top-1 on points ranking and get the "Legend" title\n' + 
-								'[     -] [S-Rank] < !mission title-gpm>        : Be Top-1 on gpm ranking and get the "Gold farmer" title\n' + 
-								'[     -] [S-Rank] < !mission title-games>      : Be Top-1 on games ranking and get the "Can\'t get enough" title\n' + 
-								'[     -] [S-Rank] < !mission title-chance>     : Be Top-1 on chance of winning ranking and get the "Champion" title\n```'
-							);  
+							displayMissions(ev, ev.author.id);
 							break; 
 						case 'm':
 						case 'mission':

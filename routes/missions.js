@@ -258,4 +258,33 @@ router.post('/:username/top', function(req, res) {
 	});
 });
 
+function isMissionAvailable(username, name, frequency, index, callback) {
+	Mission.find({ username: username, name: name }).sort('-_id').limit(1).exec(function(err, missions) {
+		if (err) return callback(err);
+		var doneToday = missions.length > 0 && isToday(moment(dateFromObjectId(missions[0]._id.toString())));
+		var doneThisWeek = missions.length > 0 && isWithinAWeek(moment(dateFromObjectId(missions[0]._id.toString())));
+		if ((frequency == 'daily' && doneToday) || (frequency == 'weekly' && doneThisWeek)) return callback(null, false); 
+		return callback(null, true, index);
+	});
+};
+
+router.get('/:username/available', function(req, res) {
+	var missions = [['rescue', 'daily'], ['gamble', 'daily'], ['play', 'daily'], ['win', 'daily'], ['farm3k', 'daily'], ['kills20', 'daily'], ['deaths5', 'daily'], ['assists15', 'daily'], ['top', 'weekly']];
+	var availableMissions = [];
+	var evaluatedMissions = 0;
+	for (var i = 0; i < missions.length; i++) {
+		isMissionAvailable(req.user.username, missions[i][0], missions[i][1], i, function(err, available, mission) {
+			if (available) availableMissions.push(mission);
+			++evaluatedMissions;
+			if (evaluatedMissions == missions.length) {
+				availableMissions.sort();
+				for (var j = 0; j < availableMissions.length; j++) {
+					availableMissions[j] = missions[availableMissions[j]][0];
+				}
+				return res.json(availableMissions);
+			}
+		});
+	}
+});
+
 module.exports = router;

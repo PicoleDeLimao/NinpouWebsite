@@ -34,7 +34,10 @@ function calculateBalance(slots) {
 	team1 /= 3;
 	team2 /= 3;
 	team3 /= 3;
-	return Math.pow(team1 - team2, 2) + Math.pow(team2 - team3, 2) + Math.pow(team1 - team3, 2);
+	var a = Math.pow(team1 - team2, 2);
+	var b = Math.pow(team2 - team3, 2);
+	var c = Math.pow(team1 - team3, 2);
+	return a + b + c;
 };
 
 function isEnemyTeam(a, b) {
@@ -134,7 +137,7 @@ module.exports = function(ev, games, criteria) {
 						response += gameString; 
 						if (swaps.length == 0) {
 							response += '**This game is already on optimal balance!**\n';
-						} else {
+						} else { 
 							response += '**To balance, type this in-game:**\n';
 							for (var j = 0; j < swaps.length; j++) {
 								response += '!swap ' + (getSwapSlot(swaps[j][0])) + ' ' + (getSwapSlot(swaps[j][1])) + '\n';
