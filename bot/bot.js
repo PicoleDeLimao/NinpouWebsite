@@ -367,6 +367,9 @@ bot.on('message', function(ev) {
 									case 'angel':
 										missionGame(ev, 'assists15');
 										break;
+									case 'dailies':
+										missionGame(ev, 'dailies');
+										break;
 									case 'top':
 										missionTop(ev);
 										break; 

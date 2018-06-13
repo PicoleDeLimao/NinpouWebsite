@@ -56,7 +56,7 @@ function isMissionAvailable(username, name, frequency, index, callback) {
 };
 
 function getAvailableMissions(username, callback) {
-	var missions = [['rescue', 'daily'], ['gamble', 'daily'], ['rob', 'daily'], ['play', 'daily'], ['win', 'daily'], ['farm3k', 'daily'], ['kills20', 'daily'], ['deaths5', 'daily'], ['assists15', 'daily'], ['top', 'weekly']];
+	var missions = [['rescue', 'daily'], ['gamble', 'daily'], ['rob', 'daily'], ['play', 'daily'], ['win', 'daily'], ['farm3k', 'daily'], ['kills20', 'daily'], ['deaths5', 'daily'], ['assists15', 'daily'], ['dailies', 'daily'], ['top', 'weekly']];
 	var availableMissions = [];
 	var evaluatedMissions = 0;
 	for (var i = 0; i < missions.length; i++) {
@@ -180,11 +180,10 @@ router.post('/:username/gamble', function(req, res) {
 		if (doneToday) {
 			return res.status(400).json({ 'error': 'You already completed this mission today! **Oink!**' });
 		} else { 
-			req.body.amount = Math.round(Math.min(req.body.amount, req.user.gold * 0.1));
 			if (!req.body.amount || req.body.amount > req.user.gold) {
 				return res.status(400).json({ 'error': 'You don\'t have this amount to bet! **Oink!**' });
 			} 
-			var amount = Math.min(req.body.amount, req.user.gold * 0.1);
+			var amount = Math.round(Math.min(req.body.amount, req.user.gold * 0.1));
 			getAvailableMissions(req.user.username, function(missions) {
 				var chance;
 				if (areAllMissionsCompleted(missions)) {
@@ -252,6 +251,55 @@ router.post('/:username/rob', function(req, res) {
 	});
 });
  
+// dailies  
+router.post('/:username/dailies', function(req, res) {
+	Mission.find({ username: req.user.username, name: 'dailies' }).sort('-_id').limit(1).exec(function(err, missions) {
+		var doneToday = missions.length > 0 && isToday(moment(dateFromObjectId(missions[0]._id.toString())));
+		var doneYesterday = missions.length > 0 && isYesterday(moment(dateFromObjectId(missions[0]._id.toString())));
+		if (doneToday) {
+			return res.status(400).json({ 'error': 'You already completed this mission today! **Oink!**' });
+		} else { 
+			getAvailableMissions(req.user.username, function(missions) {
+				if (!areAllMissionsCompleted(missions)) {
+					return res.status(400).json({ 'error': 'You haven\'t completed all daily missions! **Oink!**' });
+				} else {
+					var amount = 1000;
+					var xp = 50;
+					var streak = doneYesterday;
+					if (streak) {
+						amount *= 2;
+						xp *= 2;
+					}
+					var today = new Date();
+					if (today.getDay() == 6 || today.getDay() == 0) {
+						amount *= 2;
+						xp *= 2;
+					}
+					var mission = new Mission({
+						username: req.user.username,
+						name: 'dailies'
+					});
+					mission.save(function(err) {
+						if (err) return res.status(500).json({ 'error': err });
+						req.user.gold += amount;
+						req.user.xp += xp;
+						var levelup = false;
+						while (req.user.xp > 100) { 
+							req.user.level += 1;
+							req.user.xp -= 100;
+							levelup = true;
+						}
+						req.user.save(function(err) {
+							if (err) return res.status(500).json({ 'error': err });
+							return res.status(200).json({ streak: streak, amount: amount, xp: xp, level: req.user.level, levelup: levelup });
+						});
+					});
+				}
+			});
+		} 
+	});
+});
+ 
 // play
 router.post('/:username/play', function(req, res) {
 	dailyGameMission(req, res, 'play', { 'slots': { '$elemMatch': {} } }, 'You didn\'t play any game today! **Oink!**', 50, 10);
@@ -311,7 +359,7 @@ router.post('/:username/top', function(req, res) {
 					return b.score - a.score;
 				});   
 				if (stats[0]._id == req.user.username) {
-					var amount = 1000;
+					var amount = 10000;
 					var xp = 100;
 					var today = new Date();
 					if (today.getDay() == 6 || today.getDay() == 0) {

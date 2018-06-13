@@ -4,7 +4,7 @@ var http = require('http');
 
 var missions = {
 	'rescue'   : '[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to double)',
-	'gamble'   : '[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> (<75%> if all missions below S-rank are completed) to get double or lose it all (max 10% of your gold)',
+	'gamble'   : '[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> (<75%> if dailies mission is completed) to get double or lose it all (max 10% of your gold)',
 	'rob'      : '[ Daily] [D-Rank] < !mission rob > <user>      : You have <50% + your level - target level> chance to rob <min(10% your gold, 10% user gold)> or lose it to him',
 	'play'     : '[ Daily] [D-Rank] < !mission play >            : Play a game be rewarded with <50g> and <10%> xp',
 	'win'      : '[ Daily] [C-Rank] < !mission win >             : Win a game be rewarded with <200g> and <20%> xp',
@@ -12,7 +12,8 @@ var missions = {
 	'kills20'  : '[ Daily] [B-Rank] < !mission assassin >        : Play a game with over 20 kills and be rewarded with <500g> and <20%> xp',
 	'deaths5'  : '[ Daily] [B-Rank] < !mission untouchable >     : Play a game with less 5 deaths and be rewarded with <500g> and <20%> xp',
 	'assists15': '[ Daily] [B-Rank] < !mission angel >           : Play a game with over 15 assists and be rewarded with <500g> and <20%> xp',
-	'top'      : '[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <1000g> and <100%> xp',
+	'dailies'  : '[ Daily] [A-Rank] < !mission dailies >         : Complete all missions below S-Rank (except gamble and rob) and be rewarded with <1000g> and <50%> xp',
+	'top'      : '[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <10000g> and <100%> xp',
 };
 
 var missionsAllTime =	'[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
