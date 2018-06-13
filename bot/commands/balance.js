@@ -38,17 +38,17 @@ function calculateBalance(slots) {
 	return Math.pow(team1 - team2, 2) + Math.pow(team2 - team3, 2) + Math.pow(team1 - team3, 2);
 };
 
-function calculateBalanceRecursive(slots, index, allStates) {
+function getAllSlotStates(slots, index, allStates) {
 	if (index == 9) { 
 		allStates.push(slots);
 	} else {
-		calculateBalanceRecursive(slots, index + 1, allStates);
+		getAllSlotStates(slots, index + 1, allStates);
 		for (var i = index + 1; i < 9; i++) {
 			var newState = slots.slice();
 			var tmp = newState[index];
 			newState[index] = newState[i];
 			newState[i] = tmp;
-			calculateBalanceRecursive(newState, index + 1, allStates);
+			getAllSlotStates(newState, index + 1, allStates);
 		}
 	}
 };
@@ -59,13 +59,13 @@ function getOptimalBalance(game, criteria, callback) {
 	var countNonEmptySlots = 0;
 	for (var i = 0; i < 9; i++) {
 		if (game.slots[i].username) {
-			slots[countNonEmptySlots] = [i, game.slots[i].stat[criteria]];
+			slots[countNonEmptySlots] = [i, game.slots[i].stat && game.slots[i].stat[criteria] || 0];
 			++countNonEmptySlots;
 		}
 	}
 	if (countNonEmptySlots != 9) return callback(true);
 	var allStates = [];
-	calculateBalanceRecursive(slots, 0, allStates);
+	getAllSlotStates(slots, 0, allStates);
 	for (var i = 0; i < allStates.length; i++) {
 		allStates[i] = [calculateBalance(allStates[i]), allStates[i]];
 	}
@@ -86,13 +86,33 @@ function getOptimalBalance(game, criteria, callback) {
 	bestStates.sort(function(a, b) {
 		return a[0] - b[0];
 	});
+	var bestBestStates = [bestStates[0]];
+	for (var i = 1; i < bestStates.length; i++) {
+		if (bestStates[i][0] == bestStates[i - 1][0]) {
+			bestBestStates.push(bestStates[i]);
+		}
+	}
 	var bestState = bestStates[0][1];
+	if (bestBestStates.length > 1) {
+		for (var i = 1; i < bestBestStates.length; i++) {
+			if (bestBestStates[i][1][0][0] == 0) {
+				bestState = bestBestStates[i][1];
+				break;
+			}
+		}
+	}
 	var newGame = JSON.parse(JSON.stringify(game));
 	for (var i = 0; i < 9; i++) {
 		newGame.slots[i] = game.slots[bestState[i][0]];
 	}
 	var swaps = getSwaps(bestState);
 	return callback(false, newGame, swaps);
+};
+
+function getSwapSlot(slot) {
+	if (slot < 3) return slot + 1;
+	else if (slot < 6) return slot + 2;
+	else return slot + 3;
 };
 
 module.exports = function(ev, games, criteria) {
@@ -117,7 +137,7 @@ module.exports = function(ev, games, criteria) {
 						} else {
 							response += '**To balance, type this in-game:**\n';
 							for (var j = 0; j < swaps.length; j++) {
-								response += '!swap ' + (swaps[j][0] + 1) + ' ' + (swaps[j][1] + 1) + '\n';
+								response += '!swap ' + (getSwapSlot(swaps[j][0])) + ' ' + (getSwapSlot(swaps[j][1])) + '\n';
 							}
 						}
 						next(i + 1, response);
