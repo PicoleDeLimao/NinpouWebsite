@@ -7,6 +7,10 @@ function dateFromObjectId(objectId) {
 	return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
 }
 
+function scoreOnSlot(slot) {
+	return slot.stat && slot.stat.score || slot.score || 0;
+};
+
 function slotToString(slot, largestName, largestRealm, largetScore, recorded, spectator) {
 	var response = '';
 	if (!slot.username) {
@@ -25,13 +29,13 @@ function slotToString(slot, largestName, largestRealm, largetScore, recorded, sp
 			realmSpaces += ' ';
 		}
 		var scoreSpaces = '';
-		for (var j = 0; j < largetScore - (Math.round(slot.score) + '').length; j++) {
+		for (var j = 0; j < largetScore - (Math.round(scoreOnSlot(slot)) + '').length; j++) {
 			scoreSpaces += ' ';
 		}
 		if (recorded && !spectator) {
 			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + '] [' + (slot.hero && slot.hero.name ? slot.hero.name : 'Unknown' ) + ']\n'; 
 		} else {
-			response += '[' + nameSpaces + slot.username + ']' + ' [' + realmSpaces + slot.realm + '] [Score: ' + scoreSpaces + Math.round(slot.score) + ']\n';
+			response += '[' + nameSpaces + slot.username + ']' + ' [' + realmSpaces + slot.realm + '] [Score: ' + scoreSpaces + Math.round(scoreOnSlot(slot)) + ']\n';
 		}
 	}
 	return response;
@@ -71,7 +75,7 @@ module.exports = function(ev, game, callback) {
 							response += 'WINNING TEAM\n';
 						}
 					} else {
-						var averageScore = ((game.slots[0].score || 0) + (game.slots[1].score || 0) + (game.slots[2].score || 0)) / 3;
+						var averageScore = ((scoreOnSlot(game.slots[0])) + (scoreOnSlot(game.slots[1])) + (scoreOnSlot(game.slots[2]))) / 3;
 						response += 'Konoha;   (Average score: ' + Math.round(averageScore) + ')\n';
 					} 
 					for (var i = 0; i < 3; i++) {
@@ -91,7 +95,7 @@ module.exports = function(ev, game, callback) {
 							response += 'WINNING TEAM\n';
 						}
 					} else {
-						var averageScore = ((game.slots[3].score || 0) + (game.slots[4].score || 0) + (game.slots[5].score || 0)) / 3;
+						var averageScore = ((scoreOnSlot(game.slots[3])) + (scoreOnSlot(game.slots[4])) + (scoreOnSlot(game.slots[5]))) / 3;
 						response += 'Oto;      (Average score: ' + Math.round(averageScore) + ')\n';
 					}
 					for (var i = 3; i < 6; i++) {
@@ -111,7 +115,7 @@ module.exports = function(ev, game, callback) {
 							response += 'WINNING TEAM\n';
 						}
 					} else {
-						var averageScore = ((game.slots[6].score || 0) + (game.slots[7].score || 0) + (game.slots[8].score || 0)) / 3;
+						var averageScore = ((scoreOnSlot(game.slots[6])) + (scoreOnSlot(game.slots[7])) + (scoreOnSlot(game.slots[8]))) / 3;
 						response += 'Akatsuki; (Average score: ' + Math.round(averageScore) + ')\n';
 					}
 					for (var i = 6; i < 9; i++) {
@@ -145,8 +149,8 @@ module.exports = function(ev, game, callback) {
 					if (game.slots[i].realm.length > largestRealm) {
 						largestRealm = game.slots[i].realm.length;
 					}
-					if ((Math.round(game.slots[i].score) + '').length > largestScore) {
-						largestScore = (Math.round(game.slots[i].score) + '').length;
+					if ((Math.round(scoreOnSlot(game.slots[i])) + '').length > largestScore) {
+						largestScore = (Math.round(scoreOnSlot(game.slots[i])) + '').length;
 					}
 				}
 				return next(i + 1, players, largestName, largestRealm, largestScore);

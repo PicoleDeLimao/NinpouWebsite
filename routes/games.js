@@ -8,6 +8,7 @@ var Game = require('../models/Game');
 var Stat = require('../models/Stat');
 var Alias = require('../models/Alias');
 var Hero = require('../models/Hero');
+var StatCalculator = require('./statcalculator');
 
 var cookie = '';
 var code = '5qg8l'; 
@@ -86,14 +87,14 @@ function parseGameSlots(data, callback) {
 			if (username) {
 				++players;
 				(function(index, username, realm, ping) {
-					Stat.findOne({ username: username.toLowerCase() }, function(err, stat) {
-						if (err) return callback(err);  
+					StatCalculator.getPlayerStats(username.toLowerCase(), function(err, stat) {
+						//if (err) return callback(err);  
 						getPlayerAlias(username.toLowerCase(), function(err, alias) {
 							if (err) return callback(err);
 							if (stat) {
-								gameSlots[index - 2] = { 'username': username, 'alias': alias, 'realm': realm, 'ping': ping, 'score': stat.score };
+								gameSlots[index - 2] = { 'username': username, 'alias': alias, 'realm': realm, 'ping': ping, 'score': stat.score, 'stat': stat };
 							} else {
-								gameSlots[index - 2] = { 'username': username, 'alias': alias, 'realm': realm, 'ping': ping, 'score': 0 };
+								gameSlots[index - 2] = { 'username': username, 'alias': alias, 'realm': realm, 'ping': ping, 'stat': null };
 							}
 							--count;
 							if (count <= 0) return callback(null, {

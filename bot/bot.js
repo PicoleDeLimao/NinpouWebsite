@@ -269,7 +269,7 @@ bot.on('message', function(ev) {
 				'< !help >                       : Display this message\n' + 
 				'< ![h]ost > [location] [owner]  : Host a new game\n' + 
 				'< !lobby >                      : List games in lobby\n' + 
-				'< !balance >                    : Display the optimal balance of games in lobby\n' + 
+				'< !balance > [criteria]         : Display the optimal balance of games in lobby\n' + 
 				'< ![p]rogress >                 : List games in progress\n' + 
 				'< ![l]ast >                     : Fetch last non-recorded played games\n' + 
 				'< !recorded >                   : Fetch last recorded played games\n' + 
@@ -522,7 +522,18 @@ bot.on('message', function(ev) {
 							break;
 						case 'b':
 						case 'balance': 
-							balance(ev, inProgressGames);
+							if (args.length == 1) {
+								var criteria = args[0];
+								if (criteria == 'points' || criteria == 'kills' || criteria == 'assists' || criteria == 'gpm' || criteria == 'wins' || criteria == 'chance' || criteria == 'score') {
+									balance(ev, criteria, inProgressGames);
+								} else {
+									ev.channel.send('Invalid criteria. Available criterias: points, kills, assists, gpm, wins, chance, score.');
+								}
+							} else if (args.length == 0) {
+								balance(ev, 'points', inProgressGames);
+							} else {
+								ev.channel.send('Me no understand! Use **!balance <criteria>**');
+							}
 							break;
 						case 'r':
 						case 'record':

@@ -53,13 +53,13 @@ function calculateBalanceRecursive(slots, index, allStates) {
 	}
 };
 
-function getOptimalBalance(game, callback) {
+function getOptimalBalance(game, criteria, callback) {
 	if (!game || game.players < 9) return callback(true);
 	var slots = [];
 	var countNonEmptySlots = 0;
 	for (var i = 0; i < 9; i++) {
 		if (game.slots[i].username) {
-			slots[countNonEmptySlots] = [i, game.slots[i].score];
+			slots[countNonEmptySlots] = [i, game.slots[i].stat[criteria]];
 			++countNonEmptySlots;
 		}
 	}
@@ -95,7 +95,7 @@ function getOptimalBalance(game, callback) {
 	return callback(false, newGame, swaps);
 };
 
-module.exports = function(ev, games) {
+module.exports = function(ev, games, criteria) {
 	var response = '';
 	(function next(i, response) {
 		if (i == games.length) {
@@ -104,13 +104,13 @@ module.exports = function(ev, games) {
 			} else {
 				ev.channel.send(response);
 			}
-		} else {
-			getOptimalBalance(games[i], function(err, game, swaps) {
+		} else { 
+			getOptimalBalance(games[i], criteria, function(err, game, swaps) {
 				if (err) {
 					next(i + 1, response);
 				} else {
 					gameToString(ev, game, function(gameString) {
-						response += '**Optimal balance:**\n';
+						response += '**Optimal balance (balancing by average ' + criteria + '):**\n';
 						response += gameString; 
 						if (swaps.length == 0) {
 							response += '**This game is already on optimal balance!**\n';
