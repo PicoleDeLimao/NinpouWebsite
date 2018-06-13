@@ -36,6 +36,7 @@ var displayGameInfo = require('./commands/displaygameinfo');
 var buy = require('./commands/buy');
 var giveGold = require('./commands/givegold');
 var setStatus = require('./commands/setstatus');
+var balance = require('./commands/balance');
 
 var hostedGames = [];
 var inProgressGames = [];
@@ -268,6 +269,7 @@ bot.on('message', function(ev) {
 				'< !help >                       : Display this message\n' + 
 				'< ![h]ost > [location] [owner]  : Host a new game\n' + 
 				'< !lobby >                      : List games in lobby\n' + 
+				'< !balance >                    : Display the optimal balance of games in lobby\n' + 
 				'< ![p]rogress >                 : List games in progress\n' + 
 				'< ![l]ast >                     : Fetch last non-recorded played games\n' + 
 				'< !recorded >                   : Fetch last recorded played games\n' + 
@@ -517,6 +519,10 @@ bot.on('message', function(ev) {
 							} else {
 								ev.channel.send('Me no understand! Use **!info <game_id>**');
 							}
+							break;
+						case 'b':
+						case 'balance': 
+							balance(ev, inProgressGames);
 							break;
 						case 'r':
 						case 'record':
