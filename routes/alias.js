@@ -77,6 +77,7 @@ router.post('/block/:alias', function(req, res) {
 		else if (alias) {
 			return res.status(400).json({ error: 'Alias is already linked to an account.' });
 		} else {
+			console.log('oi');
 			BlockedAlias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 				if (err) return res.status(500).json({ error: err });
 				else if (alias) {

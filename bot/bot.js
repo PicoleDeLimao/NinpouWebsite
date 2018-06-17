@@ -374,17 +374,24 @@ bot.on('message', function(ev) {
 				}
 			});
 		} else if (cmd == 'addalias') {
-			if (args.length > 0) {
-				addAlias(ev, args[0]);
-			} else {
-				ev.channel.send('Me no understand! Use **!addalias <account>**');
-			} 
+			getAliasOf(ev.author.id, function(err, alias) {
+				if (alias.length > 0) {
+					ev.channel.send('You can only have one alias per account now. If you want to add another alias, ask an admin! **Oink!!**');
+				} else {
+					if (args.length > 0) {
+						addAlias(ev, args[0]);
+					} else {
+						ev.channel.send('Me no understand! Use **!addalias <account>**');
+					} 
+				}
+			});
 		} else if (cmd == 'removealias') {
-			if (args.length > 0) {
+			/*if (args.length > 0) {
 				removeAlias(ev, args[0]);
 			} else {
 				ev.channel.send('Me no understand! Use **!removealias <account>**');
-			} 
+			}*/
+			ev.channel.send('Only admins can remove aliases now. Ask one! **Oink!!**');
 		} else {
 			getAliasOf(ev.author.id, function(err, alias) {
 				if (err) {
