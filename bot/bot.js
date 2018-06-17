@@ -288,7 +288,7 @@ bot.on('message', function(ev) {
 				'< !ra[n]king > [player_name]    : Display player position in Ninpou ranking\n' + 
 				'< ![s]core > [player_name]      : Display a player score in the ranking\n' + 
 				'< !addalias > <player_name>     : Add a new alias\n' + 
-				'< !removealias > <player_name>  : Remove an alias\n' + 
+				//'< !removealias > <player_name>  : Remove an alias\n' + 
 				'< !whois > <player_name>        : Check who in discord is using a determined account\n' + 
 				'< !aliasof > <user>             : Display all alias from a user\n' + 
 				'< !addstream > <channel>        : Add a new streaming channel\n' + 
@@ -356,7 +356,7 @@ bot.on('message', function(ev) {
 						}
 					} else if (args[0] == 'unblockalias') {
 						if (args.length == 2) {
-							blockAlias(ev, args[1]);
+							unblockAlias(ev, args[1]);
 						} else { 
 							ev.channel.send('Me no understand! Use **!a unblockalias <alias>');
 						}

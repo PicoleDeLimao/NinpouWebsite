@@ -70,14 +70,14 @@ router.put('/:username/status', function(req, res) {
 	});
 });
 
-router.post('/block/:alias', function(req, res) {
-	if (!req.params.username || !req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
+router.post('/block/:alias', function(req, res) { 
+	if (!req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
 	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err });
 		else if (alias) {
+			console.log(alias);
 			return res.status(400).json({ error: 'Alias is already linked to an account.' });
 		} else {
-			console.log('oi');
 			BlockedAlias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 				if (err) return res.status(500).json({ error: err });
 				else if (alias) {
@@ -95,7 +95,7 @@ router.post('/block/:alias', function(req, res) {
 });
  
 router.delete('/block/:alias', function(req, res) {
-	if (!req.params.username || !req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
+	if (!req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
 	BlockedAlias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err });
 		else if (!alias) {
