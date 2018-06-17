@@ -283,7 +283,6 @@ bot.on('message', function(ev) {
 				'< !recorded >                   : Fetch last recorded played games\n' + 
 				'< ![i]nfo > <game_id>           : Fetch info about a played game\n' + 
 				'< ![r]ecord > <game_id> <code>  : Record a game\n' +  
-				'< !unrecord > <game_id>         : Unrecord a game\n' +  
 				'< !ra[n]king > [player_name]    : Display player position in Ninpou ranking\n' + 
 				'< ![s]core > [player_name]      : Display a player score in the ranking\n' + 
 				'< !addalias > <player_name>     : Add a new alias\n' + 
@@ -301,8 +300,63 @@ bot.on('message', function(ev) {
 				'< !status > <status>            : Set a status\n' + 
 				//'< !jutsus >                   : Display jutsus available to be purchased\n' +
 				'< !trivia naruto >              : Start a Naruto trivia (use < !trivia > again to disable it)\n' +
-				'< !trivia ninpou >              : Start a Ninpou trivia (use < !trivia > again to disable it)```'
+				'< !trivia ninpou >              : Start a Ninpou trivia (use < !trivia > again to disable it)\n' + 
+				'< !admin >                      : Admin only commands```'
 			);    
+		} else if (cmd == 'admin') {
+			ev.guild.fetchMember(ev.author.id).then(function(author) {
+				var isAdmin = false;
+				author.roles.forEach(function(role) {
+					if (role.name.toLowerCase() == 'moderator') {
+						isAdmin = true; 
+					}
+				});
+				if (isAdmin) {
+					ev.channel.send(  
+						'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
+						'< !a > addalias <user> <alias>     : Add an alias to a player\n' + 
+						'< !a > removealias <user> <alias>  : Remove an alias from a player\n' + 
+						'< !a > unrecord <game_id>          : Unrecord a game' +  
+						'```'
+					);   
+				} else {
+					ev.channel.send('Only admins can use this command! **Oink!**');
+				}
+			});
+		} else if (cmd == 'a') {
+			ev.guild.fetchMember(ev.author.id).then(function(author) {
+				var isAdmin = false;
+				author.roles.forEach(function(role) {
+					if (role.name.toLowerCase() == 'moderator') {
+						isAdmin = true; 
+					}
+				});
+				if (isAdmin) { 
+					if (args[0] == 'addalias') {
+						if (ev.mentions.users.array().length == 1) {
+							addAlias(ev, args[2], ev.mentions.users.array()[0].id);
+						} else {
+							ev.channel.send('Me no understand! Use **!a addalias <user> <alias>**');
+						}
+					} else if (args[0] == 'removealias') {
+						if (ev.mentions.users.array().length == 1) {
+							removeAlias(ev, args[2], ev.mentions.users.array()[0].id);
+						} else {
+							ev.channel.send('Me no understand! Use **!a removealias <user> <alias>**');
+						}
+					} else if (args[0] == 'unrecord') {
+						if (args.length == 2) {
+							unrecordGame(ev, args[1]);
+						} else { 
+							ev.channel.send('Me no understand! Use **!a unrecord <game_id>**');
+						} 
+					} else {
+						ev.channel.send('Admin command not found! **Oink!**');
+					}
+				} else {
+					ev.channel.send('Only admins can use this command! **Oink!**');
+				}
+			});
 		} else if (cmd == 'addalias') {
 			if (args.length > 0) {
 				addAlias(ev, args[0]);
@@ -552,13 +606,6 @@ bot.on('message', function(ev) {
 								recordGame(ev, args[0], args[1], alias);
 							} else {
 								ev.channel.send('Me no understand! Use **!record <game_id> <code>**');
-							}
-							break;
-						case 'unrecord':
-							if (args.length == 1) { 
-								unrecordGame(ev, args[0], alias);
-							} else {
-								ev.channel.send('Me no understand! Use **!unrecord <game_id>**');
 							}
 							break;
 						case 'n':
