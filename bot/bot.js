@@ -24,6 +24,8 @@ var getInfo = require('./commands/getinfo');
 var whoIs = require('./commands/whois');
 var addAlias = require('./commands/addalias');
 var removeAlias = require('./commands/removealias');
+var blockAlias = require('./commands/blockalias');
+var unblockAlias = require('./commands/unblockalias');
 var getPlayerName = require('./commands/getplayername');
 var hostGame = require('./commands/hostgame');
 var displayScore = require('./commands/displayscore');
@@ -316,6 +318,8 @@ bot.on('message', function(ev) {
 						'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
 						'< !a > addalias <user> <alias>     : Add an alias to a player\n' + 
 						'< !a > removealias <user> <alias>  : Remove an alias from a player\n' + 
+						'< !a > blockalias <alias>          : Block an alias from being added to any account\n' + 
+						'< !a > unblockalias <alias>        : Unblock an alias\n' + 
 						'< !a > unrecord <game_id>          : Unrecord a game' +  
 						'```'
 					);   
@@ -343,6 +347,18 @@ bot.on('message', function(ev) {
 							removeAlias(ev, args[2], ev.mentions.users.array()[0].id);
 						} else {
 							ev.channel.send('Me no understand! Use **!a removealias <user> <alias>**');
+						}
+					} else if (args[0] == 'blockalias') {
+						if (args.length == 2) {
+							blockAlias(ev, args[1]);
+						} else { 
+							ev.channel.send('Me no understand! Use **!a blockalias <alias>');
+						}
+					} else if (args[0] == 'unblockalias') {
+						if (args.length == 2) {
+							blockAlias(ev, args[1]);
+						} else { 
+							ev.channel.send('Me no understand! Use **!a unblockalias <alias>');
 						}
 					} else if (args[0] == 'unrecord') {
 						if (args.length == 2) {

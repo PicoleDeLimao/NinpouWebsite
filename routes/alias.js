@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var express = require('express');
 var router = express.Router();
 var Alias = require('../models/Alias');
+var BlockedAlias = require('../models/BlockedAlias');
 var Stat = require('../models/Stat');
 var Item = require('../models/Item'); 
 
@@ -69,42 +70,86 @@ router.put('/:username/status', function(req, res) {
 	});
 });
 
-router.put('/:username/:alias', function(req, res) {
+router.post('/block/:alias', function(req, res) {
 	if (!req.params.username || !req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
 	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err });
 		else if (alias) {
-			return res.status(400).json({ error: 'Alias is already being used.' });
+			return res.status(400).json({ error: 'Alias is already linked to an account.' });
 		} else {
-			Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+			BlockedAlias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 				if (err) return res.status(500).json({ error: err });
 				else if (alias) {
-					alias.alias.push(req.params.alias.toLowerCase());
+					return res.status(400).json({ error: 'Alias is already blocked.' });
 				} else {
-					alias = new Alias({
-						username: req.params.username.toLowerCase(),
-						alias: [req.params.alias.toLowerCase()]
+					var blocked = new BlockedAlias({ alias: req.params.alias.toLowerCase() });
+					blocked.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(201).json(blocked);
 					});
 				}
-				alias.save(function(err) {
-					if (err) return res.status(500).json({ error: err });
-					Stat.findOne({ username: req.params.alias.toLowerCase() }, function(err, stat) {
-						if (err) return res.status(500).json({ error: err });
-						else if (stat) {
-							stat.alias = alias.username;
-							stat.save(function(err) {
-								if (err) return res.status(500).json({ error: err });
-								return res.status(201).send();
-							});
-						} else {
-							return res.status(201).send();
-						}
-					});
-				});
 			});
 		}
-	});
-	
+	}); 
+});
+ 
+router.delete('/block/:alias', function(req, res) {
+	if (!req.params.username || !req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
+	BlockedAlias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (!alias) {
+			return res.status(400).json({ error: 'Alias is not blocked.' });
+		} else {
+			blocked.remove(function(err) {
+				if (err) return res.status(500).json({ error: err });
+				return res.status(200).send();
+			});
+		}
+	}); 
+});
+ 
+router.put('/:username/:alias', function(req, res) {
+	if (!req.params.username || !req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
+	BlockedAlias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (alias) {
+			return res.status(400).json({ error: 'This alias is blocked.' });
+		} else {
+			Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
+				if (err) return res.status(500).json({ error: err });
+				else if (alias) {
+					return res.status(400).json({ error: 'Alias is already being used.' });
+				} else {
+					Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+						if (err) return res.status(500).json({ error: err });
+						else if (alias) {
+							alias.alias.push(req.params.alias.toLowerCase());
+						} else {
+							alias = new Alias({
+								username: req.params.username.toLowerCase(),
+								alias: [req.params.alias.toLowerCase()]
+							});
+						}
+						alias.save(function(err) {
+							if (err) return res.status(500).json({ error: err });
+							Stat.findOne({ username: req.params.alias.toLowerCase() }, function(err, stat) {
+								if (err) return res.status(500).json({ error: err });
+								else if (stat) {
+									stat.alias = alias.username;
+									stat.save(function(err) {
+										if (err) return res.status(500).json({ error: err });
+										return res.status(201).send();
+									});
+								} else {
+									return res.status(201).send();
+								}
+							});
+						});
+					});
+				}
+			});
+		}
+	}); 
 });
  
 router.delete('/:username/:alias', function(req, res) {
