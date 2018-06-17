@@ -10,7 +10,12 @@ module.exports = function(ev, alias) {
 		});
 		res.on('end', function() {
 			if (res.statusCode != 200) {
-				ev.channel.send('This alias is not blocked. :( **Oink!**');
+				try {
+					var data = JSON.parse(body);
+					ev.channel.send(data.error);
+				} catch (err) {
+					ev.channel.send('This alias is not blocked. :( **Oink!**');
+				}				
 			} else { 
 				ev.channel.send('Alias unblocked! **Oink!**');
 			}

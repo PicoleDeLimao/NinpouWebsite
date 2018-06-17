@@ -10,7 +10,12 @@ module.exports = function(ev, alias) {
 		});
 		res.on('end', function() {
 			if (res.statusCode != 201) {
-				ev.channel.send('This alias is already linked to an account. :( **Oink!**');
+				try {
+					var data = JSON.parse(body);
+					ev.channel.send(data.error);
+				} catch (err) {
+					ev.channel.send('This alias is already linked to an account. :( **Oink!**');
+				}
 			} else { 
 				ev.channel.send('Alias blocked! **Oink!**');
 			}
