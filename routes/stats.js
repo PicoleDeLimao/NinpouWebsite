@@ -378,6 +378,38 @@ router.get('/players/:username', function(req, res) {
 	});
 });
 
+router.delete('/players/:username', function(req, res) {
+	var username = new RegExp(['^', StatCalculator.escapeRegExp(req.params.username.toLowerCase()), '$'].join(''), 'i'); 
+	Stat.remove({ username: username }, function(err) {
+		if (err) return res.status(500).json({ error: err });
+		return res.status(200).send();
+	});
+});
+
+router.post('/players/:username/merge/:another_username', function(req, res) {
+	var username = new RegExp(['^', StatCalculator.escapeRegExp(req.params.username.toLowerCase()), '$'].join(''), 'i'); 
+	Stat.findOne({ username: username }, function(err, sourceAlias) {
+		if (err) return res.status(500).json({ error: err });
+		var anotherUsername = new RegExp(['^', StatCalculator.escapeRegExp(req.params.another_username.toLowerCase()), '$'].join(''), 'i'); 
+		Stat.findOne({ username: anotherUsername }, function(err, destAlias) {
+			if (err) return res.status(500).json({ error: err });
+			destAlias.games += sourceAlias.games;
+			destAlias.wins += sourceAlias.wins;
+			destAlias.gpm += sourceAlias.gpm;
+			destAlias.assists += sourceAlias.assists;
+			destAlias.deaths += sourceAlias.deaths;
+			destAlias.kills += sourceAlias.kills;
+			destAlias.save(function(err) {
+				if (err) return res.status(500).json({ error: err });
+				sourceAlias.remove(function(err) {
+					if (err) return res.status(500).json({ error: err });
+					return res.status(200).send();
+				});
+			}); 
+		});
+	});
+});
+
 router.get('/heroes/:map/:hero_id', function(req, res) {
 	HeroStat.findOne({ hero: req.params.hero_id, map: req.params.map }, function(err, stat) {
 		if (err) return res.status(500).json(err);

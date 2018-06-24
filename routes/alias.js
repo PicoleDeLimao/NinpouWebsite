@@ -101,7 +101,7 @@ router.delete('/block/:alias', function(req, res) {
 		else if (!alias) {
 			return res.status(400).json({ error: 'Alias is not blocked.' });
 		} else {
-			blocked.remove(function(err) {
+			alias.remove(function(err) {
 				if (err) return res.status(500).json({ error: err });
 				return res.status(200).send();
 			});

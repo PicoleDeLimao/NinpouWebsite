@@ -26,6 +26,8 @@ var addAlias = require('./commands/addalias');
 var removeAlias = require('./commands/removealias');
 var blockAlias = require('./commands/blockalias');
 var unblockAlias = require('./commands/unblockalias');
+var mergeAliases = require('./commands/mergealiases');
+var deleteAlias = require('./commands/deletealias');
 var getPlayerName = require('./commands/getplayername');
 var hostGame = require('./commands/hostgame');
 var displayScore = require('./commands/displayscore');
@@ -204,6 +206,8 @@ setInterval(function() {
 					delete ev.onlineStreams[_id];
 				} 
 			} 
+			ev.count = ev.count || 0;
+			ev.count += 1;
 			for (var i = 0; i < onlineStreams_.length; i++) {
 				(function(stream) {
 					var stream = stream.stream; 
@@ -219,7 +223,7 @@ setInterval(function() {
 							.setThumbnail(stream.channel.logo)
 							.setFooter(stream.viewers + ' viewers | Started '  + m.fromNow());
 					if (ev.onlineStreams.hasOwnProperty(stream._id)) {
-						if (ev.onlineStreams[stream._id].embed)
+						if (ev.onlineStreams[stream._id].embed && (ev.count % 6 == 0))
 							ev.onlineStreams[stream._id].embed.edit(msgEmbed);
 					} else {  
 						ev.channel.send(msg).then(function(msg) {
@@ -343,11 +347,13 @@ bot.on('message', function(ev) {
 				if (isAdmin) {
 					ev.channel.send(  
 						'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
-						'< !a > addalias <user> <alias>     : Add an alias to a player\n' + 
-						'< !a > removealias <user> <alias>  : Remove an alias from a player\n' + 
-						'< !a > blockalias <alias>          : Block an alias from being added to any account\n' + 
-						'< !a > unblockalias <alias>        : Unblock an alias\n' + 
-						'< !a > unrecord <game_id>          : Unrecord a game' +  
+						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
+						'< !a > removealias <user> <alias>           : Remove an alias from a player\n' + 
+						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
+						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
+						'< !a > unrecord <game_id>                   : Unrecord a game```Super-admin commands:\n```md\n' +  
+						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' + 
+						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
 						'```'
 					);   
 				} else {
@@ -357,9 +363,12 @@ bot.on('message', function(ev) {
 		} else if (cmd == 'a') {
 			ev.guild.fetchMember(ev.author.id).then(function(author) {
 				var isAdmin = false;
+				var isSuperAdmin = false; 
 				author.roles.forEach(function(role) {
 					if (role.name.toLowerCase() == 'moderator') {
 						isAdmin = true; 
+					} else if (role.name.toLowerCase() == 'admin') {
+						isSuperAdmin = true; 
 					}
 				});
 				if (isAdmin) { 
@@ -393,6 +402,22 @@ bot.on('message', function(ev) {
 						} else { 
 							ev.channel.send('Me no understand! Use **!a unrecord <game_id>**');
 						} 
+					} else if (args[0] == 'mergealiases') {
+						if (!isSuperAdmin) { 
+							ev.channel.send('Only super-admins can use this command! **Oink!!**');
+						} else if (args.length == 3) {
+							mergeAliases(ev, args[1], args[2]);
+						} else { 
+							ev.channel.send('Me no understand! Use **!a mergealiases <old_alias> <new_alias>**');
+						}
+					} else if (args[0] == 'deletealias') {
+						if (!isSuperAdmin) {
+							ev.channel.send('Only super-admins can use this command! **Oink!!**');
+						} else if (args.length == 2) {
+							deleteAlias(ev, args[1]);
+						} else { 
+							ev.channel.send('Me no understand! Use **!a deletealias <alias>**');
+						}
 					} else {
 						ev.channel.send('Admin command not found! **Oink!**');
 					}
