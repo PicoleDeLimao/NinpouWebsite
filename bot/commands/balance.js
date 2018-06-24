@@ -1,6 +1,7 @@
 'use strict';
 
 var gameToString = require('./gametostring');
+var http = require('http');
 
 function swapSlots(slots, swaps) {
 	var newSlots = slots.slice();
