@@ -157,7 +157,7 @@ router.get('/reset_score', function(req, res) {
 			stats[i].gpm /= stats[i].gpm; 
 			stats[i].save(function(err) {
 				if (err) return;
-				next(i + 1); 
+				next(i + 1);   
 			});
 		})(0);
 	});
