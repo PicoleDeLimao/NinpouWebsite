@@ -358,7 +358,7 @@ bot.on('message', function(ev) {
 				'< !trivia ninpou >          : Start a Ninpou trivia (use < !trivia > again to disable it)\n' + 
 				'```'
 			);  
-		} else if (cmd == 'admincmds') {
+		} else if (cmd == 'admincmds' && ev && ev.guild) {
 			ev.guild.fetchMember(ev.author.id).then(function(author) {
 				var isAdmin = false;
 				author.roles.forEach(function(role) {
