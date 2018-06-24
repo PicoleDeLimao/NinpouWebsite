@@ -192,16 +192,28 @@ function getGameInfo(id, progress, callback) {
 									progress: progress
 								});
 							}
-							StatCalculator.calculateBalanceFactor(game, function(err, balanceFactor) {
-								if (err) return callback(err);
-								game.balance_factor = balanceFactor; 
+							console.log('a');
+							if (!game.progress || !game.balance_factor) {
+								StatCalculator.calculateBalanceFactor(game, function(err, balanceFactor) {
+									if (err) return callback(err);
+									console.log('????');
+									game.balance_factor = balanceFactor; 
+									game.save(function(err) {
+										if (err) return callback(err);
+										info['_id'] = game._id;
+										info['balance_factor'] = balanceFactor;
+										return callback(null, info);
+									}); 
+								});  dasdas das dasd asd 
+							} else {
+								console.log('c');
 								game.save(function(err) {
 									if (err) return callback(err);
 									info['_id'] = game._id;
 									info['balance_factor'] = balanceFactor;
 									return callback(null, info);
 								}); 
-							});
+							}
 						}); 
 					});
 				} else {

@@ -22,8 +22,7 @@ function getOptimalBalance(game, criteria, callback) {
 		});
 		res.on('end', function() {
 			if (res.statusCode == 200) {
-				var slots = [];
-				console.log(game);
+				var slots = []; 
 				for (var i = 0; i < 9; i++) {
 					slots[i] = [i, game.slots[i] && game.slots[i][criteria] || null];
 				}
