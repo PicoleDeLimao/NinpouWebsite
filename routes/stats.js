@@ -246,7 +246,11 @@ router.post('/:game_id', function(req, res) {
 								if (!stat) {
 									stat = new Stat({
 										username: game.slots[index].username.toLowerCase(),
-										alias: username || game.slots[index].username.toLowerCase()
+										alias: username || game.slots[index].username.toLowerCase(),
+										kills: game.slots[index].kills,
+										deaths: game.slots[index].deaths,
+										assists: game.slots[index].assists,
+										gpm: game.slots[index].gpm 
 									});
 								} 
 								var today = new Date();
