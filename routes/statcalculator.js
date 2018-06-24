@@ -141,37 +141,29 @@ function getAllPlayersRanking(callback) {
 
 function calculateBalanceFactor(game, callback) {
 	var slots = [];
-	(function calculatePlayerPoints(index) {
-		if (index == 9) {
-			BalanceCalculator.getOptimalBalance(slots, 'points', true, function(err, bestSlots) {
-				if (err) return callback(err);
-				BalanceCalculator.getOptimalBalance(slots, 'points', false, function(err, worstSlots) {
-					if (err) return callback(err); 
-					var bestBalance = BalanceCalculator.getBalanceFactor(BalanceCalculator.swapSlots(slots, bestSlots), 'points');
-					var worstBalance = BalanceCalculator.getBalanceFactor(BalanceCalculator.swapSlots(slots, worstSlots), 'points');
-					var actualBalance = BalanceCalculator.getBalanceFactor(slots, 'points'); 
-					var balanceFactor;
-					if (worstBalance == bestBalance) {
-						balanceFactor = 1;
-					} else {
-						balanceFactor = (worstBalance - actualBalance) / (worstBalance - bestBalance);
-					}
-					return callback(null, balanceFactor || 1);
-				});
-			});
+	for (var index = 0; index < 9; index++) {
+		if (game.slots[index].username) {
+			slots.push(game.slots[index].stat); 
 		} else {
-			if (game.slots[index].username) {
-				getPlayerStats(game.slots[index].username, function(err, stat) {
-					if (err) return callback(err);
-					slots.push(stat);
-					calculatePlayerPoints(index + 1);
-				});
-			} else {
-				slots.push(null);
-				calculatePlayerPoints(index + 1);
-			}
+			slots.push(null);
 		}
-	})(0);
+	}  
+	BalanceCalculator.getOptimalBalance(slots, 'points', true, function(err, bestSlots) {
+		if (err) return callback(err);
+		BalanceCalculator.getOptimalBalance(slots, 'points', false, function(err, worstSlots) {
+			if (err) return callback(err); 
+			var bestBalance = BalanceCalculator.getBalanceFactor(BalanceCalculator.swapSlots(slots, bestSlots), 'points');
+			var worstBalance = BalanceCalculator.getBalanceFactor(BalanceCalculator.swapSlots(slots, worstSlots), 'points');
+			var actualBalance = BalanceCalculator.getBalanceFactor(slots, 'points'); 
+			var balanceFactor;
+			if (worstBalance == bestBalance) {
+				balanceFactor = 1;
+			} else {
+				balanceFactor = (worstBalance - actualBalance) / (worstBalance - bestBalance);
+			}
+			return callback(null, balanceFactor || 1);
+		});
+	}); 
 };
 
 module.exports = {

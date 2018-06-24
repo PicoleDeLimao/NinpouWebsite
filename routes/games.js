@@ -191,12 +191,10 @@ function getGameInfo(id, progress, callback) {
 									players: info.players,
 									progress: progress
 								});
-							}
-							console.log('a');
+							} 
 							if (!game.progress || !game.balance_factor) {
-								StatCalculator.calculateBalanceFactor(game, function(err, balanceFactor) {
+								StatCalculator.calculateBalanceFactor(info, function(err, balanceFactor) {
 									if (err) return callback(err);
-									console.log('????');
 									game.balance_factor = balanceFactor; 
 									game.save(function(err) {
 										if (err) return callback(err);
@@ -204,13 +202,12 @@ function getGameInfo(id, progress, callback) {
 										info['balance_factor'] = balanceFactor;
 										return callback(null, info);
 									}); 
-								});  dasdas das dasd asd 
+								});   
 							} else {
-								console.log('c');
 								game.save(function(err) {
 									if (err) return callback(err);
 									info['_id'] = game._id;
-									info['balance_factor'] = balanceFactor;
+									info['balance_factor'] = game.balance_factor;
 									return callback(null, info);
 								}); 
 							}
@@ -285,11 +282,13 @@ setInterval(function() {
 					var progress = gamesData[i].split('|')[4] == '0';
 					var gamename = gamesData[i].split('|')[5];
 					if (gamename.indexOf('[ENT]') == -1 && progress) {
-						(function(id, progress) {
+						(function(id, progress) { 
 							Game.findOne({ id: id }, function(err, game) {
 								if (!err && game) {
+									console.log(game); 
 									getGameInfo(id, progress, function(err, game) {
 										if (err) { 
+											console.log('what?!' + err );
 											--count;
 											if (count <= 0) inProgressGames = games;
 										} else {
