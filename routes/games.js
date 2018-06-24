@@ -192,9 +192,10 @@ function getGameInfo(id, progress, callback) {
 									progress: progress
 								});
 							} 
-							if (!game.progress || !game.balance_factor) {
+							if (!game.progress || !game.balance_factor) { 
 								StatCalculator.calculateBalanceFactor(info, function(err, balanceFactor) {
 									if (err) return callback(err);
+									console.log(balanceFactor);
 									game.balance_factor = balanceFactor; 
 									game.save(function(err) {
 										if (err) return callback(err);
@@ -202,7 +203,7 @@ function getGameInfo(id, progress, callback) {
 										info['balance_factor'] = balanceFactor;
 										return callback(null, info);
 									}); 
-								});   
+								});     
 							} else {
 								game.save(function(err) {
 									if (err) return callback(err);
@@ -401,7 +402,7 @@ router.get('/:game_id/balance', function(req, res) {
 				});
 			} else {
 				if (game.slots[index].username) {
-					getPlayerStats(game.slots[index].username, function(err, stat) {
+					StatCalculator.getPlayerStats(game.slots[index].username, function(err, stat) {
 						if (err) return res.status(500).json({ error: err }); 
 						slots.push(stat);
 						calculatePlayerPoints(index + 1);
