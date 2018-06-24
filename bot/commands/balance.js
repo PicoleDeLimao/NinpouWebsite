@@ -22,6 +22,11 @@ function getOptimalBalance(game, criteria, callback) {
 		});
 		res.on('end', function() {
 			if (res.statusCode == 200) {
+				var slots = [];
+				console.log(game);
+				for (var i = 0; i < 9; i++) {
+					slots[i] = [i, game.slots[i] && game.slots[i][criteria] || null];
+				}
 				var data = JSON.parse(body);
 				var bestState = data.swaps; 
 				game.balance_factor = 1;
