@@ -254,9 +254,10 @@ router.post('/:game_id', function(req, res) {
 									});
 								} 
 								var today = new Date();
+								var decayFactor = 0.95;
 								if (today.getDay() == 6 || today.getDay() == 0) {
-									var alpha = 0.9 + 0.1 * (1 - game.balance_factor);
-									var beta = 0.1 * game.balance_factor; 
+									var alpha = decayFactor * decayFactor + (1 - decayFactor * decayFactor) * (1 - game.balance_factor);
+									var beta = (1 - decayFactor * decayFactor) * game.balance_factor; 
 									stat.kills = stat.kills * alpha + game.slots[index].kills * beta;
 									stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
 									stat.assists = stat.assists * alpha + game.slots[index].assists * beta;
@@ -264,8 +265,8 @@ router.post('/:game_id', function(req, res) {
 									if (game.slots[index].win) stat.wins += 2;
 									stat.games += 2; 
 								} else {  
-									var alpha = 0.95 + 0.05 * (1 - game.balance_factor);
-									var beta = 0.05 * game.balance_factor; 
+									var alpha = decayFactor + (1 - decayFactor) * (1 - game.balance_factor);
+									var beta = (1 - decayFactor) * game.balance_factor; 
 									stat.kills = stat.kills * alpha + game.slots[index].kills * beta
 									stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
 									stat.assists = stat.assists * alpha + game.slots[index].assists * beta;

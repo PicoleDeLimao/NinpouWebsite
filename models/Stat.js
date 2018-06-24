@@ -10,7 +10,8 @@ var playerStatSchema = mongoose.Schema({
 	games: { type: Number, default: 0 },
 	chanceWin: { type: Number, default: 0 },
 	score: { type: Number, default: 0 },
-	alias: { type: String }
+	alias: { type: String },
+	count: { type: Number, default: 0 }
 });
  
 var PlayerState = mongoose.model('PlayerStat', playerStatSchema);

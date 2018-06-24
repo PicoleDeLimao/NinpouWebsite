@@ -86,14 +86,14 @@ function getPlayerStats(username, callback) {
 				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
 			}  
-			allStat.chance = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
+			allStat.chance = Calculator.AgrestiCoullLower(allStat.games, allStat.wins); 
+			allStat.points = allStat.kills * 10 + allStat.assists * 2 - allStat.deaths * 5;
+			allStat.kills /= stats.length;
+			allStat.deaths /= stats.length;
+			allStat.assists /= stats.length; 
+			allStat.gpm = allStat.gpm / stats.length * 100;
 			allStat.score = Calculator.calculateScore(allStat);
-			allStat.points = (allStat.kills * 10 + allStat.assists * 2 - allStat.deaths * 5) / allStat.games;
-			/*allStat.kills /= allStat.games;
-			allStat.deaths /= allStat.games;
-			allStat.assists /= allStat.games; 
-			allStat.gpm = allStat.gpm / allStat.games * 100;*/
-			allStat.gpm = allStat.gpm * 100;
+			//allStat.gpm = allStat.gpm * 100;
 			allStat.chance *= 100;
 			allStat.usernames = usernames; 
 			return callback(null, allStat);
@@ -111,21 +111,21 @@ function getAllPlayersRanking(callback) {
 			assists: { $sum: '$assists' },
 			gpm: { $sum: '$gpm' },
 			wins: { $sum: '$wins' },
-			games: { $sum: '$games' }
+			games: { $sum: '$games' },
+			count: { $sum: 1 }
 		}
 	}
 	], function(err, stats) {
 		if (err) return callback(err); 
 		for (var i = 0; i < stats.length; i++) {
 			stats[i].chance = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
-			stats[i].score = Calculator.calculateScore(stats[i]);
-			stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5);
-			/*stats[i].kills /= stats[i].games;
-			stats[i].deaths /= stats[i].games;
-			stats[i].assists /= stats[i].games;
-			stats[i].gpm = stats[i].gpm / stats[i].games * 100;*/
-			stats[i].gpm = stats[i].gpm * 100;
+			stats[i].points = stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5;
+			stats[i].kills /= stats[i].count;
+			stats[i].deaths /= stats[i].count;
+			stats[i].assists /= stats[i].count;
+			stats[i].gpm = stats[i].gpm / stats[i].count * 100; 
 			stats[i].chance *= 100;
+			stats[i].score = Calculator.calculateScore(stats[i]);
 		}    
 		for (var i = stats.length - 1; i >= 0; i--) {
 			if (stats[i].games < 10) {
