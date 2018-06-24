@@ -151,8 +151,10 @@ router.get('/reset_score', function(req, res) {
 		if (err) return;
 		(function next(i) {
 			if (i == stats.length) return;
-			stats[i].chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
-			stats[i].score = Calculator.calculateScore(stats[i]);
+			stats[i].kills /= stats[i].games;
+			stats[i].deaths /= stats[i].deaths;
+			stats[i].assists /= stats[i].assists;
+			stats[i].gpm /= stats[i].gpm; 
 			stats[i].save(function(err) {
 				if (err) return;
 				next(i + 1); 
@@ -225,82 +227,94 @@ router.post('/:game_id', function(req, res) {
 		if (sum + 1 != count) {
 			return res.status(400).json({ error: 'Invalid code.' });
 		}
-		game.recorded = true;
-		game.save(function(err) {
+		StatCalculator.calculateBalanceFactor(game, function(err, balanceFactor) {
 			if (err) return res.status(500).json(err);
-			(function addStat(index) {
-				if (index >= game.slots.length || index >= 9) {
-					
-				} else if (!game.slots[index].username) {
-					addStat(index + 1);
-				} else {
-					getPlayerAlias(game.slots[index].username.toLowerCase(), function(err, username) {
-						if (err) return res.status(500).json(err);
-						Stat.findOne({ username: game.slots[index].username.toLowerCase() }, function(err, stat) {
+			game.recorded = true;
+			game.balance_factor = balanceFactor;
+			game.save(function(err) {
+				if (err) return res.status(500).json(err);
+				(function addStat(index) {
+					if (index >= game.slots.length || index >= 9) {
+						
+					} else if (!game.slots[index].username) {
+						addStat(index + 1);
+					} else {
+						getPlayerAlias(game.slots[index].username.toLowerCase(), function(err, username) {
 							if (err) return res.status(500).json(err);
-							if (!stat) {
-								stat = new Stat({
-									username: game.slots[index].username.toLowerCase(),
-									alias: username || game.slots[index].username.toLowerCase()
-								});
-							} 
-							var today = new Date();
-							if (today.getDay() == 6 || today.getDay() == 0) {
-								stat.kills += game.slots[index].kills * 2;
-								stat.deaths += game.slots[index].deaths * 2;
-								stat.assists += game.slots[index].assists * 2;
-								stat.gpm += game.slots[index].gpm * 2;
-								if (game.slots[index].win) stat.wins += 2;
-								stat.games += 2; 
-							} else {
-								stat.kills += game.slots[index].kills;
-								stat.deaths += game.slots[index].deaths;
-								stat.assists += game.slots[index].assists;
-								stat.gpm += game.slots[index].gpm;
-								if (game.slots[index].win) stat.wins += 1;
-								stat.games += 1; 
-							}
-							stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
-							stat.score = Calculator.calculateScore(stat);
-							stat.alias = username || stat.alias;
-							stat.save(function(err) {
+							Stat.findOne({ username: game.slots[index].username.toLowerCase() }, function(err, stat) {
 								if (err) return res.status(500).json(err);
-								HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
-									if (err) return res.status(500).json(err);
-									if (!stat) stat = new HeroStat({
-										hero: game.slots[index].hero, 
-										map: game.map
+								if (!stat) {
+									stat = new Stat({
+										username: game.slots[index].username.toLowerCase(),
+										alias: username || game.slots[index].username.toLowerCase()
 									});
-									var today = new Date();
-									if (today.getDay() == 6 || today.getDay() == 0) {
-										stat.kills += game.slots[index].kills * 2;
-										stat.deaths += game.slots[index].deaths * 2;
-										stat.assists += game.slots[index].assists * 2;
-										stat.gpm += game.slots[index].gpm * 2;
-										if (game.slots[index].win) stat.wins += 2;
-										stat.games += 2;
-									} else {
-										stat.kills += game.slots[index].kills;
-										stat.deaths += game.slots[index].deaths;
-										stat.assists += game.slots[index].assists;
-										stat.gpm += game.slots[index].gpm;
-										if (game.slots[index].win) stat.wins += 1;
-										stat.games += 1;
-									} 
-									stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
-									stat.score = Calculator.calculateScore(stat);
-									stat.save(function(err) {
+								} 
+								var today = new Date();
+								if (today.getDay() == 6 || today.getDay() == 0) {
+									var alpha = 0.9 + 0.1 * (1 - game.balance_factor);
+									var beta = 0.1 * game.balance_factor; 
+									stat.kills = stat.kills * alpha + game.slots[index].kills * beta;
+									stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
+									stat.assists = stat.assists * alpha + game.slots[index].assists * beta;
+									stat.gpm = stat.gpm * alpha + game.slots[index].gpm * beta;
+									if (game.slots[index].win) stat.wins += 2;
+									stat.games += 2; 
+								} else {  
+									var alpha = 0.95 + 0.05 * (1 - game.balance_factor);
+									var beta = 0.05 * game.balance_factor; 
+									stat.kills = stat.kills * alpha + game.slots[index].kills * beta
+									stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
+									stat.assists = stat.assists * alpha + game.slots[index].assists * beta;
+									stat.gpm = stat.gpm * alpha + game.slots[index].gpm * beta;
+									if (game.slots[index].win) stat.wins += 1;
+									stat.games += 1; 
+								}
+								stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+								stat.score = Calculator.calculateScore(stat);
+								stat.alias = username || stat.alias;
+								stat.save(function(err) {
+									if (err) return res.status(500).json(err);
+									HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
 										if (err) return res.status(500).json(err);
-										addStat(index + 1);
+										if (!stat) stat = new HeroStat({
+											hero: game.slots[index].hero, 
+											map: game.map
+										});
+										var today = new Date();
+										if (today.getDay() == 6 || today.getDay() == 0) {
+											var alpha = 0.9 + 0.1 * (1 - game.balance_factor);
+											var beta = 0.1 * game.balance_factor; 
+											stat.kills = stat.kills * alpha + game.slots[index].kills * beta;
+											stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
+											stat.assists = stat.assists * alpha + game.slots[index].assists * beta;
+											stat.gpm = stat.gpm * alpha + game.slots[index].gpm * beta;
+											if (game.slots[index].win) stat.wins += 2;
+											stat.games += 2;
+										} else {
+											var alpha = 0.95 + 0.05 * (1 - game.balance_factor);
+											var beta = 0.05 * game.balance_factor; 
+											stat.kills = stat.kills * alpha + game.slots[index].kills * beta;
+											stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
+											stat.assists = stat.assists * alpha + game.slots[index].assists * beta;
+											stat.gpm = stat.gpm * alpha + game.slots[index].gpm * beta;
+											if (game.slots[index].win) stat.wins += 1;
+											stat.games += 1;
+										} 
+										stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+										stat.score = Calculator.calculateScore(stat);
+										stat.save(function(err) {
+											if (err) return res.status(500).json(err);
+											addStat(index + 1);
+										});
 									});
 								});
 							});
 						});
-					});
-					
-				}
-			})(0);
-			return res.status(200).end();
+						
+					}
+				})(0);
+				return res.status(200).end();
+			});
 		});
 	});
 });
@@ -390,9 +404,11 @@ router.post('/players/:username/merge/:another_username', function(req, res) {
 	var username = new RegExp(['^', StatCalculator.escapeRegExp(req.params.username.toLowerCase()), '$'].join(''), 'i'); 
 	Stat.findOne({ username: username }, function(err, sourceAlias) {
 		if (err) return res.status(500).json({ error: err });
+		else if (!sourceAlias) return res.status(400).json({ error: 'Old alias not found.' });
 		var anotherUsername = new RegExp(['^', StatCalculator.escapeRegExp(req.params.another_username.toLowerCase()), '$'].join(''), 'i'); 
 		Stat.findOne({ username: anotherUsername }, function(err, destAlias) {
 			if (err) return res.status(500).json({ error: err });
+			else if (!destAlias) return res.status(400).json({ error: 'New alias not found.' });
 			destAlias.games += sourceAlias.games;
 			destAlias.wins += sourceAlias.wins;
 			destAlias.gpm += sourceAlias.gpm;

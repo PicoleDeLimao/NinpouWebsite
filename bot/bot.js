@@ -304,39 +304,61 @@ bot.on('message', function(ev) {
         var cmd = args[0].toLowerCase();
         args = args.splice(1);
         
-        if (cmd == 'help') {
+        if (cmd == 'help') { 
 			ev.channel.send( 
 				'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
-				'< !help >                       : Display this message\n' + 
-				'< ![h]ost > [location] [owner]  : Host a new game\n' + 
-				'< !lobby >                      : List games in lobby\n' + 
-				'< ![b]alance > [criteria]       : Display the optimal balance of games in lobby\n' + 
-				'< ![p]rogress >                 : List games in progress\n' + 
-				'< ![l]ast >                     : Fetch last non-recorded played games\n' + 
-				'< !recorded >                   : Fetch last recorded played games\n' + 
-				'< ![i]nfo > <game_id>           : Fetch info about a played game\n' + 
-				'< ![r]ecord > <game_id> <code>  : Record a game\n' +  
-				'< !ra[n]king > [player_name]    : Display player position in Ninpou ranking\n' + 
-				'< ![s]core > [player_name]      : Display a player score in the ranking\n' + 
-				'< !addalias > <player_name>     : Add a new alias\n' + 
-				//'< !removealias > <player_name>  : Remove an alias\n' + 
-				'< !whois > <player_name>        : Check who in discord is using a determined account\n' + 
-				'< !aliasof > <user>             : Display all alias from a user\n' + 
-				'< !addstream > <channel>        : Add a new streaming channel\n' + 
-				'< !removestream > <channel>     : Remove a streaming channel\n' + 
-				'< !streams >                    : List streaming channels\n' +  
-				'< ![m]issions >                 : List available missions\n' + 
-				'< ![g]et > [user]               : Display information about an user\n' + 
-				'< !give > <user> <amount>       : Give gold to an user\n' +   
-				//'< !give > <user> <amount>     : Give certain amount of gold to some user\n' +   
-				'< !items >                      : Display items available to be purchased\n' + 
-				'< !status > <status>            : Set a status\n' + 
-				//'< !jutsus >                   : Display jutsus available to be purchased\n' +
-				'< !trivia naruto >              : Start a Naruto trivia (use < !trivia > again to disable it)\n' +
-				'< !trivia ninpou >              : Start a Ninpou trivia (use < !trivia > again to disable it)\n' + 
-				'< !admin >                      : Admin only commands```'
+				'< !help >          : Display this message\n' + 
+				'< !gamecmds >      : Display game-related commands\n' + 
+				'< !playercmds >    : Display player-related commands\n' + 
+				'< !rpgcmds >       : Display RPG-related commands\n' + 
+				'< !botcmds >       : Display bot-related commands\n' + 
+				'< !admincmds >     : Admin only commands```' 
 			);    
-		} else if (cmd == 'admin') {
+		} else if (cmd == 'gamecmds') {
+			ev.channel.send(  
+				'Game-related commands:\n```md\n' + 
+				'< ![h]ost > [location] [owner] : Host a new game\n' + 
+				'< !lobby >                     : List games in lobby\n' + 
+				'< ![b]alance > [criteria]      : Display the optimal balance of games in lobby\n' + 
+				'< ![p]rogress >                : List games in progress\n' + 
+				'< ![l]ast >                    : Fetch last non-recorded played games\n' + 
+				'< !recorded >                  : Fetch last recorded played games\n' + 
+				'< ![i]nfo > <game_id>          : Fetch info about a played game\n' + 
+				'< ![r]ecord > <game_id> <code> : Record a game\n' +  
+				'```'
+			);  
+		} else if (cmd == 'playercmds') {
+			ev.channel.send(  
+				'Player-related commands:\n```md\n' + 
+				'< !ra[n]king > [player_name] : Display player position in Ninpou ranking\n' + 
+				'< ![s]core > [player_name]   : Display a player score in the ranking\n' + 
+				'< !addalias > <player_name>  : Register a new alias\n' +  
+				'< ![w]hois > <player_name>   : Check who in discord is using a determined account\n' + 
+				'< !aliasof > <user>          : Display all alias from a user\n' + 
+				'```'
+			);  
+		} else if (cmd == 'rpgcmds') {
+			ev.channel.send(  
+				'RPG-related commands:\n```md\n' + 
+				'< ![m]issions >           : List available missions\n' + 
+				'< ![g]et > [user]         : Display information about an user\n' + 
+				'< !give > <user> <amount> : Give gold to an user\n' +   
+				'< !items >                : Display items available to be purchased\n' + 
+				'< !status > <status>      : Set a status\n' + 
+				//'< !jutsus >            : Display jutsus available to be purchased\n' +
+				'```'
+			);  
+		} else if (cmd == 'botcmds') {
+			ev.channel.send(  
+				'Bot-related commands:\n```md\n' + 
+				'< !addstream > <channel>    : Add a new streaming channel\n' + 
+				'< !removestream > <channel> : Remove a streaming channel\n' + 
+				'< !streams >                : List streaming channels\n' + 
+				'< !trivia naruto >          : Start a Naruto trivia (use < !trivia > again to disable it)\n' +
+				'< !trivia ninpou >          : Start a Ninpou trivia (use < !trivia > again to disable it)\n' + 
+				'```'
+			);  
+		} else if (cmd == 'admincmds') {
 			ev.guild.fetchMember(ev.author.id).then(function(author) {
 				var isAdmin = false;
 				author.roles.forEach(function(role) {
@@ -346,7 +368,7 @@ bot.on('message', function(ev) {
 				});
 				if (isAdmin) {
 					ev.channel.send(  
-						'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
+						'Admin-related commands:\n```md\n' + 
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
 						'< !a > removealias <user> <alias>           : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
@@ -730,6 +752,7 @@ bot.on('message', function(ev) {
 								displayScore(ev, ev.author.id);
 							}
 							break;
+						case 'w':
 						case 'whois': 
 							if (args.length == 1) {
 								whoIs(ev, args[0]);

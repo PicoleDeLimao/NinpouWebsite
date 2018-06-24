@@ -21,7 +21,8 @@ var gameSchema = mongoose.Schema({
 	}],
 	players: { type: Number },
 	progress: { type: Boolean, default: false },
-	recorded: { type: Boolean, default: false }
+	recorded: { type: Boolean, default: false },
+	balance_factor: { type: Number, default: 1 }
 });
 
 var Game = mongoose.model('Game', gameSchema);

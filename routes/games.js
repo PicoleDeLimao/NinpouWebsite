@@ -9,6 +9,7 @@ var Stat = require('../models/Stat');
 var Alias = require('../models/Alias');
 var Hero = require('../models/Hero');
 var StatCalculator = require('./statcalculator');
+var BalanceCalculator = require('./balancecalculator');
 
 var cookie = '';
 var code = '5qg8l'; 
@@ -191,11 +192,16 @@ function getGameInfo(id, progress, callback) {
 									progress: progress
 								});
 							}
-							game.save(function(err) {
+							StatCalculator.calculateBalanceFactor(game, function(err, balanceFactor) {
 								if (err) return callback(err);
-								info['_id'] = game._id;
-								return callback(null, info);
-							}); 
+								game.balance_factor = balanceFactor; 
+								game.save(function(err) {
+									if (err) return callback(err);
+									info['_id'] = game._id;
+									info['balance_factor'] = balanceFactor;
+									return callback(null, info);
+								}); 
+							});
 						}); 
 					});
 				} else {
@@ -370,6 +376,33 @@ router.get('/:game_id', function(req, res) {
 		} else {
 			return res.json(game);
 		}
+	});
+});
+
+router.get('/:game_id/balance', function(req, res) {
+	Game.findOne({ id: req.params.game_id }).lean().exec(function(err, game) {
+		if (err) return res.status(500).json({ 'error': err });
+		else if (!game) return res.status(404).json({ 'error': 'Game not found.' });
+		var slots = [];
+		(function calculatePlayerPoints(index) {
+			if (index == 9) { 
+				BalanceCalculator.getOptimalBalance(slots, req.query.criteria, true, function(err, bestBalance) {
+					if (err) return res.status(500).json({ error: err });
+					return res.json({ swaps: bestBalance });
+				});
+			} else {
+				if (game.slots[index].username) {
+					getPlayerStats(game.slots[index].username, function(err, stat) {
+						if (err) return res.status(500).json({ error: err }); 
+						slots.push(stat);
+						calculatePlayerPoints(index + 1);
+					});
+				} else {
+					slots.push(null);
+					calculatePlayerPoints(index + 1);
+				}
+			}
+		})(0);
 	});
 });
 

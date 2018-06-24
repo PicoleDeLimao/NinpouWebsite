@@ -50,7 +50,7 @@ module.exports = function(ev, game, callback, criteria) {
 	var largestName = 5; 
 	var largestRealm = 0;
 	var largestCriteria = 0;
-	criteria = criteria || 'score';
+	criteria = criteria || 'score'; 
 	(function next(i, players, largestName, largestRealm, largestCriteria) {
 		if (i == game.slots.length) {
 			getPlayerName(ev, game.owner, function(err, ownerName) {
@@ -64,7 +64,8 @@ module.exports = function(ev, game, callback, criteria) {
 					var m = moment(date);
 					response += '  Hosted; ' + m.fromNow() + '\n';
 				}
-				response += '\nSlots; [' + players + '/' + game.slots.length + ']\n';
+				response += '\nSlots; [' + players + '/' + game.slots.length + ']';
+				response += '\nBalance factor; ' + (game.balance_factor && game.balance_factor.toFixed(2) || 1) + '\n';
 				if (game.slots.length >= 9) {
 					if (game.recorded) {
 						var points = 0;

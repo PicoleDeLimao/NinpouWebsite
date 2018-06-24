@@ -5,6 +5,7 @@ var Stat = require('../models/Stat');
 var HeroStat = require('../models/HeroStat');
 var Alias = require('../models/Alias');
 var Calculator = require('./calculator');
+var BalanceCalculator = require('./balancecalculator');
 
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -88,10 +89,11 @@ function getPlayerStats(username, callback) {
 			allStat.chance = Calculator.AgrestiCoullLower(allStat.games, allStat.wins);
 			allStat.score = Calculator.calculateScore(allStat);
 			allStat.points = (allStat.kills * 10 + allStat.assists * 2 - allStat.deaths * 5) / allStat.games;
-			allStat.kills /= allStat.games;
+			/*allStat.kills /= allStat.games;
 			allStat.deaths /= allStat.games;
 			allStat.assists /= allStat.games; 
-			allStat.gpm = allStat.gpm / allStat.games * 100;
+			allStat.gpm = allStat.gpm / allStat.games * 100;*/
+			allStat.gpm = allStat.gpm * 100;
 			allStat.chance *= 100;
 			allStat.usernames = usernames; 
 			return callback(null, allStat);
@@ -117,11 +119,12 @@ function getAllPlayersRanking(callback) {
 		for (var i = 0; i < stats.length; i++) {
 			stats[i].chance = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
 			stats[i].score = Calculator.calculateScore(stats[i]);
-			stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5) / stats[i].games;
-			stats[i].kills /= stats[i].games;
+			stats[i].points = (stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5);
+			/*stats[i].kills /= stats[i].games;
 			stats[i].deaths /= stats[i].games;
 			stats[i].assists /= stats[i].games;
-			stats[i].gpm = stats[i].gpm / stats[i].games * 100;
+			stats[i].gpm = stats[i].gpm / stats[i].games * 100;*/
+			stats[i].gpm = stats[i].gpm * 100;
 			stats[i].chance *= 100;
 		}    
 		for (var i = stats.length - 1; i >= 0; i--) {
@@ -136,10 +139,46 @@ function getAllPlayersRanking(callback) {
 	});
 };
 
+function calculateBalanceFactor(game, callback) {
+	var slots = [];
+	(function calculatePlayerPoints(index) {
+		if (index == 9) {
+			BalanceCalculator.getOptimalBalance(slots, 'points', true, function(err, bestSlots) {
+				if (err) return callback(err);
+				BalanceCalculator.getOptimalBalance(slots, 'points', false, function(err, worstSlots) {
+					if (err) return callback(err); 
+					var bestBalance = BalanceCalculator.getBalanceFactor(BalanceCalculator.swapSlots(slots, bestSlots), 'points');
+					var worstBalance = BalanceCalculator.getBalanceFactor(BalanceCalculator.swapSlots(slots, worstSlots), 'points');
+					var actualBalance = BalanceCalculator.getBalanceFactor(slots, 'points'); 
+					var balanceFactor;
+					if (worstBalance == bestBalance) {
+						balanceFactor = 1;
+					} else {
+						balanceFactor = (worstBalance - actualBalance) / (worstBalance - bestBalance);
+					}
+					return callback(null, balanceFactor || 1);
+				});
+			});
+		} else {
+			if (game.slots[index].username) {
+				getPlayerStats(game.slots[index].username, function(err, stat) {
+					if (err) return callback(err);
+					slots.push(stat);
+					calculatePlayerPoints(index + 1);
+				});
+			} else {
+				slots.push(null);
+				calculatePlayerPoints(index + 1);
+			}
+		}
+	})(0);
+};
+
 module.exports = {
 	'escapeRegExp': escapeRegExp,
 	'getRankingPosition': getRankingPosition,
 	'getRankingPositions': getRankingPositions,
 	'getPlayerStats': getPlayerStats,
-	'getAllPlayersRanking': getAllPlayersRanking
+	'getAllPlayersRanking': getAllPlayersRanking,
+	'calculateBalanceFactor': calculateBalanceFactor
 };

@@ -18,7 +18,8 @@ var aliasSchema = mongoose.Schema({
 		id: { type: Number, required: true },
 		amount: { type: Number, default: 0 }
 	}],
-	status: { type: String }
+	status: { type: String },
+	affiliation: { type: String, enum: ['konoha', 'suna', 'kumo', 'iwa', 'kiri', 'oto', 'akatsuki'] }
 });
 
 var Alias = mongoose.model('Alias', aliasSchema);
