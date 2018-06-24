@@ -217,7 +217,7 @@ function getGameInfo(id, progress, callback) {
 					return callback(null, null); 
 				}
 			} else {
-				return callback(null, null);
+				return callback(null, null); 
 			} 
 		});
 	}).on('error', function(err) {
@@ -262,7 +262,7 @@ setInterval(function() {
 			}
 		});
 	}).on('error', function(err) {
-		console.log('Error: ' + err);
+		console.log('Error: ' + err); 
 	});
 }, 10000);
 
@@ -285,10 +285,8 @@ setInterval(function() {
 						(function(id, progress) { 
 							Game.findOne({ id: id }, function(err, game) {
 								if (!err && game) {
-									console.log(game); 
 									getGameInfo(id, progress, function(err, game) {
 										if (err) { 
-											console.log('what?!' + err );
 											--count;
 											if (count <= 0) inProgressGames = games;
 										} else {

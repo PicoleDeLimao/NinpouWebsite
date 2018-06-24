@@ -15,7 +15,7 @@ function swapSlots(slots, swaps) {
 
 function getOptimalBalance(game, criteria, callback) {
 	if (!game || (typeof game !== 'object') || game.slots.length < 9) return callback(true);
-	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games/' + game.id + '?criteria=' + criteria, method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
+	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games/' + game.id + '/balance?criteria=' + criteria, method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
 			body += chunk;
@@ -26,7 +26,7 @@ function getOptimalBalance(game, criteria, callback) {
 				for (var i = 0; i < 9; i++) {
 					slots[i] = [i, game.slots[i] && game.slots[i][criteria] || null];
 				}
-				var data = JSON.parse(body);
+				var data = JSON.parse(body); 
 				var bestState = data.swaps; 
 				game.balance_factor = 1;
 				var newGame = JSON.parse(JSON.stringify(game));
