@@ -156,80 +156,82 @@ setInterval(function() {
 	for (var channel in broadcastings) {
 		var ev = broadcastings[channel];
 		ev.endingGames = ev.endingGames || [];
-		displayGames(ev, hostedGames_, true, false);
-		for (var id in ev.endingGames) {
-			var contains = false;
-			for (var i = 0; i < inProgressGames_.length; i++) {
-				if (inProgressGames_[i].id == id) {
-					contains = true;
-					break;
-				}
-			}
-			if (!contains) {
-				ev.endingGames[id].delete();
-				delete ev.endingGames[id];
-			}
-		}
-		for (var i = 0; i < inProgressGames_.length; i++) {
-			(function(game) {
-				if (game.progress) {
-					var duration = parseInt(game.duration.split(':')[1]);
-					if (duration >= 40) { 
-						var msg = '@here ' + game.gamename + ' is about to end (' + duration + ' minutes elapsed).';
-						if (ev.endingGames.hasOwnProperty(game.id)) {
-							ev.endingGames[game.id].edit(msg);
-						} else {
-							ev.channel.send(msg).then(function(message) {
-								ev.endingGames[game.id] = message;
-							});
-						}
+		displayGames(ev, ev.progress ? inProgressGames_ : hostedGames_, true, ev.progress);
+		if (!ev.progress) {
+			for (var id in ev.endingGames) {
+				var contains = false;
+				for (var i = 0; i < inProgressGames_.length; i++) {
+					if (inProgressGames_[i].id == id) {
+						contains = true;
+						break;
 					}
-				} 
-			})(inProgressGames_[i]);
-		}
-		ev.onlineStreams = ev.onlineStreams || { };
-		for (var _id in ev.onlineStreams) {
-			var contains = false;
-			for (var i = 0; i < onlineStreams_.length; i++) {
-				if (onlineStreams_[i].stream._id == _id) {
-					contains = true;
-					break;
+				}
+				if (!contains) {
+					ev.endingGames[id].delete();
+					delete ev.endingGames[id];
 				}
 			}
-			if (!contains) {
-				ev.onlineStreams[_id].message.delete();
-				if (ev.onlineStreams[_id].embed)
-					ev.onlineStreams[_id].embed.delete();
-				delete ev.onlineStreams[_id];
-			} 
-		} 
-		for (var i = 0; i < onlineStreams_.length; i++) {
-			(function(stream) {
-				var stream = stream.stream; 
-				var date = new Date(stream.created_at);
-				var m = moment(date);    
-				var msg = '@here **' + stream.channel.display_name + '** is online. Watch it now: <' + stream.channel.url + '>.';
-				var msgEmbed = new Discord.RichEmbed()
-						.setTitle('Playing ' + stream.game)
-						.setAuthor(stream.channel.name)  
-						.setDescription(stream.channel.status)
-						.setImage(stream.preview.large + previewCacheUrl)
-						.setURL(stream.channel.url)
-						.setThumbnail(stream.channel.logo)
-						.setFooter(stream.viewers + ' viewers | Started '  + m.fromNow());
-				if (ev.onlineStreams.hasOwnProperty(stream._id)) {
-					if (ev.onlineStreams[stream._id].embed)
-						ev.onlineStreams[stream._id].embed.edit(msgEmbed);
-				} else {  
-					ev.channel.send(msg).then(function(msg) {
-						ev.onlineStreams[stream._id] = { message: msg };
-						ev.channel.send(msgEmbed).then(function(msg) {
-							ev.onlineStreams[stream._id].embed = msg;
-						}); 
-					}); 
+			for (var i = 0; i < inProgressGames_.length; i++) {
+				(function(game) {
+					if (game.progress) {
+						var duration = parseInt(game.duration.split(':')[1]);
+						if (duration >= 40) { 
+							var msg = '@here ' + game.gamename + ' is about to end (' + duration + ' minutes elapsed).';
+							if (ev.endingGames.hasOwnProperty(game.id)) {
+								ev.endingGames[game.id].edit(msg);
+							} else {
+								ev.channel.send(msg).then(function(message) {
+									ev.endingGames[game.id] = message;
+								});
+							}
+						}
+					} 
+				})(inProgressGames_[i]);
+			}
+			ev.onlineStreams = ev.onlineStreams || { };
+			for (var _id in ev.onlineStreams) {
+				var contains = false;
+				for (var i = 0; i < onlineStreams_.length; i++) {
+					if (onlineStreams_[i].stream._id == _id) {
+						contains = true;
+						break;
+					}
 				}
-			})(onlineStreams_[i]);
-		} 
+				if (!contains) {
+					ev.onlineStreams[_id].message.delete();
+					if (ev.onlineStreams[_id].embed)
+						ev.onlineStreams[_id].embed.delete();
+					delete ev.onlineStreams[_id];
+				} 
+			} 
+			for (var i = 0; i < onlineStreams_.length; i++) {
+				(function(stream) {
+					var stream = stream.stream; 
+					var date = new Date(stream.created_at);
+					var m = moment(date);    
+					var msg = '@here **' + stream.channel.display_name + '** is online. Watch it now: <' + stream.channel.url + '>.';
+					var msgEmbed = new Discord.RichEmbed()
+							.setTitle('Playing ' + stream.game)
+							.setAuthor(stream.channel.name)  
+							.setDescription(stream.channel.status)
+							.setImage(stream.preview.large + previewCacheUrl)
+							.setURL(stream.channel.url)
+							.setThumbnail(stream.channel.logo)
+							.setFooter(stream.viewers + ' viewers | Started '  + m.fromNow());
+					if (ev.onlineStreams.hasOwnProperty(stream._id)) {
+						if (ev.onlineStreams[stream._id].embed)
+							ev.onlineStreams[stream._id].embed.edit(msgEmbed);
+					} else {  
+						ev.channel.send(msg).then(function(msg) {
+							ev.onlineStreams[stream._id] = { message: msg };
+							ev.channel.send(msgEmbed).then(function(msg) {
+								ev.onlineStreams[stream._id].embed = msg;
+							}); 
+						}); 
+					}
+				})(onlineStreams_[i]);
+			} 
+		}
 	} 
 }, 10000);
 
@@ -255,6 +257,31 @@ bot.on('ready', function (evt) {
 				});
 				if (count == 0) {
 					channel.send('Broadcasting hosted games.').then(function(ev) {
+						broadcastings[channel] = ev;
+					});
+				}
+			});
+		} else if (channel.name == 'games-in-progress') {
+			channel.fetchMessages().then(function(messages) {
+				var deleted = 0;
+				var count = 0;
+				messages.forEach(function(message) {
+					if (message.author.id == bot.user.id) {
+						++count;
+						message.delete().then(function() {
+							++deleted;
+							if (deleted == count) {
+								channel.send('Broadcasting in-progress games.').then(function(ev) {
+									ev.progress = true; 
+									broadcastings[channel] = ev;
+								});
+							}
+						});
+					}
+				});
+				if (count == 0) {
+					channel.send('Broadcasting in-progress games.').then(function(ev) {
+						ev.progress = true; 
 						broadcastings[channel] = ev;
 					});
 				}

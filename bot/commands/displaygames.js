@@ -49,7 +49,7 @@ module.exports = function(ev, games, broadcast, hosted) {
 			} else {
 				gameToString(ev, games[i], function(game) {
 					response += game; 
-					if (!ev.hostedGames.hasOwnProperty(games[i].gamename) && broadcast) {
+					if (!ev.hostedGames.hasOwnProperty(games[i].gamename) && broadcast && !hosted) {
 						(function(game) {
 							ev.channel.send('@here ' + game.gamename).then(function(message) {
 								ev.hostedGames[game.gamename] = message;
