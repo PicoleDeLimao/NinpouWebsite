@@ -35,14 +35,14 @@ function getOptimalBalance(game, criteria, callback) {
 					newGame.slots[i] = game.slots[newSlots[i][0]];
 				}
 				return callback(false, newGame, bestState);
-			} else { 
-				ev.channel.send('Couldn\'t calculate balance. :( **Oink!**');
+			} else {  
+				return callback('Couldn\'t calculate balance. :( **Oink!**');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t calculate balance. :( **Oink!**');
+		return callback('Couldn\'t calculate balance. :( **Oink!**');
 	});
 	request.end();
 };

@@ -194,8 +194,7 @@ function getGameInfo(id, progress, callback) {
 							} 
 							if (!game.progress || !game.balance_factor) { 
 								StatCalculator.calculateBalanceFactor(info, function(err, balanceFactor) {
-									if (err) return callback(err);
-									console.log(balanceFactor);
+									if (err) return callback(err); 
 									game.balance_factor = balanceFactor; 
 									game.save(function(err) {
 										if (err) return callback(err);
