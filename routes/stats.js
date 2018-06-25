@@ -250,11 +250,11 @@ router.post('/:game_id', function(req, res) {
 										kills: game.slots[index].kills,
 										deaths: game.slots[index].deaths,
 										assists: game.slots[index].assists,
-										gpm: game.slots[index].gpm 
+										gpm: game.slots[index].gpm
 									});
 								} 
 								var today = new Date();
-								var decayFactor = 0.95;
+								var decayFactor = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
 								if (today.getDay() == 6 || today.getDay() == 0) {
 									var alpha = decayFactor * decayFactor + (1 - decayFactor * decayFactor) * (1 - game.balance_factor);
 									var beta = (1 - decayFactor * decayFactor) * game.balance_factor; 
