@@ -507,7 +507,11 @@ bot.on('message', function(ev) {
 										break;
 									case 'rob':
 										if (ev.mentions.users.array().length == 1) {
-											missionRob(ev, ev.mentions.users.array()[0].id);
+											if (ev.mentions.users.array()[0].id == ev.author.id) { 
+												ev.channel.send('You can\'t rob yourself, silly! **Oink!!**');
+											} else {
+												missionRob(ev, ev.mentions.users.array()[0].id);
+											}
 										} else {
 											ev.channel.send('Me no understand! Use **!mission rob <user>**');
 										}

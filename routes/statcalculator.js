@@ -142,7 +142,7 @@ function getAllPlayersRanking(callback) {
 function calculateBalanceFactor(game, callback) {
 	var slots = [];
 	for (var index = 0; index < 9; index++) {
-		if (game.slots[index].username) {
+		if (game.slots[index] && game.slots[index].username) {
 			slots.push(game.slots[index].stat); 
 		} else {
 			slots.push(null);
