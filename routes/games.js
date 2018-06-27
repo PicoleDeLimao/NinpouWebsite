@@ -190,8 +190,9 @@ function getGameInfo(id, progress, callback) {
 									slots: info.slots,
 									players: info.players,
 									progress: progress
-								});
+								}); 
 							} 
+							info['recordable'] = game.recordable;
 							if (!game.progress || !game.balance_factor) { 
 								StatCalculator.calculateBalanceFactor(info, function(err, balanceFactor) {
 									if (err) return callback(err); 
