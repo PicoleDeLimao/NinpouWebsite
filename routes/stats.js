@@ -416,8 +416,8 @@ router.post('/players/:username/merge/:another_username', function(req, res) {
 			else if (!destAlias) return res.status(400).json({ error: 'New alias not found.' });
 			destAlias.games += sourceAlias.games;
 			destAlias.wins += sourceAlias.wins;
-			float wa = destAlias.games / (destAlias.games + sourceAlias.games);
-			float wb = sourceAlias.games / (destAlias.games + sourceAlias.games);
+			var wa = destAlias.games / (destAlias.games + sourceAlias.games);
+			var wb = sourceAlias.games / (destAlias.games + sourceAlias.games);
 			destAlias.gpm = destAlias.gpm * wa + sourceAlias.gpm * wb;
 			destAlias.assists = destAlias.assists * wa + sourceAlias.assists * wb;
 			destAlias.deaths = destAlias.deaths * wa + sourceAlias.deaths * wb;
