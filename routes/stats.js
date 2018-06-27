@@ -168,6 +168,7 @@ router.post('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err || !game) return res.status(404).json({ error: 'Game not found.' });
 		else if (game.recorded) return res.status(400).json({ error: 'Game was already recorded.' });
+		else if (!game.recordable) return res.status(400).json({ error: 'Game is not recordable.' });
 		else if (game.slots.length < 9 || !game.progress) return res.status(400).json({ error: 'Invalid game.' });
 		var durationHours = parseInt(game.duration.split(':')[0]);
 		var durationMinutes = parseInt(game.duration.split(':')[1]);

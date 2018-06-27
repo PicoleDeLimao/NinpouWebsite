@@ -329,20 +329,20 @@ router.post('/', function(req, response) {
 		});
 		res.on('end', function() {
 			if (res.statusCode != 200) {
-				return response.status(500).json({ 'error': 'Couldn\'t create game.' }); 
+				return response.status(500).json({ error:'Couldn\'t create game.' }); 
 			} else {
 				var gamename = body.split('GAMENAME:');
 				if (gamename.length > 1) {
 					var name = gamename[1].split('</b>')[0];
 					return response.status(201).json({ 'gamename': name });
 				} else {
-					return response.status(400).json({ 'error': 'Game is already created.' }); 
+					return response.status(400).json({ error:'Game is already created.' }); 
 				}
 			}
 		});
 	}); 
 	request.on('error', function(err) {
-		return response.status(500).json({ 'error': err }); 
+		return response.status(500).json({ error:err }); 
 	});
 	request.write(dataToSend);
 	request.end(); 
@@ -354,29 +354,29 @@ router.get('/progress', function(req, res) {
 
 router.get('/last', function(req, res) {
 	Game.find({ $or: [{ recorded: false }, {recorded: { $exists: false } }], players: { $gt: 8 }, progress: true }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
-		if (err) return res.status(500).json({ 'error': err });
+		if (err) return res.status(500).json({ error:err });
 		return res.json(games);
 	});
 });
   
 router.get('/recorded', function(req, res) {
 	Game.find({ recorded: true }).sort({ _id: -1 }).limit(10).exec(function(err, games) {
-		if (err) return res.status(500).json({ 'error': err });
+		if (err) return res.status(500).json({ error:err });
 		return res.json(games);
 	});
 });
  
 router.get('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }).lean().exec(function(err, game) {
-		if (err) return res.status(500).json({ 'error': err });
-		else if (!game) return res.status(404).json({ 'error': 'Game not found.' });
+		if (err) return res.status(500).json({ error:err });
+		else if (!game) return res.status(404).json({ error:'Game not found.' });
 		if (game.recorded) { 
 			(function getHeroOnSlot(slot) {
 				if (slot == game.slots.length) {
 					return res.json(game);
 				} else {
 					Hero.findOne({ id: game.slots[slot].hero }, function(err, hero) {
-						if (err) return res.status(500).json({ 'error': err });
+						if (err) return res.status(500).json({ error:err });
 						game.slots[slot].hero = hero || game.slots[slot].hero;
 						getHeroOnSlot(slot + 1);
 					});
@@ -388,10 +388,27 @@ router.get('/:game_id', function(req, res) {
 	});
 });
 
+router.post('/:game_id/unrecordable', function(req, res) {
+	Game.findOne({ id: req.params.game_id }, function(err, game) {
+		if (err) return res.status(500).json({ error:err });
+		else if (!game) return res.status(404).json({ error:'Game not found.' });
+		if (game.progress) return res.status(400).json({ error:'Game is already in progress.' });
+		Alias.findOne({ alias: game.owner }, function(err, alias) {
+			if (err) return res.status(500).json({ error:err });
+			else if (alias.username != req.body.username) return res.status(400).json({ error: 'You are not the game owner.' });
+			game.unrecordable = true;
+			game.save(function(err) {
+				if (err) return res.status(500).json({ error:err });
+				return res.send();
+			});
+		}); 
+	});
+});
+
 router.get('/:game_id/balance', function(req, res) {
 	Game.findOne({ id: req.params.game_id }).lean().exec(function(err, game) {
-		if (err) return res.status(500).json({ 'error': err });
-		else if (!game) return res.status(404).json({ 'error': 'Game not found.' });
+		if (err) return res.status(500).json({ error:err });
+		else if (!game) return res.status(404).json({ error:'Game not found.' });
 		var slots = [];
 		(function calculatePlayerPoints(index) {
 			if (index == 9) { 

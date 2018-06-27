@@ -34,6 +34,7 @@ var displayScore = require('./commands/displayscore');
 var displayRanking = require('./commands/displayranking');
 var unrecordGame = require('./commands/unrecordgame');
 var recordGame = require('./commands/recordgame');
+var unrecordableGame = require('./commands/unrecordable');
 var displayGames = require('./commands/displaygames');
 var displayLastGames = require('./commands/displaylastgames');
 var displayLastRecordedGames = require('./commands/displaylastrecordedgames');
@@ -325,7 +326,8 @@ bot.on('message', function(ev) {
 				'< !recorded >                  : Fetch last recorded played games\n' + 
 				'< ![i]nfo > <game_id>          : Fetch info about a played game\n' + 
 				'< ![r]ecord > <game_id> <code> : Record a game\n' +  
-				'```'
+				'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' + 
+				'```' 
 			);  
 		} else if (cmd == 'playercmds') {
 			ev.channel.send(  
@@ -372,8 +374,7 @@ bot.on('message', function(ev) {
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
 						'< !a > removealias <user> <alias>           : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
-						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
-						//'< !a > unrecord <game_id>                   : Unrecord a game```Super-admin commands:\n```md\n' +  
+						'< !a > unblockalias <alias>                 : Unblock an alias```Super-admin commands:\n```md\n' +  
 						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' + 
 						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
 						'```'
@@ -709,6 +710,14 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!record <game_id> <code>**');
 							}
 							break;
+						case 'u':
+						case 'unrecordable':
+							if (args.length == 1) {
+								unrecordableGame(ev, args[0]);
+							} else { 
+								ev.channel.send('Me no understand! Use **!unrecordable <game_id>**');
+							}
+							break; 
 						case 'n':
 						case 'rank':
 						case 'ranking': 
