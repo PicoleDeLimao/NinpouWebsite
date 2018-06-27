@@ -329,7 +329,7 @@ function dateFromObjectId(objectId) {
 };
 
 router.delete('/:game_id', function(req, res) { 
-	Game.findOne({ id: req.params.game_id }, function(err, game) {
+	/*Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err || !game) return res.status(404).json({ error: 'Game not found.' });
 		else if (!game.recorded) return res.status(400).json({ error: 'Game was not recorded.' });
 		var date = dateFromObjectId(game._id.toString());
@@ -377,7 +377,7 @@ router.delete('/:game_id', function(req, res) {
 				resetScore(index + 1);
 			}
 		})(0);
-	});
+	});*/
 });
 
 router.get('/players/:username', function(req, res) {
@@ -416,10 +416,12 @@ router.post('/players/:username/merge/:another_username', function(req, res) {
 			else if (!destAlias) return res.status(400).json({ error: 'New alias not found.' });
 			destAlias.games += sourceAlias.games;
 			destAlias.wins += sourceAlias.wins;
-			destAlias.gpm += sourceAlias.gpm;
-			destAlias.assists += sourceAlias.assists;
-			destAlias.deaths += sourceAlias.deaths;
-			destAlias.kills += sourceAlias.kills;
+			float wa = destAlias.games / (destAlias.games + sourceAlias.games);
+			float wb = sourceAlias.games / (destAlias.games + sourceAlias.games);
+			destAlias.gpm = destAlias.gpm * wa + sourceAlias.gpm * wb;
+			destAlias.assists = destAlias.assists * wa + sourceAlias.assists * wb;
+			destAlias.deaths = destAlias.deaths * wa + sourceAlias.deaths * wb;
+			destAlias.kills = destAlias.kills * wa + sourceAlias.kills * wb;
 			destAlias.save(function(err) {
 				if (err) return res.status(500).json({ error: err });
 				sourceAlias.remove(function(err) {

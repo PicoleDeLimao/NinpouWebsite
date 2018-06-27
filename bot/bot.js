@@ -373,7 +373,7 @@ bot.on('message', function(ev) {
 						'< !a > removealias <user> <alias>           : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
 						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
-						'< !a > unrecord <game_id>                   : Unrecord a game```Super-admin commands:\n```md\n' +  
+						//'< !a > unrecord <game_id>                   : Unrecord a game```Super-admin commands:\n```md\n' +  
 						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' + 
 						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
 						'```'
@@ -418,12 +418,12 @@ bot.on('message', function(ev) {
 						} else { 
 							ev.channel.send('Me no understand! Use **!a unblockalias <alias>');
 						}
-					} else if (args[0] == 'unrecord') {
+					/*} else if (args[0] == 'unrecord') {
 						if (args.length == 2) {
 							unrecordGame(ev, args[1]);
 						} else { 
 							ev.channel.send('Me no understand! Use **!a unrecord <game_id>**');
-						} 
+						} */
 					} else if (args[0] == 'mergealiases') {
 						if (!isSuperAdmin) { 
 							ev.channel.send('Only super-admins can use this command! **Oink!!**');
