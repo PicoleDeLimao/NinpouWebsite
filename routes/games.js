@@ -427,7 +427,7 @@ router.get('/:game_id/balance', function(req, res) {
 				} else {
 					slots.push(null);
 					calculatePlayerPoints(index + 1);
-				}
+				} 
 			}
 		})(0);
 	});
