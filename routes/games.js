@@ -397,7 +397,7 @@ router.post('/:game_id/unrecordable', function(req, res) {
 		Alias.findOne({ alias: game.owner }, function(err, alias) {
 			if (err) return res.status(500).json({ error:err });
 			else if (alias.username != req.body.username) return res.status(400).json({ error: 'You are not the game owner.' });
-			game.unrecordable = true;
+			game.recordable = false;
 			game.save(function(err) {
 				if (err) return res.status(500).json({ error:err });
 				return res.send();
