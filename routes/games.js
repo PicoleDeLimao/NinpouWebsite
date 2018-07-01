@@ -418,7 +418,7 @@ router.get('/:game_id/balance', function(req, res) {
 					return res.json({ swaps: bestBalance });
 				});
 			} else {
-				if (game.slots[index].username) {
+				if (game.slots[index] && game.slots[index].username) {
 					StatCalculator.getPlayerStats(game.slots[index].username, function(err, stat) {
 						if (err) return res.status(500).json({ error: err }); 
 						slots.push(stat);
