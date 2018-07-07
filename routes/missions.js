@@ -337,27 +337,11 @@ router.post('/:username/top', function(req, res) {
 		if (doneThisWeek) {
 			return res.status(400).json({ 'error': 'You already completed this mission this week! **Oink!**' });
 		} else { 
-			Stat.aggregate([
-			{
-				$group: { 
-					_id: '$alias',
-					kills: { $sum: '$kills' },
-					deaths: { $sum: '$deaths' },
-					assists: { $sum: '$assists' },
-					gpm: { $sum: '$gpm' },
-					wins: { $sum: '$wins' },
-					games: { $sum: '$games' } 
-				}
-			} 
-			], function(err, stats) {
-				if (err) return res.status(500).json(err);
-				for (var i = 0; i < stats.length; i++) {
-					stats[i].chanceWin = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
-					stats[i].score = Calculator.calculateScore(stats[i]);
-				} 
-				stats.sort(function(a, b) {
-					return b.score - a.score;
-				});   
+			StatCalculator.getAllPlayersRanking(function(err, stats) {
+				if (err) return res.status(400).json({ 'error': err });
+				stats.sort(function(a, b) { 
+					return b.ranking['score'] - a.ranking['score'];
+				});  
 				if (stats[0]._id == req.user.username) {
 					var amount = 10000;
 					var xp = 100;
@@ -388,7 +372,7 @@ router.post('/:username/top', function(req, res) {
 				} else {
 					return res.status(400).json({ 'error': 'You are not the top! **Oink!**' });
 				}
-			});
+			});   
 		} 
 	});
 });
