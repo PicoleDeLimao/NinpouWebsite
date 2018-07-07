@@ -9,6 +9,7 @@ var Mission = require('../models/Mission');
 var Game = require('../models/Game');
 var Stat = require('../models/Stat');
 var Calculator = require('./calculator');
+var StatCalculator = require('./statcalculator');
 
 function dateFromObjectId(objectId) {
 	return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
