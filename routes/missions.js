@@ -341,8 +341,8 @@ router.post('/:username/top', function(req, res) {
 			StatCalculator.getAllPlayersRanking(function(err, stats) {
 				if (err) return res.status(400).json({ 'error': err });
 				stats.sort(function(a, b) { 
-					return b.ranking['score'] - a.ranking['score'];
-				});  
+					return a.ranking['score'] - b.ranking['score'];
+				});   
 				if (stats[0]._id == req.user.username) {
 					var amount = 10000;
 					var xp = 100;

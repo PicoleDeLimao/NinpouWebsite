@@ -174,7 +174,7 @@ setInterval(function() {
 					delete ev.endingGames[id];
 				}
 			}
-			for (var i = 0; i < inProgressGames_.length; i++) {
+			/*for (var i = 0; i < inProgressGames_.length; i++) {
 				(function(game) {
 					if (game.progress) {
 						var duration = parseInt(game.duration.split(':')[1]);
@@ -190,7 +190,7 @@ setInterval(function() {
 						}
 					} 
 				})(inProgressGames_[i]);
-			}
+			}*/ 
 			ev.onlineStreams = ev.onlineStreams || { };
 			for (var _id in ev.onlineStreams) {
 				var contains = false;
