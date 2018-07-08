@@ -65,6 +65,7 @@ module.exports = function(ev, games, criteria) {
 		} else { 
 			getOptimalBalance(games[i], criteria, function(err, game, swaps) {
 				if (err) {
+					console.log(err); 
 					next(i + 1, response);
 				} else {
 					gameToString(ev, game, function(gameString) {
