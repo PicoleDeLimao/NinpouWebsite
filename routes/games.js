@@ -416,11 +416,11 @@ router.get('/:game_id/balance', function(req, res) {
 				BalanceCalculator.getOptimalBalance(slots, req.query.criteria, true, function(err, bestBalance) {
 					if (err) return res.status(500).json({ error: err });
 					return res.json({ swaps: bestBalance });
-				});
+				}); 
 			} else {
 				if (game.slots[index] && game.slots[index].username) {
 					StatCalculator.getPlayerStats(game.slots[index].username, function(err, stat) {
-						if (err) return res.status(500).json({ error: err }); 
+						if (err) stat = null; 		
 						slots.push(stat);
 						calculatePlayerPoints(index + 1);
 					});

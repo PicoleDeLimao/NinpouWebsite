@@ -36,7 +36,7 @@ function getOptimalBalance(game, criteria, callback) {
 				}
 				return callback(false, newGame, bestState);
 			} else {  
-				return callback('Couldn\'t calculate balance. :( **Oink!**');
+				return callback(body);
 			}
 		});
 	});
