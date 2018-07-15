@@ -795,6 +795,7 @@ bot.on('message', function(ev) {
 							} else { 
 								ev.channel.send('Me no understand! User **!setcolor <#code>**');
 							}
+							break; 
 						case 'g':
 						case 'get':  
 							if (args.length > 0 && ev.mentions.users.array().length > 0) {
