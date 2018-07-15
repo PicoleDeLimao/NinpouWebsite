@@ -284,7 +284,7 @@ module.exports = function(bot) {
 					questions: ids,
 					questionIndex: 0
 				};
-				ev.channel.send('Trivia started. Use ***!a*** to answer a question. **Oink**!\n\n' + returnNewQuestion(channels[ev.channel]));
+				ev.channel.send('Trivia started. Use ***!t*** to answer a question. **Oink**!\n\n' + returnNewQuestion(channels[ev.channel]));
 			}
 		},
 		stop: function(ev) {

@@ -327,8 +327,8 @@ router.post('/:username/deaths5', function(req, res) {
 });
 
 // assists 20
-router.post('/:username/assists15', function(req, res) {
-	dailyGameMission(req, res, 'assists15', { 'slots': { '$elemMatch': { 'assists': { $gte: 15 } } } }, 'You didn\'t play any game with over 15 assists today! **Oink!**', 500, 20);
+router.post('/:username/assists10', function(req, res) {
+	dailyGameMission(req, res, 'assists10', { 'slots': { '$elemMatch': { 'assists': { $gte: 10 } } } }, 'You didn\'t play any game with over 10 assists today! **Oink!**', 500, 20);
 });
 
 // top

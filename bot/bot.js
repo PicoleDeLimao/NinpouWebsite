@@ -44,6 +44,7 @@ var giveGold = require('./commands/givegold');
 var setStatus = require('./commands/setstatus');
 var balance = require('./commands/balance');
 var displayMissions = require('./commands/missions');
+var setColor = require('./commands/setcolor');
 
 var hostedGames = [];
 var inProgressGames = [];
@@ -337,6 +338,7 @@ bot.on('message', function(ev) {
 				'< !addalias > <player_name>  : Register a new alias\n' +  
 				'< ![w]hois > <player_name>   : Check who in discord is using a determined account\n' + 
 				'< !aliasof > <user>          : Display all alias from a user\n' + 
+				'< !setcolor> <#code>         : Set your color (only for "Can\'t get enough" rank\n' + 
 				'```'
 			);  
 		} else if (cmd == 'rpgcmds') {
@@ -533,7 +535,7 @@ bot.on('message', function(ev) {
 										missionGame(ev, 'deaths5');
 										break;
 									case 'angel':
-										missionGame(ev, 'assists15');
+										missionGame(ev, 'assists10');
 										break;
 									case 'dailies':
 										missionGame(ev, 'dailies');
@@ -636,11 +638,11 @@ bot.on('message', function(ev) {
 							}
 							break;
 						// !a
-						case 'a': 
+						case 't': 
 							if (args.length > 0) {
 								trivia.answer(ev.author, args.join(' ').toLowerCase(), ev);
 							} else {
-								ev.channel.send('Me no understand! Use **!a <answer>**');
+								ev.channel.send('Me no understand! Use **!t <answer>**');
 							}
 							break;
 						case 'h':
@@ -787,6 +789,12 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!status <status>**');
 							}
 							break;
+						case 'setcolor':
+							if (args.length == 1) {
+								setColor(ev, args[0]);
+							} else { 
+								ev.channel.send('Me no understand! User **!setcolor <#code>**');
+							}
 						case 'g':
 						case 'get':  
 							if (args.length > 0 && ev.mentions.users.array().length > 0) {
