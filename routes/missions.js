@@ -57,7 +57,7 @@ function isMissionAvailable(username, name, frequency, index, callback) {
 };
 
 function getAvailableMissions(username, callback) {
-	var missions = [['rescue', 'daily'], ['gamble', 'daily'], ['rob', 'daily'], ['play', 'daily'], ['win', 'daily'], ['farm3k', 'daily'], ['kills20', 'daily'], ['deaths5', 'daily'], ['assists15', 'daily'], ['dailies', 'daily'], ['top', 'weekly']];
+	var missions = [['rescue', 'daily'], ['gamble', 'daily'], ['rob', 'daily'], ['play', 'daily'], ['win', 'daily'], ['farm3k', 'daily'], ['kills20', 'daily'], ['deaths5', 'daily'], ['assists10', 'daily'], ['dailies', 'daily'], ['top', 'weekly']];
 	var availableMissions = [];
 	var evaluatedMissions = 0;
 	for (var i = 0; i < missions.length; i++) {
@@ -76,7 +76,7 @@ function getAvailableMissions(username, callback) {
 };
 
 function areAllMissionsCompleted(missions) {
-	var nonSRankMissions = ['rescue', 'play', 'win', 'farm3k', 'kills20', 'deaths5', 'assists15'];
+	var nonSRankMissions = ['rescue', 'play', 'win', 'farm3k', 'kills20', 'deaths5', 'assists10'];
 	for (var i = 0; i < missions.length; i++) {
 		for (var j = 0; j < nonSRankMissions.length; j++) {
 			if (missions[i] == nonSRankMissions[j]) {
@@ -315,7 +315,7 @@ router.post('/:username/win', function(req, res) {
 router.post('/:username/farm3k', function(req, res) {
 	dailyGameMission(req, res, 'farm3k', { 'slots': { '$elemMatch': { 'gpm': { $gte: 30 } } } }, 'You didn\'t play any game with over 3k gpm today! **Oink!**', 500, 20);
 });
-
+ 
 // kills 20
 router.post('/:username/kills20', function(req, res) {
 	dailyGameMission(req, res, 'kills20', { 'slots': { '$elemMatch': { 'kills': { $gte: 20 } } } }, 'You didn\'t play any game with over 20 kills today! **Oink!**', 500, 20);
