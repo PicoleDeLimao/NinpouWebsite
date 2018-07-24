@@ -115,7 +115,7 @@ function getAllPlayersRanking(callback) {
 			count: { $sum: 1 }
 		}
 	}
-	], function(err, stats) {
+	]).exec(function(err, stats) {
 		if (err) return callback(err); 
 		for (var i = 0; i < stats.length; i++) {
 			stats[i].chance = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
