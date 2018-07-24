@@ -171,27 +171,11 @@ setInterval(function() {
 					}
 				}
 				if (!contains) {
-					ev.endingGames[id].delete();
-					delete ev.endingGames[id];
+					ev.endingGames[id].delete().then(function() {
+						delete ev.endingGames[id];
+					});
 				}
 			}
-			/*for (var i = 0; i < inProgressGames_.length; i++) {
-				(function(game) {
-					if (game.progress) {
-						var duration = parseInt(game.duration.split(':')[1]);
-						if (duration >= 40) { 
-							var msg = '@here ' + game.gamename + ' is about to end (' + duration + ' minutes elapsed).';
-							if (ev.endingGames.hasOwnProperty(game.id)) {
-								ev.endingGames[game.id].edit(msg);
-							} else {
-								ev.channel.send(msg).then(function(message) {
-									ev.endingGames[game.id] = message;
-								});
-							}
-						}
-					} 
-				})(inProgressGames_[i]);
-			}*/ 
 			ev.onlineStreams = ev.onlineStreams || { };
 			for (var _id in ev.onlineStreams) {
 				var contains = false;
@@ -202,10 +186,12 @@ setInterval(function() {
 					}
 				}
 				if (!contains) {
-					ev.onlineStreams[_id].message.delete();
-					if (ev.onlineStreams[_id].embed)
-						ev.onlineStreams[_id].embed.delete();
-					delete ev.onlineStreams[_id];
+					ev.onlineStreams[_id].message.delete().then(function() {
+						if (ev.onlineStreams[_id].embed) {
+							ev.onlineStreams[_id].embed.delete();
+						}
+						delete ev.onlineStreams[_id];
+					});
 				} 
 			} 
 			ev.count = ev.count || 0;
