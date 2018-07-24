@@ -9,13 +9,13 @@ var User = require('../models/User');
 
 router.get('/stats', function(req, res) {
 	Section.aggregate(
-	{
+	[{
 		$group: {
 			_id: null,
 			numThreads: { $sum: '$numThreads' },
 			numReplies: { $sum: '$numReplies' }
 		}
-	}).exec(function(err, result) {
+	}]).exec(function(err, result) {
 		if (err) return res.status(500).json(err);
 		User.find({}).count().exec(function(err, numUsers) {
 			if (err) return res.status(500).json(err);
