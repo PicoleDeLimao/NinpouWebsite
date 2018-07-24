@@ -11,6 +11,9 @@ module.exports = function(ev, username) {
 			for (var i = 0; i < alias.length; i++) {
 				response += alias[i] + ' ';
 			}
+			if (response == '') {
+				response = 'This user has no alias.';
+			}
 			ev.channel.send(response); 
 		}
 	});
