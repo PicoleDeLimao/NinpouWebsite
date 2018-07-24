@@ -15,13 +15,7 @@ router.get('/stats', function(req, res) {
 			numThreads: { $sum: '$numThreads' },
 			numReplies: { $sum: '$numReplies' }
 		}
-	},
-	{
-		$project: {
-			numThreads: 1,
-			numReplies: 1
-		}
-	}, function(err, result) {
+	}).exec(function(err, result) {
 		if (err) return res.status(500).json(err);
 		User.find({}).count().exec(function(err, numUsers) {
 			if (err) return res.status(500).json(err);
