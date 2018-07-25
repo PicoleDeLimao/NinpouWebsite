@@ -590,12 +590,12 @@ bot.on('message', function(ev) {
 							'[Sasuke]             : -\n' + 
 							'[Sakura]             : -\n' + 
 							'[Gaara]              : -\n' + 
-							'[Hinata]             : Requires level 5, 100g\n' + 
 							'[Neji]               : Requires level 5, 100g\n' + 
 							'[Lee]                : Requires level 5, 100g\n' + 
-							'[Shino]              : Requires level 5, 100g\n' + 
-							'[Kiba]               : Requires level 5, 100g\n' + 
 							'[Tenten]             : Requires level 5, 100g\n' + 
+							'[Shino]              : Requires level 5, 100g\n' + 
+							'[Hinata]             : Requires level 5, 100g\n' + 
+							'[Kiba]               : Requires level 5, 100g\n' + 
 							'[Ino]                : Requires level 5, 100g\n' + 
 							'[Shikamaru]          : Requires level 5, 100g\n' + 
 							'[Chouji]             : Requires level 5, 100g\n' + 
