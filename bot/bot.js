@@ -40,6 +40,8 @@ var displayLastGames = require('./commands/displaylastgames');
 var displayLastRecordedGames = require('./commands/displaylastrecordedgames');
 var displayGameInfo = require('./commands/displaygameinfo');
 var buy = require('./commands/buy');
+var join = require('./commands/join');
+var character = require('./commands/character');
 var giveGold = require('./commands/givegold');
 var setStatus = require('./commands/setstatus');
 var balance = require('./commands/balance');
@@ -334,6 +336,8 @@ bot.on('message', function(ev) {
 				'< ![g]et > [user]         : Display information about an user\n' + 
 				'< !give > <user> <amount> : Give gold to an user\n' +   
 				'< !items >                : Display items available to be purchased\n' + 
+				'< !villages>              : Display villages available to join\n' + 
+				'< !characters >           : Display characters available to buy\n' + 
 				'< !status > <status>      : Set a status\n' + 
 				//'< !jutsus >            : Display jutsus available to be purchased\n' +
 				'```'
@@ -561,6 +565,42 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!mission <name>**');
 							}
 							break; 
+						case 'villages':
+							ev.channel.send('**Oink, oink**!\nHere are the villages you can join\n' + 
+							'```\md\nUse !join <village> to join a village\n' + 
+							'[Konohagakure]        : Requires level 5, 1000g\n' + 
+							'[Sunagakure]          : Requires level 5, 1000g\n' + 
+							'[Kirigakure]          : Requires level 5, 1000g\n' + 
+							'[Kumogakure]          : Requires level 5, 1000g\n' + 
+							'[Iwagakure]           : Requires level 5, 1000g\n' +
+							'[Otogakure]           : Requires level 15, 10000g\n' + 
+							'[Akatsuki]            : Requires level 50, 1000000g```');
+							break;
+						case 'join':
+							if (args.length == 1) {
+								join(ev, args[0]);
+							} else {
+								ev.channel.send('Me no understand! Use **!join <village>**');
+							}
+							break;
+						case 'characters':
+							ev.channel.send('**Oink, oink**!\nHere are the available characters to buy\n' + 
+							'```md\nUse !char <character> to buy a character\n' + 
+							'[Naruto]             : -\n' + 
+							'[Sasuke]             : -\n' + 
+							'[Sakura]             : -\n' + 
+							'[Gaara]              : -\n' + 
+							'[Kakashi]            : Requires level 35, 500000g\n' + 
+							'[Obito]              : Requires level 75, 10000000g\n' + 
+							'[Madara]             : Requires level 100, 100000000g```');
+							break;
+						case 'char':
+							if (args.length == 1) {
+								character(ev, args[0]);
+							} else {
+								ev.channel.send('Me no understand! Use **!char <character>**');
+							}
+							break;
 						// !shop 
 						case 'items':
 							ev.channel.send('**Oink, oink**!\nWelcome to my marvelous shop. Find all sort of ninja tools here!\n' +

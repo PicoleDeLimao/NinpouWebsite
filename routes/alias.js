@@ -8,24 +8,17 @@ var BlockedAlias = require('../models/BlockedAlias');
 var Stat = require('../models/Stat');
 var Item = require('../models/Item'); 
 
-router.get('/reset_alias', function(req, res) {
-	Stat.find({ }, function(err, stats) {
-		(function fun(index) {
-			if (index == stats.length) {
-				return res.status(200).send();
-			} else {
-				Alias.findOne({ alias: stats[index].username.toLowerCase() }, function(err, alias) {
-					if (!alias) {
-						stats[index].alias = stats[index].username;
-						stats[index].save(function(err) {
-							
-						});
-					}
-				});
-				fun(index + 1);
-			}
-		})(0);
-	});
+router.get('/fix_affiliation', function(req, res) {
+	Alias.find({ }, function(err, alias) {
+		for (var i = 0; i < alias.length; i++) {
+			alias[i].affiliation = 'none';
+			alias[i].rank = 'genin';
+			alias[i].character = 'none';
+			alias[i].save(function(err) {
+				
+			});
+		}
+	}); 
 });
 
 router.get('/:alias', function(req, res) {
@@ -199,6 +192,100 @@ router.post('/:owner/give', function(req, res) {
 			});
 		});
 	}); 
+});
+
+var affiliations = {
+	'konohagakure': {
+		'level': 5,
+		'gold': 1000
+	},
+	'sunagakure': {
+		'level': 5,
+		'gold': 1000
+	},
+	'kirigakure': {
+		'level': 5,
+		'gold': 1000
+	},
+	'kumogakure': {
+		'level': 5,
+		'gold': 1000
+	},
+	'iwagakure': {
+		'level': 5,
+		'gold': 1000
+	},
+	'otogakure': {
+		'level': 15,
+		'gold': 10000
+	},
+	'akatsuki': {
+		'level': 50,
+		'gold': 1000000
+	}
+};
+
+router.put('/:username/affiliation/:affiliation', function(req, res) {
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (!alias) return res.status(404).json({ error: 'Player not found.' });
+		if (!affiliations[req.params.affiliation]) return res.status(404).json({ error: 'Affiliation not found.' });
+		if (alias.level < affiliations[req.params.affiliation].level) return res.status(400).json({ error: 'You don\'t have enough level to join this village.' });
+		else if (alias.gold < affiliations[req.params.affiliation].gold) return res.status(400).json({ error: 'You don\'t have enough gold to join this village.' });
+		alias.affiliation = req.params.affiliation;
+		alias.gold -= affiliations[req.params.affiliation].gold;
+		alias.save(function(err) {
+			if (err) return res.status(400).json({ error: 'Invalid affiliation.' });
+			return res.status(200).send();
+		});
+	});
+});
+
+var characters = {
+	'naruto': {
+		'level': 1,
+		'gold': 0
+	},
+	'sasuke': {
+		'level': 1,
+		'gold': 0
+	},
+	'sakura': {
+		'level': 1,
+		'gold': 0
+	},
+	'gaara': {
+		'level': 1,
+		'gold': 0
+	},
+	'kakashi': {
+		'level': 35,
+		'gold': 500000
+	},
+	'obito': {
+		'level': 75,
+		'gold': 10000000
+	},
+	'madara': {
+		'level': 100,
+		'gold': 100000000
+	}
+};
+
+router.put('/:username/character/:character', function(req, res) {
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (!alias) return res.status(404).json({ error: 'Player not found.' });
+		if (!characters[req.params.character]) return res.status(404).json({ error: 'Character not found' });
+		else if (alias.level < characters[req.params.character].level) return res.status(400).json({ error: 'You don\'t have enough level to buy this character.' });
+		else if (alias.gold < characters[req.params.character].gold) return res.status(400).json({ error: 'You don\'t have enough gold to buy this character.' });
+		alias.character = req.params.character;
+		alias.gold -= characters[req.params.character].gold;
+		alias.save(function(err) {
+			if (err) return res.status(500).json({ error: err });
+			return res.status(200).send();
+		});
+	});
 });
 
 module.exports = router;

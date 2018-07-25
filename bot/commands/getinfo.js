@@ -56,9 +56,12 @@ module.exports = function(ev, user) {
 										data.itemSupport && data.itemSupport.name.length || 0));
 						var response = '```ini\n' + 
 						name + '\n' + 
-						'Gold :     [' + (Math.round(data.gold) || 0) + ']\n' + 
+						'Character: [' + (data.character && (data.character.charAt(0).toUpperCase() + data.character.substr(1)) || 'None') + ']\n' + 
+						'Village:   [' + (data.affiliation && (data.affiliation.charAt(0).toUpperCase() + data.affiliation.substr(1)) || 'None') + ']\n' + 
 						'Level:     [' + (data.level || 1) + ']\n' + 
-						'XP:        [' + (data.xp || 0) + '%]\n\n' + 
+						'XP:        [' + (data.xp || 0) + '%]\n' + 
+						'Rank:      [' + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin') + ']\n' + 
+						'Gold :     [' + (Math.round(data.gold) || 0) + ']\n\n' + 
 						'HP:        [' + getHP(data) + ']\n' + 
 						'Attack:    [' + getAttack(data) + ']\n' + 
 						'Armor:     [' + getArmor(data) + ']\n' +
