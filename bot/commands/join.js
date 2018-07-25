@@ -48,7 +48,9 @@ module.exports = function(ev, affiliation) {
 						}
 					}
 					for (var rank in ranks) {
-						member.removeRole(ranks[rank].id);
+						if (ranks[rank].name.toLowerCase() != 'genin') {
+							member.removeRole(ranks[rank].id);
+						}
 					}
 					member.addRole(ranks['genin'].id);
 					member.addRole(villages[affiliation].id);
