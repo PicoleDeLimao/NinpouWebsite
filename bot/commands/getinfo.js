@@ -75,7 +75,7 @@ module.exports = function(ev, user) {
 								.setTitle(name + ', level ' + (data.level || 1) + ' ' + (data.affiliation && data.affiliation != 'none' && (data.affiliation.charAt(0).toUpperCase() + data.affiliation.substr(1) + ' ') || '') + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin'))
 								.setDescription(response)
 								.setImage(img)
-								.setFooter(data.status);
+								.setFooter(data.status || '');
 						//ev.channel.send(response, {
 						//	file: 'public/images/users/' + user + '.png'
 						//});
