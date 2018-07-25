@@ -25,7 +25,7 @@ router.get('/fix_affiliation', function(req, res) {
 function addSummon(img, alias, callback) {
 	if (alias.summon != 'none') {
 		Jimp.read('public/images/5_summon_' + alias.summon + '.png', function(err, summon) {
-			if (err) return res.json(alias);
+			if (err) return callback(img);
 			img.composite(summon, 0, 0);
 			return callback(img);
 		});
@@ -37,7 +37,7 @@ function addSummon(img, alias, callback) {
 function addCharacter(img, alias, callback) {
 	if (alias.character != 'none') {
 		Jimp.read('public/images/10_char_' + alias.character + '.png', function(err, character) {
-			if (err) return res.json(alias);
+			if (err) return callback(img);
 			img.composite(character, 0, 0);
 			return callback(img);
 		});
@@ -469,10 +469,10 @@ router.put('/:username/summon/:summon', function(req, res) {
 		if (err) return res.status(500).json({ error: err });
 		else if (!alias) return res.status(404).json({ error: 'Player not found.' });
 		if (!summons[req.params.summon]) return res.status(404).json({ error: 'Summon not found' });
-		else if (alias.level < summons[req.params.character].level) return res.status(400).json({ error: 'You don\'t have enough level to buy this summon.' });
-		else if (alias.gold < summons[req.params.character].gold) return res.status(400).json({ error: 'You don\'t have enough gold to buy this summon.' });
+		else if (alias.level < summons[req.params.summon].level) return res.status(400).json({ error: 'You don\'t have enough level to buy this summon.' });
+		else if (alias.gold < summons[req.params.summon].gold) return res.status(400).json({ error: 'You don\'t have enough gold to buy this summon.' });
 		alias.summon = req.params.summon;
-		alias.gold -= summons[req.params.character].gold;
+		alias.gold -= summons[req.params.summon].gold;
 		alias.save(function(err) {
 			if (err) return res.status(500).json({ error: err });
 			return res.status(200).send();
