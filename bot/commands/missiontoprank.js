@@ -65,11 +65,11 @@ module.exports = function(ev, mission) {
 						ev.guild.members.forEach(function(anotherMember) {
 							if (member.user.id != anotherMember.user.id) {
 								anotherMember.roles.forEach(function(role) {
-									if (role.name.toLowerCase() == 'village') {
+									if (role.name.toLowerCase() == memberVillage) {
 										anotherMember.roles.forEach(function(anotherRole) {
 											if (anotherRole.name.toLowerCase() == 'kage') {
-												member.removeRole(ranks['kage'].id);
-												member.addRole(ranks['genin'].id);
+												anotherMember.removeRole(ranks['kage'].id);
+												anotherMember.addRole(ranks['genin'].id);
 												http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + anotherMember.user.id + '/rank/genin', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }).end();
 											}
 										});
