@@ -62,7 +62,7 @@ module.exports = function(ev, user) {
 						'XP:        [' + (data.xp || 0) + '%]\n' + 
 						'Rank:      [' + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin') + ']\n' + 
 						'Gold:      [' + (Math.round(data.gold) || 0) + ']``` ```ini\n' + 
-						'HP:        [' + getHP(data) + ']\n' + 
+						'HP:        [' + getHP(data) + ']\n\n' + 
 						'Attack:    [' + getAttack(data) + ']\n' + 
 						'Armor:     [' + getArmor(data) + ']\n' +
 						'Weapon:    \n' + getItem(data.itemWeapon, spaces) + '\n' +

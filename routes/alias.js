@@ -272,17 +272,85 @@ var characters = {
 		'level': 1,
 		'gold': 0
 	},
+	'hinata': {
+		'level': 5,
+		'gold': 1000
+	},
+	'neji': {
+		'level': 5,
+		'gold': 1000
+	},
+	'lee': {
+		'level': 5,
+		'gold': 1000
+	},
+	'orochimaru': {
+		'level': 20,
+		'gold': 100000
+	},
+	'sasori': {
+		'level': 25,
+		'gold': 200000
+	},
+	'deidara': {
+		'level': 25,
+		'gold': 200000
+	},
+	'hidan': {
+		'level': 25,
+		'gold': 200000
+	},
+	'kakuzu': {
+		'level': 25,
+		'gold': 200000
+	},
+	'konan': {
+		'level': 25,
+		'gold': 200000
+	},
+	'kisame': {
+		'level': 35,
+		'gold': 500000
+	},
 	'kakashi': {
 		'level': 35,
 		'gold': 500000
 	},
+	'gai': {
+		'level': 35,
+		'gold': 500000
+	},
+	'tobirama': {
+		'level': 50,
+		'gold': 1000000
+	},
+	'minato': {
+		'level': 75,
+		'gold': 10000000
+	},
 	'obito': {
+		'level': 75,
+		'gold': 10000000
+	},
+	'itachi': {
+		'level': 75,
+		'gold': 10000000
+	},
+	'nagato': {
 		'level': 75,
 		'gold': 10000000
 	},
 	'madara': {
 		'level': 100,
 		'gold': 100000000
+	},
+	'hashirama': {
+		'level': 100,
+		'gold': 100000000
+	},
+	'kaguya': {
+		'level': 150,
+		'gold': 1000000000
 	}
 };
 

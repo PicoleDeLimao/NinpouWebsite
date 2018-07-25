@@ -590,9 +590,26 @@ bot.on('message', function(ev) {
 							'[Sasuke]             : -\n' + 
 							'[Sakura]             : -\n' + 
 							'[Gaara]              : -\n' + 
+							'[Hinata]             : Requires level 5, 100g\n' + 
+							'[Neji]               : Requires level 5, 100g\n' + 
+							'[Lee]                : Requires level 5, 100g\n' + 
+							'[Orochimaru]         : Requires level 20, 100000g\n' + 
+							'[Sasori]             : Requires level 25, 200000g\n' + 
+							'[Deidara]            : Requires level 25, 200000g\n' + 
+							'[Hidan]              : Requires level 25, 200000g\n' + 
+							'[Kakuzu]             : Requires level 25, 200000g\n' + 
+							'[Konan]              : Requires level 25, 200000g\n' + 
+							'[Kisame]             : Requires level 35, 500000g\n' + 
 							'[Kakashi]            : Requires level 35, 500000g\n' + 
+							'[Gai]                : Requires level 35, 500000g\n' + 
+							'[Tobirama]           : Requires level 50, 1000000g\n' + 
+							'[Minato]             : Requires level 75, 10000000g\n' + 
+							'[Itachi]             : Requires level 75, 10000000g\n' + 
+							'[Nagato]             : Requires level 75, 10000000g\n' + 
 							'[Obito]              : Requires level 75, 10000000g\n' + 
-							'[Madara]             : Requires level 100, 100000000g```');
+							'[Madara]             : Requires level 100, 100000000g\n' + 
+							'[Hashirama]          : Requires level 100, 100000000g\n' 
+							'[Kaguya]             : Requires level 150, 1000000000g```');
 							break;
 						case 'char':
 							if (args.length == 1) {
