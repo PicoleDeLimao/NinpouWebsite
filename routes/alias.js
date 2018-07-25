@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var express = require('express');
+var Jimp = require('jimp');
 var router = express.Router();
 var Alias = require('../models/Alias');
 var BlockedAlias = require('../models/BlockedAlias');
@@ -40,8 +41,21 @@ router.get('/:alias', function(req, res) {
 						ids.push(alias.itemConsumables[i].id);
 					}
 					Item.find({ id: { $in: ids } }, function(err, items) {
-						alias.itemConsumables = items;
-						return res.json(alias);
+						alias.itemConsumables = items; 
+						Jimp.read('public/images/0_bg_' + alias.affiliation + '.png', function (err, affiliation) {
+							if (err) return res.json(alias);
+							if (alias.character != 'none') {
+								Jimp.read('public/images/10_char_' + alias.character + '.png', function(err, character) {
+									if (err) return res.json(alias);
+									affiliation.composite(character, 0, 0);
+									affiliation.write('public/images/users/' + alias.username + '.png');
+									return res.json(alias);
+								});
+							} else {
+								affiliation.write('public/images/users/' + alias.username + '.png');
+								return res.json(alias);
+							}
+						});
 					});
 				});
 			});

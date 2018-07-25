@@ -578,7 +578,7 @@ bot.on('message', function(ev) {
 							break;
 						case 'join':
 							if (args.length == 1) {
-								join(ev, args[0]);
+								join(ev, args[0].toLowerCase());
 							} else {
 								ev.channel.send('Me no understand! Use **!join <village>**');
 							}
@@ -596,7 +596,7 @@ bot.on('message', function(ev) {
 							break;
 						case 'char':
 							if (args.length == 1) {
-								character(ev, args[0]);
+								character(ev, args[0].toLowerCase());
 							} else {
 								ev.channel.send('Me no understand! Use **!char <character>**');
 							}

@@ -1,6 +1,7 @@
 'use strict';
 
 var http = require('http');
+var Discord = require('discord.js');
 var getPlayerName = require('./getplayername');
 
 function getItem(item, spaces) {
@@ -55,21 +56,30 @@ module.exports = function(ev, user) {
 										Math.max(data.itemArmor && data.itemArmor.name.length || 0, 
 										data.itemSupport && data.itemSupport.name.length || 0));
 						var response = '```ini\n' + 
-						name + '\n' + 
 						'Character: [' + (data.character && (data.character.charAt(0).toUpperCase() + data.character.substr(1)) || 'None') + ']\n' + 
 						'Village:   [' + (data.affiliation && (data.affiliation.charAt(0).toUpperCase() + data.affiliation.substr(1)) || 'None') + ']\n' + 
 						'Level:     [' + (data.level || 1) + ']\n' + 
 						'XP:        [' + (data.xp || 0) + '%]\n' + 
 						'Rank:      [' + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin') + ']\n' + 
-						'Gold :     [' + (Math.round(data.gold) || 0) + ']\n\n' + 
+						'Gold:      [' + (Math.round(data.gold) || 0) + ']``` ```ini\n' + 
 						'HP:        [' + getHP(data) + ']\n' + 
 						'Attack:    [' + getAttack(data) + ']\n' + 
 						'Armor:     [' + getArmor(data) + ']\n' +
 						'Weapon:    ' + getItem(data.itemWeapon, spaces) + '\n' +
 						'Cloth:     ' + getItem(data.itemArmor, spaces) + '\n' + 
-						'Accessory: ' + getItem(data.itemSupport, spaces) + '\n\n' + 
-						(data.status ? ('Status:\n' + data.status) : '') + '\n```'; 
-						ev.channel.send(response);
+						'Accessory: ' + getItem(data.itemSupport, spaces) + '```'; 
+						var previewCacheUrl = '?_=' + (new Date()).getTime();
+						var img = 'https://www.narutoninpou.com/images/users/' + user + '.png' + previewCacheUrl;
+						//img = 'https://m.media-amazon.com/images/M/MV5BOGQxYjdiMzQtODZmYi00MzExLWJkMTQtMWYyNTE1ZjQxNDk4XkEyXkFqcGdeQXVyNzI2MzA2OTE@._V1_SX1777_CR0,0,1777,999_AL_.jpg';
+						var msgEmbed = new Discord.RichEmbed() 
+								.setTitle(name + ', level ' + (data.level || 1) + ' ' + (data.affiliation && data.affiliation != 'none' && (data.affiliation.charAt(0).toUpperCase() + data.affiliation.substr(1) + ' ') || '') + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin'))
+								.setDescription(response)
+								.setImage(img)
+								.setFooter(data.status);
+						//ev.channel.send(response, {
+						//	file: 'public/images/users/' + user + '.png'
+						//});
+						ev.channel.send(msgEmbed);
 					}) 
 				} catch (err) {
 					console.error(err);
