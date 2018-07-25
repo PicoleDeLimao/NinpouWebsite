@@ -48,12 +48,10 @@ router.get('/:alias', function(req, res) {
 								Jimp.read('public/images/10_char_' + alias.character + '.png', function(err, character) {
 									if (err) return res.json(alias);
 									affiliation.composite(character, 0, 0);
-									affiliation.resize(640, 480);
 									affiliation.write('public/images/users/' + alias.username + '.png');
 									return res.json(alias);
 								});
 							} else {
-								affiliation.resize(640, 480);
 								affiliation.write('public/images/users/' + alias.username + '.png');
 								return res.json(alias);
 							}
