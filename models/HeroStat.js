@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 
 var herostatSchema = mongoose.Schema({
-	hero: { type: Number, required: true },
-	map: { type: String, required: true },
+	hero: { type: Number, required: true, unique: true },
 	kills: { type: Number, default: 0 },
 	deaths: { type: Number, default: 0 },
 	assists: { type: Number, default: 0 },
@@ -11,8 +10,6 @@ var herostatSchema = mongoose.Schema({
 	games: { type: Number, default: 0 },
 	score: { type: Number, default: 0 }
 });
-
-herostatSchema.index({ hero: 1, map: 1 }, { unique: true });
 
 var HeroStat = mongoose.model('HeroStat', herostatSchema);
 module.exports = HeroStat;
