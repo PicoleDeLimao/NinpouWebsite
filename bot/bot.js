@@ -608,7 +608,7 @@ bot.on('message', function(ev) {
 							'[Nagato]             : Requires level 75, 10000000g\n' + 
 							'[Obito]              : Requires level 75, 10000000g\n' + 
 							'[Madara]             : Requires level 100, 100000000g\n' + 
-							'[Hashirama]          : Requires level 100, 100000000g\n' 
+							'[Hashirama]          : Requires level 100, 100000000g\n' +
 							'[Kaguya]             : Requires level 150, 1000000000g```');
 							break;
 						case 'char':
