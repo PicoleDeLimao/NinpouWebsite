@@ -284,7 +284,35 @@ var characters = {
 		'level': 5,
 		'gold': 1000
 	},
+	'shino': {
+		'level': 5,
+		'gold': 1000
+	},
+	'kiba': {
+		'level': 5,
+		'gold': 1000
+	},
+	'tenten': {
+		'level': 5,
+		'gold': 1000
+	},
+	'ino': {
+		'level': 5,
+		'gold': 1000
+	},
+	'shikamaru': {
+		'level': 5,
+		'gold': 1000
+	},
+	'chouji': {
+		'level': 5,
+		'gold': 1000
+	},
 	'orochimaru': {
+		'level': 20,
+		'gold': 100000
+	},
+	'tsunade': {
 		'level': 20,
 		'gold': 100000
 	},
@@ -317,6 +345,10 @@ var characters = {
 		'gold': 500000
 	},
 	'gai': {
+		'level': 35,
+		'gold': 500000
+	},
+	'bee': {
 		'level': 35,
 		'gold': 500000
 	},

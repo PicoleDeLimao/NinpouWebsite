@@ -593,6 +593,13 @@ bot.on('message', function(ev) {
 							'[Hinata]             : Requires level 5, 100g\n' + 
 							'[Neji]               : Requires level 5, 100g\n' + 
 							'[Lee]                : Requires level 5, 100g\n' + 
+							'[Shino]              : Requires level 5, 100g\n' + 
+							'[Kiba]               : Requires level 5, 100g\n' + 
+							'[Tenten]             : Requires level 5, 100g\n' + 
+							'[Ino]                : Requires level 5, 100g\n' + 
+							'[Shikamaru]          : Requires level 5, 100g\n' + 
+							'[Chouji]             : Requires level 5, 100g\n' + 
+							'[Tsunade]            : Requires level 20, 100000g\n' + 
 							'[Orochimaru]         : Requires level 20, 100000g\n' + 
 							'[Sasori]             : Requires level 25, 200000g\n' + 
 							'[Deidara]            : Requires level 25, 200000g\n' + 
@@ -601,7 +608,8 @@ bot.on('message', function(ev) {
 							'[Konan]              : Requires level 25, 200000g\n' + 
 							'[Kisame]             : Requires level 35, 500000g\n' + 
 							'[Kakashi]            : Requires level 35, 500000g\n' + 
-							'[Gai]                : Requires level 35, 500000g\n' + 
+							'[Gai]                : Requires level 35, 500000g\n' +
+							'[Bee]                : Requires level 35, 500000g\n' + 
 							'[Tobirama]           : Requires level 50, 1000000g\n' + 
 							'[Minato]             : Requires level 75, 10000000g\n' + 
 							'[Itachi]             : Requires level 75, 10000000g\n' + 

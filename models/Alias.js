@@ -21,7 +21,7 @@ var aliasSchema = mongoose.Schema({
 	status: { type: String },
 	affiliation: { type: String, enum: ['none', 'konohagakure', 'sunagakure', 'kumogakure', 'iwagakure', 'kirigakure', 'otogakure', 'akatsuki'], default: 'none' },
 	rank: { type: String, enum: ['genin', 'chunnin', 'jounin', 'anbu', 'kage'], default: 'genin' },
-	character: { type: String, enum: ['none', 'naruto', 'sasuke', 'sakura', 'gaara', 'hinata', 'neji', 'lee', 'orochimaru', 'sasori', 'deidara', 'hidan', 'kakuzu', 'konan', 'kisame', 'kakashi', 'gai', 'tobirama', 'obito', 'minato', 'itachi', 'nagato', 'madara', 'hashirama', 'kaguya'], default: 'none' }
+	character: { type: String, enum: ['none', 'naruto', 'sasuke', 'sakura', 'gaara', 'hinata', 'neji', 'lee', 'shino', 'kiba', 'tenten', 'ino', 'shikamaru', 'chouji', 'orochimaru', 'tsunade', 'sasori', 'deidara', 'hidan', 'kakuzu', 'konan', 'kisame', 'kakashi', 'gai', 'bee', 'tobirama', 'obito', 'minato', 'itachi', 'nagato', 'madara', 'hashirama', 'kaguya'], default: 'none' }
 });
 
 var Alias = mongoose.model('Alias', aliasSchema);
