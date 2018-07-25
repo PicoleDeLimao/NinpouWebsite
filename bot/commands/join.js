@@ -43,7 +43,7 @@ module.exports = function(ev, affiliation) {
 						}
 					});
 					for (var village in villages) {
-						if (village.name.toLowerCase() != affiliation) {
+						if (villages[village].name.toLowerCase() != affiliation) {
 							member.removeRole(villages[village].id);
 						}
 					}

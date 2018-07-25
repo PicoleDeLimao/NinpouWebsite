@@ -64,14 +64,16 @@ module.exports = function(ev, mission) {
 					if (mission == 'kage') {
 						ev.guild.members.forEach(function(anotherMember) {
 							anotherMember.roles.forEach(function(role) {
-								if (anotherMember != member && role.name.toLowerCase() == memberVillage) {
+								if (anotherMember.id != member.id && role.name.toLowerCase() == memberVillage) {
 									member.removeRole(ranks['kage'].id);
 								}
 							}); 
 						});
 					} 
 					for (var rank in ranks) {
-						member.removeRole(ranks[rank].id);
+						if (ranks[rank].name.toLowerCase() != mission) {
+							member.removeRole(ranks[rank].id);
+						}
 					}
 					member.addRole(ranks[mission].id);
 					ev.channel.send('Congratulation!! You are now: **' + (mission.charAt(0).toUpperCase() + mission.substr(1)) + '**! Oink!!');  
