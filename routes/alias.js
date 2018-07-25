@@ -22,6 +22,30 @@ router.get('/fix_affiliation', function(req, res) {
 	}); 
 });
 
+function addSummon(img, alias, callback) {
+	if (alias.summon != 'none') {
+		Jimp.read('public/images/5_summon_' + alias.summon + '.png', function(err, summon) {
+			if (err) return res.json(alias);
+			img.composite(summon, 0, 0);
+			return callback(img);
+		});
+	} else {
+		return callback(img);
+	}
+};
+
+function addCharacter(img, alias, callback) {
+	if (alias.character != 'none') {
+		Jimp.read('public/images/10_char_' + alias.character + '.png', function(err, character) {
+			if (err) return res.json(alias);
+			img.composite(character, 0, 0);
+			return callback(img);
+		});
+	} else {
+		return callback(img);
+	}
+};
+
 router.get('/:alias', function(req, res) {
 	Alias.findOne({ $or: [{username: req.params.alias.toLowerCase() }, { alias: req.params.alias.toLowerCase() }] }).lean().exec(function(err, alias) {
 		if (err) return res.status(500).json({ error: err }); 
@@ -42,19 +66,14 @@ router.get('/:alias', function(req, res) {
 					}
 					Item.find({ id: { $in: ids } }, function(err, items) {
 						alias.itemConsumables = items; 
-						Jimp.read('public/images/0_bg_' + alias.affiliation + '.png', function (err, affiliation) {
+						Jimp.read('public/images/0_bg_' + alias.affiliation + '.png', function (err, img) {
 							if (err) return res.json(alias);
-							if (alias.character != 'none') {
-								Jimp.read('public/images/10_char_' + alias.character + '.png', function(err, character) {
-									if (err) return res.json(alias);
-									affiliation.composite(character, 0, 0);
-									affiliation.write('public/images/users/' + alias.username + '.png');
+							addSummon(img, alias, function(img) {
+								addCharacter(img, alias, function(img) {
+									img.write('public/images/users/' + alias.username + '.png');
 									return res.json(alias);
 								});
-							} else {
-								affiliation.write('public/images/users/' + alias.username + '.png');
-								return res.json(alias);
-							}
+							});
 						});
 					});
 				});
@@ -401,5 +420,65 @@ router.put('/:username/character/:character', function(req, res) {
 		});
 	});
 });
+
+var summons = {
+	'frog1': {
+		'level': 10,
+		'gold': 10000
+	},
+	'frog2': {
+		'level': 25,
+		'gold': 100000
+	},
+	'frog3': {
+		'level': 50,
+		'gold': 1000000
+	},
+	'snake1': {
+		'level': 10,
+		'gold': 10000
+	},
+	'snake2': {
+		'level': 25,
+		'gold': 100000
+	},
+	'snake3': {
+		'level': 50,
+		'gold': 1000000
+	},
+	'slug1': {
+		'level': 10,
+		'gold': 10000
+	},
+	'slug2': {
+		'level': 50,
+		'gold': 1000000
+	},
+	'hawk': {
+		'level': 25,
+		'gold': 100000
+	},
+	'crow': {
+		'level': 25,
+		'gold': 100000
+	}
+};
+
+router.put('/:username/summon/:summon', function(req, res) {
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (!alias) return res.status(404).json({ error: 'Player not found.' });
+		if (!summons[req.params.summon]) return res.status(404).json({ error: 'Summon not found' });
+		else if (alias.level < summons[req.params.character].level) return res.status(400).json({ error: 'You don\'t have enough level to buy this summon.' });
+		else if (alias.gold < summons[req.params.character].gold) return res.status(400).json({ error: 'You don\'t have enough gold to buy this summon.' });
+		alias.summon = req.params.summon;
+		alias.gold -= summons[req.params.character].gold;
+		alias.save(function(err) {
+			if (err) return res.status(500).json({ error: err });
+			return res.status(200).send();
+		});
+	});
+});
+
 
 module.exports = router;

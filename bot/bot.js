@@ -338,6 +338,7 @@ bot.on('message', function(ev) {
 				'< !items >                : Display items available to be purchased\n' + 
 				'< !villages>              : Display villages available to join\n' + 
 				'< !characters >           : Display characters available to buy\n' + 
+				'< !summons >              : Display summons available to buy\n' + 
 				'< !status > <status>      : Set a status\n' + 
 				//'< !jutsus >            : Display jutsus available to be purchased\n' +
 				'```'
@@ -565,6 +566,49 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!mission <name>**');
 							}
 							break; 
+						case 'summons':
+							ev.channel.send('**Oink, oink**!\nHere are the summons you can buy\n' + 
+							'```md\nUse !summon <id> to buy a summon\n' + 
+							'[1] [Frog lvl. 1]     : Requires level 10, 10000g\n' + 
+							'[2] [Frog lvl. 2]     : Requires level 25, 100000g\n' + 
+							'[3] [Frog lvl. 3]     : Requires level 50, 1000000g\n' + 
+							'[4] [Snake lvl. 1]    : Requires level 10, 10000g\n' + 
+							'[5] [Snake lvl. 2]    : Requires level 25, 100000g\n' + 
+							'[6] [Snake lvl. 3]    : Requires level 50, 1000000g\n' +
+							'[7] [Slug lvl. 1]     : Requires level 10, 10000g\n' + 
+							'[8] [Slug lvl. 2]     : Requires level 50, 1000000g\n' + 
+							'[9] [Hawk]            : Requires level 25, 100000g\n' + 
+							'[10] [Crow]           : Requires level 25, 100000g```');
+							break;
+						case 'summon':
+							if (args.length == 1) {
+								if (args[0] === '1') {
+									summon(ev, 'frog1');
+								} else if (args[0] === '2') {
+									summon(ev, 'frog2');
+								} else if (args[0] === '3') {
+									summon(ev, 'frog3');
+								} else if (args[0] === '4') {
+									summon(ev, 'snake1');
+								} else if (args[0] === '5') {
+									summon(ev, 'snake2');
+								} else if (args[0] === '6') {
+									summon(ev, 'snake3');
+								} else if (args[0] === '7') {
+									summon(ev, 'slug1');
+								} else if (args[0] === '8') {
+									summon(ev, 'slug2');
+								} else if (args[0] === '9') {
+									summon(ev, 'hawk');
+								} else if (args[0] === '10') {
+									summon(ev, 'crow');
+								} else {
+									ev.channel.send('Summon not found. :( **Oink!**');
+								}
+							} else {
+								ev.channel.send('Me no understand! Use **!summon <summon_id>**');
+							}
+							break;
 						case 'villages':
 							ev.channel.send('**Oink, oink**!\nHere are the villages you can join\n' + 
 							'```\md\nUse !join <village> to join a village\n' + 
@@ -590,15 +634,15 @@ bot.on('message', function(ev) {
 							'[Sasuke]             : -\n' + 
 							'[Sakura]             : -\n' + 
 							'[Gaara]              : -\n' + 
-							'[Neji]               : Requires level 5, 100g\n' + 
-							'[Lee]                : Requires level 5, 100g\n' + 
-							'[Tenten]             : Requires level 5, 100g\n' + 
-							'[Shino]              : Requires level 5, 100g\n' + 
-							'[Hinata]             : Requires level 5, 100g\n' + 
-							'[Kiba]               : Requires level 5, 100g\n' + 
-							'[Ino]                : Requires level 5, 100g\n' + 
-							'[Shikamaru]          : Requires level 5, 100g\n' + 
-							'[Chouji]             : Requires level 5, 100g\n' + 
+							'[Neji]               : Requires level 5, 1000g\n' + 
+							'[Lee]                : Requires level 5, 1000g\n' + 
+							'[Tenten]             : Requires level 5, 1000g\n' + 
+							'[Shino]              : Requires level 5, 1000g\n' + 
+							'[Hinata]             : Requires level 5, 1000g\n' + 
+							'[Kiba]               : Requires level 5, 1000g\n' + 
+							'[Ino]                : Requires level 5, 1000g\n' + 
+							'[Shikamaru]          : Requires level 5, 1000g\n' + 
+							'[Chouji]             : Requires level 5, 1000g\n' + 
 							'[Tsunade]            : Requires level 20, 100000g\n' + 
 							'[Orochimaru]         : Requires level 20, 100000g\n' + 
 							'[Sasori]             : Requires level 25, 200000g\n' + 

@@ -39,6 +39,32 @@ function getArmor(data) {
 	return base; 
 }
 
+function getSummonName(summon) {
+	if (summon == 'frog1') {
+		return 'Gamakichi';
+	} else if (summon == 'frog2') {
+		return 'Gamahiro';
+	} else if (summon == 'frog3') {
+		return 'Gamabunta';
+	} else if (summon == 'snake1') {
+		return 'Snake lvl. 1';
+	} else if (summon == 'snake2') {
+		return 'Snake lvl. 2';
+	} else if (summon == 'snake3') {
+		return 'Manda';
+	} else if (summon == 'slug1') {
+		return 'Katsuyu lvl. 1';
+	} else if (summon == 'slug2') {
+		return 'Katsuyu lvl. 2';
+	} else if (summon == 'hawk') {
+		return 'Hawk';
+	} else if (summon == 'crow') {
+		return 'Crow';
+	} else {
+		return 'None';
+	}
+}
+
 module.exports = function(ev, user) { 
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/alias/' + user, headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 		var body = '';
@@ -57,6 +83,7 @@ module.exports = function(ev, user) {
 										data.itemSupport && data.itemSupport.name.length || 0));
 						var response = '```ini\n' + 
 						'Character: [' + (data.character && (data.character.charAt(0).toUpperCase() + data.character.substr(1)) || 'None') + ']\n' + 
+						'Kuchiyose: [' + getSummonName(data.summon) + ']\n' + 
 						'Village:   [' + (data.affiliation && (data.affiliation.charAt(0).toUpperCase() + data.affiliation.substr(1)) || 'None') + ']\n' + 
 						'Level:     [' + (data.level || 1) + ']\n' + 
 						'XP:        [' + (data.xp || 0) + '%]\n' + 
