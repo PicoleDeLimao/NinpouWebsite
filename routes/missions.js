@@ -411,7 +411,11 @@ router.post('/:username/rank/chunnin', function(req, res) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
 					return res.status(400).json({ error: 'You didn\'t play any game with over 15 kills and less than 10 deaths today.' });
 				} else {
-					return res.status(200).send();
+					alias.rank = 'chunnin';
+					alias.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(200).send();
+					});
 				} 
 			});
 		}); 
@@ -435,7 +439,11 @@ router.post('/:username/rank/tokubetsu', function(req, res) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
 					return res.status(400).json({ error: 'You didn\'t play any game with over 20 kills and less than 10 deaths today.' });
 				} else {
-					return res.status(200).send();
+					alias.rank = 'tokubetsu jounin';
+					alias.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(200).send();
+					});
 				} 
 			});
 		}); 
@@ -459,7 +467,11 @@ router.post('/:username/rank/jounin', function(req, res) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
 					return res.status(400).json({ error: 'You didn\'t play any game with over 25 kills and less than 8 deaths today.' });
 				} else {
-					return res.status(200).send();
+					alias.rank = 'jounin';
+					alias.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(200).send();
+					});
 				} 
 			});
 		}); 
@@ -483,7 +495,11 @@ router.post('/:username/rank/anbu', function(req, res) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
 					return res.status(400).json({ error: 'You didn\'t play any game with over 35 kills and less than 5 deaths today.' });
 				} else {
-					return res.status(200).send();
+					alias.rank = 'anbu';
+					alias.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(200).send();
+					});
 				} 
 			});
 		}); 
