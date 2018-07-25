@@ -20,6 +20,24 @@ module.exports = function(ev, affiliation) {
 				}
 			} else { 
 				ev.channel.send('Welcome! Now you are a member of: **' + affiliation.charAt(0).toUpperCase() + affiliation.substr(1) + '**! **Oink!**');
+				ev.guild.fetchMember(ev.author.id).then(function(member) {   
+					var villages = { };
+					ev.guild.roles.forEach(function(guildRole) {
+						if (guildRole.name.toLowerCase() == 'konohagakure' || 
+							guildRole.name.toLowerCase() == 'sunagakure' || 
+							guildRole.name.toLowerCase() == 'kirigakure' ||
+							guildRole.name.toLowerCase() == 'kumogakure' ||
+							guildRole.name.toLowerCase() == 'iwagakure' ||
+							guildRole.name.toLowerCase() == 'otogakure' ||
+							guildRole.name.toLowerCase() == 'akatsuki') {
+							villages[guildRole.name.toLowerCase()] = guildRole;
+						}
+					});
+					for (var village in villages) {
+						member.removeRole(villages[village].id);
+					}
+					member.addRole(villages[affiliation].id);
+				});
 			}
 		});
 	});
