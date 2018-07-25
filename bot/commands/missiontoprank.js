@@ -63,11 +63,19 @@ module.exports = function(ev, mission) {
 				} else { 
 					if (mission == 'kage') {
 						ev.guild.members.forEach(function(anotherMember) {
-							anotherMember.roles.forEach(function(role) {
-								if (anotherMember.id != member.id && role.name.toLowerCase() == memberVillage) {
-									member.removeRole(ranks['kage'].id);
-								}
-							}); 
+							if (member.user.id != anotherMember.user.id) {
+								anotherMember.roles.forEach(function(role) {
+									if (role.name.toLowerCase() == 'village') {
+										anotherMember.roles.forEach(function(anotherRole) {
+											if (anotherRole.name.toLowerCase() == 'kage') {
+												member.removeRole(ranks['kage'].id);
+												member.addRole(ranks['genin'].id);
+												http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + anotherMember.user.id + '/rank/genin', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }).end();
+											}
+										});
+									}
+								}); 
+							}
 						});
 					} 
 					for (var rank in ranks) {

@@ -384,6 +384,16 @@ router.get('/:username/available', function(req, res) {
 	});
 });
 
+router.post('/:username/rank/genin', function(req, res) {
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		alias.rank = 'genin';
+		alias.save(function(err) {
+			return res.send();
+		});
+	});
+});
+
 router.post('/:username/rank/kage', function(req, res) { 
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err });
