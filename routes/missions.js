@@ -416,8 +416,80 @@ router.post('/:username/rank/chunnin', function(req, res) {
 			});
 		}); 
 	});
-	 
 });
+
+router.post('/:username/rank/tokubetsu', function(req, res) { 
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (alias.affiliation == 'none') return res.status(400).json({ error: 'You must join a village before doing a rank mission.' });
+		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
+			if (err) return res.status(400).json({ 'error': err });
+			if (stats.games < 25) return res.status(400).json({ error: 'You must play at least 25 games to complete this mission.' });
+			else if (stats.points < 75) return res.status(400).json({ error: 'You must have at least 75 average points to complete this mission.' });
+			var aliases = [];
+			for (var i = 0; i < alias.alias.length; i++) {
+				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
+			}  
+			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 20 }, deaths: { $lte: 10 } } }, recorded: true };
+			Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
+				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
+					return res.status(400).json({ error: 'You didn\'t play any game with over 20 kills and less than 10 deaths today.' });
+				} else {
+					return res.status(200).send();
+				} 
+			});
+		}); 
+	});
+});
+
+router.post('/:username/rank/jounin', function(req, res) { 
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (alias.affiliation == 'none') return res.status(400).json({ error: 'You must join a village before doing a rank mission.' });
+		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
+			if (err) return res.status(400).json({ 'error': err });
+			if (stats.games < 35) return res.status(400).json({ error: 'You must play at least 35 games to complete this mission.' });
+			else if (stats.points < 100) return res.status(400).json({ error: 'You must have at least 100 average points to complete this mission.' });
+			var aliases = [];
+			for (var i = 0; i < alias.alias.length; i++) {
+				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
+			}  
+			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 25 }, deaths: { $lte: 8 } } }, recorded: true };
+			Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
+				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
+					return res.status(400).json({ error: 'You didn\'t play any game with over 25 kills and less than 8 deaths today.' });
+				} else {
+					return res.status(200).send();
+				} 
+			});
+		}); 
+	});
+});
+
+router.post('/:username/rank/anbu', function(req, res) { 
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (alias.affiliation == 'none') return res.status(400).json({ error: 'You must join a village before doing a rank mission.' });
+		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
+			if (err) return res.status(400).json({ 'error': err });
+			if (stats.games < 50) return res.status(400).json({ error: 'You must play at least 50 games to complete this mission.' });
+			else if (stats.points < 150) return res.status(400).json({ error: 'You must have at least 150 average points to complete this mission.' });
+			var aliases = [];
+			for (var i = 0; i < alias.alias.length; i++) {
+				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
+			}  
+			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 35 }, deaths: { $lte: 5 } } }, recorded: true };
+			Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
+				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
+					return res.status(400).json({ error: 'You didn\'t play any game with over 35 kills and less than 5 deaths today.' });
+				} else {
+					return res.status(200).send();
+				} 
+			});
+		}); 
+	});
+});
+
 router.post('/:username/rank/kage', function(req, res) { 
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err });
