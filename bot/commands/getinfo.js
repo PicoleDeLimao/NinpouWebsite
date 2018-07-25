@@ -69,7 +69,7 @@ module.exports = function(ev, user) {
 						'Cloth:     ' + getItem(data.itemArmor, spaces) + '\n' + 
 						'Accessory: ' + getItem(data.itemSupport, spaces) + '```'; 
 						var previewCacheUrl = '?_=' + (new Date()).getTime();
-						var img = 'https://www.narutoninpou.com/images/users/' + user + '.png' + previewCacheUrl;
+						var img = 'http://www.narutoninpou.com/images/users/' + user + '.png' + previewCacheUrl;
 						//img = 'https://m.media-amazon.com/images/M/MV5BOGQxYjdiMzQtODZmYi00MzExLWJkMTQtMWYyNTE1ZjQxNDk4XkEyXkFqcGdeQXVyNzI2MzA2OTE@._V1_SX1777_CR0,0,1777,999_AL_.jpg';
 						var msgEmbed = new Discord.RichEmbed() 
 								.setTitle(name + ', level ' + (data.level || 1) + ' ' + (data.affiliation && data.affiliation != 'none' && (data.affiliation.charAt(0).toUpperCase() + data.affiliation.substr(1) + ' ') || '') + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin'))
