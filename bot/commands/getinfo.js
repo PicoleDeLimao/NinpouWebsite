@@ -91,9 +91,9 @@ module.exports = function(ev, user) {
 						'XP:        [' + (data.xp || 0) + '%]\n' + 
 						'Rank:      [' + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin') + ']\n' + 
 						'Gold:      [' + (Math.round(data.gold) || 0) + ']``` ```ini\n' + 
-						'HP:        [' + getHP(data) + ']\n\n' + 
+						'HP:        [' + getHP(data) + ']\n' + 
 						'Attack:    [' + getAttack(data) + ']\n' + 
-						'Armor:     [' + getArmor(data) + ']\n' +
+						'Armor:     [' + getArmor(data) + ']\n\n' +
 						'Weapon:    \n' + getItem(data.itemWeapon, spaces) + '\n' +
 						'Cloth:     \n' + getItem(data.itemArmor, spaces) + '\n' + 
 						'Accessory: \n' + getItem(data.itemSupport, spaces) + '```'; 
