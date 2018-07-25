@@ -461,6 +461,10 @@ var summons = {
 	'crow': {
 		'level': 25,
 		'gold': 100000
+	},
+	'dog': {
+		'level': 15,
+		'gold': 15000
 	}
 };
 

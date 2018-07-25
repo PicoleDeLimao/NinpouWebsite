@@ -579,7 +579,8 @@ bot.on('message', function(ev) {
 							'[7] [Slug lvl. 1]     : Requires level 10, 10000g\n' + 
 							'[8] [Slug lvl. 2]     : Requires level 50, 1000000g\n' + 
 							'[9] [Hawk]            : Requires level 25, 100000g\n' + 
-							'[10] [Crow]           : Requires level 25, 100000g```');
+							'[10] [Crow]           : Requires level 25, 100000g\n' + 
+							'[11] [Dog]            : Requires level 15, 15000g```');
 							break;
 						case 'summon':
 							if (args.length == 1) {
@@ -603,6 +604,8 @@ bot.on('message', function(ev) {
 									summon(ev, 'hawk');
 								} else if (args[0] === '10') {
 									summon(ev, 'crow');
+								} else if (args[0] == '11') {
+									summon(ev, 'dog');
 								} else {
 									ev.channel.send('Summon not found. :( **Oink!**');
 								}
