@@ -65,9 +65,9 @@ module.exports = function(ev, user) {
 						'HP:        [' + getHP(data) + ']\n' + 
 						'Attack:    [' + getAttack(data) + ']\n' + 
 						'Armor:     [' + getArmor(data) + ']\n' +
-						'Weapon:    ' + getItem(data.itemWeapon, spaces) + '\n' +
-						'Cloth:     ' + getItem(data.itemArmor, spaces) + '\n' + 
-						'Accessory: ' + getItem(data.itemSupport, spaces) + '```'; 
+						'Weapon:    \n' + getItem(data.itemWeapon, spaces) + '\n' +
+						'Cloth:     \n' + getItem(data.itemArmor, spaces) + '\n' + 
+						'Accessory: \n' + getItem(data.itemSupport, spaces) + '```'; 
 						var previewCacheUrl = '?_=' + (new Date()).getTime();
 						var img = 'http://www.narutoninpou.com/images/users/' + user + '.png' + previewCacheUrl;
 						//img = 'https://m.media-amazon.com/images/M/MV5BOGQxYjdiMzQtODZmYi00MzExLWJkMTQtMWYyNTE1ZjQxNDk4XkEyXkFqcGdeQXVyNzI2MzA2OTE@._V1_SX1777_CR0,0,1777,999_AL_.jpg';
