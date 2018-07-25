@@ -60,6 +60,8 @@ function getSummonName(summon) {
 		return 'Hawk';
 	} else if (summon == 'crow') {
 		return 'Crow';
+	} else if (summon == 'dog') {
+		return 'Paku';
 	} else {
 		return 'None';
 	}
