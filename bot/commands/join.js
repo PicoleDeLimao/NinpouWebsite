@@ -22,6 +22,7 @@ module.exports = function(ev, affiliation) {
 				ev.channel.send('Welcome! Now you are a member of: **' + affiliation.charAt(0).toUpperCase() + affiliation.substr(1) + '**! **Oink!**');
 				ev.guild.fetchMember(ev.author.id).then(function(member) {   
 					var villages = { };
+					var ranks = { };
 					ev.guild.roles.forEach(function(guildRole) {
 						if (guildRole.name.toLowerCase() == 'konohagakure' || 
 							guildRole.name.toLowerCase() == 'sunagakure' || 
@@ -32,10 +33,24 @@ module.exports = function(ev, affiliation) {
 							guildRole.name.toLowerCase() == 'akatsuki') {
 							villages[guildRole.name.toLowerCase()] = guildRole;
 						}
+						if (guildRole.name.toLowerCase() == 'genin' ||
+							guildRole.name.toLowerCase() == 'chunnin' ||
+							guildRole.name.toLowerCase() == 'tokubetsu jōnin' || 
+							guildRole.name.toLowerCase() == 'jōnin' ||
+							guildRole.name.toLowerCase() == 'anbu' ||
+							guildRole.name.toLowerCase() == 'kage') {
+							ranks[guildRole.name.toLowerCase()] = guildRole;
+						}
 					});
 					for (var village in villages) {
-						member.removeRole(villages[village].id);
+						if (village.name.toLowerCase() != affiliation) {
+							member.removeRole(villages[village].id);
+						}
 					}
+					for (var rank in ranks) {
+						member.removeRole(ranks[rank].id);
+					}
+					member.addRole(ranks['genin'].id);
 					member.addRole(villages[affiliation].id);
 				});
 			}

@@ -16,7 +16,8 @@ var missions = {
 	'top'      : '[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <10000g> and <100%> xp',
 };
 
-var missionsAllTime =	'[     -] [S-Rank] < !missions titles >          : Display all missions which reward titles\n';
+var missionsAllTime =	'[     -] [S-Rank] < !missions titles >          : Display all missions which reward titles\n' + 
+						'[     -] [S-Rank] < !missions ranks >           : Display all missions which reward ranks\n';
 						
 module.exports = function(ev) {  
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + ev.author.id + '/available', method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
@@ -36,7 +37,7 @@ module.exports = function(ev) {
 			} else {  
 				try {
 					var data = JSON.parse(body);
-					var response = '**Oink, oink!**\nHere\'s the list of available missions (' + (data.missions.length + 8) + ' available):\n```md\n';
+					var response = '**Oink, oink!**\nHere\'s the list of available missions (' + data.missions.length + ' available):\n```md\n';
 					for (var i = 0; i < data.missions.length; i++) {
 						response += missions[data.missions[i]] + '\n';
 					}

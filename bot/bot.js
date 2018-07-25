@@ -10,6 +10,7 @@ var bot = new Discord.Client();
 // commands  
 var trivia = require('./commands/trivia')(bot);
 var missionTopTitle = require('./commands/missiontoptitle');
+var missionTopRank = require('./commands/missiontoprank');
 var missionTop = require('./commands/missiontop'); 
 var missionGamble = require('./commands/missiongamble'); 
 var missionRob = require('./commands/missionrob');
@@ -482,6 +483,14 @@ bot.on('message', function(ev) {
 												'[     -] [S-Rank] < !mission title-games>      : Be Top-1 on games ranking and get the "Can\'t get enough" title\n' + 
 												'[     -] [S-Rank] < !mission title-chance>     : Be Top-1 on chance of winning ranking and get the "Champion" title```';
 								ev.channel.send(response);
+							} else if (args[0] == 'ranks') {
+								var response = 	'```md\n' + 
+												'[     -] [D-Rank] < !mission rank-chunnin >     : Play over 10 games, have more than 50 average points and play a game today with over 15 kills and less than 10 deaths\n' + 
+												'[     -] [C-Rank] < !mission rank-tokubetsu >   : Play over 25 games, have more than 75 average points and play a game today with over 20 kills and less than 10 deaths\n' + 
+												'[     -] [B-Rank] < !mission rank-jounin >      : Play over 35 games, have more than 100 average points and play a game today with over 25 kills and less than 8 deaths\n' + 
+												'[     -] [A-Rank] < !mission rank-anbu >        : Play over 50 games, have more than 150 average points and play a game today with over 35 kills and less than 5 deaths\n' + 
+												'[     -] [S-Rank] < !mission rank-kage>         : Be Top-1 on ranking of your village and get the Kage rank```';
+								ev.channel.send(response);
 							} else {
 								displayMissions(ev);
 							}
@@ -559,6 +568,21 @@ bot.on('message', function(ev) {
 									case 'title-chance':
 										missionTopTitle(ev, 'chance');
 										break; 
+									case 'rank-chunnin':
+										missionTopRank(ev, 'chunnin');
+										break;
+									case 'rank-tokubetsu':
+										missionTopRank(ev, 'tokubetsu jōnin');
+										break;
+									case 'rank-jounin':
+										missionTopRank(ev, 'jōnin');
+										break;
+									case 'rank-anbu':
+										missionTopRank(ev, 'anbu');
+										break;
+									case 'rank-kage':
+										missionTopRank(ev, 'kage');
+										break;
 									default:
 										ev.channel.send('Mission not found.');
 										break;

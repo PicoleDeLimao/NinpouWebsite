@@ -377,10 +377,44 @@ router.post('/:username/top', function(req, res) {
 		} 
 	});
 });
+
 router.get('/:username/available', function(req, res) {
 	getAvailableMissions(req.user.username, function(missions) {
 		return res.status(200).json({ missions: missions, completed: areAllMissionsCompleted(missions) });
 	});
+});
+
+router.post('/:username/rank/kage', function(req, res) { 
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (alias.affiliation == 'none') return res.status(400).json({ error: 'You must join a village before doing a rank mission.' });
+		StatCalculator.getAllPlayersRanking(function(err, stats) {
+			if (err) return res.status(400).json({ 'error': err });
+			stats.sort(function(a, b) { 
+				return a.ranking['score'] - b.ranking['score'];
+			});   
+			(function next(i) {
+				if (i == stats.length) return res.status(400).json({ error: 'You are not the top player of your village.' });
+				Alias.findOne({ username: stats[i]._id }, function(err, anotherAlias) {
+					if (err) return res.status(400).json({ error: err });
+					else if (anotherAlias && anotherAlias.affiliation == alias.affiliation) {
+						if (anotherAlias.username == alias.username) {
+							alias.rank = 'kage';
+							alias.save(function(err) {
+								if (err) return res.status(500).json({ error: err });
+								return res.status(200).send();
+							});
+						} else {
+							return res.status(400).json({ error: 'You are not the top player of your village.' });
+						}
+					} else {
+						next(i + 1);
+					}
+				});
+			})(0);
+		}); 
+	});
+	 
 });
 
 module.exports = router;

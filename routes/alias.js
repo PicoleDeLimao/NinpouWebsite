@@ -266,6 +266,7 @@ router.put('/:username/affiliation/:affiliation', function(req, res) {
 		if (alias.level < affiliations[req.params.affiliation].level) return res.status(400).json({ error: 'You don\'t have enough level to join this village.' });
 		else if (alias.gold < affiliations[req.params.affiliation].gold) return res.status(400).json({ error: 'You don\'t have enough gold to join this village.' });
 		alias.affiliation = req.params.affiliation;
+		alias.rank = 'genin';
 		alias.gold -= affiliations[req.params.affiliation].gold;
 		alias.save(function(err) {
 			if (err) return res.status(400).json({ error: 'Invalid affiliation.' });
