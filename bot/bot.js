@@ -509,7 +509,7 @@ bot.on('message', function(ev) {
 											ev.channel.send('Me no understand! Use **!mission gamble <amount>**');
 										}
 										break;
-									case 'rob':
+									/*case 'rob':
 										if (ev.mentions.users.array().length == 1) {
 											if (ev.mentions.users.array()[0].id == ev.author.id) { 
 												ev.channel.send('You can\'t rob yourself, silly! **Oink!!**');
@@ -519,7 +519,7 @@ bot.on('message', function(ev) {
 										} else {
 											ev.channel.send('Me no understand! Use **!mission rob <user>**');
 										}
-										break;
+										break;*/
 									case 'play':
 										missionGame(ev, 'play');
 										break;
@@ -640,7 +640,7 @@ bot.on('message', function(ev) {
 						case 'villages':
 							ev.channel.send('**Oink, oink**!\nHere are the villages you can join\n' + 
 							'```\md\nUse !join <village> to join a village\n' + 
-							'[Konohagakure]        : Requires level 5, 1000g\n' + 
+							'[Konohagakure]        : Requires level 1, 0g\n' + 
 							'[Sunagakure]          : Requires level 5, 1000g\n' + 
 							'[Kirigakure]          : Requires level 5, 1000g\n' + 
 							'[Kumogakure]          : Requires level 5, 1000g\n' + 

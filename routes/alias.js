@@ -229,8 +229,8 @@ router.post('/:owner/give', function(req, res) {
 
 var affiliations = {
 	'konohagakure': {
-		'level': 5,
-		'gold': 1000
+		'level': 1,
+		'gold': 0
 	},
 	'sunagakure': {
 		'level': 5,

@@ -5,7 +5,7 @@ var http = require('http');
 var missions = {
 	'rescue'   : '[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to double)',
 	'gamble'   : '[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> (<75%> if dailies mission is completed) to get double or lose it all (max 10% of your gold)',
-	'rob'      : '[ Daily] [D-Rank] < !mission rob > <user>      : You have <50% + your level - target level> chance to rob <min(10% your gold, 10% user gold)> or lose it to him',
+	//'rob'      : '[ Daily] [D-Rank] < !mission rob > <user>      : You have <50% + your level - target level> chance to rob <min(10% your gold, 10% user gold)> or lose it to him',
 	'play'     : '[ Daily] [D-Rank] < !mission play >            : Play a game be rewarded with <50g> and <10%> xp',
 	'win'      : '[ Daily] [C-Rank] < !mission win >             : Win a game be rewarded with <200g> and <20%> xp',
 	'farm3k'   : '[ Daily] [B-Rank] < !mission farm >            : Play a game with over 3k gpm and be rewarded with <500g> and <20%> xp',
