@@ -280,10 +280,10 @@ router.post('/:game_id', function(req, res) {
 								stat.alias = username || stat.alias;
 								stat.save(function(err) {
 									if (err) return res.status(500).json(err);
-									HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
+									HeroStat.findOne({ hero: game.slots[index].hero }, function(err, stat) {
 										if (err) return res.status(500).json(err);
 										if (!stat) stat = new HeroStat({
-											hero: game.slots[index].hero, 
+											hero: game.slots[index].hero
 										});
 										stat.kills += game.slots[index].kills;
 										stat.deaths += game.slots[index].deaths;
