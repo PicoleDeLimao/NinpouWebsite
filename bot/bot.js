@@ -568,18 +568,29 @@ bot.on('message', function(ev) {
 									case 'title-chance':
 										missionTopTitle(ev, 'chance');
 										break; 
+									case 'chunin':
+									case 'chuunin':
+									case 'chunnin':
+									case 'rank-chuunin':
+									case 'rank-chunin':
 									case 'rank-chunnin':
 										missionTopRank(ev, 'chunnin');
 										break;
+									case 'tokubetsu':
 									case 'rank-tokubetsu':
 										missionTopRank(ev, 'tokubetsu jōnin');
 										break;
+									case 'jonin':
+									case 'jounin':
+									case 'rank-jonin':
 									case 'rank-jounin':
 										missionTopRank(ev, 'jōnin');
 										break;
+									case 'anbu':
 									case 'rank-anbu':
 										missionTopRank(ev, 'anbu');
 										break;
+									case 'kage':
 									case 'rank-kage':
 										missionTopRank(ev, 'kage');
 										break;
