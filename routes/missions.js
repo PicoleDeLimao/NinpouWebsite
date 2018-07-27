@@ -313,22 +313,114 @@ router.post('/:username/win', function(req, res) {
 
 // farm 3k
 router.post('/:username/farm3k', function(req, res) {
-	dailyGameMission(req, res, 'farm3k', { 'slots': { '$elemMatch': { 'gpm': { $gte: 30 } } } }, 'You didn\'t play any game with over 3k gpm today! **Oink!**', 500, 20);
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
+		var threshold, goldReward; 
+		if (res.rank == 'chunnin') {
+			threshold = 22;
+			goldReward = 1000;
+		} else if (res.rank == 'tokubetsu jounin') {
+			threshold = 25;
+			goldReward = 1500;
+		} else if (res.rank == 'jounin') {
+			threshold = 27;
+			goldReward = 2000;
+		} else if (res.rank == 'anbu') {
+			threshold = 30;
+			goldReward = 2500;
+		} else if (res.rank == 'kage') {
+			threshold = 33;
+			goldReward = 3000;
+		} else {
+			threshold = 20;
+			goldReward = 500;
+		}
+		dailyGameMission(req, res, 'farm3k', { 'slots': { '$elemMatch': { 'gpm': { $gte: threshold } } } }, 'You didn\'t play any game with over ' + (threshold * 100) + ' gpm today! **Oink!**', goldReward, 20);
+	});
 });
  
 // kills 20
 router.post('/:username/kills20', function(req, res) {
-	dailyGameMission(req, res, 'kills20', { 'slots': { '$elemMatch': { 'kills': { $gte: 20 } } } }, 'You didn\'t play any game with over 20 kills today! **Oink!**', 500, 20);
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
+		var threshold, goldReward; 
+		if (res.rank == 'chunnin') {
+			threshold = 12;
+			goldReward = 1000;
+		} else if (res.rank == 'tokubetsu jounin') {
+			threshold = 15;
+			goldReward = 1500;
+		} else if (res.rank == 'jounin') {
+			threshold = 17;
+			goldReward = 2000;
+		} else if (res.rank == 'anbu') {
+			threshold = 20;
+			goldReward = 2500;
+		} else if (res.rank == 'kage') {
+			threshold = 23;
+			goldReward = 3000;
+		} else {
+			threshold = 10;
+			goldReward = 500;
+		}
+		dailyGameMission(req, res, 'kills20', { 'slots': { '$elemMatch': { 'kills': { $gte: threshold } } } }, 'You didn\'t play any game with over ' + threshold + ' kills today! **Oink!**', goldReward, 20);
+	});
 });
 
 // deaths 5 
 router.post('/:username/deaths5', function(req, res) {
-	dailyGameMission(req, res, 'deaths5', { 'slots': { '$elemMatch': { 'deaths': { $lte: 8 } } } }, 'You didn\'t play any game with less 8 deaths today! **Oink!**', 500, 20);
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
+		var threshold, goldReward; 
+		if (res.rank == 'chunnin') {
+			threshold = 12;
+			goldReward = 1000;
+		} else if (res.rank == 'tokubetsu jounin') {
+			threshold = 11;
+			goldReward = 1500;
+		} else if (res.rank == 'jounin') {
+			threshold = 10;
+			goldReward = 2000;
+		} else if (res.rank == 'anbu') {
+			threshold = 9;
+			goldReward = 2500;
+		} else if (res.rank == 'kage') {
+			threshold = 7;
+			goldReward = 3000;
+		} else {
+			threshold = 13;
+			goldReward = 500;
+		}
+		dailyGameMission(req, res, 'deaths5', { 'slots': { '$elemMatch': { 'deaths': { $lte: threshold } } } }, 'You didn\'t play any game with less ' + threshold + ' deaths today! **Oink!**', goldReward, 20);
+	}); 
 });
 
 // assists 20
 router.post('/:username/assists10', function(req, res) {
-	dailyGameMission(req, res, 'assists10', { 'slots': { '$elemMatch': { 'assists': { $gte: 10 } } } }, 'You didn\'t play any game with over 10 assists today! **Oink!**', 500, 20);
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
+		var threshold, goldReward; 
+		if (res.rank == 'chunnin') {
+			threshold = 7;
+			goldReward = 1000;
+		} else if (res.rank == 'tokubetsu jounin') {
+			threshold = 8;
+			goldReward = 1500;
+		} else if (res.rank == 'jounin') {
+			threshold = 9;
+			goldReward = 2000;
+		} else if (res.rank == 'anbu') {
+			threshold = 10;
+			goldReward = 2500;
+		} else if (res.rank == 'kage') {
+			threshold = 12;
+			goldReward = 3000;
+		} else {
+			threshold = 6;
+			goldReward = 500;
+		}
+		dailyGameMission(req, res, 'assists10', { 'slots': { '$elemMatch': { 'assists': { $gte: threshold } } } }, 'You didn\'t play any game with over ' + threshold + ' assists today! **Oink!**', goldReward, 20);
+	}); 
 });
 
 // top
