@@ -1,6 +1,7 @@
 'use strict';
 
 var http = require('http');
+var Discord = require('discord.js');
 
 module.exports = function(ev, amount) {
 	var dataToSend = '{ "amount": ' + amount + ' }';  
