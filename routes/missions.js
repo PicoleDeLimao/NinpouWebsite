@@ -323,7 +323,7 @@ router.post('/:username/kills20', function(req, res) {
 
 // deaths 5 
 router.post('/:username/deaths5', function(req, res) {
-	dailyGameMission(req, res, 'deaths5', { 'slots': { '$elemMatch': { 'deaths': { $lte: 5 } } } }, 'You didn\'t play any game with less 5 deaths today! **Oink!**', 500, 20);
+	dailyGameMission(req, res, 'deaths5', { 'slots': { '$elemMatch': { 'deaths': { $lte: 8 } } } }, 'You didn\'t play any game with less 8 deaths today! **Oink!**', 500, 20);
 });
 
 // assists 20
