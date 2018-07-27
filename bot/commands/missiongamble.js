@@ -24,11 +24,21 @@ module.exports = function(ev, amount) {
 					var data = JSON.parse(body);
 					var response = '';
 					if (data.amount < 0) {
-						response += 'Tsunade won!! You lost **' + (-data.amount) + 'g**!';
+						var img = 'http://www.narutoninpou.com/images/tsunade-gamble-win.png';
+						var msgEmbed = new Discord.RichEmbed() 
+								.setDescription('Tsunade won!! You lost **' + (-data.amount) + 'g**!')
+								.setFooter('Ha! That\'s all you got!? Loser!!!')
+								.setImage(img);
+						ev.channel.send(msgEmbed);
 					} else {
-						response += 'You won!! You got **' + data.amount + 'g**!';
+						var img = 'http://www.narutoninpou.com/images/tsunade-gamble-lose.png';
+						var msgEmbed = new Discord.RichEmbed() 
+								.setDescription('You won!! You got **' + data.amount + 'g**!')
+								.setFooter('Get out of my face before I smash your face on the floor!!!')
+								.setImage(img);
+						ev.channel.send(msgEmbed);
 					} 
-					ev.channel.send(response);  
+					//ev.channel.send(response);  
 				} catch (err) {
 					console.error(err);
 					ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
