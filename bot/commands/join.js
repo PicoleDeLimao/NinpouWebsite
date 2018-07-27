@@ -44,12 +44,12 @@ module.exports = function(ev, affiliation) {
 						}
 					});
 					for (var village in villages) {
-						if (villages[village].name.toLowerCase() != affiliation && village != 'shinobi alliance') {
+						if (villages[village].name.toLowerCase() != affiliation && villages[village].name.toLowerCase() != 'shinobi alliance') {
 							member.removeRole(villages[village].id);
-						}
-						if ((affiliation == 'otogakure' || affiliation == 'akatsuki') && village == 'shinobi alliance') {
-							member.removeRole(villages[villlage].id);
-						}
+						} 
+					}
+					if (affiliation == 'otogakure' || affiliation == 'akatsuki') {
+						member.removeRole(villages['shinobi alliance'].id);
 					}
 					for (var rank in ranks) {
 						if (ranks[rank].name.toLowerCase() != 'genin') {
