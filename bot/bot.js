@@ -451,7 +451,7 @@ bot.on('message', function(ev) {
 					if (args.length > 0) {
 						addAlias(ev, args[0]);
 					} else {
-						ev.channel.send('Me no understand! Use **!addalias <account>**');
+						ev.channel.send('Me no understand! Type **!addalias <account>**, replacing **<account>** by your Warcraft 3 account.');
 					} 
 				}
 			});
