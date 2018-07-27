@@ -12,7 +12,7 @@ var missions = {
 	'kills20'  : '[ Daily] [B-Rank] < !mission assassin >        : Play a game with over <10/12/15/17/20/23> kills and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank',
 	'deaths5'  : '[ Daily] [B-Rank] < !mission untouchable >     : Play a game with less <13/12/11/10/9/7> deaths and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank',
 	'assists10': '[ Daily] [B-Rank] < !mission angel >           : Play a game with over <6/7/8/9/10/12> assists and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank',
-	'dailies'  : '[ Daily] [A-Rank] < !mission dailies >         : Complete all missions below S-Rank (except gamble and rob) and be rewarded with <1000g> and <50%> xp',
+	'dailies'  : '[ Daily] [A-Rank] < !mission dailies >         : Complete all missions below S-Rank (except gamble and rob) and be rewarded with <1000/2000/4000/8000/16000/24000g> and <50%> xp, according to your rank',
 	'top'      : '[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <10000g> and <100%> xp',
 };
 

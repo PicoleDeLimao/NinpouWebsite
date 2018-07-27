@@ -264,35 +264,51 @@ router.post('/:username/dailies', function(req, res) {
 				if (!areAllMissionsCompleted(missions)) {
 					return res.status(400).json({ 'error': 'You haven\'t completed all daily missions! **Oink!**' });
 				} else {
-					var amount = 1000;
-					var xp = 50;
-					var streak = doneYesterday;
-					if (streak) {
-						amount *= 2;
-						xp *= 2;
-					}
-					var today = new Date();
-					if (today.getDay() == 6 || today.getDay() == 0) {
-						amount *= 2;
-						xp *= 2;
-					}
-					var mission = new Mission({
-						username: req.user.username,
-						name: 'dailies'
-					});
-					mission.save(function(err) {
-						if (err) return res.status(500).json({ 'error': err });
-						req.user.gold += amount;
-						req.user.xp += xp;
-						var levelup = false;
-						while (req.user.xp > 100) { 
-							req.user.level += 1;
-							req.user.xp -= 100;
-							levelup = true;
+					Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+						if (err || !alias) return res.status(500).json({ error: err });
+						var amount; 
+						if (res.rank == 'chunnin') {
+							amount = 2000;
+						} else if (res.rank == 'tokubetsu jounin') {
+							amount = 4000;
+						} else if (res.rank == 'jounin') {
+							amount = 8000;
+						} else if (res.rank == 'anbu') {
+							amount = 16000;
+						} else if (res.rank == 'kage') {
+							amount = 24000;
+						} else {
+							amount = 1000;
 						}
-						req.user.save(function(err) {
+						var xp = 50;
+						var streak = doneYesterday;
+						if (streak) {
+							amount *= 2;
+							xp *= 2;
+						}
+						var today = new Date();
+						if (today.getDay() == 6 || today.getDay() == 0) {
+							amount *= 2;
+							xp *= 2;
+						}
+						var mission = new Mission({
+							username: req.user.username,
+							name: 'dailies'
+						});
+						mission.save(function(err) {
 							if (err) return res.status(500).json({ 'error': err });
-							return res.status(200).json({ streak: streak, amount: amount, xp: xp, level: req.user.level, levelup: levelup });
+							req.user.gold += amount;
+							req.user.xp += xp;
+							var levelup = false;
+							while (req.user.xp > 100) { 
+								req.user.level += 1;
+								req.user.xp -= 100;
+								levelup = true;
+							}
+							req.user.save(function(err) {
+								if (err) return res.status(500).json({ 'error': err });
+								return res.status(200).json({ streak: streak, amount: amount, xp: xp, level: req.user.level, levelup: levelup });
+							});
 						});
 					});
 				}
