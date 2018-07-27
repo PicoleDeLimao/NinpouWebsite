@@ -30,7 +30,8 @@ module.exports = function(ev, affiliation) {
 							guildRole.name.toLowerCase() == 'kumogakure' ||
 							guildRole.name.toLowerCase() == 'iwagakure' ||
 							guildRole.name.toLowerCase() == 'otogakure' ||
-							guildRole.name.toLowerCase() == 'akatsuki') {
+							guildRole.name.toLowerCase() == 'akatsuki' ||
+							guildRole.name.toLowerCase() == 'shinobi alliance') {
 							villages[guildRole.name.toLowerCase()] = guildRole;
 						}
 						if (guildRole.name.toLowerCase() == 'genin' ||
@@ -43,8 +44,11 @@ module.exports = function(ev, affiliation) {
 						}
 					});
 					for (var village in villages) {
-						if (villages[village].name.toLowerCase() != affiliation) {
+						if (villages[village].name.toLowerCase() != affiliation && village != 'shinobi alliance') {
 							member.removeRole(villages[village].id);
+						}
+						if ((affiliation == 'otogakure' || affiliation == 'akatsuki') && village == 'shinobi alliance') {
+							member.removeRole(villages[villlage].id);
 						}
 					}
 					for (var rank in ranks) {
@@ -54,6 +58,13 @@ module.exports = function(ev, affiliation) {
 					}
 					member.addRole(ranks['genin'].id);
 					member.addRole(villages[affiliation].id);
+					if (affiliation == 'konohagakure' || 
+						affiliation == 'sunagakure' || 
+						affiliation == 'kirigakure' || 
+						affiliation == 'kumogakure' || 
+						affiliation == 'iwagakure') {
+						member.addRole(villages['shinobi alliance'].id);		
+					}
 				});
 			}
 		});

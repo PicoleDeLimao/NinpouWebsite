@@ -7,11 +7,7 @@ module.exports = function(ev, mission) {
 	var villages = { };
 	var ranks = { };
 	ev.guild.roles.forEach(function(guildRole) {
-		if (guildRole.name.toLowerCase() == 'konohagakure' || 
-			guildRole.name.toLowerCase() == 'sunagakure' || 
-			guildRole.name.toLowerCase() == 'kirigakure' ||
-			guildRole.name.toLowerCase() == 'kumogakure' ||
-			guildRole.name.toLowerCase() == 'iwagakure' ||
+		if (guildRole.name.toLowerCase() == 'shinobi alliance' || 
 			guildRole.name.toLowerCase() == 'otogakure' ||
 			guildRole.name.toLowerCase() == 'akatsuki') {
 			villages[guildRole.name.toLowerCase()] = guildRole;
@@ -27,20 +23,41 @@ module.exports = function(ev, mission) {
 	});  
 	ev.guild.fetchMember(ev.author.id).then(function(member) {  
 		var memberVillage = '';
+		var memberRole = '';
 		ev.member.roles.forEach(function(role) {
-			if (role.name.toLowerCase() == 'konohagakure' || 
-				role.name.toLowerCase() == 'sunagakure' || 
-				role.name.toLowerCase() == 'kirigakure' ||
-				role.name.toLowerCase() == 'kumogakure' ||
-				role.name.toLowerCase() == 'iwagakure' ||
+			if (role.name.toLowerCase() == 'shinobi alliance' || 
 				role.name.toLowerCase() == 'otogakure' ||
 				role.name.toLowerCase() == 'akatsuki') {
 				memberVillage = role.name.toLowerCase();
+			}
+			if (role.name.toLowerCase() == 'genin' ||
+				role.name.toLowerCase() == 'chunnin' ||
+				role.name.toLowerCase() == 'tokubetsu jōnin' || 
+				role.name.toLowerCase() == 'jōnin' ||
+				role.name.toLowerCase() == 'anbu' ||
+				role.name.toLowerCase() == 'kage') {
+				memberRole = role.name.toLowerCase();
 			}
 		});
 		if (memberVillage == '') {
 			ev.channel.send('You must join a village before doing a rank mission.');  
 			return;
+		}
+		if (mission == 'chunnin' && memberRole != 'genin') {
+			ev.channel.send('You must be a genin to do this mission.');
+			return; 
+		} else if (mission == 'tokubetsu jōnin' && memberRole != 'chunnin') {
+			ev.channel.send('You must be a chunnin to do this mission.');
+			return; 
+		} else if (mission == 'jōnin' && memberRole != 'tokubetsu jōnin') {
+			ev.channel.send('You must be a tokubetsu jounin to do this mission.');
+			return; 
+		} else if (mission == 'anbu' && memberRole != 'jōnin') {
+			ev.channel.send('You must be a jounin to do this mission.');
+			return; 
+		} else if (mission == 'kage' && memberRole != 'anbu') {
+			ev.channel.send('You must be an ANBU to do this mission.');
+			return; 
 		}
 		var missionName = mission;
 		if (mission == 'tokubetsu jōnin') missionName = 'tokubetsu';
