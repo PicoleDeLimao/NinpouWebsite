@@ -19,7 +19,7 @@ module.exports = function(ev, affiliation) {
 					ev.channel.send('Couldn\'t join village. :( **Oink!**');
 				}
 			} else { 
-				ev.channel.send('Welcome! Now you are a member of: **' + affiliation.charAt(0).toUpperCase() + affiliation.substr(1) + '**! **Oink!**');
+				ev.channel.send('Welcome! Now you are a member of: **' + affiliation.charAt(0).toUpperCase() + affiliation.substr(1) + '**! Oink!!');
 				ev.guild.fetchMember(ev.author.id).then(function(member) {   
 					var villages = { };
 					var ranks = { };

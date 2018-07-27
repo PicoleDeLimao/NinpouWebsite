@@ -40,7 +40,7 @@ module.exports = function(ev, mission) {
 			}
 		});
 		if (memberVillage == '') {
-			ev.channel.send('You must join a village before doing a rank mission.');  
+			ev.channel.send('You must join a village before doing a rank mission. Type **!villages**. Oink!!');  
 			return;
 		}
 		if (mission == 'chunnin' && memberRole != 'genin') {
