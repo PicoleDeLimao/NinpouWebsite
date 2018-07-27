@@ -267,15 +267,15 @@ router.post('/:username/dailies', function(req, res) {
 					Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
 						if (err || !alias) return res.status(500).json({ error: err });
 						var amount; 
-						if (res.rank == 'chunnin') {
+						if (alias.rank == 'chunnin') {
 							amount = 2000;
-						} else if (res.rank == 'tokubetsu jounin') {
+						} else if (alias.rank == 'tokubetsu jounin') {
 							amount = 4000;
-						} else if (res.rank == 'jounin') {
+						} else if (alias.rank == 'jounin') {
 							amount = 8000;
-						} else if (res.rank == 'anbu') {
+						} else if (alias.rank == 'anbu') {
 							amount = 16000;
-						} else if (res.rank == 'kage') {
+						} else if (alias.rank == 'kage') {
 							amount = 24000;
 						} else {
 							amount = 1000;
@@ -332,19 +332,19 @@ router.post('/:username/farm3k', function(req, res) {
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
 		var threshold, goldReward; 
-		if (res.rank == 'chunnin') {
+		if (alias.rank == 'chunnin') {
 			threshold = 22;
 			goldReward = 1000;
-		} else if (res.rank == 'tokubetsu jounin') {
+		} else if (alias.rank == 'tokubetsu jounin') {
 			threshold = 25;
 			goldReward = 1500;
-		} else if (res.rank == 'jounin') {
+		} else if (alias.rank == 'jounin') {
 			threshold = 27;
 			goldReward = 2000;
-		} else if (res.rank == 'anbu') {
+		} else if (alias.rank == 'anbu') {
 			threshold = 30;
 			goldReward = 2500;
-		} else if (res.rank == 'kage') {
+		} else if (alias.rank == 'kage') {
 			threshold = 33;
 			goldReward = 3000;
 		} else {
@@ -360,19 +360,19 @@ router.post('/:username/kills20', function(req, res) {
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
 		var threshold, goldReward; 
-		if (res.rank == 'chunnin') {
+		if (alias.rank == 'chunnin') {
 			threshold = 12;
 			goldReward = 1000;
-		} else if (res.rank == 'tokubetsu jounin') {
+		} else if (alias.rank == 'tokubetsu jounin') {
 			threshold = 15;
 			goldReward = 1500;
-		} else if (res.rank == 'jounin') {
+		} else if (alias.rank == 'jounin') {
 			threshold = 17;
 			goldReward = 2000;
-		} else if (res.rank == 'anbu') {
+		} else if (alias.rank == 'anbu') {
 			threshold = 20;
 			goldReward = 2500;
-		} else if (res.rank == 'kage') {
+		} else if (alias.rank == 'kage') {
 			threshold = 23;
 			goldReward = 3000;
 		} else {
@@ -388,19 +388,19 @@ router.post('/:username/deaths5', function(req, res) {
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
 		var threshold, goldReward; 
-		if (res.rank == 'chunnin') {
+		if (alias.rank == 'chunnin') {
 			threshold = 12;
 			goldReward = 1000;
-		} else if (res.rank == 'tokubetsu jounin') {
+		} else if (alias.rank == 'tokubetsu jounin') {
 			threshold = 11;
 			goldReward = 1500;
-		} else if (res.rank == 'jounin') {
+		} else if (alias.rank == 'jounin') {
 			threshold = 10;
 			goldReward = 2000;
-		} else if (res.rank == 'anbu') {
+		} else if (alias.rank == 'anbu') {
 			threshold = 9;
 			goldReward = 2500;
-		} else if (res.rank == 'kage') {
+		} else if (alias.rank == 'kage') {
 			threshold = 7;
 			goldReward = 3000;
 		} else {
@@ -416,19 +416,19 @@ router.post('/:username/assists10', function(req, res) {
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
 		var threshold, goldReward; 
-		if (res.rank == 'chunnin') {
+		if (alias.rank == 'chunnin') {
 			threshold = 7;
 			goldReward = 1000;
-		} else if (res.rank == 'tokubetsu jounin') {
+		} else if (alias.rank == 'tokubetsu jounin') {
 			threshold = 8;
 			goldReward = 1500;
-		} else if (res.rank == 'jounin') {
+		} else if (alias.rank == 'jounin') {
 			threshold = 9;
 			goldReward = 2000;
-		} else if (res.rank == 'anbu') {
+		} else if (alias.rank == 'anbu') {
 			threshold = 10;
 			goldReward = 2500;
-		} else if (res.rank == 'kage') {
+		} else if (alias.rank == 'kage') {
 			threshold = 12;
 			goldReward = 3000;
 		} else {
@@ -452,13 +452,9 @@ router.post('/:username/top', function(req, res) {
 					return a.ranking['score'] - b.ranking['score'];
 				});   
 				if (stats[0]._id == req.user.username) {
-					var amount = 10000;
+					var amount = 50000;
 					var xp = 100;
 					var today = new Date();
-					if (today.getDay() == 6 || today.getDay() == 0) {
-						amount *= 2;
-						xp *= 2;
-					} 
 					var mission = new Mission({
 						username: req.user.username,
 						name: 'top'
