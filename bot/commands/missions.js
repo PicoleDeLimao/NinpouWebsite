@@ -18,8 +18,8 @@ var missions = {
 	'top'      : '[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <50000g> and <100%> xp\n',
 };
 
-var missionsAllTime =	'[     -] [S-Rank] < !missions titles >          : Display all missions which reward titles\n' + 
-						'[     -] [S-Rank] < !missions ranks >           : Display all missions which reward ranks\n';
+var missionsAllTime =	'[     -] [S-Rank] < !missions titles >          : Display all missions which reward titles\n\n' + 
+						'[     -] [S-Rank] < !missions ranks >           : Display all missions which reward ranks\n\n';
 						
 module.exports = function(ev) {  
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + ev.author.id + '/available', method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
