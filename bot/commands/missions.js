@@ -54,19 +54,19 @@ module.exports = function(ev) {
 					}
 					getPlayerName(ev, ev.author.id, function(err, name) {
 						var description;
-						if (affiliation == 'konohagakure') {
+						if (data.affiliation == 'konohagakure') {
 							description = 'Tsunade: Hey there, ' + name + '. Here are the missions for today.'; 
-						} else if (affiliation == 'sunagakure') {
+						} else if (data.affiliation == 'sunagakure') {
 							description = 'Gaara: Oh, ' + name + '. Glad you came. Here are the missions I need you to do today.';
-						} else if (affiliation == 'kirigakure') {
+						} else if (data.affiliation == 'kirigakure') {
 							description = 'Mei: Oh, ' + name + ', didn\'t see you there. You are charming today! Here are the missions I require you to do today.';
-						} else if (affiliation == 'kumogakure') {
+						} else if (data.affiliation == 'kumogakure') {
 							description = 'A: Hey, ' + name + '!! Lazing around!? Go make those missions right now, you fatass!!';
-						} else if (affiliation == 'iwagakure') {
+						} else if (data.affiliation == 'iwagakure') {
 							description = 'Ohnoki: So, ' + name + ', you want new missions, huh? You think you can deal with these? heh';
-						} else if (affiliation == 'otogakure') {
+						} else if (data.affiliation == 'otogakure') {
 							description = 'Orochimaru: There you are, ' + name + ' heh heh. I need you to help with some experiments. Here are things I need you to do.';
-						} else if (affiliation == 'akatsuki') {
+						} else if (data.affiliation == 'akatsuki') {
 							description = 'Pein: ' + name + ', here are your duties for today.';
 						}
 						var img = 'http://www.narutoninpou.com/images/mission-' + data.affiliation + '.png';

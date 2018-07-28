@@ -484,7 +484,9 @@ router.post('/:username/top', function(req, res) {
 
 router.get('/:username/available', function(req, res) {
 	getAvailableMissions(req.user.username, function(missions) {
-		return res.status(200).json({ missions: missions, completed: areAllMissionsCompleted(missions) });
+		Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+			return res.status(200).json({ missions: missions, completed: areAllMissionsCompleted(missions), affiliation: alias.affiliation });
+		});
 	});
 });
 
