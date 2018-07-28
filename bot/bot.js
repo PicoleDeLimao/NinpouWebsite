@@ -475,20 +475,20 @@ bot.on('message', function(ev) {
 						case 'missions': 
 							if (args[0] == 'titles') {
 								var response = 	'```md\n[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
-												'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n' + 
-												'[     -] [S-Rank] < !mission title-deaths >    : Be Top-1 on deaths ranking and get the "Untouchable" title\n' + 
-												'[     -] [S-Rank] < !mission title-assists >   : Be Top-1 on assists ranking and get the "Guardian angel" title\n' + 
-												'[     -] [S-Rank] < !mission title-points>     : Be Top-1 on points ranking and get the "Legend" title\n' + 
-												'[     -] [S-Rank] < !mission title-gpm>        : Be Top-1 on gpm ranking and get the "Gold farmer" title\n' + 
-												'[     -] [S-Rank] < !mission title-games>      : Be Top-1 on games ranking and get the "Can\'t get enough" title\n' + 
+												'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n\n' + 
+												'[     -] [S-Rank] < !mission title-deaths >    : Be Top-1 on deaths ranking and get the "Untouchable" title\n\n' + 
+												'[     -] [S-Rank] < !mission title-assists >   : Be Top-1 on assists ranking and get the "Guardian angel" title\n\n' + 
+												'[     -] [S-Rank] < !mission title-points>     : Be Top-1 on points ranking and get the "Legend" title\n\n' + 
+												'[     -] [S-Rank] < !mission title-gpm>        : Be Top-1 on gpm ranking and get the "Gold farmer" title\n\n' + 
+												'[     -] [S-Rank] < !mission title-games>      : Be Top-1 on games ranking and get the "Can\'t get enough" title\n\n' + 
 												'[     -] [S-Rank] < !mission title-chance>     : Be Top-1 on chance of winning ranking and get the "Champion" title```';
 								ev.channel.send(response);
 							} else if (args[0] == 'ranks') {
 								var response = 	'```md\n' + 
-												'[     -] [D-Rank] < !mission rank-chunnin >     : Play over 10 games, have more than 50 average points and play a game today with over 15 kills and less than 10 deaths\n' + 
-												'[     -] [C-Rank] < !mission rank-tokubetsu >   : Play over 25 games, have more than 75 average points and play a game today with over 20 kills and less than 10 deaths\n' + 
-												'[     -] [B-Rank] < !mission rank-jounin >      : Play over 35 games, have more than 100 average points and play a game today with over 25 kills and less than 8 deaths\n' + 
-												'[     -] [A-Rank] < !mission rank-anbu >        : Play over 50 games, have more than 150 average points and play a game today with over 35 kills and less than 5 deaths\n' + 
+												'[     -] [D-Rank] < !mission rank-chunnin >     : Play over <10> games, have more than <50> average points and play a game today with over <15> kills and less than <10> deaths\n\n' + 
+												'[     -] [C-Rank] < !mission rank-tokubetsu >   : Play over <25> games, have more than <75> average points and play a game today with over <20> kills and less than <10> deaths\n\n' + 
+												'[     -] [B-Rank] < !mission rank-jounin >      : Play over <35> games, have more than <100> average points and play a game today with over <25> kills and less than <8> deaths\n\n' + 
+												'[     -] [A-Rank] < !mission rank-anbu >        : Play over <50> games, have more than <150> average points and play a game today with over <35> kills and less than <5> deaths\n\n' + 
 												'[     -] [S-Rank] < !mission rank-kage>         : Be Top-1 on ranking of your village and get the Kage rank```';
 								ev.channel.send(response);
 							} else {
@@ -509,7 +509,7 @@ bot.on('message', function(ev) {
 											ev.channel.send('Me no understand! Use **!mission gamble <amount>**');
 										}
 										break;
-									/*case 'rob':
+									case 'rob':
 										if (ev.mentions.users.array().length == 1) {
 											if (ev.mentions.users.array()[0].id == ev.author.id) { 
 												ev.channel.send('You can\'t rob yourself, silly! **Oink!!**');
@@ -519,7 +519,7 @@ bot.on('message', function(ev) {
 										} else {
 											ev.channel.send('Me no understand! Use **!mission rob <user>**');
 										}
-										break;*/
+										break;
 									case 'play':
 										missionGame(ev, 'play');
 										break;
