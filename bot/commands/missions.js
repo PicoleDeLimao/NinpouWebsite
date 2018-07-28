@@ -61,15 +61,15 @@ module.exports = function(ev) {
 						} else if (data.affiliation == 'kirigakure') {
 							description = 'Mei: Oh, ' + name + ', didn\'t see you there. You are charming today! Here are the missions I require you to do today.';
 						} else if (data.affiliation == 'kumogakure') {
-							description = 'A: Hey, ' + name + '!! Lazing around!? Go make those missions right now, you fatass!!';
+							description = 'A: Hey, ' + name + '!! Lazing around!? Go do those missions right now, you fatass!!';
 						} else if (data.affiliation == 'iwagakure') {
-							description = 'Ohnoki: So, ' + name + ', you want new missions, huh? You think you can deal with these? heh';
+							description = 'Ohnoki: So, ' + name + ', you do new missions, huh? You think you can deal with these? heh';
 						} else if (data.affiliation == 'otogakure') {
 							description = 'Orochimaru: There you are, ' + name + ' heh heh. I need you to help with some experiments. Here are things I need you to do.';
 						} else if (data.affiliation == 'akatsuki') {
 							description = 'Pein: ' + name + ', here are your duties for today.';
 						}
-						var img = 'http://www.narutoninpou.com/images/mission-' + data.affiliation + '.png';
+						var img = 'http://www.narutoninpou.com/images/mission-' + data.affiliation + '.png?cache=2222';
 						var msgEmbed = new Discord.RichEmbed() 
 								.setDescription(response)
 								.setFooter(description)
