@@ -25,7 +25,7 @@ module.exports = function(ev, mission) {
 					if (data.streak)
 						response += ' STREAK BONUS!';
 					var today = moment().utcOffset('+0200');
-					if (today.getDay() == 0 || today.getDay() == 6) {
+					if (today.day() == 0 || today.day() == 6) {
 						response += ' DOUBLE XP TODAY!!';
 					}
 					if (data.levelup)

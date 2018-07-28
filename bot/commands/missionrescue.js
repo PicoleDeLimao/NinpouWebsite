@@ -28,7 +28,7 @@ module.exports = function(ev) {
 					if (data.double) 
 						response += ' DOUBLE BONUS!';
 					var today = moment().utcOffset('+0200');
-					if (today.getDay() == 0 || today.getDay() == 6) {
+					if (today.day() == 0 || today.day() == 6) {
 						response += ' DOUBLE XP TODAY!!';
 					}
 					//ev.channel.send(response); 
