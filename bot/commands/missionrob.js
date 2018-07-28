@@ -16,7 +16,7 @@ module.exports = function(ev, user) {
 			}
 		});
 		ev.guild.fetchMember(user).then(function(robMember) { 
-			robVillage = 'none';
+			var robVillage = 'none';
 			robMember.roles.forEach(function(role) {
 				if (role.name.toLowerCase() == 'shinobi alliance') {
 					robVillage = 'shinobi alliance';
