@@ -1,6 +1,8 @@
 'use strict';
 
 var http = require('http');
+var Discord = require('discord.js');
+var getPlayerName = require('./getplayername');
 
 var missions = {
 	'rescue'   : '[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to double)',
@@ -37,7 +39,7 @@ module.exports = function(ev) {
 			} else {  
 				try {
 					var data = JSON.parse(body);
-					var response = '**Oink, oink!**\nHere\'s the list of available missions (' + data.missions.length + ' available):\n```md\n';
+					var response = 'Here\'s the list of available missions (' + data.missions.length + ' available):\n```md\n';
 					for (var i = 0; i < data.missions.length; i++) {
 						response += missions[data.missions[i]] + '\n';
 					}
@@ -46,7 +48,35 @@ module.exports = function(ev) {
 					if (data.completed) {
 						response += '**You have completed all essential missions. Your chance of gambling has increased by 25%!**\n';
 					}
-					ev.channel.send(response);
+					if (data.affiliation == 'none') {
+						ev.channel.send(response);
+						return;
+					}
+					getPlayerName(ev, ev.author.id, function(err, name) {
+						var description;
+						if (affiliation == 'konohagakure') {
+							description = 'Tsunade: Hey there, ' + name + '. Here are the missions for today.'; 
+						} else if (affiliation == 'sunagakure') {
+							description = 'Gaara: Oh, ' + name + '. Glad you came. Here are the missions I need you to do today.';
+						} else if (affiliation == 'kirigakure') {
+							description = 'Mei: Oh, ' + name + ', didn\'t see you there. You are charming today! Here are the missions I require you to do today.';
+						} else if (affiliation == 'kumogakure') {
+							description = 'A: Hey, ' + name + '!! Lazing around!? Go make those missions right now, you fatass!!';
+						} else if (affiliation == 'iwagakure') {
+							description = 'Ohnoki: So, ' + name + ', you want new missions, huh? You think you can deal with these? heh';
+						} else if (affiliation == 'otogakure') {
+							description = 'Orochimaru: There you are, ' + name + ' heh heh. I need you to help with some experiments. Here are things I need you to do.';
+						} else if (affiliation == 'akatsuki') {
+							description = 'Pein: ' + name + ', here are your duties for today.';
+						}
+						var img = 'http://www.narutoninpou.com/images/mission-' + data.affiliation + '.png';
+						var msgEmbed = new Discord.RichEmbed() 
+								.setDescription(response)
+								.setFooter(description)
+								.setImage(img);
+						ev.channel.send(msgEmbed);
+					}, true);
+					//ev.channel.send(response);
 				} catch (err) {
 					console.error(err);
 					ev.channel.send('Couldn\'t list available missions. :( **Oink!**');

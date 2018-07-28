@@ -35,7 +35,7 @@ module.exports = function(ev, amount) {
 						var img = 'http://www.narutoninpou.com/images/tsunade-gamble-lose.png';
 						var msgEmbed = new Discord.RichEmbed() 
 								.setDescription('You won!! You got **' + data.amount + 'g**!')
-								.setFooter('Get out of my face before I smash your face on the floor!!!')
+								.setFooter('Get out of my sight before I smash your face on the floor!!!')
 								.setImage(img);
 						ev.channel.send(msgEmbed);
 					} 

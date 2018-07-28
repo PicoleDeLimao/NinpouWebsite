@@ -24,17 +24,17 @@ module.exports = function(ev, affiliation) {
 				if (affiliation == 'konohagakure') {
 					description = 'Naruto: Hey!! Are you new? Welcome!! You hungry? The Ichiraku has the best Ramen in the world!! Let\'s go there!! Dattebayo!!'; 
 				} else if (affiliation == 'sunagakure') {
-					description = 'Temari: Humpf, a newbie, heh? Don\'t expect us to take it easy! Things are hard here. Now, let\'s go meet the Lord Kazekage.';
+					description = 'Temari: Humpf, a newbie, heh? Don\'t expect us to take it easy! Things are hard here. Now, let\'s go meet the Lord Kazekage. Hurry!';
 				} else if (affiliation == 'kirigakure') {
 					description = 'Chojuro: Oh.. hi! Didn\'t see you here. You new...? Things were pretty sad in the past, but now we are rebuilding. Welcome to your new home!';
 				} else if (affiliation == 'kumogakure') {
-					description = 'Samui: Hey, you there! Don\'t you think you got what it takes to be here? Let\'s find out. Lord Raikage wants to see you.';
+					description = 'Samui: Hey, you there! Don\'t you think you got what it takes to be here? Let\'s find out. Now come. Lord Raikage wants to see you.';
 				} else if (affiliation == 'iwagakure') {
 					description = 'Akatsuchi: Oh!! Welcome!!! We don\'t make distinctions among shinobis here, we are all the same stone! heh heh Here, come talk with Lord Ohnoki.';
 				} else if (affiliation == 'otogakure') {
 					description = 'Kabuto: Huh, so you are new Lord Orochimaru subject? ha ha. He\'s too busy right now, but come in, we certainly have a use for you.';
 				} else if (affiliation == 'akatsuki') {
-					description = 'Konan: So you are the new missing ninja they were talking about. Welcome to Akatsuki. Our leader has some words for you. Follow me.';
+					description = 'Konan: So you are the new missing ninja they were talking about. Welcome to Akatsuki. Our leader wants to speak to you. Follow me.';
 				}
 				var img = 'http://www.narutoninpou.com/images/welcome-' + affiliation + '.png';
 				var msgEmbed = new Discord.RichEmbed() 

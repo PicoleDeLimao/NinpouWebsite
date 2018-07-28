@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(ev, name, callback) {
+module.exports = function(ev, name, callback, hideRole) {
 	if (!name) return callback(null, null);
 	if (!isNaN(parseInt(name))) {
 		ev.client.fetchUser(name).then(function(user) {
@@ -16,7 +16,7 @@ module.exports = function(ev, name, callback) {
 						}
 					}
 				}); 
-				return callback(null, member.displayName + ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')'); 
+				return callback(null, member.displayName + (hideRole ? '' : ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')' )); 
 			}).catch(function(err) { 
 				return callback(null, name);
 			});
