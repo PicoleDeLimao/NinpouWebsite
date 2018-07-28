@@ -108,7 +108,7 @@ module.exports = function(ev, user) {
 						//	file: 'public/images/users/' + user + '.png'
 						//});
 						ev.channel.send(msgEmbed);
-					}) 
+					}, true) 
 				} catch (err) {
 					console.error(err);
 					ev.channel.send('Couldn\'t fetch user info. :( **Oink!**');

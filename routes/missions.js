@@ -16,21 +16,21 @@ function dateFromObjectId(objectId) {
 };
 
 function isToday(momentDate) {
-	var REFERENCE = moment();
+	var REFERENCE = moment().utcOffset('+0200');
 	var TODAY = REFERENCE.clone().startOf('day');
-	return momentDate.isSame(TODAY, 'd');
+	return momentDate.utcOffset('+0200').isSame(TODAY, 'd');
 }
 
 function isYesterday(momentDate) {
-	var REFERENCE = moment();
+	var REFERENCE = moment().utcOffset('+0200');
 	var YESTERDAY = REFERENCE.clone().subtract(1, 'days').startOf('day');
-	return momentDate.isSame(YESTERDAY, 'd');
+	return momentDate.utcOffset('+0200').isSame(YESTERDAY, 'd');
 }
 
 function isWithinAWeek(momentDate) {
-	var REFERENCE = moment();
+	var REFERENCE = moment().utcOffset('+0200');
 	var A_WEEK_OLD = REFERENCE.clone().subtract(7, 'days').startOf('day');
-	return momentDate.isAfter(A_WEEK_OLD);
+	return momentDate.utcOffset('+0200').isAfter(A_WEEK_OLD);
 }
 
 router.use('/:username', function(req, res, next) {
