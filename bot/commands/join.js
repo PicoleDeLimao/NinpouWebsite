@@ -1,6 +1,7 @@
 'use strict';
 
 var http = require('http');
+var Discord = require('discord.js');
  
 module.exports = function(ev, affiliation) {
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/alias/' + ev.author.id + '/affiliation/' + affiliation, method: 'PUT', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
