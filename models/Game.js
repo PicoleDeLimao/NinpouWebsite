@@ -23,7 +23,9 @@ var gameSchema = mongoose.Schema({
 	progress: { type: Boolean, default: false },
 	recorded: { type: Boolean, default: false },
 	balance_factor: { type: Number, default: 1 },
-	recordable: { type: Boolean, default: true }
+	recordable: { type: Boolean, default: true },
+	missionPlayed: [String],
+	missionWon: [String]
 });
 
 var Game = mongoose.model('Game', gameSchema);

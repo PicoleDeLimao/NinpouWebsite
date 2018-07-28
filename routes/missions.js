@@ -57,7 +57,7 @@ function isMissionAvailable(username, name, frequency, index, callback) {
 };
 
 function getAvailableMissions(username, callback) {
-	var missions = [['rescue', 'daily'], ['gamble', 'daily'], ['rob', 'daily'], ['play', 'daily'], ['win', 'daily'], ['farm3k', 'daily'], ['kills20', 'daily'], ['deaths5', 'daily'], ['assists10', 'daily'], ['dailies', 'daily'], ['top', 'weekly']];
+	var missions = [['rescue', 'daily'], ['gamble', 'daily'], ['rob', 'daily'], ['play', 'always'], ['win', 'always'], ['farm3k', 'daily'], ['kills20', 'daily'], ['deaths5', 'daily'], ['assists10', 'daily'], ['dailies', 'daily'], ['top', 'weekly']];
 	var availableMissions = [];
 	var evaluatedMissions = 0;
 	for (var i = 0; i < missions.length; i++) {
@@ -76,7 +76,7 @@ function getAvailableMissions(username, callback) {
 };
 
 function areAllMissionsCompleted(missions) {
-	var nonSRankMissions = ['rescue', 'play', 'win', 'farm3k', 'kills20', 'deaths5', 'assists10'];
+	var nonSRankMissions = ['rescue', 'farm3k', 'kills20', 'deaths5', 'assists10'];
 	for (var i = 0; i < missions.length; i++) {
 		for (var j = 0; j < nonSRankMissions.length; j++) {
 			if (missions[i] == nonSRankMissions[j]) {
@@ -319,12 +319,100 @@ router.post('/:username/dailies', function(req, res) {
  
 // play
 router.post('/:username/play', function(req, res) {
-	dailyGameMission(req, res, 'play', { 'slots': { '$elemMatch': {} } }, 'You didn\'t play any game today! **Oink!**', 50, 10);
+	var aliases = [];
+	for (var i = 0; i < req.user.alias.length; i++) {
+		aliases.push(new RegExp(['^', escapeRegExp(req.user.alias[i]), '$'].join(''), 'i'));
+	}  
+	var condition = { slots: { $elemMatch: { username: { $in: aliases } } }, missionPlayed: { $nin: [req.params.username.toLowerCase()] }, recorded: true };
+	Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
+		if (err) {
+			console.log(err);
+			return res.status(500).json({ 'error': err });
+		}
+		if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
+			return res.status(400).json({ 'error': 'You didn\'t play a game.' });
+		} else {
+			var amount = 50;
+			var xp = 10;
+			var today = moment().utcOffset('+0200');
+			if (today.day() == 6 || today.day() == 0) {
+				amount *= 2;
+				xp *= 2;
+			}
+			games[0].missionPlayed.push(req.params.username.toLowerCase());
+			games[0].save(function(err) {
+				if (err) return res.status(500).json({ 'error': err });
+				var mission = new Mission({
+					username: req.user.username,
+					name: 'play'
+				});
+				mission.save(function(err) {
+					if (err) return res.status(500).json({ 'error': err });
+					req.user.gold += amount;
+					req.user.xp += xp;
+					var levelup = false;
+					while (req.user.xp > 100) { 
+						req.user.level += 1;
+						req.user.xp -= 100;
+						levelup = true;
+					}
+					req.user.save(function(err) {
+						if (err) return res.status(500).json({ 'error': err });
+						return res.status(200).json({ streak: false, amount: amount, xp: xp, level: req.user.level, levelup: levelup });
+					});
+				}); 
+			});
+		} 
+	});
 });
 
 // win
 router.post('/:username/win', function(req, res) {
-	dailyGameMission(req, res, 'win', { 'slots': { '$elemMatch': { 'win': true } } }, 'You didn\'t win any game today! **Oink!**', 200, 20);
+	var aliases = [];
+	for (var i = 0; i < req.user.alias.length; i++) {
+		aliases.push(new RegExp(['^', escapeRegExp(req.user.alias[i]), '$'].join(''), 'i'));
+	}  
+	var condition = { slots: { $elemMatch: { username: { $in: aliases }, win: true } }, missionWon: { $nin: [req.params.username.toLowerCase()] }, recorded: true };
+	Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
+		if (err) {
+			console.log(err);
+			return res.status(500).json({ 'error': err });
+		}
+		if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
+			return res.status(400).json({ 'error': 'You didn\'t win a game.' });
+		} else {
+			var amount = 200;
+			var xp = 20;
+			var today = moment().utcOffset('+0200');
+			if (today.day() == 6 || today.day() == 0) {
+				amount *= 2;
+				xp *= 2;
+			}
+			games[0].missionWon.push(req.params.username.toLowerCase());
+			games[0].save(function(err) {
+				if (err) return res.status(500).json({ 'error': err });
+				var mission = new Mission({
+					username: req.user.username,
+					name: 'play'
+				});
+				mission.save(function(err) {
+					if (err) return res.status(500).json({ 'error': err });
+					req.user.gold += amount;
+					req.user.xp += xp;
+					var levelup = false;
+					while (req.user.xp > 100) { 
+						req.user.level += 1;
+						req.user.xp -= 100;
+						levelup = true;
+					}
+					req.user.save(function(err) {
+						if (err) return res.status(500).json({ 'error': err });
+						return res.status(200).json({ streak: false, amount: amount, xp: xp, level: req.user.level, levelup: levelup });
+					});
+				}); 
+			});
+		} 
+	}); 
 });
 
 // farm 3k
