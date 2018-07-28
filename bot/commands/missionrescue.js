@@ -34,7 +34,7 @@ module.exports = function(ev) {
 					var img = 'http://www.narutoninpou.com/images/tonton-rescue.png';
 					var msgEmbed = new Discord.RichEmbed() 
 							.setDescription(response)
-							.setFooter('Thank you for rescuing me! **Oink!!** ')
+							.setFooter('Thank you for rescuing me! Oink!!')
 							.setImage(img);
 					ev.channel.send(msgEmbed);
 				} catch (err) {
