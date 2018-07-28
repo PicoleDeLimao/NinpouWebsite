@@ -5,17 +5,17 @@ var Discord = require('discord.js');
 var getPlayerName = require('./getplayername');
 
 var missions = {
-	'rescue'   : '[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to double)',
-	'gamble'   : '[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> (<75%> if dailies mission is completed) to get double or lose it all (max 10% of your gold)',
+	'rescue'   : '[ Daily] [D-Rank] < !mission rescue >          : Rescue Tonton and be rewarded with <10g>! (<10%> chance to double)\n',
+	'gamble'   : '[ Daily] [D-Rank] < !mission gamble > <amount> : Gamble with Tsunade and have <50%> (<75%> if dailies mission is completed) to get double or lose it all (max 10% of your gold)\n',
 	//'rob'      : '[ Daily] [D-Rank] < !mission rob > <user>      : You have <50% + your level - target level> chance to rob <min(10% your gold, 10% user gold)> or lose it to him',
-	'play'     : '[ Daily] [D-Rank] < !mission play >            : Play a game be rewarded with <50g> and <10%> xp',
-	'win'      : '[ Daily] [C-Rank] < !mission win >             : Win a game be rewarded with <200g> and <20%> xp',
-	'farm3k'   : '[ Daily] [B-Rank] < !mission farm >            : Play a game with over <2/2.2/2.5/2.7/3/3.3k> gpm and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank',
-	'kills20'  : '[ Daily] [B-Rank] < !mission assassin >        : Play a game with over <10/12/15/17/20/23> kills and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank',
-	'deaths5'  : '[ Daily] [B-Rank] < !mission untouchable >     : Play a game with less <13/12/11/10/9/7> deaths and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank',
-	'assists10': '[ Daily] [B-Rank] < !mission angel >           : Play a game with over <6/7/8/9/10/12> assists and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank',
-	'dailies'  : '[ Daily] [A-Rank] < !mission dailies >         : Complete all missions below S-Rank (except gamble and rob) and be rewarded with <1000/2000/4000/8000/16000/24000g> and <50%> xp, according to your rank',
-	'top'      : '[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <50000g> and <100%> xp',
+	'play'     : '[ Daily] [D-Rank] < !mission play >            : Play a game be rewarded with <50g> and <10%> xp\n',
+	'win'      : '[ Daily] [C-Rank] < !mission win >             : Win a game be rewarded with <200g> and <20%> xp\n',
+	'farm3k'   : '[ Daily] [B-Rank] < !mission farm >            : Play a game with over <2/2.2/2.5/2.7/3/3.3k> gpm and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank\n',
+	'kills20'  : '[ Daily] [B-Rank] < !mission assassin >        : Play a game with over <10/12/15/17/20/23> kills and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank\n',
+	'deaths5'  : '[ Daily] [B-Rank] < !mission untouchable >     : Play a game with less <13/12/11/10/9/7> deaths and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank\n',
+	'assists10': '[ Daily] [B-Rank] < !mission angel >           : Play a game with over <6/7/8/9/10/12> assists and be rewarded with <500/1000/1500/2000/2500/3000g> and <20%> xp, according to your rank\n',
+	'dailies'  : '[ Daily] [A-Rank] < !mission dailies >         : Complete all missions below S-Rank (except gamble and rob) and be rewarded with <1000/2000/4000/8000/16000/24000g> and <50%> xp, according to your rank\n',
+	'top'      : '[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <50000g> and <100%> xp\n',
 };
 
 var missionsAllTime =	'[     -] [S-Rank] < !missions titles >          : Display all missions which reward titles\n' + 
