@@ -111,7 +111,7 @@ function dailyGameMission(req, res, name, condition, conditionError, goldReward,
 						amount *= 2;
 						xp *= 2;
 					}
-					var today = new Date();
+					var today = moment().utcOffset('+0200');
 					if (today.getDay() == 6 || today.getDay() == 0) {
 						amount *= 2;
 						xp *= 2;
@@ -154,7 +154,7 @@ router.post('/:username/rescue', function(req, res) {
 			var double = Math.round(Math.random() * 10) == 0;
 			if (streak) amount *= 2;
 			if (double) amount *= 2;
-			var today = new Date();
+			var today = moment().utcOffset('+0200');
 			if (today.getDay() == 6 || today.getDay() == 0) {
 				amount *= 2;
 			}
@@ -286,7 +286,7 @@ router.post('/:username/dailies', function(req, res) {
 							amount *= 2;
 							xp *= 2;
 						}
-						var today = new Date();
+						var today = moment().utcOffset('+0200');
 						if (today.getDay() == 6 || today.getDay() == 0) {
 							amount *= 2;
 							xp *= 2;
@@ -454,7 +454,6 @@ router.post('/:username/top', function(req, res) {
 				if (stats[0]._id == req.user.username) {
 					var amount = 50000;
 					var xp = 100;
-					var today = new Date();
 					var mission = new Mission({
 						username: req.user.username,
 						name: 'top'

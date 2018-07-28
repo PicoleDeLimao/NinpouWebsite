@@ -2,6 +2,7 @@
 
 var http = require('http');
 var Discord = require('discord.js');
+var moment = require('moment');
 
 module.exports = function(ev) {
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + ev.author.id + '/rescue', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
@@ -26,7 +27,7 @@ module.exports = function(ev) {
 						response += ' STREAK BONUS!';
 					if (data.double) 
 						response += ' DOUBLE BONUS!';
-					var today = new Date();
+					var today = moment().utcOffset('+0200');
 					if (today.getDay() == 0 || today.getDay() == 6) {
 						response += ' DOUBLE XP TODAY!!';
 					}

@@ -1,6 +1,7 @@
 'use strict';
 
 var http = require('http');
+var moment = require('moment');
 
 module.exports = function(ev, mission) {
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + ev.author.id + '/' + mission, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
@@ -23,7 +24,7 @@ module.exports = function(ev, mission) {
 					var response = 'You won **' + data.amount + 'g** and **' + data.xp + ' xp**!';
 					if (data.streak)
 						response += ' STREAK BONUS!';
-					var today = new Date();
+					var today = moment().utcOffset('+0200');
 					if (today.getDay() == 0 || today.getDay() == 6) {
 						response += ' DOUBLE XP TODAY!!';
 					}
