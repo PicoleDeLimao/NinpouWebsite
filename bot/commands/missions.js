@@ -71,6 +71,7 @@ module.exports = function(ev) {
 						}
 						var img = 'http://www.narutoninpou.com/images/mission-' + data.affiliation + '.png';
 						var msgEmbed = new Discord.RichEmbed() 
+								.setTitle('========================== AVAILABLE MISSIONS ==========================')
 								.setDescription(response)
 								.setFooter(description)
 								.setImage(img);
