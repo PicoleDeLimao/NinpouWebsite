@@ -28,7 +28,7 @@ module.exports = function(ev, affiliation) {
 				} else if (affiliation == 'kirigakure') {
 					description = 'Chojuro: Oh.. hi! Didn\'t see you here. You new...? Things were pretty sad in the past, but now we are rebuilding. Welcome to your new home!';
 				} else if (affiliation == 'kumogakure') {
-					description = 'Samui: Hey, you there! Don\'t you think you got what it takes to be here? Let\'s find out. Now come. Lord Raikage wants to see you.';
+					description = 'Samui: Hey, you there! Do you think you got what it takes to be here? Let\'s find out. Now come. Lord Raikage wants to see you.';
 				} else if (affiliation == 'iwagakure') {
 					description = 'Akatsuchi: Oh!! Welcome!!! We don\'t make distinctions among shinobis here, we are all the same stone! heh heh Here, come talk with Lord Ohnoki.';
 				} else if (affiliation == 'otogakure') {
