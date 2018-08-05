@@ -101,7 +101,7 @@ function getPlayerStats(username, callback) {
 	});
 };
  
-function getAllPlayersRanking(callback) {
+function getAllPlayersRanking(callback, village) {
 	Stat.aggregate([
 	{
 		$group: {

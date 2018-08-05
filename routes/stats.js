@@ -378,7 +378,7 @@ router.get('/players/:username', function(req, res) {
 				Alias.findOne({ $or: [{username: req.params.username.toLowerCase() }, { alias: req.params.username.toLowerCase() }] }, function(err, user) {
 					return res.json({ 'stat': allStat, 'lastGame': mostRecentDate, 'user': user });
 				});
-			}); 
+			}, req.query.village); 
 		});
 	});
 });
@@ -454,7 +454,7 @@ router.get('/ranking', function(req, res) {
 			}
 		});  
 		return res.json({ 'ranking': stats.slice(0, 10), 'index': 0, 'minIndex': 0 });
-	});  
+	}, req.query.village);  
 });
  
 router.get('/ranking/:username', function(req, res) { 
@@ -487,7 +487,7 @@ router.get('/ranking/:username', function(req, res) {
 			var minIndex = Math.max(0, ranking - 5); 
 			var newRanking = stats.splice(minIndex, 10); 
 			return res.json({ 'ranking': newRanking, 'index': ranking, 'minIndex': minIndex });
-		}); 
+		}, req.query.village); 
 	}); 
 });
 
