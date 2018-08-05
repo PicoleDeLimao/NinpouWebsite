@@ -105,6 +105,15 @@ function dailyGameMission(req, res, name, condition, conditionError, goldReward,
 					return res.status(400).json({ 'error': conditionError });
 				} else {
 					var amount = goldReward;
+					if (req.user.summon == 'frog1') {
+						amount += Math.floor(amount * 0.15);
+					} else if (req.user.summon == 'frog2') {
+						amount += Math.floor(amount * 0.25);
+					} else if (req.user.summon == 'frog3') {
+						amount += Math.floor(amount * 0.5);
+					} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
+						amount *= 2;
+					}
 					var xp = xpReward;
 					var streak = doneYesterday;
 					if (streak) {
@@ -152,6 +161,15 @@ router.post('/:username/rescue', function(req, res) {
 			var amount = 10;
 			var streak = doneYesterday;
 			var double = Math.round(Math.random() * 10) == 0;
+			if (req.user.summon == 'frog1') {
+				amount += Math.floor(amount * 0.15);
+			} else if (req.user.summon == 'frog2') {
+				amount += Math.floor(amount * 0.25);
+			} else if (req.user.summon == 'frog3') {
+				amount += Math.floor(amount * 0.5);
+			} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
+				amount *= 2;
+			}
 			if (streak) amount *= 2;
 			if (double) amount *= 2;
 			var today = moment().utcOffset('+0200');
@@ -192,6 +210,13 @@ router.post('/:username/gamble', function(req, res) {
 				} else {
 					chance = 50;
 				}
+				if (req.user.summon == 'snake1') {
+					chance += 10;
+				} else if (req.user.summon == 'snake2') {
+					chance += 15;
+				} else if (req.user.summon == 'snake3') {
+					chance += 25;
+				}
 				var won = Math.round(Math.random() * 100) < chance; 
 				if (won) amount *= 2;
 				else amount = -amount; 
@@ -223,8 +248,14 @@ router.post('/:username/rob', function(req, res) {
 			Alias.findOne({ username: req.body.user.toLowerCase() }, function(err, anotherUser) {
 				if (err) return res.status(500).json({ 'error': err });
 				var amount = Math.round(Math.min(req.user.gold * 0.1, anotherUser.gold * 0.1));
-				var percentage = 0;
-				var won = Math.round(Math.random() * 100) < (50 + percentage);
+				var chanceSuccess = 50;
+				if (req.user.summon == 'hawk') {
+					chanceSuccess += 10;
+				} 
+				if (anotherUser.summon == 'crow') {
+					chanceSuccess -= 15;
+				}
+				var won = Math.round(Math.random() * 100) < chanceSuccess;
 				if (won) {
 					req.user.gold += amount;
 					anotherUser.gold -= amount;
@@ -280,6 +311,15 @@ router.post('/:username/dailies', function(req, res) {
 						} else {
 							amount = 1000;
 						}
+						if (alias.summon == 'frog1') {
+							amount += Math.floor(amount * 0.15);
+						} else if (alias.summon == 'frog2') {
+							amount += Math.floor(amount * 0.25);
+						} else if (alias.summon == 'frog3') {
+							amount += Math.floor(amount * 0.5);
+						} else if (alias.summon == 'dog' && ((Math.random() * 100) < 10)) {
+							amount *= 2;
+						}
 						var xp = 50;
 						var streak = doneYesterday;
 						if (streak) {
@@ -333,6 +373,15 @@ router.post('/:username/play', function(req, res) {
 			return res.status(400).json({ 'error': 'You didn\'t play a game.' });
 		} else {
 			var amount = 50;
+			if (req.user.summon == 'frog1') {
+				amount += Math.floor(amount * 0.15);
+			} else if (req.user.summon == 'frog2') {
+				amount += Math.floor(amount * 0.25);
+			} else if (req.user.summon == 'frog3') {
+				amount += Math.floor(amount * 0.5);
+			} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
+				amount *= 2;
+			}
 			var xp = 10;
 			var today = moment().utcOffset('+0200');
 			if (today.day() == 6 || today.day() == 0) {
@@ -382,6 +431,15 @@ router.post('/:username/win', function(req, res) {
 			return res.status(400).json({ 'error': 'You didn\'t win a game.' });
 		} else {
 			var amount = 200;
+			if (req.user.summon == 'frog1') {
+				amount += Math.floor(amount * 0.15);
+			} else if (req.user.summon == 'frog2') {
+				amount += Math.floor(amount * 0.25);
+			} else if (req.user.summon == 'frog3') {
+				amount += Math.floor(amount * 0.5);
+			} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
+				amount *= 2;
+			}
 			var xp = 20;
 			var today = moment().utcOffset('+0200');
 			if (today.day() == 6 || today.day() == 0) {
@@ -439,6 +497,11 @@ router.post('/:username/farm3k', function(req, res) {
 			threshold = 20;
 			goldReward = 500;
 		}
+		if (alias.summon == 'slug1') {
+			threshold -= 1;
+		} else if (alias.summon == 'slug2') {
+			threshold -= 2;
+		}
 		dailyGameMission(req, res, 'farm3k', { 'slots': { '$elemMatch': { 'gpm': { $gte: threshold } } } }, 'You didn\'t play any game with over ' + (threshold * 100) + ' gpm today! **Oink!**', goldReward, 20);
 	});
 });
@@ -466,6 +529,11 @@ router.post('/:username/kills20', function(req, res) {
 		} else {
 			threshold = 10;
 			goldReward = 500;
+		}
+		if (alias.summon == 'slug1') {
+			threshold -= 1;
+		} else if (alias.summon == 'slug2') {
+			threshold -= 2;
 		}
 		dailyGameMission(req, res, 'kills20', { 'slots': { '$elemMatch': { 'kills': { $gte: threshold } } } }, 'You didn\'t play any game with over ' + threshold + ' kills today! **Oink!**', goldReward, 20);
 	});
@@ -495,6 +563,11 @@ router.post('/:username/deaths5', function(req, res) {
 			threshold = 13;
 			goldReward = 500;
 		}
+		if (alias.summon == 'slug1') {
+			threshold += 1;
+		} else if (alias.summon == 'slug2') {
+			threshold += 2;
+		}
 		dailyGameMission(req, res, 'deaths5', { 'slots': { '$elemMatch': { 'deaths': { $lte: threshold } } } }, 'You didn\'t play any game with less ' + threshold + ' deaths today! **Oink!**', goldReward, 20);
 	}); 
 });
@@ -522,6 +595,11 @@ router.post('/:username/assists10', function(req, res) {
 		} else {
 			threshold = 6;
 			goldReward = 500;
+		}
+		if (alias.summon == 'slug1') {
+			threshold -= 1;
+		} else if (alias.summon == 'slug2') {
+			threshold -= 2;
 		}
 		dailyGameMission(req, res, 'assists10', { 'slots': { '$elemMatch': { 'assists': { $gte: threshold } } } }, 'You didn\'t play any game with over ' + threshold + ' assists today! **Oink!**', goldReward, 20);
 	}); 

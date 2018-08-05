@@ -605,17 +605,17 @@ bot.on('message', function(ev) {
 						case 'summons':
 							ev.channel.send('**Oink, oink**!\nHere are the summons you can buy\n' + 
 							'```md\nUse !summon <id> to buy a summon\n' + 
-							'[1] [Frog lvl. 1]     : Requires level 10, 10000g\n' + 
-							'[2] [Frog lvl. 2]     : Requires level 25, 100000g\n' + 
-							'[3] [Frog lvl. 3]     : Requires level 50, 1000000g\n' + 
-							'[4] [Snake lvl. 1]    : Requires level 10, 10000g\n' + 
-							'[5] [Snake lvl. 2]    : Requires level 25, 100000g\n' + 
-							'[6] [Snake lvl. 3]    : Requires level 50, 1000000g\n' +
-							'[7] [Slug lvl. 1]     : Requires level 10, 10000g\n' + 
-							'[8] [Slug lvl. 2]     : Requires level 50, 1000000g\n' + 
-							'[9] [Hawk]            : Requires level 25, 100000g\n' + 
-							'[10] [Crow]           : Requires level 25, 100000g\n' + 
-							'[11] [Dog]            : Requires level 15, 15000g```');
+							'[1] [Frog lvl. 1]     : Requires level 10, 10000g (Increase mission reward by 15%)\n' + 
+							'[2] [Frog lvl. 2]     : Requires level 25, 100000g (Increase mission reward by 25%)\n' + 
+							'[3] [Frog lvl. 3]     : Requires level 50, 1000000g (Increase mission reward by 50%)\n' + 
+							'[4] [Snake lvl. 1]    : Requires level 10, 10000g (Increase chance of gambling by 10%)\n' + 
+							'[5] [Snake lvl. 2]    : Requires level 25, 100000g  (Increase chance of gambling by 15%)\n' + 
+							'[6] [Snake lvl. 3]    : Requires level 50, 1000000g (Increase chance of gambling by 25%)\n' +
+							'[7] [Slug lvl. 1]     : Requires level 10, 10000g (Decrease mission requirement by 1)\n' + 
+							'[8] [Slug lvl. 2]     : Requires level 50, 1000000g (Decrease mission requirement by 2)\n' + 
+							'[9] [Hawk]            : Requires level 25, 100000g (Increase rob chance by 10%)\n' + 
+							'[10] [Crow]           : Requires level 25, 100000g (Decrease chance of being robbed by 15%)\n' + 
+							'[11] [Dog]            : Requires level 15, 15000g (10% chance to get double reward on missions)```');
 							break;
 						case 'summon':
 							if (args.length == 1) {
