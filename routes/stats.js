@@ -392,7 +392,7 @@ router.get('/players/:username', function(req, res) {
 				if (err) return res.status(400).json({ 'error': err }); 
 				allStat = StatCalculator.getRankingPositions(stats, allStat);       
 				Alias.findOne({ $or: [{username: req.params.username.toLowerCase() }, { alias: req.params.username.toLowerCase() }] }, function(err, user) {
-					var lastMonth = moment().subtract(3, 'month').toDate();
+					var lastMonth = moment().subtract('months', 3).toDate();
 					Game.aggregate([
 					{
 						$unwind: '$slots',
