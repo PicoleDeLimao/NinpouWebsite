@@ -67,7 +67,7 @@ module.exports = function(ev) {
 						} else if (data.affiliation == 'kumogakure') {
 							description = 'A: Hey, ' + name + '!! Lazing around!? Go do those missions right now, you fatass!!';
 						} else if (data.affiliation == 'iwagakure') {
-							description = 'Ohnoki: So, ' + name + ', you do new missions, huh? You think you can deal with these? Now stop bothering me! My back hurts..!!';
+							description = 'Ohnoki: So, ' + name + ', you want new missions, huh? You think you can deal with these? Now stop bothering me! My back hurts..!!';
 						} else if (data.affiliation == 'otogakure') {
 							description = 'Orochimaru: There you are, ' + name + ' heh heh. I need you to help with some experiments. Here are things I need you to do.';
 						} else if (data.affiliation == 'akatsuki') {

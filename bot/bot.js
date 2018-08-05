@@ -49,6 +49,8 @@ var setStatus = require('./commands/setstatus');
 var balance = require('./commands/balance');
 var displayMissions = require('./commands/missions');
 var setColor = require('./commands/setcolor');
+var displayHeroes = require('./commands/displayheroes');
+var displayHero = require('./commands/displayhero');
 
 var hostedGames = [];
 var inProgressGames = [];
@@ -317,7 +319,9 @@ bot.on('message', function(ev) {
 				'< !recorded >                  : Fetch last recorded played games\n' + 
 				'< ![i]nfo > <game_id>          : Fetch info about a played game\n' + 
 				'< ![r]ecord > <game_id> <code> : Record a game\n' +  
-				'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' + 
+				'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
+				'< !heroes > [criteria]         : Display meta information about game heroes\n' + 
+				'< !hero > <name>               : Display meta information about specific hero\n' + 
 				'```' 
 			);  
 		} else if (cmd == 'playercmds') {
@@ -899,6 +903,20 @@ bot.on('message', function(ev) {
 								} 
 							} else {
 								displayScore(ev, ev.author.id);
+							}
+							break;
+						case 'heroes':
+							if (args.length > 0) {
+								displayHeroes(ev, args[0]);
+							} else {
+								displayHeroes(ev);
+							}
+							break; 
+						case 'hero':
+							if (args.length == 1) {
+								displayHero(ev, args[0]);
+							} else {
+								ev.channel.send('Me no understand! Use **!hero <name>**');
 							}
 							break;
 						case 'w':

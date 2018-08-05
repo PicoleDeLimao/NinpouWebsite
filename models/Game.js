@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var gameSchema = mongoose.Schema({
 	id: { type: String, required: true, unique: true, index: true },
+	createdAt: { type: Date, default: Date.now },
 	gamename: { type: String, required: true },
 	map: { type : String, required: true },
 	owner: { type: String },

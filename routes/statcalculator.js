@@ -2,6 +2,7 @@
 
 var Game = require('../models/Game');
 var Stat = require('../models/Stat');
+var Hero = require('../models/Hero');
 var HeroStat = require('../models/HeroStat');
 var Alias = require('../models/Alias');
 var Calculator = require('./calculator');
@@ -101,7 +102,27 @@ function getPlayerStats(username, callback) {
 	});
 };
  
-function getAllPlayersRanking(callback, village) {
+function getHeroStats(name, callback) {
+	Hero.findOne({ name: new RegExp(['^', escapeRegExp(name.toLowerCase()), '$'].join(''), 'i') }, function(err, hero) {
+		if (err) return callback(err);
+		else if (!hero) return callback('Hero not found.');
+		HeroStat.findOne({ hero: hero.id }).lean().exec(function(err, stat) {
+			if (err) return callback(err);
+			stat.hero = hero;
+			stat.chance = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+			stat.kills /= stat.games;
+			stat.deaths /= stat.games;
+			stat.assists /= stat.games;
+			stat.gpm = stat.gpm / stat.games * 100; 
+			stat.points = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
+			stat.chance *= 100;
+			stat.score = Calculator.calculateScore(stat); 
+			return callback(null, stat);
+		});
+	});
+};
+
+function getAllPlayersRanking(callback) {
 	Stat.aggregate([
 	{
 		$group: {
@@ -139,6 +160,37 @@ function getAllPlayersRanking(callback, village) {
 	});
 };
 
+function getAllHeroesRanking(callback) {
+	HeroStat.find({ }).lean().exec(function(err, heroes) {
+		if (err) return callback(err);
+		(function next(i) {
+			if (i == heroes.length) {
+				heroes.sort(function(a, b) {
+					return b.score - a.score;
+				});
+				return callback(null, heroes);
+			} else {
+				heroes[i].chance = Calculator.AgrestiCoullLower(heroes[i].games, heroes[i].wins);
+				heroes[i].kills /= heroes[i].games;
+				heroes[i].deaths /= heroes[i].games;
+				heroes[i].assists /= heroes[i].games;
+				heroes[i].gpm = heroes[i].gpm / heroes[i].games * 100; 
+				heroes[i].points = heroes[i].kills * 10 + heroes[i].assists * 2 - heroes[i].deaths * 5;
+				heroes[i].chance *= 100;
+				heroes[i].score = Calculator.calculateScore(heroes[i]); 
+				Hero.findOne({ id: heroes[i].hero }, function(err, hero) {
+					if (err) return callback(err);
+					heroes[i].hero = hero;
+					next(i + 1);
+				});
+			}
+		})(0);
+		heroes.sort(function(a, b) {
+			return b.score - a.score;
+		});
+	});
+};
+
 function calculateBalanceFactor(game, callback) {
 	var slots = [];
 	for (var index = 0; index < 9; index++) {
@@ -171,6 +223,8 @@ module.exports = {
 	'getRankingPosition': getRankingPosition,
 	'getRankingPositions': getRankingPositions,
 	'getPlayerStats': getPlayerStats,
+	'getHeroStats': getHeroStats,
 	'getAllPlayersRanking': getAllPlayersRanking,
+	'getAllHeroesRanking': getAllHeroesRanking,
 	'calculateBalanceFactor': calculateBalanceFactor
 };
