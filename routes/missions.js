@@ -677,10 +677,10 @@ router.post('/:username/rank/chunnin', function(req, res) {
 			for (var i = 0; i < alias.alias.length; i++) {
 				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
 			}  
-			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 15 }, deaths: { $lte: 10 } } }, recorded: true, balance_factor: { $gt: 0.95 } };
+			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 15 }, deaths: { $lte: 8 } } }, recorded: true, balance_factor: { $gt: 0.95 } };
 			Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
-					return res.status(400).json({ error: 'You didn\'t play any game with over 15 kills and less than 10 deaths today.' });
+					return res.status(400).json({ error: 'You didn\'t play any game with over 15 kills and less than 8 deaths today.' });
 				} else {
 					alias.rank = 'chunnin';
 					alias.save(function(err) {
@@ -705,10 +705,10 @@ router.post('/:username/rank/tokubetsu', function(req, res) {
 			for (var i = 0; i < alias.alias.length; i++) {
 				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
 			}  
-			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 20 }, deaths: { $lte: 10 } } }, recorded: true, balance_factor: { $gt: 0.95 } };
+			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 20 }, deaths: { $lte: 8 } } }, recorded: true, balance_factor: { $gt: 0.95 } };
 			Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
-					return res.status(400).json({ error: 'You didn\'t play any game with over 20 kills and less than 10 deaths today.' });
+					return res.status(400).json({ error: 'You didn\'t play any game with over 20 kills and less than 8 deaths today.' });
 				} else {
 					alias.rank = 'tokubetsu jounin';
 					alias.save(function(err) {
@@ -733,7 +733,7 @@ router.post('/:username/rank/jounin', function(req, res) {
 			for (var i = 0; i < alias.alias.length; i++) {
 				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
 			}  
-			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 25 }, deaths: { $lte: 10 } } }, recorded: true, balance_factor: { $gt: 0.95 } };
+			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 25 }, deaths: { $lte: 8 } } }, recorded: true, balance_factor: { $gt: 0.95 } };
 			Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
 					return res.status(400).json({ error: 'You didn\'t play any game with over 25 kills and less than 8 deaths today.' });
@@ -761,10 +761,10 @@ router.post('/:username/rank/anbu', function(req, res) {
 			for (var i = 0; i < alias.alias.length; i++) {
 				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
 			}  
-			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 30 }, deaths: { $lte: 10 } } }, recorded: true, balance_factor: { $gt: 0.95 } };
+			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 35 }, deaths: { $lte: 8 } } }, recorded: true, balance_factor: { $gt: 0.95 } };
 			Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
-					return res.status(400).json({ error: 'You didn\'t play any game with over 35 kills and less than 5 deaths today.' });
+					return res.status(400).json({ error: 'You didn\'t play any game with over 35 kills and less than 8 deaths today.' });
 				} else {
 					alias.rank = 'anbu';
 					alias.save(function(err) {
