@@ -283,8 +283,8 @@ router.post('/:game_id', function(req, res) {
 									stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
 									stat.assists = stat.assists * alpha + game.slots[index].assists * beta;
 									stat.gpm = stat.gpm * alpha + game.slots[index].gpm * beta;
-									if (game.slots[index].win) stat.wins += 2;
-									stat.games += 2; 
+									if (game.slots[index].win) stat.wins += 1;
+									stat.games += 1; 
 								} else {  
 									var alpha = decayFactor + (1 - decayFactor) * (1 - game.balance_factor);
 									var beta = (1 - decayFactor) * game.balance_factor; 
