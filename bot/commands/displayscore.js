@@ -33,15 +33,15 @@ module.exports = function(ev, playerName) {
 						}
 						response += '\nTop-5 worst heroes (last three months):\n';
 						for (var i = 0; i < ranking.worstHeroes.length; i++) {
-							response += (i + 1) + '. < ' + (ranking.worstHeroes[i].hero && ranking.worstHeroes[i].hero.name || 'Unknown') + ' >. Average  KDA: <' + Math.round(ranking.worstHeroes[i].kills) + '/' + Math.round(ranking.worstHeroes[i].deaths) + '/' + Math.round(ranking.worstHeroes[i].assists) + '>. Average points: <' + Math.round(ranking.worstHeroes[i].points) + '>\n';
+							response += (i + 1) + '. < ' + (ranking.worstHeroes[i].hero && ranking.worstHeroes[i].hero.name || 'Unknown') + ' >. Average KDA: <' + Math.round(ranking.worstHeroes[i].kills) + '/' + Math.round(ranking.worstHeroes[i].deaths) + '/' + Math.round(ranking.worstHeroes[i].assists) + '>. Average points: <' + Math.round(ranking.worstHeroes[i].points) + '>\n';
 						}
 						response += '\nBest game:\n';
 						if (ranking.bestGame) {
-							response += '<' + ranking.bestGame.id + '> < ' + (ranking.bestGame.slot.hero && ranking.bestGame.slot.hero.name || 'Unknown') + ' > KDA: <' + ranking.bestGame.slot.kills + '/' + ranking.bestGame.slot.deaths + '/' + ranking.bestGame.slot.assists + '>. Points: <' + ranking.bestGame.slot.points + '>\n';
+							response += '<' + ranking.bestGame.id + '>. < ' + (ranking.bestGame.slot.hero && ranking.bestGame.slot.hero.name || 'Unknown') + ' > KDA: <' + ranking.bestGame.slot.kills + '/' + ranking.bestGame.slot.deaths + '/' + ranking.bestGame.slot.assists + '>. Points: <' + ranking.bestGame.slot.points + '>\n';
 						}
 						response += 'Worst game:\n';
 						if (ranking.worstGame) {
-							response += '<' + ranking.worstGame.id + '> < ' + (ranking.worstGame.slot.hero && ranking.worstGame.slot.hero.name || 'Unknown') + ' > KDA: <' + ranking.worstGame.slot.kills + '/' + ranking.worstGame.slot.deaths + '/' + ranking.worstGame.slot.assists + '>. Points: <' + ranking.worstGame.slot.points + '>\n';
+							response += '<' + ranking.worstGame.id + '>. < ' + (ranking.worstGame.slot.hero && ranking.worstGame.slot.hero.name || 'Unknown') + ' > KDA: <' + ranking.worstGame.slot.kills + '/' + ranking.worstGame.slot.deaths + '/' + ranking.worstGame.slot.assists + '>. Points: <' + ranking.worstGame.slot.points + '>\n';
 						}
 						'\nLast game:           ' + ranking.lastGame + '\n\n';
 						response += '```';  
