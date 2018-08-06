@@ -38,11 +38,11 @@ module.exports = function(ev, playerName) {
 							}
 						}
 						if (ranking.bestGame) {
-							response += '\nBest game:\n';
+							response += '\nBest game (last three months):\n';
 							if (ranking.bestGame) {
 								response += '<' + ranking.bestGame.id + '>. < ' + (ranking.bestGame.slot.hero && ranking.bestGame.slot.hero.name || 'Unknown') + ' > KDA: <' + ranking.bestGame.slot.kills + '/' + ranking.bestGame.slot.deaths + '/' + ranking.bestGame.slot.assists + '>. Points: <' + ranking.bestGame.slot.points + '>\n';
 							}
-							response += 'Worst game:\n';
+							response += 'Worst game (last three months):\n';
 							if (ranking.worstGame) {
 								response += '<' + ranking.worstGame.id + '>. < ' + (ranking.worstGame.slot.hero && ranking.worstGame.slot.hero.name || 'Unknown') + ' > KDA: <' + ranking.worstGame.slot.kills + '/' + ranking.worstGame.slot.deaths + '/' + ranking.worstGame.slot.assists + '>. Points: <' + ranking.worstGame.slot.points + '>\n';
 							}
