@@ -392,7 +392,7 @@ router.get('/players/:username', function(req, res) {
 				if (err) return res.status(400).json({ 'error': err }); 
 				allStat = StatCalculator.getRankingPositions(stats, allStat);       
 				Alias.findOne({ $or: [{username: req.params.username.toLowerCase() }, { alias: req.params.username.toLowerCase() }] }, function(err, user) {
-					var lastMonth = moment().subtract('months', 3).toDate();
+					var lastMonth = moment().subtract(3, 'month').toDate();
 					Game.aggregate([
 					{
 						$unwind: '$slots',
@@ -402,7 +402,7 @@ router.get('/players/:username', function(req, res) {
 							'createdAt': { $gt: lastMonth },
 							'slots.username': { $in: allStat.usernames },
 							'recorded': true,
-							'balance_factor': { $gt: 0.9 }
+							'balance_factor': { $gt: 0.95 }
 						}
 					},
 					{
@@ -437,7 +437,55 @@ router.get('/players/:username', function(req, res) {
 									return a.points - b.points;
 								});
 								var worstHeroes = heroes.slice(0, 5);
-								return res.json({ 'stat': allStat, 'lastGame': mostRecentDate, 'user': user, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes });
+								Game.find({ 
+									'recorded': true,
+									'balance_factor': { $gt: 0.95 },
+									'slots.username': { $in: allStat.usernames },
+									'slots.kills': { $ne: null },
+									'createdAt': { $gt: lastMonth },
+								}).lean().exec(function(err, games) {
+									if (err) return res.status(400).json({ 'error': err });
+									if (!games || games.length == 0) {
+										return res.json({ 'stat': allStat, 'lastGame': mostRecentDate, 'user': user, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': null, 'worstGame': null });
+									} else {
+										for (var i = games.length - 1; i >= 0; i--) {
+											for (var j = games[i].slots.length - 1; j >= 0; j--) {
+												var isSlot = false; 
+												for (var k = 0; k < allStat.usernames.length; k++) {
+													if (games[i].slots[j] && games[i].slots[j].username && games[i].slots[j].username.match(allStat.usernames[k])) {
+														isSlot = true; 
+														break;
+													}
+												}
+												if (!isSlot) {
+													games[i].slots.splice(j, 1);
+												}
+											}
+											games[i].slot = games[i].slots[0];
+											games[i].slot.points = games[i].slot.kills * 10 + games[i].slot.assists * 2 - games[i].slot.deaths * 5;
+											if (games[i].slot.kills == 0 && games[i].slot.deaths == 0 && games[i].slot.assists == 0) {
+												games.splice(i, 1);
+											}
+										}
+										if (games.length > 0) {
+											games.sort(function(a, b) {
+												return b.slot.points - a.slot.points;
+											});
+											var bestGame = games[0];
+											var worstGame = games[games.length - 1];
+											Hero.findOne({ id: bestGame.slot.hero }, function(err, hero) {
+												bestGame.slot.hero = hero;
+												Hero.findOne({ id: worstGame.slot.hero }, function(err, hero) {
+													worstGame.slot.hero = hero;
+													return res.json({ 'stat': allStat, 'lastGame': mostRecentDate, 'user': user, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': bestGame, 'worstGame': worstGame });
+												});
+											});
+										} else {
+											return res.json({ 'stat': allStat, 'lastGame': mostRecentDate, 'user': user, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': null, 'worstGame': null });
+										}
+									}
+								});
+								
 							} else {
 								Hero.findOne({ id: heroes[i]._id }, function(err, hero) {
 									if (!hero) {
