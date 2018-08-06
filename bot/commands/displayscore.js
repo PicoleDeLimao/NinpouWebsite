@@ -27,7 +27,6 @@ module.exports = function(ev, playerName) {
 						'Average points:      <' + Math.round(player.points) + '> (Ranking <' + player.ranking.points + '>)\n' +  
 						'Average gold/minute: <' + Math.round(player.gpm) + '> (Ranking <' + player.ranking.gpm + '>)\n' +   
 						'Chance of winning:   <' + (player.chance).toFixed(2) + '%> (Ranking <' + player.ranking.chance + '>)\n\n' + 
-						'Last game:           ' + ranking.lastGame + '\n\n';
 						response += 'Top-5 best heroes (last three months):\n';
 						for (var i = 0; i < ranking.bestHeroes.length; i++) {
 							response += (i + 1) + '. < ' + (ranking.bestHeroes[i].hero && ranking.bestHeroes[i].hero.name || 'Unknown') + ' >. Average KDA: <' + Math.round(ranking.bestHeroes[i].kills) + '/' + Math.round(ranking.bestHeroes[i].deaths) + '/' + Math.round(ranking.bestHeroes[i].assists) + '>. Average points: <' + Math.round(ranking.bestHeroes[i].points) + '>\n';
@@ -44,6 +43,7 @@ module.exports = function(ev, playerName) {
 						if (ranking.worstGame) {
 							response += '<' + ranking.worstGame.id + '> < ' + (ranking.worstGame.slot.hero && ranking.worstGame.slot.hero.name || 'Unknown') + ' > KDA: <' + ranking.worstGame.slot.kills + '/' + ranking.worstGame.slot.deaths + '/' + ranking.worstGame.slot.assists + '>. Points: <' + ranking.worstGame.slot.points + '>\n';
 						}
+						'\nLast game:           ' + ranking.lastGame + '\n\n';
 						response += '```';  
 						ev.channel.send(response);
 					});
