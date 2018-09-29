@@ -19,12 +19,20 @@
 			</div>
 		</md-nav-item>
 		-->
-		<md-nav-item md-nav-click="goto('heroes')" name="heroes">Heroes</md-nav-item>
-		<md-nav-item md-nav-click="goto('items')" name="items">Items</md-nav-item>
+		<!--<md-nav-item md-nav-click="goto('heroes')" name="heroes">Heroes</md-nav-item>
+		<md-nav-item md-nav-click="goto('items')" name="items">Items</md-nav-item>-->
 		<md-nav-item md-nav-click="goto('games')" name="games">Games</md-nav-item>
-		<md-nav-item md-nav-click="goto('stats')" name="stats">Stats</md-nav-item>
+		<!--<md-nav-item md-nav-click="goto('stats')" name="stats">Stats</md-nav-item>-->
 		<md-nav-item md-nav-click="goto('forum.home')" name="forum">Forum</md-nav-item>
 		<span flex></span> 
+		<div layout-align="center center" layout="row">
+			<a href="https://discord.gg/hAtXyyR" target="_blank">
+				<md-button class="md-primary md-raised" aria-label="Discord">
+					<i class="fab fa-discord" aria-hidden="true"></i>
+					Discord
+				</md-button>
+			</a>
+		</div> 
 		<div layout-align="center center" layout="row">
 			<a href="/latest" target="_blank">
 				<md-button class="md-primary md-raised" aria-label="Download link">
@@ -93,10 +101,10 @@
 	<md-content layout-padding layout="column">
 		<md-button ng-click="goto('home')" class="md-primary">Home</md-button>
 		<md-button ng-click="goto('blog')" class="md-primary">Blog</md-button>
-		<md-button ng-click="goto('heroes')" class="md-primary">Heroes</md-button>
-		<md-button ng-click="goto('items')" class="md-primary">Items</md-button>
+		<!--<md-button ng-click="goto('heroes')" class="md-primary">Heroes</md-button>
+		<md-button ng-click="goto('items')" class="md-primary">Items</md-button>-->
 		<md-button ng-click="goto('games')" class="md-primary">Games</md-button>
-		<md-button ng-click="goto('stats')" class="md-primary">Stats</md-button>
+		<!--<md-button ng-click="goto('stats')" class="md-primary">Stats</md-button>-->
 		<md-button ng-click="goto('forum.home')" class="md-primary">Forum</md-button>
 		<!--<md-divider></md-divider>
 		<p style="text-align: center;">Dota 2</p>
