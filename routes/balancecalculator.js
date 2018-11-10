@@ -29,9 +29,9 @@ function calculateBalance(slots) {
 			team3 += slots[i][1];
 		}
 	}
-	team1 /= 3;
-	team2 /= 3;
-	team3 /= 3;
+	//team1 /= 3;
+	//team2 /= 3;
+	//team3 /= 3;
 	var a = Math.pow(team1 - team2, 2);
 	var b = Math.pow(team2 - team3, 2);
 	var c = Math.pow(team1 - team3, 2);
@@ -123,9 +123,9 @@ function getBalanceFactor(slots, stat) {
 			team3 += slots[i][stat];
 		}
 	}
-	team1 /= 3;
-	team2 /= 3;
-	team3 /= 3;
+	//team1 /= 3;
+	//team2 /= 3;
+	//team3 /= 3;
 	var a = Math.pow(team1 - team2, 2);
 	var b = Math.pow(team2 - team3, 2);
 	var c = Math.pow(team1 - team3, 2);
