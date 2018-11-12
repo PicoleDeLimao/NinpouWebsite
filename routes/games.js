@@ -12,7 +12,7 @@ var StatCalculator = require('./statcalculator');
 var BalanceCalculator = require('./balancecalculator');
 
 var cookie = '';
-var code = 'g4aah'; 
+var code = '24wcr'; 
 
 function getCookie() {
 	var request = https.request({ host: 'entgaming.net', path: '/forum/ucp.php?mode=login', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': 0 } }, function(res) {
