@@ -42,7 +42,7 @@ function addCharacter(img, alias, callback) {
 		} else if (alias.rank == 'anbu' or alias.rank == 'kage') {
 			level = 3;
 		}
-		Jimp.read('public/images/10_char_' + alias.character + '_' + level.png', function(err, character) {
+		Jimp.read('public/images/10_char_' + alias.character + '_' + level + '.png', function(err, character) {
 			if (err) return callback(img);
 			img.composite(character, 0, 0);
 			return callback(img);
