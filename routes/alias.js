@@ -36,7 +36,13 @@ function addSummon(img, alias, callback) {
 
 function addCharacter(img, alias, callback) {
 	if (alias.character != 'none') {
-		Jimp.read('public/images/10_char_' + alias.character + '.png', function(err, character) {
+		var level = 1;
+		if (alias.rank == 'jounin') {
+			level = 2;
+		} else if (alias.rank == 'anbu' or alias.rank == 'kage') {
+			level = 3;
+		}
+		Jimp.read('public/images/10_char_' + alias.character + '_' + level.png', function(err, character) {
 			if (err) return callback(img);
 			img.composite(character, 0, 0);
 			return callback(img);
