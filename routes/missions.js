@@ -114,7 +114,7 @@ function dailyGameMission(req, res, name, condition, conditionError, goldReward,
 					} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
 						amount *= 20;
 					}
-					amount *= req.user.level;
+					amount *= req.user.level / 10;
 					var xp = xpReward;
 					var streak = doneYesterday;
 					if (streak) {
@@ -321,7 +321,7 @@ router.post('/:username/dailies', function(req, res) {
 						} else if (alias.summon == 'dog' && ((Math.random() * 100) < 10)) {
 							amount *= 20;
 						}
-						amount *= req.user.level;
+						amount *= req.user.level / 10;
 						var xp = 50;
 						var streak = doneYesterday;
 						if (streak) {
@@ -384,7 +384,7 @@ router.post('/:username/play', function(req, res) {
 			} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
 				amount *= 20;
 			}
-			amount *= req.user.level;
+			amount *= req.user.level / 10;
 			var xp = 10;
 			var today = moment().utcOffset('+0200');
 			if (today.day() == 6 || today.day() == 0) {
@@ -443,7 +443,7 @@ router.post('/:username/win', function(req, res) {
 			} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
 				amount *= 20;
 			}
-			amount *= req.user.level;
+			amount *= req.user.level / 10;
 			var xp = 20;
 			var today = moment().utcOffset('+0200');
 			if (today.day() == 6 || today.day() == 0) {
@@ -628,7 +628,7 @@ router.post('/:username/top', function(req, res) {
 						username: req.user.username,
 						name: 'top'
 					});
-					amount *= req.user.level;
+					amount *= req.user.level / 10;
 					mission.save(function(err) {
 						if (err) return res.status(500).json({ 'error': err });
 						req.user.gold += amount;

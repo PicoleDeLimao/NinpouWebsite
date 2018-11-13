@@ -22,7 +22,7 @@ module.exports = function(ev) {
 			} else {  
 				try {
 					var data = JSON.parse(body);
-					var response = 'You won **' + data.amount + 'g**!';
+					var response = 'You won **' + Math.floor(data.amount) + 'g**!';
 					if (data.streak)
 						response += ' STREAK BONUS!';
 					if (data.double) 

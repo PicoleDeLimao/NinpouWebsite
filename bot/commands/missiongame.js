@@ -21,7 +21,7 @@ module.exports = function(ev, mission) {
 			} else {  
 				try {
 					var data = JSON.parse(body);
-					var response = 'You won **' + data.amount + 'g** and **' + data.xp + ' xp**!';
+					var response = 'You won **' + Math.floor(data.amount) + 'g** and **' + data.xp + ' xp**!';
 					if (data.streak)
 						response += ' STREAK BONUS!';
 					var today = moment().utcOffset('+0200');

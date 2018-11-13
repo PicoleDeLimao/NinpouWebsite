@@ -20,7 +20,7 @@ module.exports = function(ev) {
 			} else {  
 				try { 
 					var data = JSON.parse(body);
-					var response = 'You won **' + data.amount + 'g** and **' + data.xp + ' xp**!';
+					var response = 'You won **' + Math.floor(data.amount) + 'g** and **' + data.xp + ' xp**!';
 					if (data.levelup)
 						response += ' CONGRATULATIONS!! You leveled up. Your current level is now: ' + data.level;
 					ev.channel.send(response);  
