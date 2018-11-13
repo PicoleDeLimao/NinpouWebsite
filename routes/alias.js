@@ -254,7 +254,7 @@ var affiliations = {
 	},
 	'akatsuki': {
 		'level': 50,
-		'gold': 1000000
+		'gold': 10000000
 	}
 };
 
@@ -294,115 +294,115 @@ var characters = {
 	},
 	'hinata': {
 		'level': 5,
-		'gold': 1000
+		'gold': 10000
 	},
 	'neji': {
 		'level': 5,
-		'gold': 1000
+		'gold': 10000
 	},
 	'lee': {
 		'level': 5,
-		'gold': 1000
+		'gold': 10000
 	},
 	'shino': {
 		'level': 5,
-		'gold': 1000
+		'gold': 10000
 	},
 	'kiba': {
 		'level': 5,
-		'gold': 1000
+		'gold': 10000
 	},
 	'tenten': {
 		'level': 5,
-		'gold': 1000
+		'gold': 10000
 	},
 	'ino': {
 		'level': 5,
-		'gold': 1000
+		'gold': 10000
 	},
 	'shikamaru': {
 		'level': 5,
-		'gold': 1000
+		'gold': 10000
 	},
 	'chouji': {
 		'level': 5,
-		'gold': 1000
+		'gold': 10000
 	},
 	'orochimaru': {
 		'level': 20,
-		'gold': 100000
+		'gold': 1000000
 	},
 	'tsunade': {
 		'level': 20,
-		'gold': 100000
+		'gold': 1000000
 	},
 	'sasori': {
 		'level': 25,
-		'gold': 200000
+		'gold': 2000000
 	},
 	'deidara': {
 		'level': 25,
-		'gold': 200000
+		'gold': 2000000
 	},
 	'hidan': {
 		'level': 25,
-		'gold': 200000
+		'gold': 2000000
 	},
 	'kakuzu': {
 		'level': 25,
-		'gold': 200000
+		'gold': 2000000
 	},
 	'konan': {
 		'level': 25,
-		'gold': 200000
+		'gold': 2000000
 	},
 	'kisame': {
 		'level': 35,
-		'gold': 500000
+		'gold': 5000000
 	},
 	'kakashi': {
 		'level': 35,
-		'gold': 500000
+		'gold': 5000000
 	},
 	'gai': {
 		'level': 35,
-		'gold': 500000
+		'gold': 5000000
 	},
 	'bee': {
 		'level': 35,
-		'gold': 500000
+		'gold': 5000000
 	},
 	'tobirama': {
 		'level': 50,
-		'gold': 1000000
+		'gold': 10000000
 	},
 	'minato': {
 		'level': 75,
-		'gold': 10000000
+		'gold': 100000000
 	},
 	'obito': {
 		'level': 75,
-		'gold': 10000000
+		'gold': 100000000
 	},
 	'itachi': {
 		'level': 75,
-		'gold': 10000000
+		'gold': 100000000
 	},
 	'nagato': {
 		'level': 75,
-		'gold': 10000000
+		'gold': 100000000
 	},
 	'madara': {
 		'level': 100,
-		'gold': 100000000
+		'gold': 1000000000
 	},
 	'hashirama': {
 		'level': 100,
-		'gold': 100000000
+		'gold': 1000000000
 	},
 	'kaguya': {
 		'level': 150,
-		'gold': 1000000000
+		'gold': 10000000000
 	}
 };
 
@@ -425,47 +425,47 @@ router.put('/:username/character/:character', function(req, res) {
 var summons = {
 	'frog1': {
 		'level': 10,
-		'gold': 10000
+		'gold': 100000
 	},
 	'frog2': {
 		'level': 25,
-		'gold': 100000
+		'gold': 1000000
 	},
 	'frog3': {
 		'level': 50,
-		'gold': 1000000
+		'gold': 10000000
 	},
 	'snake1': {
 		'level': 10,
-		'gold': 10000
+		'gold': 100000
 	},
 	'snake2': {
 		'level': 25,
-		'gold': 100000
+		'gold': 1000000
 	},
 	'snake3': {
 		'level': 50,
-		'gold': 1000000
+		'gold': 10000000
 	},
 	'slug1': {
 		'level': 10,
-		'gold': 10000
+		'gold': 100000
 	},
 	'slug2': {
 		'level': 50,
-		'gold': 1000000
+		'gold': 10000000
 	},
 	'hawk': {
 		'level': 25,
-		'gold': 100000
+		'gold': 1000000
 	},
 	'crow': {
 		'level': 25,
-		'gold': 100000
+		'gold': 1000000
 	},
 	'dog': {
 		'level': 15,
-		'gold': 15000
+		'gold': 150000
 	}
 };
 

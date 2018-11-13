@@ -609,17 +609,17 @@ bot.on('message', function(ev) {
 						case 'summons':
 							ev.channel.send('**Oink, oink**!\nHere are the summons you can buy\n' + 
 							'```md\nUse !summon <id> to buy a summon\n' + 
-							'[1] [Frog lvl. 1]     : Requires level 10, 10000g (Increase mission reward by 150%)\n' + 
-							'[2] [Frog lvl. 2]     : Requires level 25, 100000g (Increase mission reward by 250%)\n' + 
-							'[3] [Frog lvl. 3]     : Requires level 50, 1000000g (Increase mission reward by 500%)\n' + 
-							'[4] [Snake lvl. 1]    : Requires level 10, 10000g (Increase chance of gambling by 10%)\n' + 
-							'[5] [Snake lvl. 2]    : Requires level 25, 100000g  (Increase chance of gambling by 15%)\n' + 
-							'[6] [Snake lvl. 3]    : Requires level 50, 1000000g (Increase chance of gambling by 25%)\n' +
-							'[7] [Slug lvl. 1]     : Requires level 10, 10000g (Decrease mission requirement by 1)\n' + 
-							'[8] [Slug lvl. 2]     : Requires level 50, 1000000g (Decrease mission requirement by 2)\n' + 
-							'[9] [Hawk]            : Requires level 25, 100000g (Increase rob chance by 10%)\n' + 
-							'[10] [Crow]           : Requires level 25, 100000g (Decrease chance of being robbed by 15%)\n' + 
-							'[11] [Dog]            : Requires level 15, 15000g (10% chance to get 20x reward on missions)```');
+							'[1] [Frog lvl. 1]     : Requires level 10, 100000g (Increase mission reward by 150%)\n' + 
+							'[2] [Frog lvl. 2]     : Requires level 25, 1000000g (Increase mission reward by 250%)\n' + 
+							'[3] [Frog lvl. 3]     : Requires level 50, 10000000g (Increase mission reward by 500%)\n' + 
+							'[4] [Snake lvl. 1]    : Requires level 10, 100000g (Increase chance of gambling by 10%)\n' + 
+							'[5] [Snake lvl. 2]    : Requires level 25, 1000000g  (Increase chance of gambling by 15%)\n' + 
+							'[6] [Snake lvl. 3]    : Requires level 50, 10000000g (Increase chance of gambling by 25%)\n' +
+							'[7] [Slug lvl. 1]     : Requires level 10, 100000g (Decrease mission requirement by 1)\n' + 
+							'[8] [Slug lvl. 2]     : Requires level 50, 10000000g (Decrease mission requirement by 2)\n' + 
+							'[9] [Hawk]            : Requires level 25, 1000000g (Increase rob chance by 10%)\n' + 
+							'[10] [Crow]           : Requires level 25, 1000000g (Decrease chance of being robbed by 15%)\n' + 
+							'[11] [Dog]            : Requires level 15, 150000g (10% chance to get 20x reward on missions)```');
 							break;
 						case 'summon':
 							if (args.length == 1) {
@@ -660,8 +660,8 @@ bot.on('message', function(ev) {
 							'[Kirigakure]          : Requires level 5, 1000g\n' + 
 							'[Kumogakure]          : Requires level 5, 1000g\n' + 
 							'[Iwagakure]           : Requires level 5, 1000g\n' +
-							'[Otogakure]           : Requires level 15, 10000g\n' + 
-							'[Akatsuki]            : Requires level 50, 1000000g```');
+							'[Otogakure]           : Requires level 15, 100000g\n' + 
+							'[Akatsuki]            : Requires level 50, 10000000g```');
 							break;
 						case 'join':
 							if (args.length == 1) {
@@ -677,34 +677,34 @@ bot.on('message', function(ev) {
 							'[Sasuke]             : -\n' + 
 							'[Sakura]             : -\n' + 
 							'[Gaara]              : -\n' + 
-							'[Neji]               : Requires level 5, 1000g\n' + 
-							'[Lee]                : Requires level 5, 1000g\n' + 
-							'[Tenten]             : Requires level 5, 1000g\n' + 
-							'[Shino]              : Requires level 5, 1000g\n' + 
-							'[Hinata]             : Requires level 5, 1000g\n' + 
-							'[Kiba]               : Requires level 5, 1000g\n' + 
-							'[Ino]                : Requires level 5, 1000g\n' + 
-							'[Shikamaru]          : Requires level 5, 1000g\n' + 
-							'[Chouji]             : Requires level 5, 1000g\n' + 
-							'[Tsunade]            : Requires level 20, 100000g\n' + 
-							'[Orochimaru]         : Requires level 20, 100000g\n' + 
-							'[Sasori]             : Requires level 25, 200000g\n' + 
-							'[Deidara]            : Requires level 25, 200000g\n' + 
-							'[Hidan]              : Requires level 25, 200000g\n' + 
-							'[Kakuzu]             : Requires level 25, 200000g\n' + 
-							'[Konan]              : Requires level 25, 200000g\n' + 
-							'[Kisame]             : Requires level 35, 500000g\n' + 
-							'[Kakashi]            : Requires level 35, 500000g\n' + 
-							'[Gai]                : Requires level 35, 500000g\n' +
-							'[Bee]                : Requires level 35, 500000g\n' + 
-							'[Tobirama]           : Requires level 50, 1000000g\n' + 
-							'[Minato]             : Requires level 75, 10000000g\n' + 
-							'[Itachi]             : Requires level 75, 10000000g\n' + 
-							'[Nagato]             : Requires level 75, 10000000g\n' + 
-							'[Obito]              : Requires level 75, 10000000g\n' + 
-							'[Madara]             : Requires level 100, 100000000g\n' + 
-							'[Hashirama]          : Requires level 100, 100000000g\n' +
-							'[Kaguya]             : Requires level 150, 1000000000g```');
+							'[Neji]               : Requires level 5, 10000g\n' + 
+							'[Lee]                : Requires level 5, 10000g\n' + 
+							'[Tenten]             : Requires level 5, 10000g\n' + 
+							'[Shino]              : Requires level 5, 10000g\n' + 
+							'[Hinata]             : Requires level 5, 10000g\n' + 
+							'[Kiba]               : Requires level 5, 10000g\n' + 
+							'[Ino]                : Requires level 5, 10000g\n' + 
+							'[Shikamaru]          : Requires level 5, 10000g\n' + 
+							'[Chouji]             : Requires level 5, 10000g\n' + 
+							'[Tsunade]            : Requires level 20, 1000000g\n' + 
+							'[Orochimaru]         : Requires level 20, 1000000g\n' + 
+							'[Sasori]             : Requires level 25, 2000000g\n' + 
+							'[Deidara]            : Requires level 25, 2000000g\n' + 
+							'[Hidan]              : Requires level 25, 2000000g\n' + 
+							'[Kakuzu]             : Requires level 25, 2000000g\n' + 
+							'[Konan]              : Requires level 25, 2000000g\n' + 
+							'[Kisame]             : Requires level 35, 5000000g\n' + 
+							'[Kakashi]            : Requires level 35, 5000000g\n' + 
+							'[Gai]                : Requires level 35, 5000000g\n' +
+							'[Bee]                : Requires level 35, 5000000g\n' + 
+							'[Tobirama]           : Requires level 50, 10000000g\n' + 
+							'[Minato]             : Requires level 75, 100000000g\n' + 
+							'[Itachi]             : Requires level 75, 100000000g\n' + 
+							'[Nagato]             : Requires level 75, 100000000g\n' + 
+							'[Obito]              : Requires level 75, 100000000g\n' + 
+							'[Madara]             : Requires level 100, 1000000000g\n' + 
+							'[Hashirama]          : Requires level 100, 1000000000g\n' +
+							'[Kaguya]             : Requires level 150, 10000000000g```');
 							break;
 						case 'char':
 							if (args.length == 1) {
