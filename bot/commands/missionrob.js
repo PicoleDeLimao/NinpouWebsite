@@ -49,7 +49,7 @@ module.exports = function(ev, user) {
 									var data = JSON.parse(body);
 									var response = '';
 									if (data.won) {
-										response += 'You won!! You stole **' + Math.floor(data.amount + 'g** from <@' + user + '>!';
+										response += 'You won!! You stole **' + Math.floor(data.amount) + 'g** from <@' + user + '>!';
 									} else {
 										response += '<@' + user + '> won!! You lost **' + Math.floor(data.amount) + 'g**!';
 									} 
