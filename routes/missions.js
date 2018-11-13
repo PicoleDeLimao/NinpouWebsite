@@ -106,14 +106,15 @@ function dailyGameMission(req, res, name, condition, conditionError, goldReward,
 				} else {
 					var amount = goldReward;
 					if (req.user.summon == 'frog1') {
-						amount += Math.floor(amount * 0.15);
+						amount += Math.floor(amount * 1.5);
 					} else if (req.user.summon == 'frog2') {
-						amount += Math.floor(amount * 0.25);
+						amount += Math.floor(amount * 2.5);
 					} else if (req.user.summon == 'frog3') {
-						amount += Math.floor(amount * 0.5);
+						amount += Math.floor(amount * 5.0);
 					} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
-						amount *= 2;
+						amount *= 20;
 					}
+					amount *= req.user.level;
 					var xp = xpReward;
 					var streak = doneYesterday;
 					if (streak) {
@@ -158,18 +159,18 @@ router.post('/:username/rescue', function(req, res) {
 		if (doneToday) {
 			return res.status(400).json({ 'error': 'You already completed this mission today! **Oink!**' });
 		} else {
-			var amount = 10;
+			var amount = req.user.gold * 0.01;
 			var streak = doneYesterday;
 			var double = Math.round(Math.random() * 10) == 0;
-			if (req.user.summon == 'frog1') {
-				amount += Math.floor(amount * 0.15);
+			/*if (req.user.summon == 'frog1') {
+				amount += Math.floor(amount * 1.5);
 			} else if (req.user.summon == 'frog2') {
-				amount += Math.floor(amount * 0.25);
+				amount += Math.floor(amount * 2.5);
 			} else if (req.user.summon == 'frog3') {
-				amount += Math.floor(amount * 0.5);
+				amount += Math.floor(amount * 5.0);
 			} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
-				amount *= 2;
-			}
+				amount *= 20;
+			}*/
 			if (streak) amount *= 2;
 			if (double) amount *= 2;
 			var today = moment().utcOffset('+0200');
@@ -202,7 +203,7 @@ router.post('/:username/gamble', function(req, res) {
 			if (!req.body.amount || req.body.amount > req.user.gold) {
 				return res.status(400).json({ 'error': 'You don\'t have this amount to bet! **Oink!**' });
 			} 
-			var amount = Math.round(Math.min(req.body.amount, req.user.gold * 0.1));
+			var amount = Math.round(Math.min(req.body.amount, req.user.gold * 0.05));
 			getAvailableMissions(req.user.username, function(missions) {
 				var chance;
 				if (areAllMissionsCompleted(missions)) {
@@ -247,7 +248,7 @@ router.post('/:username/rob', function(req, res) {
 		} else { 
 			Alias.findOne({ username: req.body.user.toLowerCase() }, function(err, anotherUser) {
 				if (err) return res.status(500).json({ 'error': err });
-				var amount = Math.round(Math.min(req.user.gold * 0.1, anotherUser.gold * 0.1));
+				var amount = Math.round(Math.min(req.user.gold * 0.05, anotherUser.gold * 0.05));
 				var chanceSuccess = 50;
 				if (req.user.summon == 'hawk') {
 					chanceSuccess += 10;
@@ -312,14 +313,15 @@ router.post('/:username/dailies', function(req, res) {
 							amount = 1000;
 						}
 						if (alias.summon == 'frog1') {
-							amount += Math.floor(amount * 0.15);
+							amount += Math.floor(amount * 1.5);
 						} else if (alias.summon == 'frog2') {
-							amount += Math.floor(amount * 0.25);
+							amount += Math.floor(amount * 2.5);
 						} else if (alias.summon == 'frog3') {
-							amount += Math.floor(amount * 0.5);
+							amount += Math.floor(amount * 5.0);
 						} else if (alias.summon == 'dog' && ((Math.random() * 100) < 10)) {
-							amount *= 2;
+							amount *= 20;
 						}
+						amount *= req.user.level;
 						var xp = 50;
 						var streak = doneYesterday;
 						if (streak) {
@@ -374,14 +376,15 @@ router.post('/:username/play', function(req, res) {
 		} else {
 			var amount = 50;
 			if (req.user.summon == 'frog1') {
-				amount += Math.floor(amount * 0.15);
+				amount += Math.floor(amount * 1.5);
 			} else if (req.user.summon == 'frog2') {
-				amount += Math.floor(amount * 0.25);
+				amount += Math.floor(amount * 2.5);
 			} else if (req.user.summon == 'frog3') {
-				amount += Math.floor(amount * 0.5);
+				amount += Math.floor(amount * 5.0);
 			} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
-				amount *= 2;
+				amount *= 20;
 			}
+			amount *= req.user.level;
 			var xp = 10;
 			var today = moment().utcOffset('+0200');
 			if (today.day() == 6 || today.day() == 0) {
@@ -432,14 +435,15 @@ router.post('/:username/win', function(req, res) {
 		} else {
 			var amount = 200;
 			if (req.user.summon == 'frog1') {
-				amount += Math.floor(amount * 0.15);
+				amount += Math.floor(amount * 1.5);
 			} else if (req.user.summon == 'frog2') {
-				amount += Math.floor(amount * 0.25);
+				amount += Math.floor(amount * 2.5);
 			} else if (req.user.summon == 'frog3') {
-				amount += Math.floor(amount * 0.5);
+				amount += Math.floor(amount * 5.0);
 			} else if (req.user.summon == 'dog' && ((Math.random() * 100) < 10)) {
-				amount *= 2;
+				amount *= 20;
 			}
+			amount *= req.user.level;
 			var xp = 20;
 			var today = moment().utcOffset('+0200');
 			if (today.day() == 6 || today.day() == 0) {
@@ -624,6 +628,7 @@ router.post('/:username/top', function(req, res) {
 						username: req.user.username,
 						name: 'top'
 					});
+					amount *= req.user.level;
 					mission.save(function(err) {
 						if (err) return res.status(500).json({ 'error': err });
 						req.user.gold += amount;
