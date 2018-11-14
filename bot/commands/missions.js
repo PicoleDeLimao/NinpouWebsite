@@ -86,7 +86,7 @@ module.exports = function(ev) {
 								console.err(e);
 							}
 						} else {
-							msgEmbed = new Discord.RichEmbed() 
+							var msgEmbed = new Discord.RichEmbed() 
 									.setDescription(response)
 									.setFooter(description)
 									.setImage(img);
