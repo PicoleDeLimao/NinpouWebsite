@@ -3,7 +3,7 @@
 var http = require('http');
 var moment = require('moment');
 
-module.exports = function(ev, mission) {
+module.exports = function(ev, mission, auto, callback) {
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + ev.author.id + '/' + mission, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
@@ -11,17 +11,19 @@ module.exports = function(ev, mission) {
 		});
 		res.on('end', function() {
 			if (res.statusCode != 200) {
-				try {
-					var data = JSON.parse(body);
-					ev.channel.send(data.error);  
-				} catch (err) {
-					console.error(err);
-					ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+				if (!auto) {
+					try {
+						var data = JSON.parse(body);
+						ev.channel.send(data.error);  
+					} catch (err) {
+						console.error(err);
+						ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+					}
 				}
 			} else {  
 				try {
 					var data = JSON.parse(body);
-					var response = 'You won **' + Math.floor(data.amount) + 'g** and **' + data.xp + ' xp**!';
+					var response = (auto ? '**' + auto + '**: ' : '') + 'You won **' + Math.floor(data.amount) + 'g** and **' + data.xp + ' xp**!';
 					if (data.streak)
 						response += ' STREAK BONUS!';
 					var today = moment().utcOffset('+0200');
@@ -32,15 +34,20 @@ module.exports = function(ev, mission) {
 						response += ' CONGRATULATIONS!! You leveled up. Your current level is now: ' + data.level;
 					ev.channel.send(response);  
 				} catch (err) {
-					console.error(err);
-					ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+					if (!auto) {
+						console.error(err);
+						ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+					}
 				}
 			} 
+			if (callback) callback();
 		});
 	});
 	request.on('error', function(err) {
-		console.error(err);
-		ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+		if (!auto) {
+			console.error(err);
+			ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+		}
 	});
 	request.end();
 };

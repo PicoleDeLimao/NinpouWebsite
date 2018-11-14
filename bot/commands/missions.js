@@ -23,7 +23,8 @@ var missions = {
 };
 
 var missionsAllTime =	'[     -] [S-Rank] < !missions titles >          : Display all missions which reward titles\n\n' + 
-						'[     -] [S-Rank] < !missions ranks >           : Display all missions which reward ranks\n\n';
+						'[     -] [S-Rank] < !missions ranks >           : Display all missions which reward ranks\n\n' + 
+						'[     -] [     -] < !mission complete >         : Complete all missions you can at once\n'
 						
 module.exports = function(ev) {  
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + ev.author.id + '/available', method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
@@ -74,11 +75,24 @@ module.exports = function(ev) {
 							description = 'Pein: ' + name + ', here are your duties for today.';
 						}
 						var img = 'http://www.narutoninpou.com/images/mission-' + data.affiliation + '.png?cache=2222';
-						var msgEmbed = new Discord.RichEmbed() 
-								.setDescription(response)
-								.setFooter(description)
-								.setImage(img);
-						ev.channel.send(msgEmbed);
+						if (response.length > 2000) {
+							try {
+								var response1 = response.substr(0, 1800) + '```';
+								var response2 = '```md\n' + response.substr(1800);
+								ev.channel.send(response1).then(function() {
+									ev.channel.send(response2);
+								});
+							} catch (e) {
+								console.err(e);
+							}
+						} else {
+							msgEmbed = new Discord.RichEmbed() 
+									.setDescription(response)
+									.setFooter(description)
+									.setImage(img);
+							ev.channel.send(msgEmbed);
+						}
+						
 					}, true);
 					//ev.channel.send(response);
 				} catch (err) {

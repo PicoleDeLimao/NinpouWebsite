@@ -233,6 +233,24 @@ setInterval(function() {
 	} 
 }, 10000);
 
+function completeAllMissions(ev) {
+	missionRescue(ev, 'Rescue', function() {
+		missionGame(ev, 'play', 'Play', function() {
+			missionGame(ev, 'win', 'Win', function() {
+				missionGame(ev, 'farm3k', 'Farm', function() {
+					missionGame(ev, 'kills20', 'Assassin', function() {
+						missionGame(ev, 'deaths5', 'Untouchable', function() {
+							missionGame(ev, 'assists10', 'Angel', function() {
+								missionGame(ev, 'dailies', 'Dailies');
+							});
+						});
+					});
+				});
+			});
+		});
+	});
+}
+
 bot.on('ready', function (evt) {
 	console.error('Logged in as: ' + bot.user.tag);
 	bot.channels.forEach(function(channel) {
@@ -286,8 +304,8 @@ bot.on('ready', function (evt) {
 			});
 		}
 	});
-
 });
+
 bot.on('message', function(ev) {
 	var message = ev.content;
 	
@@ -499,10 +517,16 @@ bot.on('message', function(ev) {
 								displayMissions(ev);
 							}
 							break; 
+						case 'mc':
+							completeAllMissions(ev);
+							break;
 						case 'm':
 						case 'mission':
 							if (args.length > 0) {
 								switch (args[0]) {
+									case 'complete':
+										completeAllMissions(ev);
+										break;
 									case 'rescue':
 										missionRescue(ev);
 										break;
