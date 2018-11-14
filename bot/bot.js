@@ -241,7 +241,9 @@ function completeAllMissions(ev) {
 					missionGame(ev, 'kills20', 'Assassin', function() {
 						missionGame(ev, 'deaths5', 'Untouchable', function() {
 							missionGame(ev, 'assists10', 'Angel', function() {
-								missionGame(ev, 'dailies', 'Dailies');
+								missionGame(ev, 'dailies', 'Dailies', function() {
+									ev.channel.send('Done.');
+								});
 							});
 						});
 					});
