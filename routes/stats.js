@@ -385,7 +385,7 @@ function getPlayerHeroesRanking(username, usernames, heroNames, timePeriod, call
 				heroes[i].chance *= 100;
 				heroes[i].score = Calculator.calculateScore(heroes[i]); 
 				heroes[i].hero = heroNames[heroes[i]._id];
-				if (heroes[i]._id != 0 && heroes[i].points != 0) {
+				if (heroes[i]._id != 0 && heroes[i].points != 0 && heroes[i].hero) {
 					newHeroes.push(heroes[i]);
 				}
 			}
@@ -403,7 +403,7 @@ function getPlayerHeroesRanking(username, usernames, heroNames, timePeriod, call
 }
 
 router.get('/players/:username', function(req, res) {
-	var timePeriod = moment().subtract(3, 'month').toDate();
+	var timePeriod = moment().subtract(6, 'month').toDate();
 	getHeroes(function(err, heroes) {
 		if (err) return res.status(400).json({ error: err });
 		StatCalculator.getPlayerStats(req.params.username, function(err, allStat) {
