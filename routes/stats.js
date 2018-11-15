@@ -424,7 +424,8 @@ router.get('/players/:username', function(req, res) {
 								assists: games[i].slots[slot].assists,
 								points: games[i].slots[slot].kills * 10 + games[i].slots[slot].assists * 2 - games[i].slots[slot].deaths * 5,
 								hero: heroes[games[i].slots[slot].hero],
-								date: moment(dateFromObjectId(games[i]._id.toString())).fromNow()
+								date: moment(dateFromObjectId(games[i]._id.toString())).fromNow(),
+								win: games[i].slots[slot].win
 							});
 						}
 					}

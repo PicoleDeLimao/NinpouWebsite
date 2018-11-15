@@ -42,7 +42,7 @@ module.exports = function(ev, playerName) {
 							}
 							response += '\nLast 10 games:\n';
 							for (var i = 0; i < ranking.lastGames.length; i++) {
-								response += '<' + ranking.lastGames[i].id + '>. < ' + (ranking.lastGames[i].hero && ranking.lastGames[i].hero || 'Unknown') + ' > KDA: <' + ranking.lastGames[i].kills + '/' + ranking.lastGames[i].deaths + '/' + ranking.lastGames[i].assists + '>. Points: <' + ranking.lastGames[i].points + '>\t\t(' + ranking.lastGames[i].date + ')\n';
+								response += '<' + ranking.lastGames[i].id + '>. < ' + (ranking.lastGames[i].hero && ranking.lastGames[i].hero || 'Unknown') + ' > KDA: <' + ranking.lastGames[i].kills + '/' + ranking.lastGames[i].deaths + '/' + ranking.lastGames[i].assists + '>. Points: <' + ranking.lastGames[i].points + '>\t' + (ranking.lastGames[i].win ? '( VICTORY )' : '( DEFEAT )') + '\t(' + ranking.lastGames[i].date + ')\n';
 							}
 							response += '\nBest game:\n';
 							if (ranking.bestGame) {
