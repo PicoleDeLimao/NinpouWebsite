@@ -347,12 +347,13 @@ bot.on('message', function(ev) {
 		} else if (cmd == 'playercmds') {
 			ev.channel.send(  
 				'Player-related commands:\n```md\n' + 
-				'< !ra[n]king > [player_name] : Display player position in Ninpou ranking\n' + 
-				'< ![s]core > [player_name]   : Display a player score in the ranking\n' + 
-				'< !addalias > <player_name>  : Register a new alias\n' +  
-				'< ![w]hois > <player_name>   : Check who in discord is using a determined account\n' + 
-				'< !aliasof > <user>          : Display all alias from a user\n' + 
-				'< !setcolor> <#code>         : Set your color (only for "Can\'t get enough" rank\n' + 
+				'< !ra[n]king > [player_name]   : Display player position in Ninpou ranking\n' + 
+				'< ![s]core > [player_name]     : Display a player score in the ranking\n' + 
+				'< ![h]i[s]tory > [player_name] : Display the history of a player\n' + 
+				'< !addalias > <player_name>    : Register a new alias\n' +  
+				'< ![w]hois > <player_name>     : Check who in discord is using a determined account\n' + 
+				'< !aliasof > <user>            : Display all alias from a user\n' + 
+				'< !setcolor> <#code>           : Set your color (only for "Can\'t get enough" rank\n' + 
 				'```'
 			);  
 		} else if (cmd == 'rpgcmds') {
@@ -929,6 +930,18 @@ bot.on('message', function(ev) {
 								} 
 							} else {
 								displayScore(ev, ev.author.id);
+							}
+							break;
+						case 'hs':
+						case 'history':
+							if (args.length > 0) {
+								if (ev.mentions.users.array().length > 0) {
+									displayScore(ev, ev.mentions.users.array()[0].id, true);
+								} else {
+									displayScore(ev, args[0], true);
+								} 
+							} else {
+								displayScore(ev, ev.author.id, true);
 							}
 							break;
 						case 'heroes':

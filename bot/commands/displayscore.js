@@ -43,7 +43,7 @@ function getStringsFormatted(strings) {
 	return newStrings;
 }
 
-module.exports = function(ev, playerName) {
+module.exports = function(ev, playerName, hist) {
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/players/' + playerName }, function(res) {
 		var statusCode = res.statusCode;
 		var body = '';
@@ -67,8 +67,8 @@ module.exports = function(ev, playerName) {
 						'Average points:      <' + Math.round(player.points) + '> (Ranking <' + player.ranking.points + '>)\n' +  
 						'Average gold/minute: <' + Math.round(player.gpm) + '> (Ranking <' + player.ranking.gpm + '>)\n' +   
 						'Chance of winning:   <' + (player.chance).toFixed(2) + '%> (Ranking <' + player.ranking.chance + '>)\n\n```';
-						ev.channel.send(response);
-						if (ranking.lastGames.length > 0) {
+						if (!hist) ev.channel.send(response);
+						if (hist && ranking.lastGames.length > 0) {
 							response = '```md\nStatistics (last six months):\n\n';
 							
 							var allHeroes = [];
