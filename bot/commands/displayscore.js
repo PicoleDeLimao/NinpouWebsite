@@ -3,6 +3,46 @@
 var http = require('http'); 
 var getPlayerName = require('./getplayername');
 
+function getGameString(game) {
+	return '<' + game.id + '>\t< ' + (game.hero && game.hero || 'Unknown') + ' >\tKDA: <' + game.kills + '/' + game.deaths + '/' + game.assists + '>\tPoints: <' + game.points + '>\t' + (game.win ? '< VICTORY >' : '< DEFEAT >') + '\t(' + game.date + ')\n';
+}
+
+function getHeroString(hero, index) {
+	return (index + 1) + '.\t< ' + (hero.hero || 'Unknown') + ' >\tAverage KDA: <' + Math.round(hero.kills) + '/' + Math.round(hero.deaths) + '/' + Math.round(hero.assists) + '>\tAverage points: <' + Math.round(hero.points) + '>\n';
+}
+
+function getMaximumLength(strings, index) {
+	var length = 0;
+	for (var i = 0; i < strings.length; i++) {
+		length = Math.max(length, strings[i][index].length);
+	}
+	return length + 2;
+}
+
+function getStringsFormatted(strings) {
+	for (var i = 0; i < strings.length; i++) {
+		strings[i] = strings[i].split('\t');
+	}
+	var lengths = [];
+	for (var i = 0; i < strings[0].length; i++) {
+		lengths.push(getMaximumLength(strings, i));
+	}
+	var newStrings = [];
+	for (var i = 0; i < strings.length; i++) {
+		var str = '';
+		for (var j = 0; j < strings[i].length; j++) {
+			str += strings[i][j];
+			if (j < strings[i].length - 1) {
+				for (var k = 0; k < lengths[j] - strings[i][j].length; k++) {
+					str += ' ';
+				}
+			}
+		}
+		newStrings.push(str);
+	}
+	return newStrings;
+}
+
 module.exports = function(ev, playerName) {
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/players/' + playerName }, function(res) {
 		var statusCode = res.statusCode;
@@ -30,28 +70,44 @@ module.exports = function(ev, playerName) {
 						ev.channel.send(response);
 						if (ranking.lastGames.length > 0) {
 							response = '```md\nStatistics (last three months):\n\n';
-							if (ranking.bestHeroes) {
-								response += 'Top-5 best heroes:\n';
-								for (var i = 0; i < ranking.bestHeroes.length; i++) {
-									response += (i + 1) + '. < ' + (ranking.bestHeroes[i].hero || 'Unknown') + ' >. Average KDA: <' + Math.round(ranking.bestHeroes[i].kills) + '/' + Math.round(ranking.bestHeroes[i].deaths) + '/' + Math.round(ranking.bestHeroes[i].assists) + '>. Average points: <' + Math.round(ranking.bestHeroes[i].points) + '>\n';
-								}
-								response += '\nTop-5 worst heroes:\n';
-								for (var i = 0; i < ranking.worstHeroes.length; i++) {
-									response += (i + 1) + '. < ' + (ranking.worstHeroes[i].hero || 'Unknown') + ' >. Average KDA: <' + Math.round(ranking.worstHeroes[i].kills) + '/' + Math.round(ranking.worstHeroes[i].deaths) + '/' + Math.round(ranking.worstHeroes[i].assists) + '>. Average points: <' + Math.round(ranking.worstHeroes[i].points) + '>\n';
-								}
+							
+							var allHeroes = [];
+							for (var i = 0; i < ranking.bestHeroes.length; i++) {
+								allHeroes.push(getHeroString(ranking.bestHeroes[i], i));
 							}
+							for (var i = 0; i < ranking.worstHeroes.length; i++) {
+								allHeroes.push(getHeroString(ranking.worstHeroes[i], i));
+							}
+							var heroStrings = getStringsFormatted(allHeroes);
+							response += 'Top-5 best heroes:\n';
+							for (var i = 0; i < ranking.bestHeroes.length; i++) {
+								response += heroStrings[i];
+							}
+							response += '\nTop-5 worst heroes:\n';
+							for (var i = 0; i < ranking.worstHeroes.length; i++) {
+								response += heroStrings[ranking.bestHeroes.length + i];
+							}
+							
 							response += '\nLast 10 games:\n';
+							var allGames = [];
+							allGames.push(getGameString(ranking.bestGame));
+							allGames.push(getGameString(ranking.worstGame));
 							for (var i = 0; i < ranking.lastGames.length; i++) {
-								response += '<' + ranking.lastGames[i].id + '>. < ' + (ranking.lastGames[i].hero && ranking.lastGames[i].hero || 'Unknown') + ' > KDA: <' + ranking.lastGames[i].kills + '/' + ranking.lastGames[i].deaths + '/' + ranking.lastGames[i].assists + '>. Points: <' + ranking.lastGames[i].points + '>\t' + (ranking.lastGames[i].win ? '( VICTORY )' : '( DEFEAT )') + '\t(' + ranking.lastGames[i].date + ')\n';
+								allGames.push(getGameString(ranking.lastGames[i]));
+							}
+							var gameStrings = getStringsFormatted(allGames);
+							for (var i = 2; i < gameStrings.length; i++) {
+								response += gameStrings[i];
 							}
 							response += '\nBest game:\n';
 							if (ranking.bestGame) {
-								response += '<' + ranking.bestGame.id + '>. < ' + (ranking.bestGame.hero && ranking.bestGame.hero || 'Unknown') + ' > KDA: <' + ranking.bestGame.kills + '/' + ranking.bestGame.deaths + '/' + ranking.bestGame.assists + '>. Points: <' + ranking.bestGame.points + '>\t\t(' + ranking.bestGame.date + ')\n';
+								response += gameStrings[0];
 							}
 							response += 'Worst game:\n';
 							if (ranking.worstGame) {
-								response += '<' + ranking.worstGame.id + '>. < ' + (ranking.worstGame.hero && ranking.worstGame.hero || 'Unknown') + ' > KDA: <' + ranking.worstGame.kills + '/' + ranking.worstGame.deaths + '/' + ranking.worstGame.assists + '>. Points: <' + ranking.worstGame.points + '>\t\t(' + ranking.worstGame.date + ')\n';
+								response += gameStrings[1];
 							}
+							
 							response += '\n\n';
 							response += '```';  
 							ev.channel.send(response);
