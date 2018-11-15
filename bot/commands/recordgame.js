@@ -12,6 +12,7 @@ module.exports = function(ev, gameId, code, alias) {
 			} else {
 				ev.channel.send('Couldn\'t fetch game. :( **Oink!**');
 			} 
+			console.log(err);
 		} else if (!record) {
 			ev.channel.send('You can only record a game you played. :( **Oink!**');
 		} else {

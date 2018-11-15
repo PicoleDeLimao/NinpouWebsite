@@ -16,9 +16,6 @@ module.exports = function(id, callback) {
 			res.on('end', function() { 
 				try {
 					var game = JSON.parse(body);
-					gameToString(ev, game, function(response) {
-						ev.channel.send(response);
-					});
 					callback(null, game);
 				} catch (err) {
 					console.error(err);
