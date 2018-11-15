@@ -339,7 +339,7 @@ function getHeroes(callback) {
 function getPlayerSlotInGame(usernames, game) {
 	for (var i = 0; i < game.slots.length; i++) {
 		for (var j = 0; j < usernames.length; j++) {
-			if (game.slots[i].username.match(usernames[j])) {
+			if (game.slots[i].username != null && game.slots[i].username.match(usernames[j])) {
 				return i;
 			}
 		}
