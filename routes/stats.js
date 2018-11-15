@@ -257,7 +257,7 @@ router.post('/:game_id', function(req, res) {
 				var changes = [];
 				(function addStat(index) {
 					if (index >= game.slots.length || index >= 9) {
-						
+						res.status(200).json({ changes: changes });
 					} else if (!game.slots[index].username) {
 						addStat(index + 1);
 					} else {
@@ -319,7 +319,6 @@ router.post('/:game_id', function(req, res) {
 						
 					}
 				})(0);
-				return res.status(200).end({ changes: changes });
 			});
 		});
 	});
