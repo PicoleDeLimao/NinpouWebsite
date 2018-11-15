@@ -254,6 +254,7 @@ router.post('/:game_id', function(req, res) {
 			game.balance_factor = balanceFactor;
 			game.save(function(err) {
 				if (err) return res.status(500).json(err);
+				var changes = [];
 				(function addStat(index) {
 					if (index >= game.slots.length || index >= 9) {
 						
@@ -276,28 +277,22 @@ router.post('/:game_id', function(req, res) {
 								} 
 								var today = new Date();
 								var decayFactor = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
-								if (today.getDay() == 6 || today.getDay() == 0) {
-									var alpha = decayFactor * decayFactor + (1 - decayFactor * decayFactor) * (1 - game.balance_factor);
-									var beta = (1 - decayFactor * decayFactor) * game.balance_factor; 
-									stat.kills = stat.kills * alpha + game.slots[index].kills * beta;
-									stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
-									stat.assists = stat.assists * alpha + game.slots[index].assists * beta;
-									stat.gpm = stat.gpm * alpha + game.slots[index].gpm * beta;
-									if (game.slots[index].win) stat.wins += 1;
-									stat.games += 1; 
-								} else {  
-									var alpha = decayFactor + (1 - decayFactor) * (1 - game.balance_factor);
-									var beta = (1 - decayFactor) * game.balance_factor; 
-									stat.kills = stat.kills * alpha + game.slots[index].kills * beta
-									stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
-									stat.assists = stat.assists * alpha + game.slots[index].assists * beta;
-									stat.gpm = stat.gpm * alpha + game.slots[index].gpm * beta;
-									if (game.slots[index].win) stat.wins += 1;
-									stat.games += 1; 
-								}
+								var alpha = decayFactor + (1 - decayFactor) * (1 - game.balance_factor);
+								var beta = (1 - decayFactor) * game.balance_factor; 
+								var oldPoints = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
+								stat.kills = stat.kills * alpha + game.slots[index].kills * beta
+								stat.deaths = stat.deaths * alpha + game.slots[index].deaths * beta;
+								stat.assists = stat.assists * alpha + game.slots[index].assists * beta;
+								stat.gpm = stat.gpm * alpha + game.slots[index].gpm * beta;
+								if (game.slots[index].win) stat.wins += 1;
+								stat.games += 1; 
 								stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
 								stat.score = Calculator.calculateScore(stat);
 								stat.alias = username || stat.alias;
+								var newPoints = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
+								if (Math.floor(oldPoints) != Math.floor(newPoints)) {
+									changes.push({ alias: stat.username, oldPoints: oldPoints, newPoints: newPoints });
+								}
 								stat.save(function(err) {
 									if (err) return res.status(500).json(err);
 									HeroStat.findOne({ hero: game.slots[index].hero }, function(err, stat) {
@@ -324,7 +319,7 @@ router.post('/:game_id', function(req, res) {
 						
 					}
 				})(0);
-				return res.status(200).end();
+				return res.status(200).end({ changes: changes });
 			});
 		});
 	});
@@ -485,7 +480,6 @@ router.get('/players/:username', function(req, res) {
 										}
 									}
 								});
-								
 							} else {
 								Hero.findOne({ id: heroes[i]._id }, function(err, hero) {
 									if (!hero) {

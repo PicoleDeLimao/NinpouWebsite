@@ -1,6 +1,7 @@
 'use strict';
 
 var canRecord = require('./canrecord');
+var getPlayerName = require('./getplayername');
 var http = require('http');
 
 module.exports = function(ev, gameId, code, alias) {
@@ -35,6 +36,25 @@ module.exports = function(ev, gameId, code, alias) {
 							ev.channel.send('Game recorded! Double XP is on today!! **Oink!**');
 						} else {
 							ev.channel.send('Game recorded! **Oink!**');
+						}
+						try {
+							var data = JSON.parse(body);
+							if (data.changes.length > 0) {
+								var msg = '```md\nAverage point changes\n\n';
+								(function next(i) {
+									if (i == data.changes.length) {
+										msg += '```';
+										ev.channel.send(msg);
+									} else {
+										getPlayerName(ev, data.changes[i].alias, function(err, name) {
+											msg += '**' + name + '**: ' + Math.floor(data.changes[i].oldPoints) + ' -> ' + Math.floor(data.changes[i].newPoints) + '\n';
+											next(i + 1);
+										}, true);
+									}
+								})(0);
+							}
+						} catch (e) {
+							console.err(e);
 						}
 					}
 				});
