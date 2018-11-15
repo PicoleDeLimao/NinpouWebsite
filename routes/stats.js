@@ -325,176 +325,121 @@ router.post('/:game_id', function(req, res) {
 	});
 });
 
-router.delete('/:game_id', function(req, res) { 
-	/*Game.findOne({ id: req.params.game_id }, function(err, game) {
-		if (err || !game) return res.status(404).json({ error: 'Game not found.' });
-		else if (!game.recorded) return res.status(400).json({ error: 'Game was not recorded.' });
-		var date = dateFromObjectId(game._id.toString());
-		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-		var diffDays = Math.round(Math.abs(((new Date()).getTime() - date.getTime())/(oneDay)));
-		if (diffDays > 2) return res.status(400).json({ error: 'You can\'t unrecord games older than one day.' });
-		(function resetScore(index) {
-			if (index >= game.slots.length) {
-				game.recorded = false;
-				game.save(function(err) {
-					if (err) return res.status(500).json(err);
-					return res.status(200).send();
-				});
-			} else if (game.slots[index].username) {
-				Stat.findOne({ username: game.slots[index].username.toLowerCase() }, function(err, stat) {
-					if (err) return res.status(500).json(err);
-					stat.kills -= game.slots[index].kills;
-					stat.deaths -= game.slots[index].deaths;
-					stat.assists -= game.slots[index].assists;
-					stat.gpm -= game.slots[index].gpm;
-					if (game.slots[index].win) stat.wins -= 1;
-					stat.games -= 1;
-					stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
-					stat.score = Calculator.calculateScore(stat);
-					stat.save(function(err) {
-						if (err) return res.status(500).json(err);
-						HeroStat.findOne({ hero: game.slots[index].hero, map: game.map }, function(err, stat) {
-							if (err) return res.status(500).json(err);
-							stat.kills -= game.slots[index].kills;
-							stat.deaths -= game.slots[index].deaths;
-							stat.assists -= game.slots[index].assists;
-							stat.gpm -= game.slots[index].gpm;
-							if (game.slots[index].win) stat.wins -= 1;
-							stat.games -= 1;
-							stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
-							stat.score = Calculator.calculateScore(stat);
-							stat.save(function(err) {
-								if (err) return res.status(500).json(err);
-								resetScore(index + 1);
-							}); 
-						});
-					});
-				});
-			} else {
-				resetScore(index + 1);
+function getHeroes(callback) {
+	Hero.find({ }, function(err, heroesObj) {
+		if (err) return callback(err);
+		var heroes = { };
+		for (var i = 0; i < heroesObj.length; i++) {
+			heroes[heroesObj[i].id] = heroesObj[i].name;
+		}
+		callback(null, heroes);
+	});
+}
+
+function getPlayerSlotInGame(usernames, game) {
+	for (var i = 0; i < game.slots.length; i++) {
+		for (var j = 0; j < usernames.length; j++) {
+			if (game.slots[i].username.match(usernames[j])) {
+				return i;
 			}
-		})(0);
-	});*/
-});
+		}
+	}
+	return -1;
+}
+
+function getPlayerHeroesRanking(username, usernames, heroNames, timePeriod, callback) {
+	Alias.findOne({ $or: [{username: username }, { alias: username }] }, function(err, user) {
+		if (err) return callback(err);
+		Game.aggregate([
+			{
+				$unwind: '$slots',
+			},
+			{
+				$match: {
+					'createdAt': { $gt: timePeriod },
+					'slots.username': { $in: usernames },
+					'recorded': true,
+					'balance_factor': { $gt: 0.95 }
+				}
+			},
+			{
+				$group: {
+					_id: '$slots.hero',
+					kills: { $sum: '$slots.kills' },
+					deaths: { $sum: '$slots.deaths' },
+					assists: { $sum: '$slots.assists' },
+					gpm: { $sum: '$slots.gpm' },
+					wins: { $sum: { $cond: ['$slots.win', 1, 0] } },
+					games: { $sum: 1 }
+				}
+			}
+		]).exec(function(err, heroes) {
+			if (err) return callback(err);
+			var newHeroes = [];
+			for (var i = 0; i < heroes.length; i++) {
+				heroes[i].kills /= heroes[i].games;
+				heroes[i].deaths /= heroes[i].games;
+				heroes[i].assists /= heroes[i].games;
+				heroes[i].gpm = heroes[i].gpm / heroes[i].games * 100; 
+				heroes[i].points = heroes[i].kills * 10 + heroes[i].assists * 2 - heroes[i].deaths * 5;
+				heroes[i].chance *= 100;
+				heroes[i].score = Calculator.calculateScore(heroes[i]); 
+				heroes[i].hero = heroNames[heroes[i]._id];
+				if (heroes[i]._id != 0 && heroes[i].points != 0) {
+					newHeroes.push(heroes[i]);
+				}
+			}
+			newHeroes.sort(function(a, b) {
+				return b.points - a.points;
+			});
+			var bestHeroes = newHeroes.slice(0, 5);
+			newHeroes.sort(function(a, b) {
+				return a.points - b.points;
+			});
+			var worstHeroes = newHeroes.slice(0, 5);
+			return callback(null, bestHeroes, worstHeroes);
+		});
+	});
+}
 
 router.get('/players/:username', function(req, res) {
-	StatCalculator.getPlayerStats(req.params.username, function(err, allStat) {
-		if (err) return res.status(400).json({ 'error': err });
-		Game.find({ 'slots.username': { $in: allStat.usernames } }).sort('-_id').limit(1).exec(function(err, games) {
-			if (err) return res.status(500).json({ 'error': err }); 
-			var mostRecentDate = games.length > 0 && moment(dateFromObjectId(games[0]._id.toString())).fromNow() || null; 
+	var timePeriod = moment().subtract(3, 'month').toDate();
+	getHeroes(function(err, heroes) {
+		if (err) return res.status(400).json({ error: err });
+		StatCalculator.getPlayerStats(req.params.username, function(err, allStat) {
+			if (err) return res.status(400).json({ error: err });
 			StatCalculator.getAllPlayersRanking(function(err, stats) {
-				if (err) return res.status(400).json({ 'error': err }); 
-				allStat = StatCalculator.getRankingPositions(stats, allStat);       
-				Alias.findOne({ $or: [{username: req.params.username.toLowerCase() }, { alias: req.params.username.toLowerCase() }] }, function(err, user) {
-					var lastMonth = moment().subtract(3, 'month').toDate();
-					Game.aggregate([
-					{
-						$unwind: '$slots',
-					},
-					{
-						$match: {
-							'createdAt': { $gt: lastMonth },
-							'slots.username': { $in: allStat.usernames },
-							'recorded': true,
-							'balance_factor': { $gt: 0.95 }
-						}
-					},
-					{
-						$group: {
-							_id: '$slots.hero',
-							kills: { $sum: '$slots.kills' },
-							deaths: { $sum: '$slots.deaths' },
-							assists: { $sum: '$slots.assists' },
-							gpm: { $sum: '$slots.gpm' },
-							wins: { $sum: { $cond: ['$slots.win', 1, 0] } },
-							games: { $sum: 1 }
+				if (err) return res.status(400).json({ error: err }); 
+				allStat = StatCalculator.getRankingPositions(stats, allStat); 
+				Game.find({ 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'balance_factor': { $gt: 0.95 }, 'createdAt': { $gt: timePeriod } }).sort('-_id').exec(function(err, games) {
+					if (err) return res.status(500).json({ error: err }); 
+					var newGames = [];
+					for (var i = 0; i < games.length; i++) {
+						var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
+						if (games[i].slots[slot].hero != 0) {
+							newGames.push({
+								id: games[i].id,
+								kills: games[i].slots[slot].kills,
+								deaths: games[i].slots[slot].deaths,
+								assists: games[i].slots[slot].assists,
+								points: games[i].slots[slot].kills * 10 + games[i].slots[slot].assists * 2 - games[i].slots[slot].deaths * 5,
+								hero: heroes[games[i].slots[slot].hero],
+								date: moment(dateFromObjectId(games[i]._id.toString())).fromNow()
+							});
 						}
 					}
-					]).exec(function(err, heroes) {
-						if (err) return res.status(400).json({ 'error': err });
-						(function next(i) {
-							if (i == heroes.length) {
-								for (var i = 0; i < heroes.length; i++) {
-									heroes[i].kills /= heroes[i].games;
-									heroes[i].deaths /= heroes[i].games;
-									heroes[i].assists /= heroes[i].games;
-									heroes[i].gpm = heroes[i].gpm / heroes[i].games * 100; 
-									heroes[i].points = heroes[i].kills * 10 + heroes[i].assists * 2 - heroes[i].deaths * 5;
-									heroes[i].chance *= 100;
-									heroes[i].score = Calculator.calculateScore(heroes[i]); 
-								}
-								heroes.sort(function(a, b) {
-									return b.points - a.points;
-								});
-								var bestHeroes = heroes.slice(0, 5);
-								heroes.sort(function(a, b) {
-									return a.points - b.points;
-								});
-								var worstHeroes = heroes.slice(0, 5);
-								Game.find({ 
-									'recorded': true,
-									'balance_factor': { $gt: 0.95 },
-									'slots.username': { $in: allStat.usernames },
-									'slots.kills': { $ne: null },
-									'createdAt': { $gt: lastMonth },
-								}).lean().exec(function(err, games) {
-									if (err) return res.status(400).json({ 'error': err });
-									if (!games || games.length == 0) {
-										return res.json({ 'stat': allStat, 'lastGame': mostRecentDate, 'user': user, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': null, 'worstGame': null });
-									} else {
-										for (var i = games.length - 1; i >= 0; i--) {
-											for (var j = games[i].slots.length - 1; j >= 0; j--) {
-												var isSlot = false; 
-												for (var k = 0; k < allStat.usernames.length; k++) {
-													if (games[i].slots[j] && games[i].slots[j].username && games[i].slots[j].username.match(allStat.usernames[k])) {
-														isSlot = true; 
-														break;
-													}
-												}
-												if (!isSlot) {
-													games[i].slots.splice(j, 1);
-												}
-											}
-											games[i].slot = games[i].slots[0];
-											games[i].slot.points = games[i].slot.kills * 10 + games[i].slot.assists * 2 - games[i].slot.deaths * 5;
-											if (games[i].slot.kills == 0 && games[i].slot.deaths == 0 && games[i].slot.assists == 0) {
-												games.splice(i, 1);
-											}
-										}
-										if (games.length > 0) {
-											games.sort(function(a, b) {
-												return b.slot.points - a.slot.points;
-											});
-											var bestGame = games[0];
-											var worstGame = games[games.length - 1];
-											Hero.findOne({ id: bestGame.slot.hero }, function(err, hero) {
-												bestGame.slot.hero = hero;
-												Hero.findOne({ id: worstGame.slot.hero }, function(err, hero) {
-													worstGame.slot.hero = hero;
-													return res.json({ 'stat': allStat, 'lastGame': mostRecentDate, 'user': user, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': bestGame, 'worstGame': worstGame });
-												});
-											});
-										} else {
-											return res.json({ 'stat': allStat, 'lastGame': mostRecentDate, 'user': user, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': null, 'worstGame': null });
-										}
-									}
-								});
-							} else {
-								Hero.findOne({ id: heroes[i]._id }, function(err, hero) {
-									if (!hero) {
-										heroes.splice(i, 1);
-										next(i);
-									} else {
-										heroes[i].hero = hero;
-										next(i + 1);
-									}
-								});
-							}
-						})(0);
+					var lastGames = newGames.slice(0, 10);
+					getPlayerHeroesRanking(req.params.username.toLowerCase(), allStat.usernames, heroes, timePeriod, function(err, bestHeroes, worstHeroes) {
+						if (err) return res.status(500).json({ error: err }); 
+						newGames.sort(function(a, b) {
+							return b.points - a.points;
+						});
+						var bestGame = newGames.length > 0 ? newGames[0] : null;
+						var worstGame = newGames.length > 0 ? newGames[newGames.length - 1] : null;
+						return res.json({ 'stat': allStat, 'lastGames': lastGames, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': bestGame, 'worstGame': worstGame });
 					});
 				});
-			}, req.query.village); 
+			});
 		});
 	});
 });
@@ -561,7 +506,7 @@ router.use('/ranking', function(req, res, next) {
 
 router.get('/ranking', function(req, res) {  
 	StatCalculator.getAllPlayersRanking(function(err, stats) {
-		if (err) return res.status(400).json({ 'error': err });
+		if (err) return res.status(400).json({ error: err });
 		stats.sort(function(a, b) { 
 			if (req.sortOrder == 'desc') {
 				return b.ranking[req.attribute] - a.ranking[req.attribute];
@@ -575,9 +520,9 @@ router.get('/ranking', function(req, res) {
  
 router.get('/ranking/:username', function(req, res) { 
 	StatCalculator.getPlayerStats(req.params.username, function(err, allStat) {
-		if (err) return res.status(400).json({ 'error': err });
+		if (err) return res.status(400).json({ error: err });
 		StatCalculator.getAllPlayersRanking(function(err, stats) {
-			if (err) return res.status(400).json({ 'error': err });
+			if (err) return res.status(400).json({ error: err });
 			allStat = StatCalculator.getRankingPositions(stats, allStat); 
 			stats.sort(function(a, b) {
 				if (req.sortOrder == 'desc') {

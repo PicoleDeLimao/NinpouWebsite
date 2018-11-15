@@ -72,7 +72,7 @@ setInterval(function() {
 					if (games[i]) {
 						hostedGames.push(games[i]);
 					} else {
-						console.log(games);
+						//console.log(games);
 					}
 				}
 			} catch (err) {
@@ -100,7 +100,7 @@ setInterval(function() {
 					if (games[i]) {
 						inProgressGames.push(games[i]);
 					} else {
-						console.log(games);
+						//console.log(games);
 					}
 				}
 			} catch (err) {
@@ -140,7 +140,7 @@ setInterval(function() {
 					if (streams[i]) {
 						onlineStreams.push(streams[i]);
 					} else {
-						console.log(streams);
+						//console.log(streams);
 					}
 				} 
 			} catch(err) {
