@@ -416,7 +416,7 @@ router.get('/players/:username', function(req, res) {
 					var newGames = [];
 					for (var i = 0; i < games.length; i++) {
 						var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
-						if (games[i].slots[slot].hero != 0 && games[i].slots[slot].points != null) {
+						if (games[i].slots[slot].hero != 0 && games[i].slots[slot].kills != null) {
 							newGames.push({
 								id: games[i].id,
 								kills: games[i].slots[slot].kills,
