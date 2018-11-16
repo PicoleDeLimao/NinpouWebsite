@@ -351,6 +351,7 @@ bot.on('message', function(ev) {
 				'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
 				'< !heroes > [criteria]         : Display meta information about game heroes\n' + 
 				'< !hero > <name>               : Display meta information about specific hero\n' + 
+				'< !subscribe >                 : Turn on/off Tonton private alert messages\n' +
 				'```' 
 			);  
 		} else if (cmd == 'playercmds') {
@@ -363,7 +364,6 @@ bot.on('message', function(ev) {
 				'< ![w]hois > <player_name>     : Check who in discord is using a determined account\n' + 
 				'< !aliasof > <user>            : Display all alias from a user\n' + 
 				'< !setcolor> <#code>           : Set your color (only for "Can\'t get enough" rank\n' + 
-				'< !subscribe >                 : Turn on/off Tonton private alert messages\n' +
 				'```'
 			);  
 		} else if (cmd == 'rpgcmds') {
