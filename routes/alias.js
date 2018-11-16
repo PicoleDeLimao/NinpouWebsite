@@ -19,7 +19,7 @@ router.get('/fix_subscribe', function(req, res) {
 		}
 	}); 
 });
-
+ 
 function addSummon(img, alias, callback) {
 	if (alias.summon != 'none') {
 		Jimp.read('public/images/5_summon_' + alias.summon + '.png', function(err, summon) {
