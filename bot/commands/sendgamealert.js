@@ -20,7 +20,7 @@ module.exports = function(bot, game) {
 									bot.guilds.forEach(function(guild) {
 										guild.members.forEach(function(member) {
 											if (member.id == alias) {
-												member.sendMessage('Game ' + game.gamename + ' has started!');
+												member.sendMessage('Game ' + game.gamename + ' has started!\n\nType !subscribe to disable these messages.');
 											}
 										});
 									});
