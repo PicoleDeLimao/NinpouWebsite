@@ -483,22 +483,22 @@ router.post('/:username/farm3k', function(req, res) {
 		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
 		var threshold, goldReward; 
 		if (alias.rank == 'chunnin') {
-			threshold = 22;
+			threshold = 20;
 			goldReward = 1000;
 		} else if (alias.rank == 'tokubetsu jounin') {
-			threshold = 25;
+			threshold = 22;
 			goldReward = 1500;
 		} else if (alias.rank == 'jounin') {
-			threshold = 27;
+			threshold = 25;
 			goldReward = 2000;
 		} else if (alias.rank == 'anbu') {
-			threshold = 30;
+			threshold = 27;
 			goldReward = 2500;
 		} else if (alias.rank == 'kage') {
-			threshold = 33;
+			threshold = 30;
 			goldReward = 3000;
 		} else {
-			threshold = 20;
+			threshold = 18;
 			goldReward = 500;
 		}
 		if (alias.summon == 'slug1') {
@@ -561,7 +561,7 @@ router.post('/:username/deaths5', function(req, res) {
 			threshold = 9;
 			goldReward = 2500;
 		} else if (alias.rank == 'kage') {
-			threshold = 7;
+			threshold = 8;
 			goldReward = 3000;
 		} else {
 			threshold = 13;
@@ -594,7 +594,7 @@ router.post('/:username/assists10', function(req, res) {
 			threshold = 10;
 			goldReward = 2500;
 		} else if (alias.rank == 'kage') {
-			threshold = 12;
+			threshold = 11;
 			goldReward = 3000;
 		} else {
 			threshold = 6;

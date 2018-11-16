@@ -88,6 +88,18 @@ router.get('/:alias', function(req, res) {
 	});
 });
 
+router.put('/:username/subscribe', function(req, res) {
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (!alias) return res.status(404).json({ error: 'Player not found.' });
+		alias.subscribe = !alias.subscribe;
+		alias.save(function(err) {
+			if (err) return res.status(500).json({ error: err });
+			return res.json({ subscribe: alias.subscribe });
+		});
+	});
+});
+
 router.put('/:username/status', function(req, res) {
 	if (!req.params.username) return res.status(404).json({ error: 'Player not found.' });
 	else if (!req.body.status) return res.status(400).json({ error: 'Invalid status.' });
@@ -490,6 +502,5 @@ router.put('/:username/summon/:summon', function(req, res) {
 		});
 	});
 });
-
 
 module.exports = router;

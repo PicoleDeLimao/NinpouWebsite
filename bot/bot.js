@@ -51,10 +51,14 @@ var displayMissions = require('./commands/missions');
 var setColor = require('./commands/setcolor');
 var displayHeroes = require('./commands/displayheroes');
 var displayHero = require('./commands/displayhero');
+var subscribe = require('./commands/subscribe');
+var inviteMessageToPlayers = require('./commands/sendgamealert');
 
 var hostedGames = [];
 var inProgressGames = [];
-var onlineStreams = []; 
+var onlineStreams = [];
+var previouslyHostedGames = []; 
+var globalEv; 
 
 setInterval(function() {
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games' }, function(res) {
@@ -71,6 +75,7 @@ setInterval(function() {
 				for (var i = 0; i < games.length; i++) {
 					if (games[i]) {
 						hostedGames.push(games[i]);
+						previouslyHostedGames[games[i].id] = { subscribed: false };
 					} else {
 						//console.log(games);
 					}
@@ -99,6 +104,10 @@ setInterval(function() {
 				for (var i = 0; i < games.length; i++) {
 					if (games[i]) {
 						inProgressGames.push(games[i]);
+						if (previouslyHostedGames[games[i].id] != null && !previouslyHostedGames[games[i].id].subscribed) {
+							previouslyHostedGames[games[i].id].subscribed = true;
+							inviteMessageToPlayers(bot, games[i]);
+						}
 					} else {
 						//console.log(games);
 					}
@@ -354,6 +363,7 @@ bot.on('message', function(ev) {
 				'< ![w]hois > <player_name>     : Check who in discord is using a determined account\n' + 
 				'< !aliasof > <user>            : Display all alias from a user\n' + 
 				'< !setcolor> <#code>           : Set your color (only for "Can\'t get enough" rank\n' + 
+				'< !subscribe >                 : Turn on/off Tonton private alert messages\n' +
 				'```'
 			);  
 		} else if (cmd == 'rpgcmds') {
@@ -876,6 +886,9 @@ bot.on('message', function(ev) {
 							} else {
 								ev.channel.send('Me no understand! Use **!record <game_id> <code>**');
 							}
+							break;
+						case 'subscribe':
+							subscribe(ev);
 							break;
 						case 'u':
 						case 'unrecordable':
