@@ -9,12 +9,10 @@ var BlockedAlias = require('../models/BlockedAlias');
 var Stat = require('../models/Stat');
 var Item = require('../models/Item'); 
 
-router.get('/fix_affiliation', function(req, res) {
+router.get('/fix_subscribe', function(req, res) {
 	Alias.find({ }, function(err, alias) {
 		for (var i = 0; i < alias.length; i++) {
-			alias[i].affiliation = 'none';
-			alias[i].rank = 'genin';
-			alias[i].character = 'none';
+			alias[i].subscribe = true;
 			alias[i].save(function(err) {
 				
 			});
