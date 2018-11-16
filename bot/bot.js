@@ -53,12 +53,12 @@ var displayHeroes = require('./commands/displayheroes');
 var displayHero = require('./commands/displayhero');
 var subscribe = require('./commands/subscribe');
 var inviteMessageToPlayers = require('./commands/sendgamealert');
+var inviteMessageToHost = require('./commands/sendgamealerthost');
 
 var hostedGames = [];
 var inProgressGames = [];
 var onlineStreams = [];
 var previouslyHostedGames = []; 
-var globalEv; 
 
 setInterval(function() {
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games' }, function(res) {
@@ -75,7 +75,21 @@ setInterval(function() {
 				for (var i = 0; i < games.length; i++) {
 					if (games[i]) {
 						hostedGames.push(games[i]);
-						previouslyHostedGames[games[i].id] = { subscribed: false };
+						if (previouslyHostedGames[games[i].id] == null) {
+							previouslyHostedGames[games[i].id] = { subscribed: false, subscribedHost: false };
+						}
+						if (!previouslyHostedGames[games[i].id].subscribedHost) {
+							var countNonEmpty = 0;
+							for (var slot = 0; slot < 9; slot++) {
+								if (games[i].slots[slot].username != null) {
+									++countNonEmpty;
+								}
+							}
+							if (countNonEmpty == 9) {
+								inviteMessageToHost(bot, games[i]);
+								previouslyHostedGames[games[i].id].subscribedHost = true;
+							}
+						}
 					} else {
 						//console.log(games);
 					}
