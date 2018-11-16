@@ -243,12 +243,12 @@ setInterval(function() {
 						if (ev.onlineStreams[stream._id].embed && (ev.count % 6 == 0))
 							ev.onlineStreams[stream._id].embed.edit(msgEmbed);
 					} else {  
-						ev.channel.send(msg).then(function(msg) {
+						//ev.channel.send(msg).then(function(msg) {
 							ev.onlineStreams[stream._id] = { message: msg };
 							ev.channel.send(msgEmbed).then(function(msg) {
 								ev.onlineStreams[stream._id].embed = msg;
 							}); 
-						}); 
+						//}); 
 					}
 				})(onlineStreams_[i]);
 			} 

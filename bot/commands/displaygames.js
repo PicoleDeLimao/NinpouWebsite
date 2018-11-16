@@ -4,17 +4,18 @@ var gameToString = require('./gametostring');
 
 module.exports = function(ev, games, broadcast, hosted) {
 	if (!ev.hostedGames) ev.hostedGames = { };
-	for (var gamename in ev.hostedGames) {
+	for (var gameid in ev.hostedGames) {
 		var hasGame = false;
 		for (var i = 0; i < games.length; i++) {
-			if (gamename == games[i].gamename) {
+			if (gameid == games[i].id) {
 				hasGame = true;
 				break;
 			}
 		}
 		if (!hasGame) {
-			ev.hostedGames[gamename].delete();
-			delete ev.hostedGames[gamename];
+			ev.hostedGames[gameid].delete().then(function() {
+				delete ev.hostedGames[gameid];
+			});
 		}
 	}   
 	if (games.length == 0) { 
@@ -49,10 +50,10 @@ module.exports = function(ev, games, broadcast, hosted) {
 			} else {
 				gameToString(ev, games[i], function(game) {
 					response += game; 
-					if (!ev.hostedGames.hasOwnProperty(games[i].gamename) && broadcast && !hosted) {
+					if (!ev.hostedGames.hasOwnProperty(games[i].id) && broadcast && !hosted) {
 						(function(game) {
-							ev.channel.send('@here ' + game.gamename).then(function(message) {
-								ev.hostedGames[game.gamename] = message;
+							ev.channel.send('@here ' + game.id).then(function(message) {
+								ev.hostedGames[game.id] = message;
 							});
 						})(games[i]);
 					}
