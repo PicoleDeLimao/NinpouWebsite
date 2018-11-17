@@ -2,11 +2,15 @@
 
 var http = require('http');
 
+function isOwner(game, slot) {
+	return game.slots[i].username != null && game.slots[i].username.toLowerCase() == game.owner.toLowerCase();
+}
+
 module.exports = function(bot, game) {
 	(function next(i) {
 		if (i < game.slots.length) {
 			var alias = game.slots[i].alias;
-			if (alias) {
+			if (alias && !isOwner(game, i)) {
 				http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/alias/' + alias, headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 					var body = '';
 					res.on('data', function(chunk) {

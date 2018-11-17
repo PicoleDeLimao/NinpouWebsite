@@ -8,6 +8,7 @@ var Alias = require('../models/Alias');
 var BlockedAlias = require('../models/BlockedAlias');
 var Stat = require('../models/Stat');
 var Item = require('../models/Item'); 
+var StatCalculator = require('./statcalculator');
 
 router.get('/fix_subscribe', function(req, res) {
 	Alias.find({ }, function(err, alias) {
@@ -19,7 +20,7 @@ router.get('/fix_subscribe', function(req, res) {
 		}
 	}); 
 });
- 
+
 function addSummon(img, alias, callback) {
 	if (alias.summon != 'none') {
 		Jimp.read('public/images/5_summon_' + alias.summon + '.png', function(err, summon) {
@@ -49,6 +50,19 @@ function addCharacter(img, alias, callback) {
 		return callback(img);
 	}
 };
+
+router.get('/characters', function(res, res) {
+	Alias.find({ }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err }); 
+		var characters = { };
+		for (var i = 0; i < alias.length; i++) {
+			if (alias[i].character != "none" && alias[i].character) {
+				characters[alias[i].character] = alias[i].username;
+			}
+		}
+		return res.json({ characters: characters });
+	});
+});
 
 router.get('/:alias', function(req, res) {
 	Alias.findOne({ $or: [{username: req.params.alias.toLowerCase() }, { alias: req.params.alias.toLowerCase() }] }).lean().exec(function(err, alias) {
@@ -429,11 +443,42 @@ router.put('/:username/character/:character', function(req, res) {
 		if (!characters[req.params.character]) return res.status(404).json({ error: 'Character not found' });
 		else if (alias.level < characters[req.params.character].level) return res.status(400).json({ error: 'You don\'t have enough level to buy this character.' });
 		else if (alias.gold < characters[req.params.character].gold) return res.status(400).json({ error: 'You don\'t have enough gold to buy this character.' });
-		alias.character = req.params.character;
-		alias.gold -= characters[req.params.character].gold;
-		alias.save(function(err) {
+		StatCalculator.getAllPlayersRanking(function(err, allStat) {
 			if (err) return res.status(500).json({ error: err });
-			return res.status(200).send();
+			var stats = { };
+			for (var i = 0; i < allStat.length; i++) {
+				stats[allStat[i]._id] = allStat[i];
+			}
+			Alias.find({ }, function(err, allAlias) {
+				if (err) return res.status(500).json({ error: err });
+				var owner = null;
+				for (var i = 0; i < allAlias.length; i++) {
+					if (allAlias[i].character == req.params.character && allAlias[i].username != alias.username) {
+						owner = allAlias[i];
+					}
+				}
+				if (owner === null) {
+					alias.character = req.params.character;
+					alias.gold -= characters[req.params.character].gold;
+					alias.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(200).send();
+					});
+				} else if (stats[alias.username] > stats[owner.username]) {
+					alias.character = req.params.character;
+					alias.gold -= characters[req.params.character].gold;
+					owner.character = "none";
+					alias.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						onwer.save(function(err) {
+							if (err) return res.status(500).json({ error: err });
+							return res.status(200).send();
+						});
+					});
+				} else {
+					return res.status(400).json({ error: 'This character is already owned by someone with higher score.' });
+				}				
+			});
 		});
 	});
 });
