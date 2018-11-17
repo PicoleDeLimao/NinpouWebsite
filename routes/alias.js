@@ -10,17 +10,6 @@ var Stat = require('../models/Stat');
 var Item = require('../models/Item'); 
 var StatCalculator = require('./statcalculator');
 
-router.get('/fix_subscribe', function(req, res) {
-	Alias.find({ }, function(err, alias) {
-		for (var i = 0; i < alias.length; i++) {
-			alias[i].subscribe = true;
-			alias[i].save(function(err) {
-				
-			});
-		}
-	}); 
-});
-
 function addSummon(img, alias, callback) {
 	if (alias.summon != 'none') {
 		Jimp.read('public/images/5_summon_' + alias.summon + '.png', function(err, summon) {
@@ -51,16 +40,147 @@ function addCharacter(img, alias, callback) {
 	}
 };
 
-router.get('/characters', function(res, res) {
+var characters = {
+	'naruto': {
+		'level': 1,
+		'gold': 0
+	},
+	'sasuke': {
+		'level': 1,
+		'gold': 0
+	},
+	'sakura': {
+		'level': 1,
+		'gold': 0
+	},
+	'gaara': {
+		'level': 1,
+		'gold': 0
+	},
+	'hinata': {
+		'level': 5,
+		'gold': 10000
+	},
+	'neji': {
+		'level': 5,
+		'gold': 10000
+	},
+	'lee': {
+		'level': 5,
+		'gold': 10000
+	},
+	'shino': {
+		'level': 5,
+		'gold': 10000
+	},
+	'kiba': {
+		'level': 5,
+		'gold': 10000
+	},
+	'tenten': {
+		'level': 5,
+		'gold': 10000
+	},
+	'ino': {
+		'level': 5,
+		'gold': 10000
+	},
+	'shikamaru': {
+		'level': 5,
+		'gold': 10000
+	},
+	'chouji': {
+		'level': 5,
+		'gold': 10000
+	},
+	'orochimaru': {
+		'level': 20,
+		'gold': 1000000
+	},
+	'tsunade': {
+		'level': 20,
+		'gold': 1000000
+	},
+	'sasori': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'deidara': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'hidan': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'kakuzu': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'konan': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'kisame': {
+		'level': 35,
+		'gold': 5000000
+	},
+	'kakashi': {
+		'level': 35,
+		'gold': 5000000
+	},
+	'gai': {
+		'level': 35,
+		'gold': 5000000
+	},
+	'bee': {
+		'level': 35,
+		'gold': 5000000
+	},
+	'tobirama': {
+		'level': 50,
+		'gold': 10000000
+	},
+	'minato': {
+		'level': 75,
+		'gold': 100000000
+	},
+	'obito': {
+		'level': 75,
+		'gold': 100000000
+	},
+	'itachi': {
+		'level': 75,
+		'gold': 100000000
+	},
+	'nagato': {
+		'level': 75,
+		'gold': 100000000
+	},
+	'madara': {
+		'level': 100,
+		'gold': 1000000000
+	},
+	'hashirama': {
+		'level': 100,
+		'gold': 1000000000
+	},
+	'kaguya': {
+		'level': 150,
+		'gold': 10000000000
+	}
+};
+
+router.get('/characters', function(req, res) {
 	Alias.find({ }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err }); 
-		var characters = { };
+		var owners = { };
 		for (var i = 0; i < alias.length; i++) {
 			if (alias[i].character != "none" && alias[i].character) {
-				characters[alias[i].character] = alias[i].username;
+				owners[alias[i].character] = alias[i].username;
 			}
 		}
-		return res.json({ characters: characters });
+		return res.json({ owners: owners, characters: characters });
 	});
 });
 
@@ -304,137 +424,6 @@ router.put('/:username/affiliation/:affiliation', function(req, res) {
 		});
 	});
 });
-
-var characters = {
-	'naruto': {
-		'level': 1,
-		'gold': 0
-	},
-	'sasuke': {
-		'level': 1,
-		'gold': 0
-	},
-	'sakura': {
-		'level': 1,
-		'gold': 0
-	},
-	'gaara': {
-		'level': 1,
-		'gold': 0
-	},
-	'hinata': {
-		'level': 5,
-		'gold': 10000
-	},
-	'neji': {
-		'level': 5,
-		'gold': 10000
-	},
-	'lee': {
-		'level': 5,
-		'gold': 10000
-	},
-	'shino': {
-		'level': 5,
-		'gold': 10000
-	},
-	'kiba': {
-		'level': 5,
-		'gold': 10000
-	},
-	'tenten': {
-		'level': 5,
-		'gold': 10000
-	},
-	'ino': {
-		'level': 5,
-		'gold': 10000
-	},
-	'shikamaru': {
-		'level': 5,
-		'gold': 10000
-	},
-	'chouji': {
-		'level': 5,
-		'gold': 10000
-	},
-	'orochimaru': {
-		'level': 20,
-		'gold': 1000000
-	},
-	'tsunade': {
-		'level': 20,
-		'gold': 1000000
-	},
-	'sasori': {
-		'level': 25,
-		'gold': 2000000
-	},
-	'deidara': {
-		'level': 25,
-		'gold': 2000000
-	},
-	'hidan': {
-		'level': 25,
-		'gold': 2000000
-	},
-	'kakuzu': {
-		'level': 25,
-		'gold': 2000000
-	},
-	'konan': {
-		'level': 25,
-		'gold': 2000000
-	},
-	'kisame': {
-		'level': 35,
-		'gold': 5000000
-	},
-	'kakashi': {
-		'level': 35,
-		'gold': 5000000
-	},
-	'gai': {
-		'level': 35,
-		'gold': 5000000
-	},
-	'bee': {
-		'level': 35,
-		'gold': 5000000
-	},
-	'tobirama': {
-		'level': 50,
-		'gold': 10000000
-	},
-	'minato': {
-		'level': 75,
-		'gold': 100000000
-	},
-	'obito': {
-		'level': 75,
-		'gold': 100000000
-	},
-	'itachi': {
-		'level': 75,
-		'gold': 100000000
-	},
-	'nagato': {
-		'level': 75,
-		'gold': 100000000
-	},
-	'madara': {
-		'level': 100,
-		'gold': 1000000000
-	},
-	'hashirama': {
-		'level': 100,
-		'gold': 1000000000
-	},
-	'kaguya': {
-		'level': 150,
-		'gold': 10000000000
-	}
-};
 
 router.put('/:username/character/:character', function(req, res) {
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {

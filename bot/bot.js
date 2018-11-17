@@ -51,6 +51,7 @@ var displayMissions = require('./commands/missions');
 var setColor = require('./commands/setcolor');
 var displayHeroes = require('./commands/displayheroes');
 var displayHero = require('./commands/displayhero');
+var displayCharacters = require('./commands/displaycharacters');
 var subscribe = require('./commands/subscribe');
 var inviteMessageToPlayers = require('./commands/sendgamealert');
 var inviteMessageToHost = require('./commands/sendgamealerthost');
@@ -723,40 +724,7 @@ bot.on('message', function(ev) {
 							}
 							break;
 						case 'characters':
-							ev.channel.send('**Oink, oink**!\nHere are the available characters to buy\n' + 
-							'```md\nUse !char <character> to buy a character\n' + 
-							'[Naruto]             : -\n' + 
-							'[Sasuke]             : -\n' + 
-							'[Sakura]             : -\n' + 
-							'[Gaara]              : -\n' + 
-							'[Neji]               : Requires level 5, 10000g\n' + 
-							'[Lee]                : Requires level 5, 10000g\n' + 
-							'[Tenten]             : Requires level 5, 10000g\n' + 
-							'[Shino]              : Requires level 5, 10000g\n' + 
-							'[Hinata]             : Requires level 5, 10000g\n' + 
-							'[Kiba]               : Requires level 5, 10000g\n' + 
-							'[Ino]                : Requires level 5, 10000g\n' + 
-							'[Shikamaru]          : Requires level 5, 10000g\n' + 
-							'[Chouji]             : Requires level 5, 10000g\n' + 
-							'[Tsunade]            : Requires level 20, 1000000g\n' + 
-							'[Orochimaru]         : Requires level 20, 1000000g\n' + 
-							'[Sasori]             : Requires level 25, 2000000g\n' + 
-							'[Deidara]            : Requires level 25, 2000000g\n' + 
-							'[Hidan]              : Requires level 25, 2000000g\n' + 
-							'[Kakuzu]             : Requires level 25, 2000000g\n' + 
-							'[Konan]              : Requires level 25, 2000000g\n' + 
-							'[Kisame]             : Requires level 35, 5000000g\n' + 
-							'[Kakashi]            : Requires level 35, 5000000g\n' + 
-							'[Gai]                : Requires level 35, 5000000g\n' +
-							'[Bee]                : Requires level 35, 5000000g\n' + 
-							'[Tobirama]           : Requires level 50, 10000000g\n' + 
-							'[Minato]             : Requires level 75, 100000000g\n' + 
-							'[Itachi]             : Requires level 75, 100000000g\n' + 
-							'[Nagato]             : Requires level 75, 100000000g\n' + 
-							'[Obito]              : Requires level 75, 100000000g\n' + 
-							'[Madara]             : Requires level 100, 1000000000g\n' + 
-							'[Hashirama]          : Requires level 100, 1000000000g\n' +
-							'[Kaguya]             : Requires level 150, 10000000000g```');
+							displayCharacters(ev);
 							break;
 						case 'char':
 							if (args.length == 1) {
