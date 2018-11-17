@@ -69,7 +69,7 @@ module.exports = function(ev, playerName, hist) {
 						'Chance of winning:   <' + (player.chance).toFixed(2) + '%> (Ranking <' + player.ranking.chance + '>)\n\n```';
 						if (!hist) ev.channel.send(response);
 						if (hist && ranking.lastGames.length > 0) {
-							response = '```md\History (last six months):\n\n';
+							response = '```md\nHistory (last six months):\n\n';
 							
 							var allHeroes = [];
 							for (var i = 0; i < ranking.bestHeroes.length; i++) {

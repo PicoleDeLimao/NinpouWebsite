@@ -708,13 +708,13 @@ bot.on('message', function(ev) {
 						case 'villages':
 							ev.channel.send('**Oink, oink**!\nHere are the villages you can join\n' + 
 							'```\md\nUse !join <village> to join a village\n' + 
-							'[Konohagakure]        : Requires level 1, 0g\n' + 
-							'[Sunagakure]          : Requires level 5, 1000g\n' + 
-							'[Kirigakure]          : Requires level 5, 1000g\n' + 
-							'[Kumogakure]          : Requires level 5, 1000g\n' + 
-							'[Iwagakure]           : Requires level 5, 1000g\n' +
-							'[Otogakure]           : Requires level 15, 100000g\n' + 
-							'[Akatsuki]            : Requires level 50, 10000000g```');
+							'Konohagakure : Requires level 1, 0g\n' + 
+							'  Sunagakure : Requires level 5, 1000g\n' + 
+							'  Kirigakure : Requires level 5, 1000g\n' + 
+							'  Kumogakure : Requires level 5, 1000g\n' + 
+							'   Iwagakure : Requires level 5, 1000g\n' +
+							'   Otogakure : Requires level 15, 100000g\n' + 
+							'    Akatsuki : Requires level 50, 10000000g```');
 							break;
 						case 'join':
 							if (args.length == 1) {
