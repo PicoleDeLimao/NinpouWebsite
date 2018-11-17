@@ -218,7 +218,7 @@ setInterval(function() {
 				if (!contains) {
 					ev.onlineStreams[_id].message.delete().then(function() {
 						if (ev.onlineStreams[_id].embed) {
-							ev.onlineStreams[_id].embed.delete();
+							//ev.onlineStreams[_id].embed.delete();
 							delete ev.onlineStreams[_id];
 						}
 					});
