@@ -34,11 +34,10 @@ module.exports = function(ev, user) {
 							msg += '```';
 							ev.channel.send(msg);
 						} else {
-							msg += '[';
 							for (var j = 0; j < maxLength - characters[i].name.length; j++) {
 								msg += ' ';
 							}
-							msg += characters[i].name[0].toUpperCase() + characters[i].name.substring(1) + ']  ';
+							msg += characters[i].name[0].toUpperCase() + characters[i].name.substring(1) + ' ';
 							msg += ': ';
 							if (characters[i].gold == 0) {
 								msg += '-';
