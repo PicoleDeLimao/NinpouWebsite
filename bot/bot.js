@@ -216,12 +216,16 @@ setInterval(function() {
 					}
 				}
 				if (!contains) {
-					ev.onlineStreams[_id].message.delete().then(function() {
-						if (ev.onlineStreams[_id].embed) {
-							//ev.onlineStreams[_id].embed.delete();
-							delete ev.onlineStreams[_id];
-						}
-					});
+					try {
+						ev.onlineStreams[_id].message.delete().then(function() {
+							if (ev.onlineStreams[_id].embed) {
+								//ev.onlineStreams[_id].embed.delete();
+								delete ev.onlineStreams[_id];
+							}
+						});
+					} catch (e) {
+						delete ev.onlineStreams[_id];
+					}
 				} 
 			} 
 			ev.count = ev.count || 0;
