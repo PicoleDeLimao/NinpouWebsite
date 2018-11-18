@@ -3,7 +3,7 @@
 var http = require('http');
 
 function isOwner(game, slot) {
-	return game.slots[i].username != null && game.slots[i].username.toLowerCase() == game.owner.toLowerCase();
+	return game.slots[slot].username != null && game.slots[slot].username.toLowerCase() == game.owner.toLowerCase();
 }
 
 module.exports = function(bot, game) {
