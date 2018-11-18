@@ -394,9 +394,9 @@ router.post('/:game_id/unrecordable', function(req, res) {
 		if (err) return res.status(500).json({ error:err });
 		else if (!game) return res.status(404).json({ error:'Game not found.' });
 		if (game.progress) return res.status(400).json({ error:'Game is already in progress.' });
-		Alias.findOne({ alias: game.owner }, function(err, alias) {
+		Alias.findOne({ alias: game.owner.toLowerCase() }, function(err, alias) {
 			if (err) return res.status(500).json({ error:err });
-			else if (alias.username != req.body.username) return res.status(400).json({ error: 'You are not the game owner.' });
+			else if (!alias || alias.username != req.body.username) return res.status(400).json({ error: 'You are not the game owner.' });
 			game.recordable = false;
 			game.save(function(err) {
 				if (err) return res.status(500).json({ error:err });
