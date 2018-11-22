@@ -252,6 +252,7 @@ router.post('/:game_id', function(req, res) {
 			if (err) return res.status(500).json(err);
 			game.recorded = true;
 			game.balance_factor = balanceFactor;
+			if (game.balance_factor < 0.95) return res.status(400).json({ error: 'Only games with balance factor higher than 0.95 can be recorded.' });
 			game.save(function(err) {
 				if (err) return res.status(500).json(err);
 				var changes = [];
