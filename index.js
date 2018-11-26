@@ -36,7 +36,7 @@ app.use('/items', require('./routes/items'));
 app.use('/heroes', require('./routes/heroes'));  
 
 app.get('/latest', function(req, res) {
-	res.redirect('https://drive.google.com/file/d/1QWBuCD8i-D5gxnxy8CYu6LkXIkLTDbGb/view?usp=sharing');
+	res.redirect('https://drive.google.com/file/d/1TngewPkMbR5Cfg9IqnDxXXsZoJm63cIE/view?usp=sharing');
 }); 
    
 app.get('/changelog', function(req, res) {
