@@ -43,8 +43,8 @@ function getStringsFormatted(strings) {
 	return newStrings;
 }
 
-module.exports = function(ev, playerName, hist) {
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/players/' + playerName }, function(res) {
+module.exports = function(ev, playerName, hist, hero) {
+	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/players/' + playerName + ( hero ? '?hero=' + hero : '' ) }, function(res) {
 		var statusCode = res.statusCode;
 		var body = '';
 		res.on('data', function(data) {
@@ -71,21 +71,26 @@ module.exports = function(ev, playerName, hist) {
 						if (hist && ranking.lastGames.length > 0) {
 							response = '```md\nHistory (last six months):\n\n';
 							
-							var allHeroes = [];
-							for (var i = 0; i < ranking.bestHeroes.length; i++) {
-								allHeroes.push(getHeroString(ranking.bestHeroes[i], i));
-							}
-							for (var i = 0; i < ranking.worstHeroes.length; i++) {
-								allHeroes.push(getHeroString(ranking.worstHeroes[i], i));
-							}
-							var heroStrings = getStringsFormatted(allHeroes);
-							response += 'Top-5 best heroes:\n';
-							for (var i = 0; i < ranking.bestHeroes.length; i++) {
-								response += heroStrings[i];
-							}
-							response += '\nTop-5 worst heroes:\n';
-							for (var i = 0; i < ranking.worstHeroes.length; i++) {
-								response += heroStrings[ranking.bestHeroes.length + i];
+							if (hero) {
+								response += 'Performance:\n';
+								response += getHeroString(ranking.hero, 0);
+							} else {
+								var allHeroes = [];
+								for (var i = 0; i < ranking.bestHeroes.length; i++) {
+									allHeroes.push(getHeroString(ranking.bestHeroes[i], i));
+								}
+								for (var i = 0; i < ranking.worstHeroes.length; i++) {
+									allHeroes.push(getHeroString(ranking.worstHeroes[i], i));
+								}
+								var heroStrings = getStringsFormatted(allHeroes);
+								response += 'Top-5 best heroes:\n';
+								for (var i = 0; i < ranking.bestHeroes.length; i++) {
+									response += heroStrings[i];
+								}
+								response += '\nTop-5 worst heroes:\n';
+								for (var i = 0; i < ranking.worstHeroes.length; i++) {
+									response += heroStrings[ranking.bestHeroes.length + i];
+								}
 							}
 							
 							response += '\nLast 10 games:\n';

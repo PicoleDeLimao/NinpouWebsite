@@ -225,7 +225,7 @@ function getPlayerHeroesRanking(username, usernames, heroNames, timePeriod, call
 				return a.points - b.points;
 			});
 			var worstHeroes = newHeroes.slice(0, 5);
-			return callback(null, bestHeroes, worstHeroes);
+			return callback(null, bestHeroes, worstHeroes, newHeroes);
 		});
 	});
 }
@@ -234,12 +234,27 @@ router.get('/players/:username', function(req, res) {
 	var timePeriod = moment().subtract(6, 'month').toDate();
 	getHeroes(function(err, heroes) {
 		if (err) return res.status(400).json({ error: err });
+		var heroId = null;
+		if (req.query.hero) {
+			for (var id in heroes) {
+				if (heroes[id].toLowerCase() == req.query.hero.toLowerCase()) {
+					heroId = id;
+					break;
+				}
+			}
+		}
 		StatCalculator.getPlayerStats(req.params.username, function(err, allStat) {
 			if (err) return res.status(400).json({ error: err });
 			StatCalculator.getAllPlayersRanking(function(err, stats) {
 				if (err) return res.status(400).json({ error: err }); 
 				allStat = StatCalculator.getRankingPositions(stats, allStat); 
-				Game.find({ 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'balance_factor': { $gt: 0.95 }, 'createdAt': { $gt: timePeriod } }).sort('-_id').exec(function(err, games) {
+				var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'balance_factor': { $gt: 0.95 }, 'createdAt': { $gt: timePeriod } };
+				if (heroId) {
+					query['slots'] = { '$elemMatch': { username: { $in: allStat.usernames }, hero: heroId } };
+				} else {
+					query['slots.username'] = { $in: allStat.usernames };
+				}
+				Game.find(query).sort('-_id').exec(function(err, games) {
 					if (err) return res.status(500).json({ error: err }); 
 					var newGames = [];
 					for (var i = 0; i < games.length; i++) {
@@ -258,14 +273,22 @@ router.get('/players/:username', function(req, res) {
 						}
 					}
 					var lastGames = newGames.slice(0, 10);
-					getPlayerHeroesRanking(req.params.username.toLowerCase(), allStat.usernames, heroes, timePeriod, function(err, bestHeroes, worstHeroes) {
+					getPlayerHeroesRanking(req.params.username.toLowerCase(), allStat.usernames, heroes, timePeriod, function(err, bestHeroes, worstHeroes, allHeroes) {
 						if (err) return res.status(500).json({ error: err }); 
 						newGames.sort(function(a, b) {
 							return b.points - a.points;
 						});
 						var bestGame = newGames.length > 0 ? newGames[0] : null;
 						var worstGame = newGames.length > 0 ? newGames[newGames.length - 1] : null;
-						return res.json({ 'stat': allStat, 'lastGames': lastGames, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': bestGame, 'worstGame': worstGame });
+						if (heroId) {
+							for (var i = 0; i < allHeroes.length; i++) {
+								if (allHeroes[i]._id == heroId) {
+									return res.json({ 'stat': allStat, 'lastGames': lastGames, 'hero': allHeroes[i], 'bestGame': bestGame, 'worstGame': worstGame });
+								}
+							}
+						} else {
+							return res.json({ 'stat': allStat, 'lastGames': lastGames, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': bestGame, 'worstGame': worstGame });
+						}
 					});
 				});
 			});
