@@ -72,7 +72,7 @@ module.exports = function(ev, playerName, hist, hero) {
 							response = '```md\nHistory (last six months):\n\n';
 							
 							if (hero) {
-								response += 'Hero ranking (from ' + ranking.games + ' games and ' + ranking.heroes + ' played heroes):\n';
+								response += 'Hero ranking (from ' + ranking.games + ' games with this hero from ' + ranking.heroes + ' played heroes):\n';
 								response += getHeroString(ranking.hero, ranking.heroRanking);
 							} else {
 								var allHeroes = [];
