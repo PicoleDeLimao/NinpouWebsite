@@ -957,7 +957,7 @@ bot.on('message', function(ev) {
 							break; 
 						case 'hero':
 							if (args.length > 0) {
-								var heroName = 0;
+								var heroName = '';
 								for (var i = 0; i < args.length; i++) {
 									heroName += args[i];
 									if (i != args.length - 1) heroName += ' ';

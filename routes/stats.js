@@ -63,30 +63,34 @@ function savePlayerStats(game, callback) {
 		if (game.slots[slot].state != 'EMPTY') {
 			Stat.findOne({ username: game.slots[slot].username.toLowerCase() }, function(err, stat) {
 				if (err) return callback(err);
-				if (!stat) stat = new Stat({
-					username: game.slots[slot].username.toLowerCase(),
-					alias: username || game.slots[slot].username.toLowerCase(),
-					kills: game.slots[slot].kills,
-					deaths: game.slots[slot].deaths,
-					assists: game.slots[slot].assists,
-					gpm: game.slots[slot].gpm
-				});
-				var decayFactor = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
-				var alpha = decayFactor + (1 - decayFactor) * (1 - game.balance_factor);
-				var beta = (1 - decayFactor) * game.balance_factor; 
-				var oldPoints = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
-				stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
-				stat.deaths = stat.deaths * alpha + game.slots[slot].deaths * beta;
-				stat.assists = stat.assists * alpha + game.slots[slot].assists * beta;
-				stat.gpm = stat.gpm * alpha + game.slots[slot].gpm * beta;
-				if (game.slots[slot].win) stat.wins += 1;
-				stat.games += 1; 
-				stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
-				stat.score = Calculator.calculateScore(stat);
-				stat.save(function(err) {
-					if (err) return callback(err);
+				if (game.slots[slot].kills == 0 && game.slots[slot].deaths == 0 && game.slots[slot].assists == 0) {
 					save(slot + 1);
-				});
+				} else {
+					if (!stat) stat = new Stat({
+						username: game.slots[slot].username.toLowerCase(),
+						alias: username || game.slots[slot].username.toLowerCase(),
+						kills: game.slots[slot].kills,
+						deaths: game.slots[slot].deaths,
+						assists: game.slots[slot].assists,
+						gpm: game.slots[slot].gpm
+					});
+					var decayFactor = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
+					var alpha = decayFactor + (1 - decayFactor) * (1 - game.balance_factor);
+					var beta = (1 - decayFactor) * game.balance_factor; 
+					var oldPoints = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
+					stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
+					stat.deaths = stat.deaths * alpha + game.slots[slot].deaths * beta;
+					stat.assists = stat.assists * alpha + game.slots[slot].assists * beta;
+					stat.gpm = stat.gpm * alpha + game.slots[slot].gpm * beta;
+					if (game.slots[slot].win) stat.wins += 1;
+					stat.games += 1; 
+					stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+					stat.score = Calculator.calculateScore(stat);
+					stat.save(function(err) {
+						if (err) return callback(err);
+						save(slot + 1);
+					});
+				}
 			});
 		} else {
 			save(slot + 1);
