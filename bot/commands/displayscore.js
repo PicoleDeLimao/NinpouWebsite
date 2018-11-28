@@ -82,14 +82,16 @@ module.exports = function(ev, playerName, hist, hero) {
 								for (var i = 0; i < ranking.worstHeroes.length; i++) {
 									allHeroes.push(getHeroString(ranking.worstHeroes[i], i));
 								}
-								var heroStrings = getStringsFormatted(allHeroes);
-								response += 'Top-5 best heroes (from ' + ranking.numHeroes + ' played heroes):\n';
-								for (var i = 0; i < ranking.bestHeroes.length; i++) {
-									response += heroStrings[i];
-								}
-								response += '\nTop-5 worst heroes (from ' + ranking.numHeroes + ' played heroes):\n';
-								for (var i = 0; i < ranking.worstHeroes.length; i++) {
-									response += heroStrings[ranking.bestHeroes.length + i];
+								if (allHeroes.length > 0) {
+									var heroStrings = getStringsFormatted(allHeroes);
+									response += 'Top-5 best heroes (from ' + ranking.numHeroes + ' played heroes):\n';
+									for (var i = 0; i < ranking.bestHeroes.length; i++) {
+										response += heroStrings[i];
+									}
+									response += '\nTop-5 worst heroes (from ' + ranking.numHeroes + ' played heroes):\n';
+									for (var i = 0; i < ranking.worstHeroes.length; i++) {
+										response += heroStrings[ranking.bestHeroes.length + i];
+									}
 								}
 							}
 							
