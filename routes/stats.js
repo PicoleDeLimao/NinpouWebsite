@@ -225,6 +225,9 @@ function getPlayerHeroesRanking(username, usernames, heroNames, timePeriod, call
 				return a.points - b.points;
 			});
 			var worstHeroes = newHeroes.slice(0, 5);
+			newHeroes.sort(function(a, b) {
+				return b.points - a.points;
+			});
 			return callback(null, bestHeroes, worstHeroes, newHeroes);
 		});
 	});
@@ -283,7 +286,7 @@ router.get('/players/:username', function(req, res) {
 						if (heroId) {
 							for (var i = 0; i < allHeroes.length; i++) {
 								if (allHeroes[i]._id == heroId) {
-									return res.json({ 'stat': allStat, 'lastGames': lastGames, 'hero': allHeroes[i], 'bestGame': bestGame, 'worstGame': worstGame });
+									return res.json({ 'stat': allStat, 'lastGames': lastGames, 'hero': allHeroes[i], 'heroRanking': i, 'games': games.length, 'bestGame': bestGame, 'worstGame': worstGame });
 								}
 							}
 						} else {
