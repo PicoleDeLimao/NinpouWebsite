@@ -60,7 +60,7 @@ function saveHeroStats(game, callback) {
 function savePlayerStats(game, callback) {
 	(function save(slot) {
 		if (slot >= game.slots.length || slot >= 9) return callback(null);
-		if (game.slots[slot].state != 'EMPTY' && game.slots[slot].hero != 0) {
+		if (game.slots[slot].state != 'EMPTY') {
 			Stat.findOne({ username: game.slots[slot].username.toLowerCase() }, function(err, stat) {
 				if (err) return callback(err);
 				if (!stat) stat = new Stat({
