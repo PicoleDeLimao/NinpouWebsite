@@ -8,7 +8,7 @@ function getGameString(game) {
 }
 
 function getHeroString(hero, index) {
-	return (index + 1) + '.\t< ' + (hero.hero || 'Unknown') + ' >\tAverage KDA: <' + Math.round(hero.kills) + '/' + Math.round(hero.deaths) + '/' + Math.round(hero.assists) + '>\tAverage points: <' + Math.round(hero.points) + '>\n';
+	return (index + 1) + '.\t< ' + (hero.hero || 'Unknown') + ' >\tKDA: <' + Math.round(hero.kills) + '/' + Math.round(hero.deaths) + '/' + Math.round(hero.assists) + '>\tPoints: <' + Math.round(hero.points) + '>\tVictories: <' + hero.wins + '/' + hero.games + '>\n';
 }
 
 function getMaximumLength(strings, index) {
