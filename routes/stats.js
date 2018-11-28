@@ -286,7 +286,7 @@ router.get('/players/:username', function(req, res) {
 						if (heroId) {
 							for (var i = 0; i < allHeroes.length; i++) {
 								if (allHeroes[i]._id == heroId) {
-									return res.json({ 'stat': allStat, 'lastGames': lastGames, 'hero': allHeroes[i], 'heroRanking': i, 'games': games.length, 'bestGame': bestGame, 'worstGame': worstGame });
+									return res.json({ 'stat': allStat, 'lastGames': lastGames, 'hero': allHeroes[i], 'heroRanking': i, 'games': games.length, 'heroes': allHeroes.length, 'bestGame': bestGame, 'worstGame': worstGame });
 								}
 							}
 						} else {
