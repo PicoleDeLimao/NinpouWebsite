@@ -11,10 +11,11 @@ var Hero = require('../models/Hero');
 var StatCalculator = require('./statcalculator');
 var BalanceCalculator = require('./balancecalculator');
 
-var cookie = '';
+var cookies = ['', ''];
 var code = 'w2t5r'; 
+var count = 0;
 
-function getCookie() {
+function getCookie(username, password, callback) {
 	var request = https.request({ host: 'entgaming.net', path: '/forum/ucp.php?mode=login', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': 0 } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
@@ -22,20 +23,21 @@ function getCookie() {
 		});
 		res.on('end', function() {
 			var sid = body.split('<p><a href="./ucp.php?mode=register&amp;sid=')[1].split('"')[0];
-			var dataToSend = 'username=NinpouStorm&password=N1nP0uR0cKs!!!&autologin=on&sid=' + sid + '&login=Login';
+			var dataToSend = 'username=' + username + '&password=' + password + '&autologin=on&sid=' + sid + '&login=Login';
 			var request = https.request({ host: 'entgaming.net', path: '/forum/ucp.php?mode=login', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(dataToSend) } }, function(res) {
 				res.on('data', function(chunk) {
 					
 				});
 				res.on('end', function() {
 					var cookies = res.headers['set-cookie'];
-					cookie = '';
+					var cookie = '';
 					for (var i = 0; i < cookies.length; i++) {
 						cookie += cookies[i].split(';')[0];
 						if (i != cookies.length - 1)
 							cookie += '; ';
 					}
 					console.log('Cookie: ' + cookie);
+					callback(cookie);
 				});
 			});
 			request.on('error', function(err) {
@@ -51,10 +53,20 @@ function getCookie() {
 	request.end();
 };
 
-getCookie();
+function getCookies() {
+	getCookie('NinpouStorm', 'N1nP0uR0cKs!!!', function(cookie) {
+		cookies[0] = cookie;
+	});
+
+	getCookie('NarutoStorm', 'N1nP0uR0cKs!!!', function(cookie) {
+		cookies[1] = cookie;
+	});
+}
+
+getCookies();
 
 setInterval(function() {
-	getCookie();
+	getCookies();
 }, 60*60*1000);
 
  
@@ -322,6 +334,8 @@ router.get('/', function(req, res) {
 });
   
 router.post('/', function(req, response) {  
+	var cookie = cookies[count % 2];
+	++count;
 	var dataToSend = 'owner=' + req.body.owner + '&map=:' + code + '&location=' + req.body.realm;
 	var request = https.request({ host: 'entgaming.net', path: '/link/host.php', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(dataToSend), 'cookie': cookie } }, function(res) {
 		var body = '';
