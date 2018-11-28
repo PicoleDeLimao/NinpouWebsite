@@ -68,7 +68,6 @@ function savePlayerStats(game, callback) {
 				} else {
 					if (!stat) stat = new Stat({
 						username: game.slots[slot].username.toLowerCase(),
-						alias: username || game.slots[slot].username.toLowerCase(),
 						kills: game.slots[slot].kills,
 						deaths: game.slots[slot].deaths,
 						assists: game.slots[slot].assists,
