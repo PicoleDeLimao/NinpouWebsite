@@ -105,8 +105,9 @@ function getPlayerPoints(game, callback) {
 			getPlayerAlias(game.slots[slot].username.toLowerCase(), function(err, alias) {
 				var username = err || !alias ? game.slots[slot].username.toLowerCase() : alias;
 				StatCalculator.getPlayerStats(username, function(err, stat) {
-					if (err) return callback(err);
-					points[stat._id] = stat.points;
+					if (!err) {
+						points[stat._id] = stat.points;
+					}
 					get(slot + 1);
 				});
 			});
@@ -130,24 +131,24 @@ router.post('/:game_id', function(req, res) {
 		if (body.length < 11) return res.status(400).json({ error: 'Invalid code.' });
 		Decoder.decodeGame(body, game, function(err, game) {
 			if (err) return res.status(400).json({ error: err });
-		});
-		game.recorded = true; 
-		game.save(function(err) {
-			if (err) return res.status(500).json({ error: err });
-			var changes = [];
-			saveHeroStats(game, function(err) {
+			game.recorded = true; 
+			game.save(function(err) {
 				if (err) return res.status(500).json({ error: err });
-				getPlayerPoints(game, function(err, oldPoints) {
+				var changes = [];
+				saveHeroStats(game, function(err) {
 					if (err) return res.status(500).json({ error: err });
-					savePlayerStats(game, function(err) {
+					getPlayerPoints(game, function(err, oldPoints) {
 						if (err) return res.status(500).json({ error: err });
-						getPlayerPoints(game, function(err, newPoints) {
+						savePlayerStats(game, function(err) {
 							if (err) return res.status(500).json({ error: err });
-							var changes = [];
-							for (var username in oldPoints) {
-								changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
-							}
-							return res.status(200).json({ changes: changes });
+							getPlayerPoints(game, function(err, newPoints) {
+								if (err) return res.status(500).json({ error: err });
+								var changes = [];
+								for (var username in oldPoints) {
+									changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
+								}
+								return res.status(200).json({ changes: changes });
+							});
 						});
 					});
 				});

@@ -23,6 +23,7 @@ module.exports = function(ev, gameId, code, alias) {
 					body += chunk;
 				});
 				res.on('end', function() {
+					console.log(body);
 					if (res.statusCode != 200) {
 						try { 
 							var json = JSON.parse(body);
