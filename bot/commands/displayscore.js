@@ -72,8 +72,8 @@ module.exports = function(ev, playerName, hist, hero) {
 							response = '```md\nHistory (last six months):\n\n';
 							
 							if (hero) {
-								response += 'Performance (from ' + ranking.games + ' games):\n';
-								response += getHeroString(ranking.hero, 0) + ' (Ranking ' + (ranking.heroRanking + 1) + ')';
+								response += 'Hero ranking (from ' + ranking.games + ' games):\n';
+								response += getHeroString(ranking.hero, ranking.heroRanking);
 							} else {
 								var allHeroes = [];
 								for (var i = 0; i < ranking.bestHeroes.length; i++) {
