@@ -72,7 +72,7 @@ module.exports = function(ev, playerName, hist, hero) {
 							response = '```md\nHistory (last six months):\n\n';
 							
 							if (hero) {
-								response += 'Hero ranking (from ' + ranking.games + ' games with this hero from ' + ranking.heroes + ' played heroes):\n';
+								response += 'Hero ranking (from ' + ranking.numGames + ' games with this hero from ' + ranking.numHeroes + ' played heroes):\n';
 								response += getHeroString(ranking.hero, ranking.heroRanking);
 							} else {
 								var allHeroes = [];
@@ -83,11 +83,11 @@ module.exports = function(ev, playerName, hist, hero) {
 									allHeroes.push(getHeroString(ranking.worstHeroes[i], i));
 								}
 								var heroStrings = getStringsFormatted(allHeroes);
-								response += 'Top-5 best heroes:\n';
+								response += 'Top-5 best heroes (from ' + ranking.numGames + ' games and ' + ranking.numHeroes + ' played heroes):\n';
 								for (var i = 0; i < ranking.bestHeroes.length; i++) {
 									response += heroStrings[i];
 								}
-								response += '\nTop-5 worst heroes:\n';
+								response += '\nTop-5 worst heroes (from ' + ranking.numGames + ' games and ' + ranking.numHeroes + ' played heroes):\n';
 								for (var i = 0; i < ranking.worstHeroes.length; i++) {
 									response += heroStrings[ranking.bestHeroes.length + i];
 								}
@@ -116,7 +116,8 @@ module.exports = function(ev, playerName, hist, hero) {
 							response += '\n\n';
 							response += '```';  
 							ev.channel.send(response);
-						} else if (hist) {
+						} 
+						if (ranking.numGames == 0) {
 							ev.channel.send('Nothing to display.');
 						}
 					});
