@@ -97,7 +97,7 @@ router.get('/:name', function(req, res) {
 							games: gamesAggregated[alias].games
 						};
 						obj.points = obj.kills * 10 + obj.assists * 2 - obj.deaths * 5;
-						if (obj.games >= 5) {
+						if (obj.games >= 3) {
 							newGamesAggregated.push(obj);
 						}
 					}

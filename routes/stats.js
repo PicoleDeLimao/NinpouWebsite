@@ -217,7 +217,7 @@ function getPlayerHeroesRanking(username, usernames, heroNames, timePeriod, call
 				heroes[i].chance *= 100;
 				heroes[i].score = Calculator.calculateScore(heroes[i]); 
 				heroes[i].hero = heroNames[heroes[i]._id];
-				if (heroes[i]._id != 0 && heroes[i].points != 0 && heroes[i].hero) {
+				if (heroes[i]._id != 0 && heroes[i].points != 0 && heroes[i].hero && heroes[i].games >= 3) {
 					newHeroes.push(heroes[i]);
 				}
 			}
