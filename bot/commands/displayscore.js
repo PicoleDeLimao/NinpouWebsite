@@ -116,7 +116,7 @@ module.exports = function(ev, playerName, hist, hero) {
 							response += '\n\n';
 							response += '```';  
 							ev.channel.send(response);
-						} else {
+						} else if (hist) {
 							ev.channel.send('Nothing to display.');
 						}
 					});
