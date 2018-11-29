@@ -1,6 +1,7 @@
 'use strict';
 
 var http = require('http');
+var printGold = require('./printgold');
 
 module.exports = function(ev, player, amount) {
 	var data = '{ "user": "' + player + '", "amount": ' + amount + ' }';
@@ -15,7 +16,7 @@ module.exports = function(ev, player, amount) {
 				if (res.statusCode != 200) {
 					ev.channel.send(data.error);
 				} else {
-					ev.channel.send('Done!! Your current amount is: ' + data.amount + '. **Oink!**');
+					ev.channel.send('Done!! Your current amount is: ' + printGold(Math.floor(data.amount)) + '. **Oink!**');
 				}
 			} catch (err) {
 				console.error(err);

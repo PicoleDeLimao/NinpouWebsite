@@ -2,6 +2,7 @@
 
 var http = require('http');
 var Discord = require('discord.js');
+var printGold = require('./printgold');
 
 module.exports = function(ev, amount) {
 	var dataToSend = '{ "amount": ' + amount + ' }';  
@@ -27,14 +28,14 @@ module.exports = function(ev, amount) {
 					if (data.amount < 0) {
 						var img = 'http://www.narutoninpou.com/images/tsunade-gamble-win.png';
 						var msgEmbed = new Discord.RichEmbed() 
-								.setDescription('Tsunade won!! You lost **' + (-data.amount) + 'g**!')
+								.setDescription('Tsunade won!! You lost **' + printGold(-data.amount) + 'g**!')
 								.setFooter('Ha! That\'s all you got!? Loser!!!')
 								.setImage(img);
 						ev.channel.send(msgEmbed);
 					} else {
 						var img = 'http://www.narutoninpou.com/images/tsunade-gamble-lose.png';
 						var msgEmbed = new Discord.RichEmbed() 
-								.setDescription('You won!! You got **' + data.amount + 'g**!')
+								.setDescription('You won!! You got **' + printGold(data.amount) + 'g**!')
 								.setFooter('Get out of my sight before I smash your face on the floor!!!')
 								.setImage(img);
 						ev.channel.send(msgEmbed);

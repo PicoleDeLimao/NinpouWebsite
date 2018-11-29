@@ -432,41 +432,35 @@ router.put('/:username/character/:character', function(req, res) {
 		if (!characters[req.params.character]) return res.status(404).json({ error: 'Character not found' });
 		else if (alias.level < characters[req.params.character].level) return res.status(400).json({ error: 'You don\'t have enough level to buy this character.' });
 		else if (alias.gold < characters[req.params.character].gold) return res.status(400).json({ error: 'You don\'t have enough gold to buy this character.' });
-		StatCalculator.getAllPlayersRanking(function(err, allStat) {
+		getPlayerStats(req.params.username, function(err, buyerStat) {
 			if (err) return res.status(500).json({ error: err });
-			var stats = { };
-			for (var i = 0; i < allStat.length; i++) {
-				stats[allStat[i]._id] = allStat[i];
-			}
-			Alias.find({ }, function(err, allAlias) {
-				if (err) return res.status(500).json({ error: err });
-				var owner = null;
-				for (var i = 0; i < allAlias.length; i++) {
-					if (allAlias[i].character == req.params.character && allAlias[i].username != alias.username) {
-						owner = allAlias[i];
-					}
-				}
-				if (owner === null) {
+			Alias.findOne({ character: req.params.character }, function(err, anotherAlias) {
+				if (err || !anotherAlias) {
 					alias.character = req.params.character;
 					alias.gold -= characters[req.params.character].gold;
 					alias.save(function(err) {
 						if (err) return res.status(500).json({ error: err });
 						return res.status(200).send();
 					});
-				} else if (stats[alias.username] > stats[owner.username]) {
-					alias.character = req.params.character;
-					alias.gold -= characters[req.params.character].gold;
-					owner.character = "none";
-					alias.save(function(err) {
-						if (err) return res.status(500).json({ error: err });
-						onwer.save(function(err) {
-							if (err) return res.status(500).json({ error: err });
-							return res.status(200).send();
-						});
-					});
 				} else {
-					return res.status(400).json({ error: 'This character is already owned by someone with higher score.' });
-				}				
+					getPlayerStats(anotherAlias.username, function(err, ownerStat) {
+						if (err) return res.status(500).json({ error: err });
+						if (buyerStat.score < ownerStat.score) {
+							return res.status(400).json({ error: 'This character is already owned by someone with higher score.' });
+						} else {
+							anotherAlias.character = "none";
+							anotherAlias.save(function(err) {
+								if (err) return res.status(500).json({ error: err });
+								alias.character = req.params.character;
+								alias.gold -= characters[req.params.character].gold;
+								alias.save(function(err) {
+									if (err) return res.status(500).json({ error: err });
+									return res.status(200).send();
+								});
+							});
+						}
+					});
+				}
 			});
 		});
 	});

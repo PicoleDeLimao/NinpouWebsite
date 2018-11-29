@@ -3,6 +3,7 @@
 var http = require('http');
 var Discord = require('discord.js');
 var getPlayerName = require('./getplayername');
+var printGold = require('./printgold');
 
 function getItem(item, spaces) {
 	if (!item) return '';
@@ -90,7 +91,7 @@ module.exports = function(ev, user) {
 						'Level:     [' + (data.level || 1) + ']\n' + 
 						'XP:        [' + (data.xp || 0) + '%]\n' + 
 						'Rank:      [' + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin') + ']\n' + 
-						'Gold:      [' + (Math.round(data.gold) || 0) + ']``` ```ini\n' + 
+						'Gold:      [' + printGold(Math.round(data.gold) || 0) + ']``` ```ini\n' + 
 						'HP:        [' + getHP(data) + ']\n' + 
 						'Attack:    [' + getAttack(data) + ']\n' + 
 						'Armor:     [' + getArmor(data) + ']\n\n' +

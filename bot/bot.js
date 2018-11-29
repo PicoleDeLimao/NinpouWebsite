@@ -665,17 +665,17 @@ bot.on('message', function(ev) {
 						case 'summons':
 							ev.channel.send('**Oink, oink**!\nHere are the summons you can buy\n' + 
 							'```md\nUse !summon <id> to buy a summon\n' + 
-							'[1] [Frog lvl. 1]     : Requires level 10, 100000g (Increase mission reward by 150%)\n' + 
-							'[2] [Frog lvl. 2]     : Requires level 25, 1000000g (Increase mission reward by 250%)\n' + 
-							'[3] [Frog lvl. 3]     : Requires level 50, 10000000g (Increase mission reward by 500%)\n' + 
-							'[4] [Snake lvl. 1]    : Requires level 10, 100000g (Increase chance of gambling by 10%)\n' + 
-							'[5] [Snake lvl. 2]    : Requires level 25, 1000000g  (Increase chance of gambling by 15%)\n' + 
-							'[6] [Snake lvl. 3]    : Requires level 50, 10000000g (Increase chance of gambling by 25%)\n' +
-							'[7] [Slug lvl. 1]     : Requires level 10, 100000g (Decrease mission requirement by 1)\n' + 
-							'[8] [Slug lvl. 2]     : Requires level 50, 10000000g (Decrease mission requirement by 2)\n' + 
-							'[9] [Hawk]            : Requires level 25, 1000000g (Increase rob chance by 10%)\n' + 
-							'[10] [Crow]           : Requires level 25, 1000000g (Decrease chance of being robbed by 15%)\n' + 
-							'[11] [Dog]            : Requires level 15, 150000g (10% chance to get 20x reward on missions)```');
+							'[1] [Frog lvl. 1]     : Requires level 10, 100,000g (Increase mission reward by 150%)\n' + 
+							'[2] [Frog lvl. 2]     : Requires level 25, 1,000,000g (Increase mission reward by 250%)\n' + 
+							'[3] [Frog lvl. 3]     : Requires level 50, 10,000,000g (Increase mission reward by 500%)\n' + 
+							'[4] [Snake lvl. 1]    : Requires level 10, 100,000g (Increase chance of gambling by 10%)\n' + 
+							'[5] [Snake lvl. 2]    : Requires level 25, 1,000,000g  (Increase chance of gambling by 15%)\n' + 
+							'[6] [Snake lvl. 3]    : Requires level 50, 10,000,000g (Increase chance of gambling by 25%)\n' +
+							'[7] [Slug lvl. 1]     : Requires level 10, 100,000g (Decrease mission requirement by 1)\n' + 
+							'[8] [Slug lvl. 2]     : Requires level 50, 10,000,000g (Decrease mission requirement by 2)\n' + 
+							'[9] [Hawk]            : Requires level 25, 1,000,000g (Increase rob chance by 10%)\n' + 
+							'[10] [Crow]           : Requires level 25, 1,000,000g (Decrease chance of being robbed by 15%)\n' + 
+							'[11] [Dog]            : Requires level 15, 150,000g (10% chance to get 20x reward on missions)```');
 							break;
 						case 'summon':
 							if (args.length == 1) {
@@ -712,12 +712,12 @@ bot.on('message', function(ev) {
 							ev.channel.send('**Oink, oink**!\nHere are the villages you can join\n' + 
 							'```\md\nUse !join <village> to join a village\n' + 
 							'Konohagakure : Requires level 1, 0g\n' + 
-							'  Sunagakure : Requires level 5, 1000g\n' + 
-							'  Kirigakure : Requires level 5, 1000g\n' + 
-							'  Kumogakure : Requires level 5, 1000g\n' + 
-							'   Iwagakure : Requires level 5, 1000g\n' +
-							'   Otogakure : Requires level 15, 100000g\n' + 
-							'    Akatsuki : Requires level 50, 10000000g```');
+							'  Sunagakure : Requires level 5, 1,000g\n' + 
+							'  Kirigakure : Requires level 5, 1,000g\n' + 
+							'  Kumogakure : Requires level 5, 1,000g\n' + 
+							'   Iwagakure : Requires level 5, 1,000g\n' +
+							'   Otogakure : Requires level 15, 100,000g\n' + 
+							'    Akatsuki : Requires level 50, 10,000,000g```');
 							break;
 						case 'join':
 							if (args.length == 1) {

@@ -2,6 +2,7 @@
 
 var http = require('http');
 var getPlayerName = require('./getplayername');
+var printGold = require('./printgold');
 
 module.exports = function(ev, user) { 
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/alias/characters', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
@@ -42,7 +43,7 @@ module.exports = function(ev, user) {
 							if (characters[i].gold == 0) {
 								msg += '-';
 							} else {
-								msg += 'Requires level ' + characters[i].level + ', ' + characters[i].gold + 'g';
+								msg += 'Requires level ' + characters[i].level + ', ' + printGold(characters[i].gold) + 'g';
 							}
 							if (data.owners[characters[i].name]) {
 								getPlayerName(ev, data.owners[characters[i].name], function(err, name) {
