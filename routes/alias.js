@@ -432,7 +432,7 @@ router.put('/:username/character/:character', function(req, res) {
 		if (!characters[req.params.character]) return res.status(404).json({ error: 'Character not found' });
 		else if (alias.level < characters[req.params.character].level) return res.status(400).json({ error: 'You don\'t have enough level to buy this character.' });
 		else if (alias.gold < characters[req.params.character].gold) return res.status(400).json({ error: 'You don\'t have enough gold to buy this character.' });
-		getPlayerStats(req.params.username, function(err, buyerStat) {
+		StatCalculator.getPlayerStats(req.params.username, function(err, buyerStat) {
 			if (err) return res.status(500).json({ error: err });
 			Alias.findOne({ character: req.params.character }, function(err, anotherAlias) {
 				if (err || !anotherAlias) {
@@ -443,7 +443,7 @@ router.put('/:username/character/:character', function(req, res) {
 						return res.status(200).send();
 					});
 				} else {
-					getPlayerStats(anotherAlias.username, function(err, ownerStat) {
+					StatCalculator.getPlayerStats(anotherAlias.username, function(err, ownerStat) {
 						if (err) return res.status(500).json({ error: err });
 						if (buyerStat.score < ownerStat.score) {
 							return res.status(400).json({ error: 'This character is already owned by someone with higher score.' });
