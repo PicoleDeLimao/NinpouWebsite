@@ -11,15 +11,15 @@ var missions = {
 	'play'     : '[     -] [D-Rank] < !mission play >            : Play a game be rewarded with <5g x lvl> and <10%> xp\n',
 	'win'      : '[     -] [C-Rank] < !mission win >             : Win a game be rewarded with <20g x lvl> and <20%> xp\n',
 	'farm3k'   : '[ Daily] [B-Rank] < !mission farm >            : Play a game with over <1.8/2.0/2.2/2.5/2.7/3.0k> gpm and be rewarded with <50/100/150/200/250/300g x lvl> and <20%> xp, according to your rank\n',
-	'kills20'  : '[ Daily] [B-Rank] < !mission assassin >        : Play a game with over <10/12/15/17/20/23> kills and be rewarded with <50/100/150/200/250/300g x lvl> and <20%> xp, according to your rank\n',
-	'deaths5'  : '[ Daily] [B-Rank] < !mission untouchable >     : Play a game with less <13/12/11/10/9/8> deaths and be rewarded with <50/100/150/200/250/300g x lvl> and <20%> xp, according to your rank\n',
-	'assists10': '[ Daily] [B-Rank] < !mission angel >           : Play a game with over <6/7/8/9/10/11> assists and be rewarded with <50/100/150/200/250/300g x lvl> and <20%> xp, according to your rank\n',
-	'dailies'  : '[ Daily] [A-Rank] < !mission dailies >         : Complete all missions below S-Rank (except gamble and rob) and be rewarded with <1000/2000/4000/8000/16000/24000g x lvl / 10> and <50%> xp, according to your rank\n',
+	'kills20'  : '[ Daily] [B-Rank] < !mission assassin >        : Play a game with over <10/12/15/17/20/23> kills and be rewarded with <50/100/150/300/500/1000g x lvl> and <20%> xp, according to your rank\n',
+	'deaths5'  : '[ Daily] [B-Rank] < !mission untouchable >     : Play a game with less <13/12/11/10/9/8> deaths and be rewarded with <50/100/150/300/500/1000g x lvl> and <20%> xp, according to your rank\n',
+	'assists10': '[ Daily] [B-Rank] < !mission angel >           : Play a game with over <6/7/8/9/10/11> assists and be rewarded with <50/100/150/300/500/1000g x lvl> and <20%> xp, according to your rank\n',
+	'dailies'  : '[ Daily] [A-Rank] < !mission dailies >         : Complete all missions below S-Rank (except gamble and rob) and be rewarded with <100/200/400/800/1600/2400g x lvl> and <50%> xp, according to your rank\n',
 	'win2'     : '[ Daily] [A-Rank] < !mission win2 >            : Win <2> balanced games in a row and be rewarded with <100g x lvl> and <20%> xp\n',
 	'win3'     : '[ Daily] [A-Rank] < !mission win3 >            : Win <3> balanced games in a row and be rewarded with <200g x lvl> and <20%> xp\n',
 	'win4'     : '[ Daily] [A-Rank] < !mission win4 >            : Win <4> balanced games in a row and be rewarded with <800g x lvl> and <20%> xp\n',
 	'win5'     : '[ Daily] [A-Rank] < !mission win5 >            : Win <5> balanced games in a row and be rewarded with <3200g x lvl> and <20%> xp\n',
-	'top'      : '[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <5000g x lvl> and <100%> xp\n',
+	'top'      : '[Weekly] [S-Rank] < !mission top >             : Be Top-1 on ranking in the end of week and be rewarded with <10000g x lvl> and <100%> xp\n',
 };
 
 var missionsAllTime =	'[     -] [S-Rank] < !missions titles >          : Display all missions which reward titles\n\n' + 

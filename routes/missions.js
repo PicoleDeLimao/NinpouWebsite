@@ -523,13 +523,13 @@ router.post('/:username/kills20', function(req, res) {
 			goldReward = 1500;
 		} else if (alias.rank == 'jounin') {
 			threshold = 17;
-			goldReward = 2000;
+			goldReward = 3000;
 		} else if (alias.rank == 'anbu') {
 			threshold = 20;
-			goldReward = 2500;
+			goldReward = 5000;
 		} else if (alias.rank == 'kage') {
 			threshold = 23;
-			goldReward = 3000;
+			goldReward = 10000;
 		} else {
 			threshold = 10;
 			goldReward = 500;
@@ -556,13 +556,13 @@ router.post('/:username/deaths5', function(req, res) {
 			goldReward = 1500;
 		} else if (alias.rank == 'jounin') {
 			threshold = 10;
-			goldReward = 2000;
+			goldReward = 3000;
 		} else if (alias.rank == 'anbu') {
 			threshold = 9;
-			goldReward = 2500;
+			goldReward = 5000;
 		} else if (alias.rank == 'kage') {
 			threshold = 8;
-			goldReward = 3000;
+			goldReward = 10000;
 		} else {
 			threshold = 13;
 			goldReward = 500;
@@ -589,13 +589,13 @@ router.post('/:username/assists10', function(req, res) {
 			goldReward = 1500;
 		} else if (alias.rank == 'jounin') {
 			threshold = 9;
-			goldReward = 2000;
+			goldReward = 3000;
 		} else if (alias.rank == 'anbu') {
 			threshold = 10;
-			goldReward = 2500;
+			goldReward = 5000;
 		} else if (alias.rank == 'kage') {
 			threshold = 11;
-			goldReward = 3000;
+			goldReward = 10000;
 		} else {
 			threshold = 6;
 			goldReward = 500;
@@ -622,7 +622,7 @@ router.post('/:username/top', function(req, res) {
 					return a.ranking['score'] - b.ranking['score'];
 				});   
 				if (stats[0]._id == req.user.username) {
-					var amount = 50000;
+					var amount = 100000;
 					var xp = 100;
 					var mission = new Mission({
 						username: req.user.username,
