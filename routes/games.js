@@ -162,7 +162,7 @@ function getGameInfo(id, progress, callback) {
 				var owner = data.split('<b>Owner</b>: ').length > 1 ? data.split('<b>Owner</b>: ')[1].split('\t')[0] : '';
 				var duration = data.split('<b>Duration</b>: ')[1].split('\t')[0];
 				var gamename = data.split('<b>Gamename</b>: ')[1].split('\t')[0];
-				if (gamename.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('nns') != -1) {
+				if (gamename.toLowerCase().indexOf('narutostorm') != -1 || gamename.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('ninpou') != -1 || map.toLowerCase().indexOf('nns') != -1) {
 					parseGameSlots(data, function(err, info) {
 						if (err) return callback(err);
 						info['id'] = id;
