@@ -294,7 +294,10 @@ router.get('/players/:username', function(req, res) {
 								}
 							}
 						} else {
-							return res.json({ 'stat': allStat, 'lastGames': lastGames, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': bestGame, 'worstGame': worstGame, 'numGames': games.length, 'numHeroes': allHeroes.length });
+							allHeroes.sort(function(a, b) {
+								return b.games - a.games;
+							});
+							return res.json({ 'stat': allStat, 'lastGames': lastGames, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': bestGame, 'worstGame': worstGame, 'numGames': games.length, 'numHeroes': allHeroes.length, 'mostPlayed': allHeroes.slice(0, 5) });
 						}
 					});
 				});
