@@ -95,7 +95,7 @@ module.exports = function(ev, playerName, hist, hero) {
 								}
 								response += '\nTop-5 most played heroes:\n';
 								for (var i = 0; i < ranking.mostPlayed.length; i++) {
-									response += (i + 1) + '. ' + ranking.mostPlayed[i].hero + ' with <' + ranking.mostPlayed[i].games + '> games (' + Math.floor(ranking.mostPlayed[i].games / ranking.numGames * 100) + '% of the games)\n';
+									response += (i + 1) + '. < ' + ranking.mostPlayed[i].hero + ' > with <' + ranking.mostPlayed[i].games + '> games (' + Math.floor(ranking.mostPlayed[i].games / ranking.numGames * 100) + '% of the games)\n';
 								}
 								response += '```';
 								ev.channel.send(response);
