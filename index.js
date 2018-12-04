@@ -20,8 +20,8 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Database connection error: '));
 db.once('open', function() {
 	console.log('Connected to Mongo.');
-});
-
+}); dsa das dsa dsa dsa 
+ das da
 app.use('/auth', require('./routes/auth'));
 app.use('/users', require('./routes/users'));
 app.use('/threads', require('./routes/threads'));
