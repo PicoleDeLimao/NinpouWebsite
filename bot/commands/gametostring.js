@@ -39,7 +39,7 @@ function slotToString(slot, largestName, largestRealm, largestCriteria, recorded
 		if (recorded && !spectator) {
 			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + '] [' + (slot.hero && slot.hero.name ? slot.hero.name : 'Unknown' ) + ']\n'; 
 		} else {
-			response += '[' + nameSpaces + slot.username + ']' + ' [' + realmSpaces + slot.realm + '] [' + capitalizeFirstLetter(criteria) + ': ' + criteriaSpaces + Math.round(criteriaOnSlot(slot, criteria)) + ']\n';
+			response += '[' + nameSpaces + slot.username + ']' + ' [' + capitalizeFirstLetter(criteria) + ': ' + criteriaSpaces + Math.round(criteriaOnSlot(slot, criteria)) + ']\n';
 		}
 	}
 	return response;
@@ -62,7 +62,7 @@ module.exports = function(ev, game, callback, criteria) {
 				if (game.progress) { 
 					var date = dateFromObjectId(game._id);
 					var m = moment(date);
-					response += '  Hosted; ' + m.fromNow() + '\n';
+					response += '     Hosted; ' + m.fromNow() + '\n';
 				}
 				response += '\nSlots; [' + players + '/' + game.slots.length + ']';
 				response += '\nBalance factor; ' + (game.balance_factor && game.balance_factor.toFixed(2) || 1) + '\n';

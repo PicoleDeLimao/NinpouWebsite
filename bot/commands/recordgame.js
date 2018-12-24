@@ -67,7 +67,7 @@ module.exports = function(ev, gameId, code, alias) {
 			});
 			request.write(dataToSend);
 			request.end();
-		}
+		//}
 	//}); 
 };
 

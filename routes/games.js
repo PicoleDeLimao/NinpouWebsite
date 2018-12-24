@@ -400,7 +400,13 @@ router.post('/balance', function(req, res) {
 	for (var i = 0; i < players.length; i++) {
 		game.slots.push({
 			username: players[i],
-			realm: null
+			realm: 'Unknown'
+		});
+	}
+	for (var i = players.length; i < 9; i++) {
+		game.slots.push({
+			username: null,
+			realm: 'Unknown'
 		});
 	}
 	(function next(i) {
@@ -417,6 +423,15 @@ router.post('/balance', function(req, res) {
 		} else {
 			StatCalculator.getPlayerStats(players[i], function(err, stat) {
 				if (err) stat = null; 
+				if (stat == null) {
+					stat = {
+						username: players[i],
+						realm: 'Unknown'
+					}
+				} else {
+					stat.alias = stat._id;
+					stat.realm = 'Unknown';
+				}
 				game.slots[i] = stat;
 				next(i + 1);
 			}, true);

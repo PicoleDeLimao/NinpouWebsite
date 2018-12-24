@@ -220,6 +220,18 @@ router.get('/:alias', function(req, res) {
 	});
 });
 
+router.put('/:username/rank', function(req, res) {
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
+		if (err) return res.status(500).json({ error: err });
+		else if (!alias) return res.status(404).json({ error: 'Player not found.' });
+		alias.rank =  req.body.rank;
+		alias.save(function(err) {
+			if (err) return res.status(500).json({ error: err });
+			return res.send();
+		});
+	});
+});
+
 router.put('/:username/subscribe', function(req, res) {
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err });

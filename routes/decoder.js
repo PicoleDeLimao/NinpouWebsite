@@ -182,7 +182,7 @@ function decodeGame(body, game, callback) {
 						var id = getSlotId(playerIndex);
 						game.slots[id] = {
 							username: null,
-							realm: null
+							realm: 'Unknown'
 						}
 						if (state == '0') {
 							game.slots[id].state = 'EMPTY';

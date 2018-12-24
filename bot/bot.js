@@ -55,6 +55,7 @@ var displayCharacters = require('./commands/displaycharacters');
 var subscribe = require('./commands/subscribe');
 var inviteMessageToPlayers = require('./commands/sendgamealert');
 var inviteMessageToHost = require('./commands/sendgamealerthost');
+var syncRank = require('./commands/syncrank');
 
 var hostedGames = [];
 var inProgressGames = [];
@@ -359,18 +360,18 @@ bot.on('message', function(ev) {
 		} else if (cmd == 'gamecmds') {
 			ev.channel.send(  
 				'Game-related commands:\n```md\n' + 
-				'< ![h]ost > [location] [owner] : Host a new game (on ENTConnect)\n' + 
+				'< ![h]ost > [location] [owner]  : Host a new game (on ENTConnect)\n' + 
 				//'< !lobby >                     : List games in lobby (on ENTConnect)\n' + 
-				'< ![b]alance > < name_of_players>: Display the optimal balance of a game composed by given player names\n' + 
+				'< ![b]alance > < name_of_players >: Display the optimal balance of a game composed by given player names\n' + 
 				//'< ![p]rogress >                : List games in progress (on ENTConnect)\n' + 
 				//'< ![l]ast >                    : Fetch last non-recorded played games (on ENTConnect)\n' + 
-				'< !recorded >                  : Fetch last recorded played games\n' + 
-				'< ![i]nfo > <game_id>          : Fetch info about a played game\n' + 
-				'< ![r]ecord > <code>           : Record a game\n' +  
+				'< !recorded >                   : Fetch last recorded played games\n' + 
+				'< ![i]nfo > <game_id>           : Fetch info about a played game\n' + 
+				'< ![r]ecord > <code>            : Record a game\n' +  
 				//'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
-				'< !heroes > [criteria]         : Display meta information about game heroes\n' + 
-				'< !hero > <name>               : Display meta information about specific hero\n' + 
-				'< !subscribe >                 : Turn on/off Tonton private alert messages\n' +
+				'< !heroes > [criteria]          : Display meta information about game heroes\n' + 
+				'< !hero > <name>                : Display meta information about specific hero\n' + 
+				'< !subscribe >                  : Turn on/off Tonton private alert messages\n' +
 				'```' 
 			);  
 		} else if (cmd == 'playercmds') {
@@ -426,6 +427,7 @@ bot.on('message', function(ev) {
 						'< !a > unblockalias <alias>                 : Unblock an alias```Super-admin commands:\n```md\n' +  
 						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' + 
 						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
+						'< !a > sync                                 : Sync bot rank with discord rank\n' + 
 						'```'
 					);   
 				} else {
@@ -490,6 +492,8 @@ bot.on('message', function(ev) {
 						} else { 
 							ev.channel.send('Me no understand! Use **!a deletealias <alias>**');
 						}
+					} else if (args[0] == 'sync') {
+						syncRank(ev);
 					} else {
 						ev.channel.send('Admin command not found! **Oink!**');
 					}
@@ -852,6 +856,12 @@ bot.on('message', function(ev) {
 							break;
 						case 'b':
 						case 'balance': 
+							var mentionId = 0;
+							for (var i = 0; i < args.length; i++) {
+								if (args[i].toString()[0] == '<') {
+									args[i] = ev.mentions.users.array()[mentionId++].id
+								} 
+							}
 							/*if (args.length == 1) {
 								var criteria = args[0];
 								if (criteria == 'points' || criteria == 'kills' || criteria == 'assists' || criteria == 'gpm' || criteria == 'wins' || criteria == 'chance' || criteria == 'score') {
