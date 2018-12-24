@@ -5,7 +5,7 @@ var getPlayerName = require('./getplayername');
 var http = require('http');
 
 module.exports = function(ev, gameId, code, alias) {
-	canRecord(gameId, alias, function(err, record) { 
+	/*canRecord(gameId, alias, function(err, record) { 
 		if (err) { 
 			if (err == 404) {
 				ev.channel.send('Game doesn\'t exist. :( **Oink!**');
@@ -15,9 +15,9 @@ module.exports = function(ev, gameId, code, alias) {
 			console.log(err);
 		} else if (!record) {
 			ev.channel.send('You can only record a game you played. :( **Oink!**');
-		} else {
+		} else {*/
 			var dataToSend = '{ "contents": "' + code.replace(/"/g, '\\"') + '" }';
-			var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/' + gameId, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(dataToSend) } }, function(res) {
+			var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(dataToSend) } }, function(res) {
 				var body = '';
 				res.on('data', function(chunk) {
 					body += chunk;
@@ -68,7 +68,7 @@ module.exports = function(ev, gameId, code, alias) {
 			request.write(dataToSend);
 			request.end();
 		}
-	}); 
+	//}); 
 };
 
  

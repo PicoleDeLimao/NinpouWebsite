@@ -56,9 +56,7 @@ module.exports = function(ev, game, callback, criteria) {
 			getPlayerName(ev, game.owner, function(err, ownerName) {
 				var response = '```ini\n'; 
 				response += '         Id; ' + game.id + '\n';
-				response += '   Gamename; ' + game.gamename + '\n';
 				response += '        Map; ' + game.map + '\n';
-				response += '      Owner; ' + ownerName + '\n';
 				response += '   Duration; ' + game.duration + '\n';
 				response += 'Recordable?; ' + (game.recordable ? 'Yes' : 'No') + '\n';
 				if (game.progress) { 

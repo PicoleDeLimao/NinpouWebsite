@@ -381,6 +381,49 @@ router.get('/recorded', function(req, res) {
 	});
 });
  
+router.post('/balance', function(req, res) {
+	var players = req.body.players;
+	var game = new Game({
+		id: mongoose.Types.ObjectId().toString(),
+		createdAt: new Date(),
+		gamename: 'Naruto Ninpou Storm',
+		map: 'NarutoNS8.7.w3x',
+		owner: 'None',
+		duration: '00:00:00',
+		slots: [],
+		players: players.length,
+		progress: false,
+		recorded: false,
+		balance_factor: 1.0,
+		recordable: true
+	});
+	for (var i = 0; i < players.length; i++) {
+		game.slots.push({
+			username: players[i],
+			realm: null
+		});
+	}
+	(function next(i) {
+		if (i == players.length) {
+			BalanceCalculator.getOptimalBalance(game.slots, 'points', true, function(err, swaps) {
+				if (err) return res.status(500).json({ error: err });
+				for (var j = 0; j < swaps.length; j++) {
+					var tmp = game.slots[swaps[j][0]];
+					game.slots[swaps[j][0]] = game.slots[swaps[j][1]];
+					game.slots[swaps[j][1]] = tmp;
+				}
+				return res.json({ game: game });
+			}); 
+		} else {
+			StatCalculator.getPlayerStats(players[i], function(err, stat) {
+				if (err) stat = null; 
+				game.slots[i] = stat;
+				next(i + 1);
+			}, true);
+		}
+	})(0);
+});
+
 router.get('/:game_id', function(req, res) {
 	Game.findOne({ id: req.params.game_id }).lean().exec(function(err, game) {
 		if (err) return res.status(500).json({ error:err });
@@ -417,33 +460,6 @@ router.post('/:game_id/unrecordable', function(req, res) {
 				return res.send();
 			});
 		}); 
-	});
-});
-
-router.get('/:game_id/balance', function(req, res) {
-	Game.findOne({ id: req.params.game_id }).lean().exec(function(err, game) {
-		if (err) return res.status(500).json({ error:err });
-		else if (!game) return res.status(404).json({ error:'Game not found.' });
-		var slots = [];
-		(function calculatePlayerPoints(index) {
-			if (index == 9) { 
-				BalanceCalculator.getOptimalBalance(slots, req.query.criteria, true, function(err, bestBalance) {
-					if (err) return res.status(500).json({ error: err });
-					return res.json({ swaps: bestBalance });
-				}); 
-			} else {
-				if (game.slots[index] && game.slots[index].username) {
-					StatCalculator.getPlayerStats(game.slots[index].username, function(err, stat) {
-						if (err) stat = null; 		
-						slots.push(stat);
-						calculatePlayerPoints(index + 1);
-					});
-				} else {
-					slots.push(null);
-					calculatePlayerPoints(index + 1);
-				} 
-			}
-		})(0);
 	});
 });
 

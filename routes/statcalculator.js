@@ -51,8 +51,14 @@ function getRankingPositions(players, player) {
 	return player; 
 }; 
   
-function getPlayerStats(username, callback) {
-	Alias.find({ $or: [{ alias: username.toLowerCase() }, { username: username.toLowerCase() }] }, function(err, alias) {
+function getPlayerStats(username, callback, autocomplete) {
+	var search;
+	if (autocomplete) {
+		search = { $or: [{ alias: new RegExp(['^', escapeRegExp(username.toLowerCase())].join(''), 'i') }, { username: username.toLowerCase() }] };
+	} else {
+		search = { $or: [{ alias: username.toLowerCase() }, { username: username.toLowerCase() }] };
+	}
+	Alias.find(search, function(err, alias) {
 		if (err) return callback(err);
 		var usernames = []; 
 		if (alias.length > 0) {

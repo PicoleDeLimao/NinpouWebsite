@@ -16,6 +16,7 @@ var gameSchema = mongoose.Schema({
 		deaths: { type: Number },
 		assists: { type: Number },
 		gpm: { type: Number },
+		points: { type: Number },
 		win: { type: Boolean },
 		score: { type: Number },
 		state: { type: String, enum: ['LEFT', 'EMPTY', 'PLAYING'] }

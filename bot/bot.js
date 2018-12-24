@@ -359,15 +359,15 @@ bot.on('message', function(ev) {
 		} else if (cmd == 'gamecmds') {
 			ev.channel.send(  
 				'Game-related commands:\n```md\n' + 
-				'< ![h]ost > [location] [owner] : Host a new game\n' + 
-				'< !lobby >                     : List games in lobby\n' + 
-				'< ![b]alance > [criteria]      : Display the optimal balance of games in lobby\n' + 
-				'< ![p]rogress >                : List games in progress\n' + 
-				'< ![l]ast >                    : Fetch last non-recorded played games\n' + 
+				'< ![h]ost > [location] [owner] : Host a new game (on ENTConnect)\n' + 
+				//'< !lobby >                     : List games in lobby (on ENTConnect)\n' + 
+				'< ![b]alance > < name_of_players>: Display the optimal balance of a game composed by given player names\n' + 
+				//'< ![p]rogress >                : List games in progress (on ENTConnect)\n' + 
+				//'< ![l]ast >                    : Fetch last non-recorded played games (on ENTConnect)\n' + 
 				'< !recorded >                  : Fetch last recorded played games\n' + 
 				'< ![i]nfo > <game_id>          : Fetch info about a played game\n' + 
-				'< ![r]ecord > <game_id> <code> : Record a game\n' +  
-				'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
+				'< ![r]ecord > <code>           : Record a game\n' +  
+				//'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
 				'< !heroes > [criteria]         : Display meta information about game heroes\n' + 
 				'< !hero > <name>               : Display meta information about specific hero\n' + 
 				'< !subscribe >                 : Turn on/off Tonton private alert messages\n' +
@@ -828,17 +828,17 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!host <location> <owner>**');
 							}
 							break;
-						case 'lobby':
+						/*case 'lobby':
 							displayGames(ev, hostedGames, false, false);
 							break; 
 						case 'p':
 						case 'progress':
 							displayGames(ev, inProgressGames, false, true);
-							break; 
-						case 'l':
+							break;*/
+						/*case 'l':
 						case 'last':
 							displayLastGames(ev);
-							break;
+							break;*/
 						case 'recorded':
 							displayLastRecordedGames(ev);
 							break;
@@ -852,7 +852,7 @@ bot.on('message', function(ev) {
 							break;
 						case 'b':
 						case 'balance': 
-							if (args.length == 1) {
+							/*if (args.length == 1) {
 								var criteria = args[0];
 								if (criteria == 'points' || criteria == 'kills' || criteria == 'assists' || criteria == 'gpm' || criteria == 'wins' || criteria == 'chance' || criteria == 'score') {
 									balance(ev, hostedGames, criteria);
@@ -863,27 +863,28 @@ bot.on('message', function(ev) {
 								balance(ev, hostedGames, 'points');
 							} else {
 								ev.channel.send('Me no understand! Use **!balance <criteria>**');
-							}
+							}*/
+							balance(ev, args);
 							break;
 						case 'r':
 						case 'record':
-							if (args.length == 2) {
-								recordGame(ev, args[0], args[1], alias);
+							if (args.length == 1) {
+								recordGame(ev, args[0]);
 							} else {
-								ev.channel.send('Me no understand! Use **!record <game_id> <code>**');
+								ev.channel.send('Me no understand! Use **!record <code>**');
 							}
 							break;
 						case 'subscribe':
 							subscribe(ev);
 							break;
-						case 'u':
+						/*case 'u':
 						case 'unrecordable':
 							if (args.length == 1) {
 								unrecordableGame(ev, args[0]);
 							} else { 
 								ev.channel.send('Me no understand! Use **!unrecordable <game_id>**');
 							}
-							break; 
+							break; */
 						case 'n':
 						case 'rank':
 						case 'ranking': 
