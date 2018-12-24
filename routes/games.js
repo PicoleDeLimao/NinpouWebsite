@@ -12,7 +12,7 @@ var StatCalculator = require('./statcalculator');
 var BalanceCalculator = require('./balancecalculator');
 
 var cookies = ['', ''];
-var code = 'w2t5r'; 
+var code = 'xzyf2'; 
 var count = 0;
 
 function getCookie(username, password, callback) {
