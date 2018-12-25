@@ -105,7 +105,7 @@ encodedInts[48] = "\\";
 
 function decodeInt(string) {
 	for (var i = 0; i < 90; i++) {
-		if (encodedInts[i] == string) {
+		if (encodedInts[i] === string) {
 			return i;
 		}
 	}
@@ -121,7 +121,7 @@ function getSlotId(playerId) {
 function decodeCharacter(character) {
 	var i = 0;
 	for (; i < 90; i++) {
-		if (encodedInts[i] == character) {
+		if (encodedInts[i] === character) {
 			break;
 		}
 	}
@@ -154,12 +154,16 @@ function decodeGame(body, game, callback) {
 	var index = 0;
 	var count = 0;
 	var sum = decoded[index++];
-	game.duration = addZero(Math.floor(decoded[index++] / 60)) + ":" + addZero(decoded[index++]) + ":00";
+	game.duration = addZero(Math.floor(decoded[index] / 60)) + ":" + addZero(decoded[index]) + ":00";
+	++index;
 	var winningTeam = decoded[index++];
 	for (var i = 0; i < 9; i++) {
 		var state = encodedInts[decoded[index++]];	
 		var playerIndex = encodedPlayersId[i];
 		var slot = getSlotId(encodedPlayersId[i]);
+		while (state != '0' && state != '1' && state != '2') {
+			state = encodedInts[decoded[index++]];	
+		}
 		if (state == '0') {
 			game.slots[slot].state = 'EMPTY';
 		} else if (state != '1' && state != '2') {
@@ -184,8 +188,11 @@ function decodeGame(body, game, callback) {
 			for (var j = 0; j < nameLength; j++) {
 				var nameIndex = decoded[index++] - 10;
 				if (nameIndex < 0) nameIndex = 90 + nameIndex;
-				game.slots[slot].username += encodedInts[nameIndex].toLowerCase();
+				var c = encodedInts[nameIndex].toLowerCase();
+				if (c === ",") c = "k";
+				game.slots[slot].username += c;
 			}
+			game.slots[slot].username = game.slots[slot].username.substring(0, game.slots[slot].username.length - 4);
 			if (letter != game.slots[slot].username[0]) return callback('Invalid code.');
 			game.slots[slot].win = (winningTeam == 3 && (playerIndex == 0 || playerIndex == 1 || playerIndex == 2)) || (winningTeam == 7 && (playerIndex == 4 || playerIndex == 5 || playerIndex == 6)) || (winningTeam == 11 && (playerIndex == 8 || playerIndex == 9 || playerIndex == 10));
 		}
