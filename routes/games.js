@@ -418,7 +418,7 @@ router.post('/balance', function(req, res) {
 					game.slots[swaps[j][0]] = game.slots[swaps[j][1]];
 					game.slots[swaps[j][1]] = tmp;
 				}
-				return res.json({ game: game });
+				return res.json({ game: game, swaps: swaps });
 			}); 
 		} else {
 			StatCalculator.getPlayerStats(players[i], function(err, stat) {

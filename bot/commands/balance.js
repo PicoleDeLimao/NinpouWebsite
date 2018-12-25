@@ -3,6 +3,13 @@
 var gameToString = require('./gametostring');
 var http = require('http');
 
+function getSlot(index) {
+	if (index <= 2) return index + 1;
+	else if (index <= 5) return index + 2;
+	else if (index <= 8) return index + 3;
+	return index;
+};
+
 module.exports = function(ev, players) {
 	var content = { 'players': players };
 	var contentStr = JSON.stringify(content);
@@ -21,6 +28,11 @@ module.exports = function(ev, players) {
 						var response = '';
 						response += '**Optimal balance (balancing by average points):**\n';
 						response += gameString; 
+						response += 'To balance this game, type:\n```md\n';
+						for (var i = 0; i < json.swaps.length; i++) {
+							response += '!swap ' + getSlot(json.swaps[i][0]) + ' ' + getSlot(json.swaps[i][1]) + '\n';
+						}
+						response += '```';
 						ev.channel.send(response);
 					}, 'points');
 				}

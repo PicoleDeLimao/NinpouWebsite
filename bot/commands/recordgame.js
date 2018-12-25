@@ -4,7 +4,7 @@ var canRecord = require('./canrecord');
 var getPlayerName = require('./getplayername');
 var http = require('http');
 
-module.exports = function(ev, gameId, code, alias) {
+module.exports = function(ev, code) {
 	/*canRecord(gameId, alias, function(err, record) { 
 		if (err) { 
 			if (err == 404) {

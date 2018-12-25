@@ -103,22 +103,13 @@ encodedInts[4] = ".";
 encodedInts[88] = "=";
 encodedInts[48] = "\\";
 
-function decodeInt(string, callback) {
+function decodeInt(string) {
 	for (var i = 0; i < 90; i++) {
 		if (encodedInts[i] == string) {
-			callback(null, i);
-			return;
+			return i;
 		}
 	}
-	callback('Invalid code.');
-};
-
-function decodePlayerId(id, callback) {
-	if (id < 0 || id > 8) {
-		callback('Invalid code.');
-		return;
-	}
-	callback(null, encodedPlayersId[id]);
+	return -1;
 };
 
 function getSlotId(playerId) {
@@ -141,14 +132,6 @@ function decodeCharacter(character) {
 	return encodedInts[i];
 };
 
-function decodePlayerName(string, index, length, callback) {
-	var name = "";
-	for (var i = index; i < index + length; i++) {
-		name += decodeCharacter(string[index]);
-	}
-	return callback(null, name);
-};
-
 function addZero(s) {
 	s = "" + s;
 	if (s.length == 1) {
@@ -158,82 +141,57 @@ function addZero(s) {
 }
 
 function decodeGame(body, game, callback) {
-	var sum = 0;
-	var players = 0;
-	var i = 0;
-	decodeInt(body[i++], function(err, count) {
-		if (err) return callback(err);
-		decodeInt(body[i++], function(err, duration) {
-			if (err) return callback(err);
-			game.duration = addZero(Math.floor(duration / 60)) + ':' + addZero(duration) + ':00';
-			decodeInt(body[i++], function(err, winningTeam) {
-				if (err) return callback(err);
-				(function parse(i) {
-					if (players >= 9) {
-						if (sum + 1 != count) {
-							return callback('Invalid code.');
-						}
-						return callback(null, game);
-					} 
-					var state = body[i++];
-					decodePlayerId(players, function(err, playerIndex) {
-						if (err) return callback(err);
-						++players;
-						var id = getSlotId(playerIndex);
-						game.slots[id] = {
-							username: null,
-							realm: 'Unknown'
-						}
-						if (state == '0') {
-							game.slots[id].state = 'EMPTY';
-							parse(i);
-						} else if (state != '1' && state != '2') {
-							return callback('Invalid code.');
-						} else {
-							++game.players;
-							var letter = body[i++].toLowerCase();
-							decodeInt(body[i++], function(err, hero) {
-								if (err) return callback(err);
-								decodeInt(body[i++], function(err, kills) {
-									if (err) return callback(err);
-									decodeInt(body[i++], function(err, deaths) {
-										if (err) return callback(err);
-										decodeInt(body[i++], function(err, assists) {
-											if (err) return callback(err);
-											decodeInt(body[i++], function(err, gpm) {
-												if (err) return callback(err);
-												decodeInt(body[i++], function(err, nameLength) {
-													if (err) return callback(err);
-													decodePlayerName(body, i, nameLength, function(err, name) {
-														if (name[0].toLowerCase() != letter) return callback('Invalid code.');
-														game.slots[id].username = name.toLowerCase();
-														game.slots[id].hero = hero;
-														game.slots[id].kills = kills;
-														game.slots[id].deaths = deaths;
-														game.slots[id].assists = assists;
-														game.slots[id].gpm = gpm;
-														game.slots[id].points = kills * 10 + assists * 2 - deaths * 5;
-														game.slots[id].win = (winningTeam == 3 && (playerIndex == 0 || playerIndex == 1 || playerIndex == 2)) || (winningTeam == 7 && (playerIndex == 4 || playerIndex == 5 || playerIndex == 6)) || (winningTeam == 11 && (playerIndex == 8 || playerIndex == 9 || playerIndex == 10));
-														if (state == '1') {
-															game.slots[id].state = 'PLAYING';
-														} else {
-															game.slots[id].state = 'LEFT';
-														}
-														sum += Math.floor(gpm / 10);
-														parse(i + nameLength);
-													});
-												});
-											});
-										});
-									});
-								});
-							});
-						}
-					});
-				})(i);
-			});
+	for (var i = 0; i < 9; i++) {
+		game.slots.push({
+			username: null,
+			realm: 'Unknown'
 		});
-	});
+	}
+	var decoded = [];
+	for (var i = 0; i < body.length; i++) {
+		decoded.push(decodeInt(body[i]));
+	}
+	var index = 0;
+	var count = 0;
+	var sum = decoded[index++];
+	game.duration = addZero(Math.floor(decoded[index++] / 60)) + ":" + addZero(decoded[index++]) + ":00";
+	var winningTeam = decoded[index++];
+	for (var i = 0; i < 9; i++) {
+		var state = encodedInts[decoded[index++]];	
+		var playerIndex = encodedPlayersId[i];
+		var slot = getSlotId(encodedPlayersId[i]);
+		if (state == '0') {
+			game.slots[slot].state = 'EMPTY';
+		} else if (state != '1' && state != '2') {
+			return callback('Invalid code.');
+		} else {
+			++game.players;
+			if (state == '1') {
+				game.slots[slot].state = 'PLAYING';
+			} else { 
+				game.slots[slot].state = 'LEFT';
+			}
+			var letter = body[index++].toLowerCase();
+			game.slots[slot].hero = decoded[index++];
+			game.slots[slot].kills = decoded[index++];
+			game.slots[slot].deaths = decoded[index++];
+			game.slots[slot].assists = decoded[index++];
+			game.slots[slot].points = game.slots[slot].kills * 10 + game.slots[slot].assists * 2 - game.slots[slot].deaths * 5;
+			game.slots[slot].gpm = decoded[index++]; 
+			count += Math.floor(game.slots[slot].gpm / 10);
+			var nameLength = decoded[index++];
+			game.slots[slot].username = "";
+			for (var j = 0; j < nameLength; j++) {
+				var nameIndex = decoded[index++] - 10;
+				if (nameIndex < 0) nameIndex = 90 + nameIndex;
+				game.slots[slot].username += encodedInts[nameIndex].toLowerCase();
+			}
+			if (letter != game.slots[slot].username[0]) return callback('Invalid code.');
+			game.slots[slot].win = (winningTeam == 3 && (playerIndex == 0 || playerIndex == 1 || playerIndex == 2)) || (winningTeam == 7 && (playerIndex == 4 || playerIndex == 5 || playerIndex == 6)) || (winningTeam == 11 && (playerIndex == 8 || playerIndex == 9 || playerIndex == 10));
+		}
+	}
+	if (count + 1 != sum) return callback('Invalid code.');
+	return callback(null, game);
 }
 
 module.exports = {

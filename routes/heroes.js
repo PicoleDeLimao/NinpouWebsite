@@ -51,7 +51,7 @@ router.get('/:name', function(req, res) {
 						'createdAt': { $gt: timePeriod },
 						'slots.hero': stats.hero.id,
 						'recorded': true,
-						'balance_factor': { $gt: 0.95 }
+						'balance_factor': { $gt: 0.8 }
 					}
 				},
 				{
