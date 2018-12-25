@@ -424,10 +424,11 @@ bot.on('message', function(ev) {
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
 						'< !a > removealias <user> <alias>           : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
-						'< !a > unblockalias <alias>                 : Unblock an alias```Super-admin commands:\n```md\n' +  
+						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
+						'< !a > sync                                 : Sync bot rank with discord rank```' + 
+						'Super-admin commands:\n```md\n' +  
 						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' + 
 						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
-						'< !a > sync                                 : Sync bot rank with discord rank\n' + 
 						'```'
 					);   
 				} else {

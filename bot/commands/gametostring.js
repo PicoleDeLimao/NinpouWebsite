@@ -58,7 +58,7 @@ module.exports = function(ev, game, callback, criteria) {
 				response += '         Id; ' + game.id + '\n';
 				response += '        Map; ' + game.map + '\n';
 				response += '   Duration; ' + game.duration + '\n';
-				response += 'Recordable?; ' + (game.recordable ? 'Yes' : 'No') + '\n';
+				//response += 'Recordable?; ' + (game.recordable ? 'Yes' : 'No') + '\n';
 				if (game.progress) { 
 					var date = dateFromObjectId(game._id);
 					var m = moment(date);
