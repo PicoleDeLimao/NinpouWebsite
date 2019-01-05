@@ -142,6 +142,7 @@ router.post('/', function(req, res) {
 			if (err) return res.status(400).json({ error: err });
 			else if (game.players != 9) return res.status(400).json({ error: 'You can only record games with 9 players.' });
 			else if (parseInt(game.duration.split(':')[0]) == 0 && parseInt(game.duration.split(':')[1]) < 40) return res.status(400).json({ error: 'You can only record games past 40 minutes.' });
+			else if (parseInt(game.duration.split(':')[0]) > 0) return res.status(400).json({ error: 'You can only record games between 40 and 60 minutes.' });
 			StatCalculator.calculateBalanceFactor(game, function(err, balanceFactor) {
 				if (err) return res.status(500).json({ error: err });
 				game.balance_factor = balanceFactor;

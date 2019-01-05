@@ -154,7 +154,7 @@ function decodeGame(body, game, callback) {
 	var index = 0;
 	var count = 0;
 	var sum = decoded[index++];
-	game.duration = addZero(Math.floor(decoded[index] / 60)) + ":" + addZero(decoded[index]) + ":00";
+	game.duration = addZero(Math.floor(decoded[index] / 60)) + ":" + addZero(decoded[index] % 60) + ":00";
 	++index;
 	var winningTeam = decoded[index++];
 	for (var i = 0; i < 9; i++) {

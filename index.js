@@ -6,6 +6,8 @@ var mongoose = require('mongoose');
 var path = require('path');
 var auth = require('./config/auth');
 var bot = require('./bot/bot');
+var Stat = require('./models/Stat');
+var Alias = require('./models/Alias');
 
 var app = express();
 app.use(express.static('public'));
@@ -50,5 +52,37 @@ app.get('/donate', function(req, res) {
 var port = process.env.PORT || 8080;
 app.listen(port, function() {
 	console.log('Listening on port ' + port + '...');
+	setInterval(function() {
+		Stat.find({ }, function(err, stats) {
+			if (err) {
+				console.error(err);
+				return;
+			}
+			Alias.find({ }, function(err, alias) {
+				if (err) {
+					console.error(err);
+					return;
+				}
+				for (var i = 0; i < stats.length; i++) {
+					var found = false;
+					for (var j = 0; j < alias.length; j++) {
+						for (var k = 0; k < alias[j].alias.length; k++) {
+							if (alias[j].alias[k].toLowerCase() == stats[i].username.toLowerCase()) {
+								found = true;
+							}
+						}
+						if (found) {
+							stats[i].alias = alias[j].username;
+							break;
+						}
+					}
+					if (!found) {
+						stats[i].alias = stats[i].username;
+					}
+					stats[i].save();
+				}
+			});
+		});
+	}, 60000);
 });
 
