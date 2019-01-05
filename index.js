@@ -65,6 +65,7 @@ app.listen(port, function() {
 				}
 				for (var i = 0; i < stats.length; i++) {
 					var found = false;
+					var oldValue = stats[i].alias;
 					for (var j = 0; j < alias.length; j++) {
 						for (var k = 0; k < alias[j].alias.length; k++) {
 							if (alias[j].alias[k].toLowerCase() == stats[i].username.toLowerCase()) {
@@ -79,7 +80,9 @@ app.listen(port, function() {
 					if (!found) {
 						stats[i].alias = stats[i].username;
 					}
-					stats[i].save();
+					if (stats[i].alias != oldValue) {
+						stats[i].save();
+					}
 				}
 			});
 		});
