@@ -38,11 +38,11 @@ app.use('/items', require('./routes/items'));
 app.use('/heroes', require('./routes/heroes'));  
 
 app.get('/latest', function(req, res) {
-	res.redirect('https://drive.google.com/file/d/1vTovePUj6JvT_fez_NBRGYqEd0SFSn16/view?usp=sharing');
+	res.redirect('https://drive.google.com/file/d/10Qr7lSGztzTnYJOAWulaSgtu1IEY0hPC/view?usp=sharing');
 }); 
    
 app.get('/changelog', function(req, res) {
-	res.redirect('http://www.narutoninpou.com/#/forum/threads/5cc5ed90f431490015443521');
+	res.redirect('http://www.narutoninpou.com/#/forum/threads/5cca35fe11de63001553b30b');
 });
 
 app.get('/donate', function(req, res) { 
