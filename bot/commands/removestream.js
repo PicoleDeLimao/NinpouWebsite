@@ -16,16 +16,16 @@ module.exports = function(ev, channel) {
 					ev.channel.send(data.error); 
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t remove stream. :( **Oink!**');
+					ev.channel.send('Couldn\'t remove stream. :( **Oink!** :pig:');
 				}
 			} else {  
-				ev.channel.send('Stream removed! **Oink!**');
+				ev.channel.send('Stream removed! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t remove stream. :( **Oink!**');
+		ev.channel.send('Couldn\'t remove stream. :( **Oink!** :pig:');
 	});
 	request.end();
 };

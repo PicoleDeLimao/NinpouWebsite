@@ -75,7 +75,7 @@ module.exports = function(ev, mission) {
 						ev.channel.send(data.error);  
 					} catch (err) {
 						console.error(err);
-						ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+						ev.channel.send('Couldn\'t complete mission. :( **Oink!** :pig:');
 					}
 				} else { 
 					if (mission == 'kage') {
@@ -107,7 +107,7 @@ module.exports = function(ev, mission) {
 		});
 		request.on('error', function(err) {
 			console.error(err);
-			ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+			ev.channel.send('Couldn\'t complete mission. :( **Oink!** :pig:');
 		});
 		request.end();
 	});

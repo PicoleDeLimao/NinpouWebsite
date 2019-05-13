@@ -12,11 +12,11 @@ module.exports = function(ev, user) {
 		});
 		res.on('end', function() { 
 			if (res.statusCode != 200) { 
-				ev.channel.send('Couldn\'t fetch characters. :( **Oink!**');
+				ev.channel.send('Couldn\'t fetch characters. :( **Oink!** :pig:');
 			} else {
 				try { 
 					var data = JSON.parse(body); 
-					var msg = '**Oink, oink**!\nHere are the available characters to buy\n' + 
+					var msg = '**Oink, oink** :pig:!\nHere are the available characters to buy\n' + 
 					'```md\nUse !char <character> to buy a character\n';
 					var maxLength = 0;
 					for (var name in data.characters) {
@@ -59,14 +59,14 @@ module.exports = function(ev, user) {
 					})(0);
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t fetch characters. :( **Oink!**');
+					ev.channel.send('Couldn\'t fetch characters. :( **Oink!** :pig:');
 				}
 			}
 		});
 	})
 	.on('error', function(err) {
 		console.error(err); 
-		ev.channel.send('Couldn\'t fetch characters. :(  **Oink!**');
+		ev.channel.send('Couldn\'t fetch characters. :(  **Oink!** :pig:');
 	}); 
 };
 

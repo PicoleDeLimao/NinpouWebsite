@@ -11,7 +11,7 @@ module.exports = function(ev) {
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games/recorded' }, function(res) {
 		var statusCode = res.statusCode;
 		if (statusCode != 200) {
-			ev.channel.send('Couldn\'t fetch last recorded games. :( **Oink!**');
+			ev.channel.send('Couldn\'t fetch last recorded games. :( **Oink!** :pig:');
 			return;
 		}
 		var body = '';
@@ -32,12 +32,12 @@ module.exports = function(ev) {
 				ev.channel.send(response);
 			} catch (err) {
 				console.error(err);
-				ev.channel.send('Couldn\'t fetch last recorded games. :( **Oink!**');
+				ev.channel.send('Couldn\'t fetch last recorded games. :( **Oink!** :pig:');
 			} 
 		});
 	}).on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t fetch last recorded games. :( **Oink!**');
+		ev.channel.send('Couldn\'t fetch last recorded games. :( **Oink!** :pig:');
 	});
 };
   

@@ -14,16 +14,16 @@ module.exports = function(ev, sourceAlias, destAlias) {
 					var data = JSON.parse(body);
 					ev.channel.send(data.error);
 				} catch (err) {
-					ev.channel.send('Couldn\'t merge aliases. :( **Oink!**');
+					ev.channel.send('Couldn\'t merge aliases. :( **Oink!** :pig:');
 				} 
 			} else { 
-				ev.channel.send('Aliases merged! **Oink!**');
+				ev.channel.send('Aliases merged! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t merge aliases. :( **Oink!**');
+		ev.channel.send('Couldn\'t merge aliases. :( **Oink!** :pig:');
 	});
 	request.end();
 };

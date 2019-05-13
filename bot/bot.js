@@ -51,6 +51,9 @@ var subscribe = require('./commands/subscribe');
 var inviteMessageToPlayers = require('./commands/sendgamealert');
 var inviteMessageToHost = require('./commands/sendgamealerthost');
 var syncRank = require('./commands/syncrank');
+var tipsShow = require('./commands/tipsShow');
+var tipCreate = require('./commands/tipCreate');
+var heroExists = require('./commands/heroExists');
 
 var hostedGamesWC3 = [];
 var hostedGamesWC3Messages = {};
@@ -309,6 +312,8 @@ bot.on('message', function(ev) {
 				//'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
 				'< !heroes > [criteria]          : Display meta information about game heroes\n' + 
 				'< !hero > <name>                : Display meta information about specific hero\n' + 
+				'< !tips > <hero_name>           : Show all tips related to a hero\n' +
+				'< !tip > <hero_name> <tip>      : Create a tip for a hero and get gold proportional to your rank (<25/50/100/200/400/800> x lvl)!\n' +
 				//'< !subscribe >                  : Turn on/off Tonton private alert messages\n' +
 				'```' 
 			);  
@@ -370,7 +375,7 @@ bot.on('message', function(ev) {
 						'```'
 					);   
 				} else {
-					ev.channel.send('Only admins can use this command! **Oink!**');
+					ev.channel.send('Only admins can use this command! **Oink!** :pig:');
 				}
 			});
 		} else if (cmd == 'a') {
@@ -434,10 +439,10 @@ bot.on('message', function(ev) {
 					} else if (args[0] == 'sync') {
 						syncRank(ev);
 					} else {
-						ev.channel.send('Admin command not found! **Oink!**');
+						ev.channel.send('Admin command not found! **Oink!** :pig:');
 					}
 				} else {
-					ev.channel.send('Only admins can use this command! **Oink!**');
+					ev.channel.send('Only admins can use this command! **Oink!** :pig:');
 				}
 			});
 		} else if (cmd == 'addalias') {
@@ -645,7 +650,7 @@ bot.on('message', function(ev) {
 								} else if (args[0] == '11') {
 									summon(ev, 'dog');
 								} else {
-									ev.channel.send('Summon not found. :( **Oink!**');
+									ev.channel.send('Summon not found. :( **Oink!** :pig:');
 								}
 							} else {
 								ev.channel.send('Me no understand! Use **!summon <summon_id>**');
@@ -917,6 +922,39 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!hero <name>**');
 							}
 							break;
+						case 'tip':
+						case 'tips':
+							if (args.length > 0) {
+								heroExists(args[0], function(exists) {
+									if (exists) {
+										var tip = '';
+										for (var i = 1; i < args.length; i++) {
+											tip += args[i];
+											if (i != args.length - 1) tip += ' ';
+										}
+										if (!tip) {
+											tipsShow(ev, escape(args[0]), 0);
+										} else {
+											tipCreate(ev, escape(args[0]), tip);
+										}
+									} else {
+										var heroName = args[0] + ' ' + args[1];
+										var tip = '';
+										for (var i = 2; i < args.length; i++) {
+											tip += args[i];
+											if (i != args.length - 1) tip += ' ';
+										}
+										if (!tip) {
+											tipsShow(ev, escape(heroName), 0);
+										} else {
+											tipCreate(ev, escape(heroName), tip);
+										}
+									}
+								});
+							} else {
+								ev.channel.send('Me no understand! Use **!tip <hero_name> <tip>**');
+							}
+							break;
 						case 'w':
 						case 'whois': 
 							if (args.length == 1) {
@@ -989,7 +1027,7 @@ bot.on('message', function(ev) {
 							break;
 						case 'attack':
 							var insults = ['noob', 'team stacker', 'feeder', 'leaver', 'rage-quitter', 'shithead', 'idiot', 'camper', 'Tobias\' cuck', 'so bad in Ninpou that I\'m pity', 'feeder as Madara', 'feeder as Minato', 'noob who doesn\'t know for what Smoke Bomb is for', 'noob who doesn\'t the price of Oil', 'hentai lover', 'worse than Fexter', 'guy who lost 1v1 to Fexter', 'teenage with a girl\'s voice', 'coward who can\'t win 1v1', 'fool', 'guy who keeps dildos', 'vegan', 'Fexter', 'Tobias'];
-							ev.channel.send('*attacks ' + args[0] + ' and says: ' + args[0] + ' is a ' + insults[Math.floor(Math.random() * insults.length)] + '.* **Oink!**');
+							ev.channel.send('*attacks ' + args[0] + ' and says: ' + args[0] + ' is a ' + insults[Math.floor(Math.random() * insults.length)] + '.* **Oink!** :pig:');
 							break;
 					 }
 				}

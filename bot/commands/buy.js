@@ -15,16 +15,16 @@ module.exports = function(ev, itemId) {
 					ev.channel.send(data.error);
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t buy item. :( **Oink!**');
+					ev.channel.send('Couldn\'t buy item. :( **Oink!** :pig:');
 				}
 			} else { 
-				ev.channel.send('Item bought! **Oink!**');
+				ev.channel.send('Item bought! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t buy item. :( **Oink!**');
+		ev.channel.send('Couldn\'t buy item. :( **Oink!** :pig:');
 	});
 	request.end();
 };

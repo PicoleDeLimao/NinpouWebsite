@@ -10,20 +10,20 @@ module.exports = function(ev, alias) {
 		});
 		res.on('end', function() { 
 			if (res.statusCode != 200) { 
-				ev.channel.send('This alias hasn\'t been reclaimed yet! **Oink!**');
+				ev.channel.send('This alias hasn\'t been reclaimed yet! **Oink!** :pig:');
 			} else {
 				try { 
 					var json = JSON.parse(body);
 					ev.channel.send('<@' + json.username + '>');
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t fetch alias. :( **Oink!**');
+					ev.channel.send('Couldn\'t fetch alias. :( **Oink!** :pig:');
 				}
 			}
 		});
 	})
 	.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t fetch alias. :( **Oink!**');
+		ev.channel.send('Couldn\'t fetch alias. :( **Oink!** :pig:');
 	}); 
 };

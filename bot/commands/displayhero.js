@@ -45,10 +45,10 @@ module.exports = function(ev, heroName, attribute) {
 		res.on('end', function() {
 			try {
 				var data = JSON.parse(body);
-				var hero = data.stats;
 				if (statusCode != 200) {
-					ev.channel.send(ranking.error);
+					ev.channel.send(data.error);
 				} else { 
+					var hero = data.stats;
 					var response = '```md\n';  
 					response += '< ' + (hero.hero && hero.hero.name || heroName) + ' > is on ranking <' + hero.ranking.score + '> with a score of <' + Math.round(hero.score) + '> and a win percentage of <' + (hero.wins / hero.games * 100).toFixed(2) + '%> out of <' + hero.games + '> games. More info:\n\n' +   
 					'Average kills:       <' + Math.round(hero.kills) + '> (Ranking <' + hero.ranking.kills + '>)\n' + 
@@ -79,11 +79,11 @@ module.exports = function(ev, heroName, attribute) {
 				}
 			} catch (err) { 
 				console.error(err); 
-				ev.channel.send('Couldn\'t fetch hero. :( **Oink!**');
+				ev.channel.send('Couldn\'t fetch hero. :( **Oink!** :pig:');
 			}
 		});
 	}).on('error', function(err) {
 		console.error(err);  
-		ev.channel.send('Couldn\'t fetch hero. :( **Oink!**');
+		ev.channel.send('Couldn\'t fetch hero. :( **Oink!** :pig:');
 	});
 };

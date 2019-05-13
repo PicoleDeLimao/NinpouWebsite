@@ -57,7 +57,7 @@ module.exports = function(ev, playerName, hist, hero) {
 					ev.channel.send(ranking.error);
 				} else { 
 					getPlayerName(ev, ranking.stat._id, function(err, playerName) {
-						if (err) return ev.channel.send('Couldn\'t fetch player score. :( **Oink!**');
+						if (err) return ev.channel.send('Couldn\'t fetch player score. :( **Oink!** :pig:');
 						var player = ranking.stat;
 						var response = '```md\n';  
 						response += '< ' + playerName + ' > is on ranking <' + player.ranking.score + '> with a score of <' + Math.round(player.score) + '> and a win percentage of <' + (player.wins / player.games * 100).toFixed(2) + '%> out of <' + player.games + '> games. More info:\n\n' +   
@@ -137,11 +137,11 @@ module.exports = function(ev, playerName, hist, hero) {
 				}
 			} catch (err) { 
 				console.error(err); 
-				ev.channel.send('This player hasn\'t played in this bot yet. :( **Oink!**');
+				ev.channel.send('This player hasn\'t played in this bot yet. :( **Oink!** :pig:');
 			}
 		});
 	}).on('error', function(err) {
 		console.error(err);  
-		ev.channel.send('Couldn\'t fetch player score. :( **Oink!**');
+		ev.channel.send('Couldn\'t fetch player score. :( **Oink!** :pig:');
 	});
 };

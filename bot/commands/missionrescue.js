@@ -19,7 +19,7 @@ module.exports = function(ev, auto, callback) {
 						ev.channel.send(data.error);  
 					} catch (err) {
 						console.error(err);
-						ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+						ev.channel.send('Couldn\'t complete mission. :( **Oink!** :pig:');
 					}
 				}
 			} else {  
@@ -44,7 +44,7 @@ module.exports = function(ev, auto, callback) {
 				} catch (err) {
 					if (!auto) {
 						console.error(err);
-						ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+						ev.channel.send('Couldn\'t complete mission. :( **Oink!** :pig:');
 					}
 				}
 			}
@@ -54,7 +54,7 @@ module.exports = function(ev, auto, callback) {
 	request.on('error', function(err) {
 		if (!auto) {
 			console.error(err);
-			ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+			ev.channel.send('Couldn\'t complete mission. :( **Oink!** :pig:');
 		}
 	});
 	request.end();

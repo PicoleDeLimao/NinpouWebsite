@@ -10,15 +10,15 @@ module.exports = function(ev, alias, author) {
 		});
 		res.on('end', function() {
 			if (res.statusCode != 200) {
-				ev.channel.send('This alias is not linked to this account. :( **Oink!**');
+				ev.channel.send('This alias is not linked to this account. :( **Oink!** :pig:');
 			} else { 
-				ev.channel.send('Alias removed! **Oink!**');
+				ev.channel.send('Alias removed! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t removed alias. :( **Oink!**');
+		ev.channel.send('Couldn\'t removed alias. :( **Oink!** :pig:');
 	});
 	request.end();
 };

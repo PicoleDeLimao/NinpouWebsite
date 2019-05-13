@@ -7,7 +7,7 @@ module.exports = function(ev, attribute) {
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/heroes/ranking' }, function(res) {
 		var statusCode = res.statusCode;
 		if (statusCode != 200) {
-			ev.channel.send('Couldn\'t fetch heroes. :( **Oink!**');
+			ev.channel.send('Couldn\'t fetch heroes. :( **Oink!** :pig:');
 			return;
 		} 
 		var body = '';
@@ -36,12 +36,12 @@ module.exports = function(ev, attribute) {
 				}
 			} catch (err) { 
 				console.error(err);
-				ev.channel.send('Couldn\'t fetch heroes. :( **Oink!**');
+				ev.channel.send('Couldn\'t fetch heroes. :( **Oink!** :pig:');
 			}
 		});
 	}).on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t fetch heroes. :( **Oink!**');
+		ev.channel.send('Couldn\'t fetch heroes. :( **Oink!** :pig:');
 	});
 };
 

@@ -16,16 +16,16 @@ module.exports = function(ev, status) {
 					data = JSON.parse(body);
 					ev.channel.send(data.error);
 				} catch (err) {
-					ev.channel.send('Couldn\'t set status. :( **Oink!**');
+					ev.channel.send('Couldn\'t set status. :( **Oink!** :pig:');
 				}
 			} else { 
-				ev.channel.send('Status set! **Oink!**');
+				ev.channel.send('Status set! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t set status. :( **Oink!**');
+		ev.channel.send('Couldn\'t set status. :( **Oink!** :pig:');
 	});
 	request.write(body); 
 	request.end();

@@ -17,7 +17,7 @@ module.exports = function(ev, affiliation) {
 					ev.channel.send(data.error);
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t join village. :( **Oink!**');
+					ev.channel.send('Couldn\'t join village. :( **Oink!** :pig:');
 				}
 			} else { 
 				var description;
@@ -93,7 +93,7 @@ module.exports = function(ev, affiliation) {
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t join village. :( **Oink!**');
+		ev.channel.send('Couldn\'t join village. :( **Oink!** :pig:');
 	});
 	request.end();
 };

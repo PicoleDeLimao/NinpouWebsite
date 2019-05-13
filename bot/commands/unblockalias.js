@@ -14,16 +14,16 @@ module.exports = function(ev, alias) {
 					var data = JSON.parse(body);
 					ev.channel.send(data.error);
 				} catch (err) {
-					ev.channel.send('This alias is not blocked. :( **Oink!**');
+					ev.channel.send('This alias is not blocked. :( **Oink!** :pig:');
 				}				
 			} else { 
-				ev.channel.send('Alias unblocked! **Oink!**');
+				ev.channel.send('Alias unblocked! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t unblock alias. :( **Oink!**');
+		ev.channel.send('Couldn\'t unblock alias. :( **Oink!** :pig:');
 	});
 	request.end();
 };

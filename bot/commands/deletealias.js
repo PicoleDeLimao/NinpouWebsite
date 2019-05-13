@@ -14,16 +14,16 @@ module.exports = function(ev, alias) {
 					var data = JSON.parse(body);
 					ev.channel.send(data.error);
 				} catch (err) {
-					ev.channel.send('Couldn\'t delete alias. :( **Oink!**');
+					ev.channel.send('Couldn\'t delete alias. :( **Oink!** :pig:');
 				} 
 			} else { 
-				ev.channel.send('Alias deleted! **Oink!**');
+				ev.channel.send('Alias deleted! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t delete alias. :( **Oink!**');
+		ev.channel.send('Couldn\'t delete alias. :( **Oink!** :pig:');
 	});
 	request.end();
 };

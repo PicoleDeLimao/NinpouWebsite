@@ -19,7 +19,7 @@ module.exports = function(ev, amount) {
 					ev.channel.send(data.error);  
 				} catch (err) { 
 					console.error(err);
-					ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+					ev.channel.send('Couldn\'t complete mission. :( **Oink!** :pig:');
 				}
 			} else {  
 				try {
@@ -43,14 +43,14 @@ module.exports = function(ev, amount) {
 					//ev.channel.send(response);  
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+					ev.channel.send('Couldn\'t complete mission. :( **Oink!** :pig:');
 				}
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t complete mission. :( **Oink!**');
+		ev.channel.send('Couldn\'t complete mission. :( **Oink!** :pig:');
 	});
 	request.write(dataToSend);
 	request.end();

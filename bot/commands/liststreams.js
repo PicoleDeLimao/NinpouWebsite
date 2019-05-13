@@ -15,7 +15,7 @@ module.exports = function(ev) {
 					ev.channel.send(data.error); 
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t list streams. :( **Oink!**');
+					ev.channel.send('Couldn\'t list streams. :( **Oink!** :pig:');
 				}
 			} else {  
 				try {
@@ -27,14 +27,14 @@ module.exports = function(ev) {
 					ev.channel.send(response);
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t list streams. :( **Oink!**');
+					ev.channel.send('Couldn\'t list streams. :( **Oink!** :pig:');
 				} 
 			}
 		});
 	}); 
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t list streams. :( **Oink!**');
+		ev.channel.send('Couldn\'t list streams. :( **Oink!** :pig:');
 	});
 	request.end();
 };

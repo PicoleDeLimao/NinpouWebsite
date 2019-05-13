@@ -27,14 +27,14 @@ module.exports = function(ev, name, callback, hideRole) {
 					});
 					res.on('end', function() { 
 						if (res.statusCode != 200) { 
-							console.err(body);
+							console.error(body);
 							return callback(null, user.username + ' (LEFT)');
 						} else {
 							try { 
 								var data = JSON.parse(body); 
 								return callback(null, data.alias[0] + ' (LEFT)');
 							} catch (err) {
-								console.err(err);
+								console.error(err);
 								return callback(null, user.username + ' (LEFT)');
 							}
 						}

@@ -16,16 +16,16 @@ module.exports = function(ev, channel) {
 					ev.channel.send(data.error); 
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t add stream. :( **Oink!**');
+					ev.channel.send('Couldn\'t add stream. :( **Oink!** :pig:');
 				}
 			} else {  
-				ev.channel.send('Stream added! **Oink!**');
+				ev.channel.send('Stream added! **Oink!** ');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t add stream. :( **Oink!**');
+		ev.channel.send('Couldn\'t add stream. :( **Oink!** :pig:');
 	});
 	request.end();
 };

@@ -14,16 +14,16 @@ module.exports = function(ev, alias) {
 					var data = JSON.parse(body);
 					ev.channel.send(data.error);
 				} catch (err) {
-					ev.channel.send('This alias is already linked to an account. :( **Oink!**');
+					ev.channel.send('This alias is already linked to an account. :( **Oink!** :pig:');
 				}
 			} else { 
-				ev.channel.send('Alias blocked! **Oink!**');
+				ev.channel.send('Alias blocked! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t block alias. :( **Oink!**');
+		ev.channel.send('Couldn\'t block alias. :( **Oink!** :pig:');
 	});
 	request.end();
 };

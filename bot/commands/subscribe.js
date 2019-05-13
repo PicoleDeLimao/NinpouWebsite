@@ -18,13 +18,13 @@ module.exports = function(ev, player, amount) {
 				}
 			} catch (err) {
 				console.error(err);
-				ev.channel.send('Couldn\'t subscribe. :( **Oink!**');
+				ev.channel.send('Couldn\'t subscribe. :( **Oink!** :pig:');
 			} 
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t subscribe. :( **Oink!**');
+		ev.channel.send('Couldn\'t subscribe. :( **Oink!** :pig:');
 	});
 	request.end();
 };

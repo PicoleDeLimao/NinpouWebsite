@@ -38,13 +38,13 @@ module.exports = function(ev, players) {
 				}
 			} catch (err) {
 				console.error(err);
-				ev.channel.send('Error while balacing game. :( **Oink!**');
+				ev.channel.send('Error while balacing game. :( **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		return callback('Couldn\'t calculate balance. :( **Oink!**');
+		return callback('Couldn\'t calculate balance. :( **Oink!** :pig:');
 	});
 	request.write(contentStr);
 	request.end();

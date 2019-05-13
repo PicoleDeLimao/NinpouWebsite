@@ -16,16 +16,16 @@ module.exports = function(ev, summon) {
 					ev.channel.send(data.error);
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t buy summon. :( **Oink!**');
+					ev.channel.send('Couldn\'t buy summon. :( **Oink!** :pig:');
 				}
 			} else { 
-				ev.channel.send('Summon bought! **Oink!**');
+				ev.channel.send('Summon bought! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t buy summon. :( **Oink!**');
+		ev.channel.send('Couldn\'t buy summon. :( **Oink!** :pig:');
 	});
 	request.end();
 };

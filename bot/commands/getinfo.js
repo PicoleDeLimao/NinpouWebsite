@@ -76,7 +76,7 @@ module.exports = function(ev, user) {
 		});
 		res.on('end', function() { 
 			if (res.statusCode != 200) { 
-				ev.channel.send('This user doesn\'t exist. **Oink!**');
+				ev.channel.send('This user doesn\'t exist. **Oink!** :pig:');
 			} else {
 				try { 
 					var data = JSON.parse(body); 
@@ -112,13 +112,13 @@ module.exports = function(ev, user) {
 					}, true) 
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t fetch user info. :( **Oink!**');
+					ev.channel.send('Couldn\'t fetch user info. :( **Oink!** :pig:');
 				}
 			}
 		});
 	})
 	.on('error', function(err) {
 		console.error(err); 
-		ev.channel.send('Couldn\'t fetch alias. :( **Oink!**');
+		ev.channel.send('Couldn\'t fetch alias. :( **Oink!** :pig:');
 	}); 
 };

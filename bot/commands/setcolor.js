@@ -8,10 +8,10 @@ module.exports = function(ev, color) {
 		if (role.name.toLowerCase() == 'can\'t get enough') {
 			role.setColor(color);
 			hasRole = true;
-			ev.channel.send('Done! **Oink!**');
+			ev.channel.send('Done! **Oink!** :pig:');
 		}
 	});
 	if (!hasRole) {
-		ev.channel.send('You don\'t have the "Can\'t get enough" title. :( **Oink!**');
+		ev.channel.send('You don\'t have the "Can\'t get enough" title. :( **Oink!** :pig:');
 	}
 };

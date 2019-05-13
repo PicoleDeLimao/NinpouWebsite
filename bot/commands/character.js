@@ -16,16 +16,16 @@ module.exports = function(ev, character) {
 					ev.channel.send(data.error);
 				} catch (err) {
 					console.error(err);
-					ev.channel.send('Couldn\'t buy character. :( **Oink!**');
+					ev.channel.send('Couldn\'t buy character. :( **Oink!** :pig:');
 				}
 			} else { 
-				ev.channel.send('Congratulations! You are now: **' + character.charAt(0).toUpperCase() + character.substr(1) + '**! **Oink!**');
+				ev.channel.send('Congratulations! You are now: **' + character.charAt(0).toUpperCase() + character.substr(1) + '**! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t buy character. :( **Oink!**');
+		ev.channel.send('Couldn\'t buy character. :( **Oink!** :pig:');
 	});
 	request.end();
 };
