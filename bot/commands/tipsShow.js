@@ -19,13 +19,13 @@ module.exports = function(ev, heroName, page) {
 					var tips = data.tips;
 					var nextPage = data.next_page;
 					if (tips.length == 0) {
-						ev.channel.send('There are no tips for this hero. :(\nHelp us creating one using `!tip ' + heroName + ' <tip>` **Oink!** :pig:');
+						ev.channel.send('There are no tips for this hero. :(\nHelp us creating one using `!tip ' + unescape(heroName) + ' <tip>` **Oink!** :pig:');
 					} else {
 						var response = "";
 						(function showTip(index) {
 							if (index == tips.length) {
 								if (nextPage) {
-									response += 'Type `!tips ' + (nextPage + 1) + ' ' + heroName + ' to show the next page of tips.';
+									response += 'Type `!tips ' + (nextPage + 1) + ' ' + unescape(heroName) + ' to show the next page of tips.';
 								}
 								ev.channel.send(response);
 							} else {
