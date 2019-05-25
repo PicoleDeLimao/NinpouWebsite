@@ -346,13 +346,9 @@ router.delete('/:alias', function(req, res) {
 	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err });
 		else if (!alias) return res.status(404).json({ error: 'Alias not found.' });
-		for (var i = 0; i < alias.alias.length; i++) {
-			if (alias.alias[i].toLowerCase() == req.params.alias.toLowerCase()) {
-				alias.alias = alias.alias.splice(i, 1); 
-				return res.status(200).json(alias);
-			}
-		}
-		return res.status(404).json({ error: 'Alias is not linked to this account.' });
+		Alias.update({ alias: req.params.alias.toLowerCase() }, { $pullAll: { alias: req.params.alias.toLowerCase() } }).exec(function(err) {
+			return res.status(200).json(alias);
+		});
 	});
 });
 
