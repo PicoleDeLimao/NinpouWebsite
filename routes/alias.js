@@ -345,8 +345,13 @@ router.delete('/:alias', function(req, res) {
 	if (!req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
 	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err });
-		else if (!alias) return res.status(404).json({ error: 'Alias not found.' });
-		Alias.update({ alias: req.params.alias.toLowerCase() }, { $pullAll: { alias: req.params.alias.toLowerCase() } }).exec(function(err) {
+		for (var i = 0; i < alias.alias.length; i++) {
+			if (alias.alias[i].toLowerCase() == req.params.alias.toLowerCase()) {
+				alias.alias.splice(i, 1);
+			}
+		}
+		alias.save(function(err) {
+			if (err) return res.status(500).json({ error: err });
 			return res.status(200).json(alias);
 		});
 	});
