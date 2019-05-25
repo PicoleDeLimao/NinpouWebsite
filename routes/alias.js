@@ -348,7 +348,7 @@ router.delete('/:alias', function(req, res) {
 		else if (!alias) return res.status(404).json({ error: 'Alias not found.' });
 		for (var i = 0; i < alias.alias.length; i++) {
 			if (alias.alias[i].toLowerCase() == req.params.alias.toLowerCase()) {
-				alias.alias.splice(i, 1); 
+				alias.alias = alias.alias.splice(i, 1); 
 				return res.status(200).json(alias);
 			}
 		}
