@@ -342,7 +342,7 @@ router.put('/:username/:alias', function(req, res) {
 });
  
 router.delete('/:alias', function(req, res) {
-	if (!req.params.username || !req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
+	if (!req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
 	Alias.findOne({ alias: req.params.alias.toLowerCase() }, function(err, alias) {
 		if (err) return res.status(500).json({ error: err });
 		else if (!alias) return res.status(404).json({ error: 'Alias not found.' });

@@ -10,7 +10,7 @@ module.exports = function(ev, alias, author) {
 		});
 		res.on('end', function() {
 			if (res.statusCode != 200) {
-				ev.channel.send('This alias is not linked to this account. :( **Oink!** :pig:');
+				ev.channel.send('This alias is not linked to any account. :( **Oink!** :pig:');
 			} else { 
 				ev.channel.send('Alias removed! **Oink!** :pig:');
 			}
