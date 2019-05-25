@@ -365,7 +365,7 @@ bot.on('message', function(ev) {
 					ev.channel.send(  
 						'Admin-related commands:\n```md\n' + 
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
-						'< !a > removealias <user> <alias>           : Remove an alias from a player\n' + 
+						'< !a > removealias <alias>                  : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
 						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
 						'< !a > sync                                 : Sync bot rank with discord rank```' + 
@@ -397,10 +397,10 @@ bot.on('message', function(ev) {
 							ev.channel.send('Me no understand! Use **!a addalias <user> <alias>**');
 						}
 					} else if (args[0] == 'removealias') {
-						if (ev.mentions.users.array().length == 1) {
-							removeAlias(ev, args[2], ev.mentions.users.array()[0].id);
+						if (args.length == 2) {
+							removeAlias(ev, args[2]);
 						} else {
-							ev.channel.send('Me no understand! Use **!a removealias <user> <alias>**');
+							ev.channel.send('Me no understand! Use **!a removealias <alias>**');
 						}
 					} else if (args[0] == 'blockalias') {
 						if (args.length == 2) {
