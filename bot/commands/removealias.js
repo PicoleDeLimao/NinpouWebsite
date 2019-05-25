@@ -2,7 +2,7 @@
 
 var http = require('http');
 
-module.exports = function(ev, alias, author) {
+module.exports = function(ev, alias) {
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/alias/' + alias, method: 'DELETE', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
