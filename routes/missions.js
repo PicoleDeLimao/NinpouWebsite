@@ -516,19 +516,19 @@ router.post('/:username/kills20', function(req, res) {
 		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
 		var threshold, goldReward; 
 		if (alias.rank == 'chunnin') {
-			threshold = 12;
+			threshold = 15;
 			goldReward = 1000;
 		} else if (alias.rank == 'tokubetsu jounin') {
-			threshold = 15;
+			threshold = 17;
 			goldReward = 1500;
 		} else if (alias.rank == 'jounin') {
-			threshold = 17;
+			threshold = 20;
 			goldReward = 3000;
 		} else if (alias.rank == 'anbu') {
-			threshold = 20;
+			threshold = 23;
 			goldReward = 5000;
 		} else if (alias.rank == 'kage') {
-			threshold = 23;
+			threshold = 25;
 			goldReward = 10000;
 		} else {
 			threshold = 10;
@@ -549,22 +549,22 @@ router.post('/:username/deaths5', function(req, res) {
 		if (err || !alias) return res.status(404).json({ error: 'User not found.' });
 		var threshold, goldReward; 
 		if (alias.rank == 'chunnin') {
-			threshold = 12;
+			threshold = 14;
 			goldReward = 1000;
 		} else if (alias.rank == 'tokubetsu jounin') {
-			threshold = 11;
+			threshold = 13;
 			goldReward = 1500;
 		} else if (alias.rank == 'jounin') {
-			threshold = 10;
+			threshold = 12;
 			goldReward = 3000;
 		} else if (alias.rank == 'anbu') {
-			threshold = 9;
+			threshold = 11;
 			goldReward = 5000;
 		} else if (alias.rank == 'kage') {
-			threshold = 8;
+			threshold = 10;
 			goldReward = 10000;
 		} else {
-			threshold = 13;
+			threshold = 15;
 			goldReward = 500;
 		}
 		if (alias.summon == 'slug1') {
@@ -705,7 +705,7 @@ router.post('/:username/rank/tokubetsu', function(req, res) {
 		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
 			if (err) return res.status(400).json({ 'error': err });
 			if (stats.games < 25) return res.status(400).json({ error: 'You must play at least 25 games to complete this mission.' });
-			else if (stats.points < 75) return res.status(400).json({ error: 'You must have at least 75 average points to complete this mission.' });
+			else if (stats.points < 100) return res.status(400).json({ error: 'You must have at least 100 average points to complete this mission.' });
 			var aliases = [];
 			for (var i = 0; i < alias.alias.length; i++) {
 				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
@@ -733,15 +733,15 @@ router.post('/:username/rank/jounin', function(req, res) {
 		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
 			if (err) return res.status(400).json({ 'error': err });
 			if (stats.games < 35) return res.status(400).json({ error: 'You must play at least 35 games to complete this mission.' });
-			else if (stats.points < 100) return res.status(400).json({ error: 'You must have at least 100 average points to complete this mission.' });
+			else if (stats.points < 150) return res.status(400).json({ error: 'You must have at least 150 average points to complete this mission.' });
 			var aliases = [];
 			for (var i = 0; i < alias.alias.length; i++) {
 				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
 			}  
-			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 25 }, deaths: { $lte: 10 } } }, recorded: true, balance_factor: { $gt: 0.8 } };
+			var condition = { slots: { $elemMatch: { username: { $in: aliases }, kills: { $gte: 30 }, deaths: { $lte: 10 } } }, recorded: true, balance_factor: { $gt: 0.8 } };
 			Game.find(condition).sort('-_id').limit(1).exec(function(err, games) {
 				if (games.length == 0 || !isToday(moment(dateFromObjectId(games[0]._id.toString())))) {
-					return res.status(400).json({ error: 'You didn\'t play any game with over 25 kills and less than 10 deaths today.' });
+					return res.status(400).json({ error: 'You didn\'t play any game with over 30 kills and less than 10 deaths today.' });
 				} else {
 					alias.rank = 'jounin';
 					alias.save(function(err) {
@@ -761,7 +761,7 @@ router.post('/:username/rank/anbu', function(req, res) {
 		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
 			if (err) return res.status(400).json({ 'error': err });
 			if (stats.games < 50) return res.status(400).json({ error: 'You must play at least 50 games to complete this mission.' });
-			else if (stats.points < 150) return res.status(400).json({ error: 'You must have at least 150 average points to complete this mission.' });
+			else if (stats.points < 200) return res.status(400).json({ error: 'You must have at least 200 average points to complete this mission.' });
 			var aliases = [];
 			for (var i = 0; i < alias.alias.length; i++) {
 				aliases.push(new RegExp(['^', escapeRegExp(alias.alias[i]), '$'].join(''), 'i'));
