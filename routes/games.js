@@ -37,7 +37,7 @@ router.get('/', function(req, response) {
 		});
 	}); 
 	request.on('error', function(err) {
-		return response.status(500).json({ error:err }); 
+		return response.status(500).json({ error: 'Could not get game list.' }); 
 	});
 	request.end();
 });
