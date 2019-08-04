@@ -123,7 +123,7 @@ router.post('/', function(req, res) {
 		id: mongoose.Types.ObjectId().toString(),
 		createdAt: new Date(),
 		gamename: 'Naruto Ninpou Storm',
-		map: 'NarutoNS9.7.w3x',
+		map: 'NarutoNS10.0.w3x',
 		owner: 'None',
 		duration: '00:00:00',
 		slots: [],
