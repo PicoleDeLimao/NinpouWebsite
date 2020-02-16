@@ -31,7 +31,7 @@ router.get('/', function(req, response) {
 					}
 					return response.status(200).json(ninpouGames);
 				} catch (err) {
-					return response.status(500).json({ error:'Error while parsing game:' + e });
+					return response.status(500).json({ error:'Error while parsing game:' + err });
 				}
 			}
 		});
