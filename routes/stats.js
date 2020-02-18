@@ -122,8 +122,8 @@ router.post('/', function(req, res) {
 	var game = new Game({
 		id: mongoose.Types.ObjectId().toString(),
 		createdAt: new Date(),
-		gamename: 'Naruto Ninpou Storm',
-		map: 'NarutoNS10.0.w3x',
+		gamename: 'Naruto Ninpou Reforged',
+		map: 'Unknown',
 		owner: 'None',
 		duration: '00:00:00',
 		slots: [],

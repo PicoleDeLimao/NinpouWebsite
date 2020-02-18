@@ -392,25 +392,25 @@ bot.on('message', function(ev) {
 				if (isAdmin) { 
 					if (args[0] == 'addalias') {
 						if (ev.mentions.users.array().length == 1) {
-							addAlias(ev, args[2], ev.mentions.users.array()[0].id);
+							addAlias(ev, encodeURIComponent(args[2]), ev.mentions.users.array()[0].id);
 						} else {
 							ev.channel.send('Me no understand! Use **!a addalias <user> <alias>**');
 						}
 					} else if (args[0] == 'removealias') {
 						if (args.length == 2) {
-							removeAlias(ev, args[1]);
+							removeAlias(ev, encodeURIComponent(args[1]));
 						} else {
 							ev.channel.send('Me no understand! Use **!a removealias <alias>**');
 						}
 					} else if (args[0] == 'blockalias') {
 						if (args.length == 2) {
-							blockAlias(ev, args[1]);
+							blockAlias(ev, encodeURIComponent(args[1]));
 						} else { 
 							ev.channel.send('Me no understand! Use **!a blockalias <alias>');
 						}
 					} else if (args[0] == 'unblockalias') {
 						if (args.length == 2) {
-							unblockAlias(ev, args[1]);
+							unblockAlias(ev, encodeURIComponent(args[1]));
 						} else { 
 							ev.channel.send('Me no understand! Use **!a unblockalias <alias>');
 						}
@@ -424,7 +424,7 @@ bot.on('message', function(ev) {
 						if (!isSuperAdmin) { 
 							ev.channel.send('Only super-admins can use this command! **Oink!!**');
 						} else if (args.length == 3) {
-							mergeAliases(ev, args[1], args[2]);
+							mergeAliases(ev, encodeURIComponent(args[1]), encodeURIComponent(args[2]));
 						} else { 
 							ev.channel.send('Me no understand! Use **!a mergealiases <old_alias> <new_alias>**');
 						}
@@ -432,7 +432,7 @@ bot.on('message', function(ev) {
 						if (!isSuperAdmin) {
 							ev.channel.send('Only super-admins can use this command! **Oink!!**');
 						} else if (args.length == 2) {
-							deleteAlias(ev, args[1]);
+							deleteAlias(ev, encodeURICompoent(args[1]));
 						} else { 
 							ev.channel.send('Me no understand! Use **!a deletealias <alias>**');
 						}
@@ -451,7 +451,7 @@ bot.on('message', function(ev) {
 					ev.channel.send('You can only have one alias per account now. If you want to add another alias, ask an admin! **Oink!!**');
 				} else {
 					if (args.length > 0) {
-						addAlias(ev, args[0]);
+						addAlias(ev, encodeURIComponent(args[0]));
 					} else {
 						ev.channel.send('Me no understand! Type **!addalias <account>**, replacing **<account>** by your Warcraft 3 account.');
 					} 
