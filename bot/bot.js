@@ -447,15 +447,15 @@ bot.on('message', function(ev) {
 			});
 		} else if (cmd == 'addalias') {
 			getAliasOf(ev.author.id, function(err, alias) {
-				if (alias.length > 0) {
-					ev.channel.send('You can only have one alias per account now. If you want to add another alias, ask an admin! **Oink!!**');
-				} else {
+				//if (alias.length > 0) {
+				//	ev.channel.send('You can only have one alias per account now. If you want to add another alias, ask an admin! **Oink!!**');
+				//} else {
 					if (args.length > 0) {
 						addAlias(ev, encodeURIComponent(args[0]));
 					} else {
 						ev.channel.send('Me no understand! Type **!addalias <account>**, replacing **<account>** by your Warcraft 3 account.');
 					} 
-				}
+				//}
 			});
 		} else if (cmd == 'removealias') {
 			/*if (args.length > 0) {
