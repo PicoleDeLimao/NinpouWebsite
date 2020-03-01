@@ -73,7 +73,7 @@ function getPlayerStats(username, callback, autocomplete) {
 		}
 		Stat.find({ username: { $in: usernames } }).sort('_id').exec(function(err, stats) {
 			if (err) return callback(err); 
-			else if (!stats || stats.length == 0) return callback('This player haven\'t played yet.');
+			else if (!stats || stats.length == 0) return callback('This player hasn\'t played yet.');
 			var allStat = { 
 				_id: alias.length > 0 && alias[0].username || stats[0].username,
 				kills: 0,
