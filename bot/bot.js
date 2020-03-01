@@ -804,7 +804,7 @@ bot.on('message', function(ev) {
 							for (var i = 0; i < args.length; i++) {
 								if (args[i].toString()[0] == '<') {
 									args[i] = ev.mentions.users.array()[mentionId++].id
-								} 
+								}
 							}
 							/*if (args.length == 1) {
 								var criteria = args[0];
@@ -880,7 +880,7 @@ bot.on('message', function(ev) {
 								if (ev.mentions.users.array().length > 0) {
 									displayScore(ev, ev.mentions.users.array()[0].id);
 								} else {
-									displayScore(ev, args[0]);
+									displayScore(ev, encodeURIComponent(args[0]));
 								} 
 							} else {
 								displayScore(ev, ev.author.id);
@@ -958,7 +958,7 @@ bot.on('message', function(ev) {
 						case 'w':
 						case 'whois': 
 							if (args.length == 1) {
-								whoIs(ev, args[0]);
+								whoIs(ev, encodeURIComponent(args[0]));
 							} else {
 								ev.channel.send('Me no understand! Use **!whois <player>**');
 							}
