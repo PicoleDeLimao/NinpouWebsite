@@ -55,7 +55,7 @@ router.post('/balance', function(req, res) {
 		id: mongoose.Types.ObjectId().toString(),
 		createdAt: new Date(),
 		gamename: 'Naruto Ninpou Reforged',
-		map: 'NarutoRE1.1.w3x',
+		map: 'Unknown',
 		owner: 'None',
 		duration: '00:00:00',
 		slots: [],
