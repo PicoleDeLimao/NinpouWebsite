@@ -1030,6 +1030,7 @@ bot.on('message', function(ev) {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.**').then(function(message) {
 											message.react(':thumbsup:');
 											message.react(':thumbsdown:');
+											ev.channel.send('Bug reported in #bug-reporting. Thank you!! **Oink!** :pig:');
 										});
 									}
 								});
@@ -1038,12 +1039,13 @@ bot.on('message', function(ev) {
 							}
 							break; 
 						case 'balance':
-						if (args.length > 0) {
-							bot.channels.forEach(function(channel) {
+							if (args.length > 0) {
+								bot.channels.forEach(function(channel) {
 									if (channel.name == 'balance-issues') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
 											message.react(':thumbsup:');
 											message.react(':thumbsdown:');
+											ev.channel.send('Issue created in #balance-issues. Thank you!! **Oink!** :pig:');
 										});
 									}
 								});
@@ -1054,31 +1056,31 @@ bot.on('message', function(ev) {
 						case 'idea':
 							if (args.length > 0) {
 								bot.channels.forEach(function(channel) {
-										if (channel.name == 'map-ideas') {
-											channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
-												message.react(':thumbsup:');
-												message.react(':thumbsdown:');
-											});
-										}
-									});
-								} else {
-									ev.channel.send('You need to type a description! **Oink**! :pig:')
-								}
-								break; 
+									if (channel.name == 'map-ideas') {
+										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
+											message.react(':thumbsup:');
+											message.react(':thumbsdown:');
+											ev.channel.send('Idea posted in #map-ideas. Thank you!! **Oink!** :pig:');
+										});
+									}
+								});
+							} else {
+								ev.channel.send('You need to type a description! **Oink**! :pig:')
+							}
+							break; 
 						case 'poll':
 							if (args.length > 0) {
-								bot.channels.forEach(function(channel) {
-										if (channel.name == 'general-polls') {
-											channel.send(args.join(' ') + '\n\n**React with :thumbsup: for yes and :thumbsdown: for no.**').then(function(message) {
-												message.react(':thumbsup:');
-												message.react(':thumbsdown:');
-											});
-										}
+								bot.channels.fetch(692543421826727968).then(function(channel) {
+									channel.send(args.join(' ') + '\n\n**React with :thumbsup: for yes and :thumbsdown: for no.**').then(function(message) {
+										message.react(':thumbsup:');
+										message.react(':thumbsdown:');
+										ev.channel.send('Poll created in #general-polls. Thank you!! **Oink!** :pig:');
 									});
-								} else {
-									ev.channel.send('You need to type a description! **Oink**! :pig:')
-								}
-								break; 
+								});
+							} else {
+								ev.channel.send('You need to type a description! **Oink**! :pig:')
+							}
+							break; 
 						case 'attack':
 							var insults = ['noob', 'team stacker', 'feeder', 'leaver', 'rage-quitter', 'shithead', 'idiot', 'camper', 'Tobias\' cuck', 'so bad in Ninpou that I\'m pity', 'feeder as Madara', 'feeder as Minato', 'noob who doesn\'t know for what Smoke Bomb is for', 'noob who doesn\'t the price of Oil', 'hentai lover', 'worse than Fexter', 'guy who lost 1v1 to Fexter', 'teenage with a girl\'s voice', 'coward who can\'t win 1v1', 'fool', 'guy who keeps dildos', 'vegan', 'Fexter', 'Tobias'];
 							ev.channel.send('*attacks ' + args[0] + ' and says: ' + args[0] + ' is a ' + insults[Math.floor(Math.random() * insults.length)] + '.* **Oink!** :pig:');
