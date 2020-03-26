@@ -303,7 +303,7 @@ bot.on('message', function(ev) {
 				'Game-related commands:\n```md\n' + 
 				//'< ![h]ost > [location] [owner]  : Host a new game (on ENTConnect)\n' + 
 				//'< !lobby >                     : List games in lobby (on ENTConnect)\n' + 
-				'< ![b]alance > < name_of_players >: Display the optimal balance of a game composed by given player names\n' + 
+				'< ![o]ptimal > < name_of_players>: Display the optimal balance of a game composed by given player names\n' + 
 				//'< ![p]rogress >                : List games in progress (on ENTConnect)\n' + 
 				//'< ![l]ast >                    : Fetch last non-recorded played games (on ENTConnect)\n' + 
 				'< !recorded >                   : Fetch last recorded played games\n' + 
@@ -485,10 +485,10 @@ bot.on('message', function(ev) {
 								ev.channel.send(response);
 							} else if (args[0] == 'ranks') {
 								var response = 	'```md\n' + 
-												'[     -] [D-Rank] < !mission rank-chunnin >     : Play over <10> games, have more than <50> average points and play a balanced game today with >= <15> kills and <= <15> deaths\n\n' + 
-												'[     -] [C-Rank] < !mission rank-tokubetsu >   : Play over <25> games, have more than <100> average points and play a balanced game today with >= <20> kills and <= <12> deaths\n\n' + 
-												'[     -] [B-Rank] < !mission rank-jounin >      : Play over <35> games, have more than <150> average points and play a balanced game today with >= <30> kills and <= <10> deaths\n\n' + 
-												'[     -] [A-Rank] < !mission rank-anbu >        : Play over <50> games, have more than <200> average points and play a balanced game today with >= <35> kills and <= <8> deaths\n\n' + 
+												'[     -] [D-Rank] < !mission rank-chunnin >     : Play over <10> games, have more than <50> average points and play a ranked game today with >= <15> kills and <= <15> deaths\n\n' + 
+												'[     -] [C-Rank] < !mission rank-tokubetsu >   : Play over <25> games, have more than <100> average points and play a ranked game today with >= <20> kills and <= <12> deaths\n\n' + 
+												'[     -] [B-Rank] < !mission rank-jounin >      : Play over <35> games, have more than <150> average points and play a ranked game today with >= <30> kills and <= <10> deaths\n\n' + 
+												'[     -] [A-Rank] < !mission rank-anbu >        : Play over <50> games, have more than <200> average points and play a ranked game today with >= <35> kills and <= <8> deaths\n\n' + 
 												'[     -] [S-Rank] < !mission rank-kage>         : Be Top-1 on ranking of your village and get the Kage rank```';
 								ev.channel.send(response);
 							} else {
@@ -796,8 +796,8 @@ bot.on('message', function(ev) {
 								ev.channel.send('Me no understand! Use **!info <game_id>**');
 							}
 							break;
-						case 'b':
-						case 'balance': 
+						case 'o':
+						case 'optimal': 
 							var mentionId = 0;
 							for (var i = 0; i < args.length; i++) {
 								if (args[i].toString()[0] == '<') {
