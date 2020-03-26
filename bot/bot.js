@@ -1028,8 +1028,9 @@ bot.on('message', function(ev) {
 								bot.channels.forEach(function(channel) {
 									if (channel.id == '692551415394205746') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.**').then(function(message) {
-											message.react('👍');
-											message.react('👎');
+											message.react('👍').then(function(){
+												message.react('👎');
+											});
 											ev.channel.send('Bug reported in <#692551415394205746> . Thank you!! **Oink!** :pig:');
 										});
 									}
@@ -1043,8 +1044,9 @@ bot.on('message', function(ev) {
 								bot.channels.forEach(function(channel) {
 									if (channel.id == '692551380786872352') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
-											message.react('👍');
-											message.react('👎');
+											message.react('👍').then(function(){
+												message.react('👎');
+											});
 											ev.channel.send('Issue created in <#692551380786872352> . Thank you!! **Oink!** :pig:');
 										});
 									}
@@ -1059,8 +1061,9 @@ bot.on('message', function(ev) {
 									console.log(channel.id);
 									if (channel.id == '692551338743037952') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
-											message.react('👍');
-											message.react('👎');
+											message.react('👍').then(function(){
+												message.react('👎');
+											});
 											ev.channel.send('Idea posted in <#692551338743037952> . Thank you!! **Oink!** :pig:');
 										});
 									}
@@ -1074,8 +1077,9 @@ bot.on('message', function(ev) {
 								bot.channels.forEach(function(channel) {
 									if (channel.id == '692543421826727968') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: for yes and :thumbsdown: for no.**').then(function(message) {
-											message.react('👍');
-											message.react('👎');
+											message.react('👍').then(function(){
+												message.react('👎');
+											});
 											ev.channel.send('Poll created in <#692543421826727968> . Thank you!! **Oink!** :pig:');
 										});
 									}
