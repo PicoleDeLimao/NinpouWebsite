@@ -1028,8 +1028,8 @@ bot.on('message', function(ev) {
 								bot.channels.forEach(function(channel) {
 									if (channel.id == '692551415394205746') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.**').then(function(message) {
-											message.react(':thumbsup:');
-											message.react(':thumbsdown:');
+											message.react('👍');
+											message.react('👎');
 											ev.channel.send('Bug reported in #bug-reporting. Thank you!! **Oink!** :pig:');
 										});
 									}
@@ -1043,8 +1043,8 @@ bot.on('message', function(ev) {
 								bot.channels.forEach(function(channel) {
 									if (channel.id == '692551380786872352') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
-											message.react(':thumbsup:');
-											message.react(':thumbsdown:');
+											message.react('👍');
+											message.react('👎');
 											ev.channel.send('Issue created in #balance-issues. Thank you!! **Oink!** :pig:');
 										});
 									}
@@ -1059,8 +1059,8 @@ bot.on('message', function(ev) {
 									console.log(channel.id);
 									if (channel.id == '692551338743037952') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
-											message.react(':thumbsup:');
-											message.react(':thumbsdown:');
+											message.react('👍');
+											message.react('👎');
 											ev.channel.send('Idea posted in #map-ideas. Thank you!! **Oink!** :pig:');
 										});
 									}
@@ -1074,8 +1074,8 @@ bot.on('message', function(ev) {
 								bot.channels.forEach(function(channel) {
 									if (channel.id == '692543421826727968') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: for yes and :thumbsdown: for no.**').then(function(message) {
-											message.react(':thumbsup:');
-											message.react(':thumbsdown:');
+											message.react('👍');
+											message.react('👎');
 											ev.channel.send('Poll created in #general-polls. Thank you!! **Oink!** :pig:');
 										});
 									}
