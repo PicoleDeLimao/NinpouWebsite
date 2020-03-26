@@ -309,18 +309,19 @@ bot.on('message', function(ev) {
 				'< !recorded >                   : Fetch last recorded played games\n' + 
 				'< ![i]nfo > <game_id>           : Fetch info about a played game\n' + 
 				'< ![r]ecord > <code>            : Record a game\n' +  
+				'< !ra[n]k > <game_id>           : Make a recorded game ranked so it will impact on players\' score\n' +
 				//'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
 				'< !heroes > [criteria]          : Display meta information about game heroes\n' + 
 				'< !hero > <name>                : Display meta information about specific hero\n' + 
-				'< !tips > <hero_name>           : Show all tips related to a hero\n' +
-				'< !tip > <hero_name> <tip>      : Create a tip for a hero and get gold proportional to your rank (<25/50/100/200/400/800> x lvl)!\n' +
+				//'< !tips > <hero_name>           : Show all tips related to a hero\n' +
+				//'< !tip > <hero_name> <tip>      : Create a tip for a hero and get gold proportional to your rank (<25/50/100/200/400/800> x lvl)!\n' +
 				//'< !subscribe >                  : Turn on/off Tonton private alert messages\n' +
 				'```' 
 			);  
 		} else if (cmd == 'playercmds') {
 			ev.channel.send(  
 				'Player-related commands:\n```md\n' + 
-				'< !ra[n]king > [player_name]          : Display player position in Ninpou ranking\n' + 
+				'< !ra[n]k > [player_name]             : Display player position in Ninpou ranking\n' + 
 				'< ![s]core > [player_name]            : Display a player score in the ranking\n' + 
 				'< ![h]i[s]tory > [player_name] [hero] : Display the history of a player\n' + 
 				'< !addalias > <player_name>           : Register a new alias\n' +  
@@ -346,6 +347,10 @@ bot.on('message', function(ev) {
 		} else if (cmd == 'botcmds') {
 			ev.channel.send(  
 				'Bot-related commands:\n```md\n' + 
+				'< !bug > <description>          : Report a bug on #bug-reports\n' + 
+				'< !balance > <description>      : Report a balance issue on #balance-issues\n' +
+				'< !idea > <description>         : Post a map idea on #map-ideas\n' +
+				'< !poll > <description>         : Create a new poll on #general-polls\n' +
 				'< !addstream > <channel>    : Add a new streaming channel\n' + 
 				'< !removestream > <channel> : Remove a streaming channel\n' + 
 				'< !streams >                : List streaming channels\n' + 
@@ -457,13 +462,6 @@ bot.on('message', function(ev) {
 					} 
 				//}
 			});
-		} else if (cmd == 'removealias') {
-			/*if (args.length > 0) {
-				removeAlias(ev, args[0]);
-			} else {
-				ev.channel.send('Me no understand! Use **!removealias <account>**');
-			}*/
-			ev.channel.send('Only admins can remove aliases now. Ask one! **Oink!!**');
 		} else {
 			getAliasOf(ev.author.id, function(err, alias) {
 				if (err) {
@@ -1016,7 +1014,7 @@ bot.on('message', function(ev) {
 						case 'streams':
 							listStreams(ev);
 							break;
-						case 'broadcast':
+						/*case 'broadcast':
 							if (broadcastings.hasOwnProperty(ev.channel)) { 
 								delete broadcastings[ev.channel];
 								ev.channel.send('Broadcasting disabled.');
@@ -1024,7 +1022,62 @@ bot.on('message', function(ev) {
 								broadcastings[ev.channel] = ev;
 								ev.channel.send('Broadcasting hosted games. (Use again to disable it)');
 							}
-							break;
+							break;*/
+						case 'bug':
+							if (args.length > 0) {
+								bot.channels.forEach(function(channel) {
+									if (channel.name == 'bug-reporting') {
+										channel.send(args.join(' ') + '\n\n**React with :+1 to increase the priority of this bug.**').then(function(message) {
+											message.react(':+1');
+										});
+									}
+								});
+							} else {
+								ev.channel.send('You need to type a description! **Oink**! :pig:')
+							}
+							break; 
+						case 'balance':
+						if (args.length > 0) {
+							bot.channels.forEach(function(channel) {
+									if (channel.name == 'balance-issues') {
+										channel.send(args.join(' ') + '\n\n**React with :+1 if you agree and :-1 if you disagree.**').then(function(message) {
+											message.react(':+1');
+											message.react(':-1');
+										});
+									}
+								});
+							} else {
+								ev.channel.send('You need to type a description! **Oink**! :pig:')
+							}
+							break; 
+						case 'idea':
+							if (args.length > 0) {
+								bot.channels.forEach(function(channel) {
+										if (channel.name == 'map-ideas') {
+											channel.send(args.join(' ') + '\n\n**React with :+1 if you agree and :-1 if you disagree.**').then(function(message) {
+												message.react(':+1');
+												message.react(':-1');
+											});
+										}
+									});
+								} else {
+									ev.channel.send('You need to type a description! **Oink**! :pig:')
+								}
+								break; 
+						case 'poll':
+							if (args.length > 0) {
+								bot.channels.forEach(function(channel) {
+										if (channel.name == 'general-polls') {
+											channel.send(args.join(' ') + '\n\n**React with :+1 for yes and :-1 for no.**').then(function(message) {
+												message.react(':+1');
+												message.react(':-1');
+											});
+										}
+									});
+								} else {
+									ev.channel.send('You need to type a description! **Oink**! :pig:')
+								}
+								break; 
 						case 'attack':
 							var insults = ['noob', 'team stacker', 'feeder', 'leaver', 'rage-quitter', 'shithead', 'idiot', 'camper', 'Tobias\' cuck', 'so bad in Ninpou that I\'m pity', 'feeder as Madara', 'feeder as Minato', 'noob who doesn\'t know for what Smoke Bomb is for', 'noob who doesn\'t the price of Oil', 'hentai lover', 'worse than Fexter', 'guy who lost 1v1 to Fexter', 'teenage with a girl\'s voice', 'coward who can\'t win 1v1', 'fool', 'guy who keeps dildos', 'vegan', 'Fexter', 'Tobias'];
 							ev.channel.send('*attacks ' + args[0] + ' and says: ' + args[0] + ' is a ' + insults[Math.floor(Math.random() * insults.length)] + '.* **Oink!** :pig:');
