@@ -1056,6 +1056,7 @@ bot.on('message', function(ev) {
 						case 'idea':
 							if (args.length > 0) {
 								bot.channels.forEach(function(channel) {
+									console.log(channel.name);
 									if (channel.name == 'map-ideas') {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
 											message.react(':thumbsup:');
