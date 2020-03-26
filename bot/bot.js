@@ -1027,8 +1027,9 @@ bot.on('message', function(ev) {
 							if (args.length > 0) {
 								bot.channels.forEach(function(channel) {
 									if (channel.name == 'bug-reporting') {
-										channel.send(args.join(' ') + '\n\n**React with :+1 to increase the priority of this bug.**').then(function(message) {
-											message.react(':+1');
+										channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.**').then(function(message) {
+											message.react(':thumbsup:');
+											message.react(':thumbsdown:');
 										});
 									}
 								});
@@ -1040,9 +1041,9 @@ bot.on('message', function(ev) {
 						if (args.length > 0) {
 							bot.channels.forEach(function(channel) {
 									if (channel.name == 'balance-issues') {
-										channel.send(args.join(' ') + '\n\n**React with :+1 if you agree and :-1 if you disagree.**').then(function(message) {
-											message.react(':+1');
-											message.react(':-1');
+										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
+											message.react(':thumbsup:');
+											message.react(':thumbsdown:');
 										});
 									}
 								});
@@ -1054,9 +1055,9 @@ bot.on('message', function(ev) {
 							if (args.length > 0) {
 								bot.channels.forEach(function(channel) {
 										if (channel.name == 'map-ideas') {
-											channel.send(args.join(' ') + '\n\n**React with :+1 if you agree and :-1 if you disagree.**').then(function(message) {
-												message.react(':+1');
-												message.react(':-1');
+											channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
+												message.react(':thumbsup:');
+												message.react(':thumbsdown:');
 											});
 										}
 									});
@@ -1068,9 +1069,9 @@ bot.on('message', function(ev) {
 							if (args.length > 0) {
 								bot.channels.forEach(function(channel) {
 										if (channel.name == 'general-polls') {
-											channel.send(args.join(' ') + '\n\n**React with :+1 for yes and :-1 for no.**').then(function(message) {
-												message.react(':+1');
-												message.react(':-1');
+											channel.send(args.join(' ') + '\n\n**React with :thumbsup: for yes and :thumbsdown: for no.**').then(function(message) {
+												message.react(':thumbsup:');
+												message.react(':thumbsdown:');
 											});
 										}
 									});
