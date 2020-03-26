@@ -1030,7 +1030,7 @@ bot.on('message', function(ev) {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.**').then(function(message) {
 											message.react('👍');
 											message.react('👎');
-											ev.channel.send('Bug reported in #bug-reporting. Thank you!! **Oink!** :pig:');
+											ev.channel.send('Bug reported in #bug-reporting . Thank you!! **Oink!** :pig:');
 										});
 									}
 								});
@@ -1045,7 +1045,7 @@ bot.on('message', function(ev) {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
 											message.react('👍');
 											message.react('👎');
-											ev.channel.send('Issue created in #balance-issues. Thank you!! **Oink!** :pig:');
+											ev.channel.send('Issue created in #balance-issues . Thank you!! **Oink!** :pig:');
 										});
 									}
 								});
@@ -1061,7 +1061,7 @@ bot.on('message', function(ev) {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
 											message.react('👍');
 											message.react('👎');
-											ev.channel.send('Idea posted in #map-ideas. Thank you!! **Oink!** :pig:');
+											ev.channel.send('Idea posted in #map-ideas . Thank you!! **Oink!** :pig:');
 										});
 									}
 								});
@@ -1076,7 +1076,7 @@ bot.on('message', function(ev) {
 										channel.send(args.join(' ') + '\n\n**React with :thumbsup: for yes and :thumbsdown: for no.**').then(function(message) {
 											message.react('👍');
 											message.react('👎');
-											ev.channel.send('Poll created in #general-polls. Thank you!! **Oink!** :pig:');
+											ev.channel.send('Poll created in #general-polls . Thank you!! **Oink!** :pig:');
 										});
 									}
 								});
