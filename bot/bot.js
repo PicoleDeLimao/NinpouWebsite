@@ -895,7 +895,7 @@ bot.on('message', function(ev) {
 								if (ev.mentions.users.array().length > 0) {
 									displayScore(ev, ev.mentions.users.array()[0].id, true, escape(heroName));
 								} else {
-									displayScore(ev, args[0], true, escape(heroName));
+									displayScore(ev, encodeURIComponent(args[0]), true, escape(heroName));
 								} 
 							} else {
 								displayScore(ev, ev.author.id, true, escape(heroName));
