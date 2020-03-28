@@ -8,6 +8,7 @@ var auth = require('./config/auth');
 var bot = require('./bot/bot');
 var Stat = require('./models/Stat');
 var Alias = require('./models/Alias');
+var version = require('./version');
 
 var app = express();
 app.use(express.static('public'));
@@ -38,11 +39,11 @@ app.use('/items', require('./routes/items'));
 app.use('/heroes', require('./routes/heroes'));  
 
 app.get('/latest', function(req, res) {
-	res.redirect('https://drive.google.com/file/d/12mX4EfAgd9tNN1Pbh_1Z-OCLbKRyUIoS/view?usp=sharing');
+	res.redirect(version.download_link);
 }); 
    
 app.get('/changelog', function(req, res) {
-	res.redirect('http://www.narutoninpou.com/#/forum/threads/5e77026335066d0015e46bc9');
+	res.redirect(version.changelog);
 });
 
 app.get('/donate', function(req, res) { 

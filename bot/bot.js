@@ -1,6 +1,6 @@
 'use strict';
 
-version = require('../index.js').version;
+var version = require('../version').version;
 
 var Discord = require('discord.js');
 var http = require('http');
