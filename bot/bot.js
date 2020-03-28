@@ -250,10 +250,9 @@ bot.on('messageReactionAdd', async function(ev, user) {
 	var musicIdeaId = '693108450749841478';
 	if (channelId == bugReportingId || channelId == balanceIssueId || channelId == mapIdeaId || channelId == musicIdeaId) {
 		if (ev.emoji.name == '❌' || ev.emoji.name == '⭐' || ev.emoji.name == '✅') {
-			console.log(ev.message.content);
 			var content = ev.message.content.split('\n');
 			content.pop();
-			content = content.join('\n');
+			content = '```\n' + content.join('\n') + '\n```';
 			var targetChannel;
 			if (ev.emoji.name == '❌') {
 				targetChannel = '693442144475545631';
