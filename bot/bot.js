@@ -277,7 +277,7 @@ bot.on('messageReactionAdd', async function(ev, user) {
 					type = '❗ balance issue';
 				} else if (channelId == mapIdeaId) {
 					type = '🧠 map idea';
-				} else if (channeLid == musicIdeaId) {
+				} else if (channelId == musicIdeaId) {
 					type = '🎵 music idea';
 				}
 				if (ev.emoji.name == '❌') {
