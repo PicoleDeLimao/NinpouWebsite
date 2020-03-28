@@ -275,7 +275,7 @@ bot.on('messageReactionAdd', async function(ev, user) {
 				} else {
 					status = 'approved';
 				}
-				var message = 'The following **' + type + '** was **' + status + '**\n\n: ' + content;
+				var message = 'The following **' + type + '** was **' + status + '**:\n\n ' + content;
 				channel.send(message);
 			});
 		}
