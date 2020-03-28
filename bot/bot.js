@@ -272,9 +272,9 @@ bot.on('messageReactionAdd', async function(ev, user) {
 					type = '🎵 music idea';
 				}
 				if (ev.emoji.name == '❌') {
-					var message = 'The following **' + type + '** was **rejected**:\n\n ' + content;
+					var message = 'The following **' + type + '** was **❌ rejected**:\n\n ' + content;
 				} else {
-					var message = 'The following **' + type + '** was **approved** to be released on version **' + version + '**:\n\n ' + content;
+					var message = 'The following **' + type + '** was **✔ approved** to be released on version **' + version + '**:\n\n ' + content;
 				}
 				channel.send(message);
 			});
