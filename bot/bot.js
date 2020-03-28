@@ -260,6 +260,15 @@ bot.on('messageReactionAdd', async function(ev, user) {
 				targetChannel = '693442059578638418';
 			}
 			ev.message.delete().then(async function() {
+				var countUp = 0;
+				var countDown = 0;
+				ev.message.reactions.cache.forEach(function(reaction) {
+					if (reaction.emoji.name == '👍') {
+						countUp = reaction.count;
+					} else if (reaction.emoji.name == '👎') {
+						countDown = reaction.count;
+					}
+				});
 				var channel = await bot.channels.fetch(targetChannel);
 				var type; 
 				if (channelId == bugReportingId) {
@@ -272,9 +281,9 @@ bot.on('messageReactionAdd', async function(ev, user) {
 					type = '🎵 music idea';
 				}
 				if (ev.emoji.name == '❌') {
-					var message = 'The following **' + type + '** was **❌ rejected**:\n\n ' + content;
+					var message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (to be approved you need at least 70% of approval):\n\n ' + content;
 				} else {
-					var message = 'The following **' + type + '** was **✅ approved** to be released on version **' + version + '**:\n\n ' + content;
+					var message = 'The following **' + type + '** was **✅ approved** to be released on version **' + version + '** with ' + countUp + '👍 / ' + countDown + '👎:\n\n ' + content;
 				}
 				channel.send(message);
 			});
