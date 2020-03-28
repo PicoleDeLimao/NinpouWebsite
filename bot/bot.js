@@ -278,6 +278,49 @@ bot.on('ready', function (evt) {
 	});
 });
 
+bot.on('messageReactionAdd', function(ev) {
+	var channelId = ev.channel.id;
+	var bugReportingId = '692551415394205746';
+	var balanceIssueId = '692551380786872352';
+	var mapIdeaId = '692551338743037952';
+	var musicIdeaId = '693108450749841478';
+	if (channelId == bugReportingId || channelId == balanceIssueId || channelId == mapIdeaId || channelId == musicIdeaId) {
+		if (ev.emoji == '❌' || ev.emoji == '✔') {
+			content = ev.message.content;
+			var targetChannel;
+			if (ev.emoji == '❌') {
+				targetChannel = '693442144475545631';
+			} else {
+				targetChannel = '693442059578638418';
+			}
+			ev.message.delete().then(function() {
+				bot.channels.forEach(function(channel) {
+					if (channel.id == targetChannel) {
+						var type; 
+						if (channelId == bugReportingId) {
+							type = 'bug';
+						} else if (channelId == balanceIssueId) {
+							type = 'balance issue';
+						} else if (channelId == mapIdeaId) {
+							type = 'map idea';
+						} else if (channeLid == musicIdeaId) {
+							type = 'music idea';
+						}
+						var status;
+						if (ev.emoji == '❌') {
+							status = 'rejected';
+						} else {
+							status = 'approved';
+						}
+						var message = 'The following **' + type + '** was **' + status + '**: ' + content;
+						channel.send(message);
+					}
+				});
+			});
+		}
+	}
+}); 
+
 bot.on('message', function(ev) {
 	var message = ev.content;
 	
