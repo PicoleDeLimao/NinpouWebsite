@@ -271,13 +271,11 @@ bot.on('messageReactionAdd', async function(ev, user) {
 				} else if (channeLid == musicIdeaId) {
 					type = '🎵 music idea';
 				}
-				var status;
 				if (ev.emoji.name == '❌') {
-					status = 'rejected';
+					var message = 'The following **' + type + '** was **rejected**:\n\n ' + content;
 				} else {
-					status = 'approved';
+					var message = 'The following **' + type + '** was **approved** to be released on version **' + version + '**:\n\n ' + content;
 				}
-				var message = 'The following **' + type + '** was **' + status + '** to be released on version **' + version + '**:\n\n ' + content;
 				channel.send(message);
 			});
 		}
