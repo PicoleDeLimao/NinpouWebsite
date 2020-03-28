@@ -50,10 +50,6 @@ app.get('/donate', function(req, res) {
 	res.redirect('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3JF66XY2HPUSC');
 });
  
-module.exports = {
-	version: '1.4'
-};
-
 var port = process.env.PORT || 8080;
 app.listen(port, function() {
 	console.log('Listening on port ' + port + '...');
