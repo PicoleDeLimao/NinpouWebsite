@@ -261,13 +261,13 @@ bot.on('messageReactionAdd', async function(ev, user) {
 				var channel = await bot.channels.fetch(targetChannel);
 				var type; 
 				if (channelId == bugReportingId) {
-					type = 'bug';
+					type = '🐛 bug';
 				} else if (channelId == balanceIssueId) {
-					type = 'balance issue';
+					type = '❗ balance issue';
 				} else if (channelId == mapIdeaId) {
-					type = 'map idea';
+					type = '🧠 map idea';
 				} else if (channeLid == musicIdeaId) {
-					type = 'music idea';
+					type = '🎵 music idea';
 				}
 				var status;
 				if (ev.emoji.name == '❌') {
