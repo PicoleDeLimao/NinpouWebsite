@@ -1,5 +1,7 @@
 'use strict';
 
+version = require('../index.js').version;
+
 var Discord = require('discord.js');
 var http = require('http');
 var moment = require('moment');
@@ -275,7 +277,7 @@ bot.on('messageReactionAdd', async function(ev, user) {
 				} else {
 					status = 'approved';
 				}
-				var message = 'The following **' + type + '** was **' + status + '**:\n\n ' + content;
+				var message = 'The following **' + type + '** was **' + status + '** to be released on version **' + version + '**:\n\n ' + content;
 				channel.send(message);
 			});
 		}
