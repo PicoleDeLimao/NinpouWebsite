@@ -252,7 +252,7 @@ bot.on('messageReactionAdd', async function(ev, user) {
 		if (ev.emoji.name == '❌' || ev.emoji.name == '⭐' || ev.emoji.name == '✅') {
 			var content = ev.message.content.split('\n');
 			content.pop();
-			content = '```\n' + content.join('\n') + '\n```';
+			content = '`' + content.join('\n') + '`';
 			var targetChannel;
 			if (ev.emoji.name == '❌') {
 				targetChannel = '693442144475545631';
