@@ -249,7 +249,7 @@ bot.on('messageReactionAdd', async function(ev, user) {
 	var mapIdeaId = '692551338743037952';
 	var musicIdeaId = '693108450749841478';
 	if (channelId == bugReportingId || channelId == balanceIssueId || channelId == mapIdeaId || channelId == musicIdeaId) {
-		if (ev.emoji.name == '❌' || ev.emoji.name == '⭐') {
+		if (ev.emoji.name == '❌' || ev.emoji.name == '⭐' || ev.emoji.name == '✅') {
 			var content = ev.message.content.split('\n');
 			content.pop();
 			content = content.join('\n');
@@ -274,7 +274,7 @@ bot.on('messageReactionAdd', async function(ev, user) {
 				if (ev.emoji.name == '❌') {
 					var message = 'The following **' + type + '** was **❌ rejected**:\n\n ' + content;
 				} else {
-					var message = 'The following **' + type + '** was **✔ approved** to be released on version **' + version + '**:\n\n ' + content;
+					var message = 'The following **' + type + '** was **✅ approved** to be released on version **' + version + '**:\n\n ' + content;
 				}
 				channel.send(message);
 			});
