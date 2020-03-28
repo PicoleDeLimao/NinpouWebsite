@@ -75,8 +75,8 @@ function savePlayerStats(game, callback) {
 						gpm: game.slots[slot].gpm
 					});
 					var decayFactor = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
-					var alpha = decayFactor + (1 - decayFactor) * (1 - game.balance_factor);
-					var beta = (1 - decayFactor) * game.balance_factor; 
+					var alpha = decayFactor + (1 - decayFactor);
+					var beta = (1 - decayFactor); 
 					var oldPoints = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
 					stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
 					stat.deaths = stat.deaths * alpha + game.slots[slot].deaths * beta;
@@ -130,7 +130,6 @@ router.post('/', function(req, res) {
 		players: 0,
 		progress: false,
 		recorded: true,
-		balance_factor: 1.0,
 		recordable: true
 	});
 	var body = req.body.contents;
@@ -143,36 +142,31 @@ router.post('/', function(req, res) {
 			else if (game.players != 9) return res.status(400).json({ error: 'You can only record games with 9 players.' });
 			else if (parseInt(game.duration.split(':')[0]) == 0 && parseInt(game.duration.split(':')[1]) < 40) return res.status(400).json({ error: 'You can only record games past 40 minutes.' });
 			else if (parseInt(game.duration.split(':')[0]) > 0) return res.status(400).json({ error: 'You can only record games between 40 and 60 minutes.' });
-			StatCalculator.calculateBalanceFactor(game, function(err, balanceFactor) {
+			var code = new Code({ code: body });
+			code.save(function(err) {
 				if (err) return res.status(500).json({ error: err });
-				game.balance_factor = balanceFactor;
-				if (balanceFactor < 0.8) return res.status(400).json({ error: 'Only games with balance factor > 0.8 can be recorded.' });
-				var code = new Code({ code: body });
-				code.save(function(err) {
+				game.save(function(err) {
 					if (err) return res.status(500).json({ error: err });
-					game.save(function(err) {
+					var changes = [];
+					saveHeroStats(game, function(err) {
 						if (err) return res.status(500).json({ error: err });
-						var changes = [];
-						saveHeroStats(game, function(err) {
+						getPlayerPoints(game, function(err, oldPoints) {
 							if (err) return res.status(500).json({ error: err });
-							getPlayerPoints(game, function(err, oldPoints) {
+							savePlayerStats(game, function(err) {
 								if (err) return res.status(500).json({ error: err });
-								savePlayerStats(game, function(err) {
+								getPlayerPoints(game, function(err, newPoints) {
 									if (err) return res.status(500).json({ error: err });
-									getPlayerPoints(game, function(err, newPoints) {
-										if (err) return res.status(500).json({ error: err });
-										var changes = [];
-										for (var username in oldPoints) {
-											changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
-										}
-										return res.status(200).json({ changes: changes });
-									});
+									var changes = [];
+									for (var username in oldPoints) {
+										changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
+									}
+									return res.status(200).json({ changes: changes });
 								});
 							});
 						});
 					});
 				});
-			});  
+			});
 		});
 	});
 });
@@ -210,8 +204,7 @@ function getPlayerHeroesRanking(username, usernames, heroNames, timePeriod, call
 				$match: {
 					'createdAt': { $gt: timePeriod },
 					'slots.username': { $in: usernames },
-					'recorded': true,
-					'balance_factor': { $gt: 0.8 }
+					'recorded': true
 				}
 			},
 			{
@@ -275,7 +268,7 @@ router.get('/players/:username', function(req, res) {
 			StatCalculator.getAllPlayersRanking(function(err, stats) {
 				if (err) return res.status(400).json({ error: err }); 
 				allStat = StatCalculator.getRankingPositions(stats, allStat); 
-				var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'balance_factor': { $gt: 0.8 }, 'createdAt': { $gt: timePeriod } };
+				var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'createdAt': { $gt: timePeriod } };
 				if (heroId) {
 					query['slots'] = { '$elemMatch': { username: { $in: allStat.usernames }, hero: heroId } };
 				} else {
@@ -286,7 +279,7 @@ router.get('/players/:username', function(req, res) {
 					var newGames = [];
 					for (var i = 0; i < games.length; i++) {
 						var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
-						if (games[i].slots[slot].hero != 0 && games[i].slots[slot].kills != null) {
+						if (slot != -1 && games[i].slots[slot].hero != 0 && games[i].slots[slot].kills != null) {
 							newGames.push({
 								id: games[i].id,
 								kills: games[i].slots[slot].kills,

@@ -3,10 +3,9 @@
 var http = require('http');
 
 module.exports = function(ev, user) {
-	
-	ev.guild.fetchMember(ev.author.id).then(function(authorMember) { 
+	ev.guild.members.fetch(ev.author.id).then(function(authorMember) { 
 		var authorVillage = 'none';
-		authorMember.roles.forEach(function(role) {
+		authorMember.roles.cache.forEach(function(role) {
 			if (role.name.toLowerCase() == 'shinobi alliance') {
 				authorVillage = 'shinobi alliance';
 			} else if (role.name.toLowerCase() == 'otogakure') {
@@ -15,9 +14,9 @@ module.exports = function(ev, user) {
 				authorVillage = 'akatsuki';
 			}
 		});
-		ev.guild.fetchMember(user).then(function(robMember) { 
+		ev.guild.members.fetch(user).then(function(robMember) { 
 			var robVillage = 'none';
-			robMember.roles.forEach(function(role) {
+			robMember.roles.cache.forEach(function(role) {
 				if (role.name.toLowerCase() == 'shinobi alliance') {
 					robVillage = 'shinobi alliance';
 				} else if (role.name.toLowerCase() == 'otogakure') {

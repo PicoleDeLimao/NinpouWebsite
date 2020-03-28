@@ -100,7 +100,7 @@ module.exports = function(ev, user) {
 						'Accessory: \n' + getItem(data.itemSupport, spaces) + '```'; 
 						var previewCacheUrl = '?_=' + (new Date()).getTime();
 						var img = 'http://www.narutoninpou.com/images/users/' + user + '.png' + previewCacheUrl;
-						var msgEmbed = new Discord.RichEmbed() 
+						var msgEmbed = new Discord.MessageEmbed() 
 								.setTitle(name + ', level ' + (data.level || 1) + ' ' + (data.affiliation && data.affiliation != 'none' && (data.affiliation.charAt(0).toUpperCase() + data.affiliation.substr(1) + ' ') || '') + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin'))
 								.setDescription(response)
 								.setImage(img)

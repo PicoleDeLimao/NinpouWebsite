@@ -54,8 +54,7 @@ router.get('/:name', function(req, res) {
 					$match: {
 						'createdAt': { $gt: timePeriod },
 						'slots.hero': stats.hero.id,
-						'recorded': true,
-						'balance_factor': { $gt: 0.8 }
+						'recorded': true
 					}
 				},
 				{

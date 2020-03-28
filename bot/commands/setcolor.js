@@ -4,7 +4,7 @@ var http = require('http');
 
 module.exports = function(ev, color) {
 	var hasRole = false;
-	ev.member.roles.forEach(function(role) {
+	ev.member.roles.cache.forEach(function(role) {
 		if (role.name.toLowerCase() == 'can\'t get enough') {
 			role.setColor(color);
 			hasRole = true;

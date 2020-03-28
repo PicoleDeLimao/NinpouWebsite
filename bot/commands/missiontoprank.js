@@ -21,10 +21,10 @@ module.exports = function(ev, mission) {
 			ranks[guildRole.name.toLowerCase()] = guildRole;
 		}
 	});  
-	ev.guild.fetchMember(ev.author.id).then(function(member) {  
+	ev.guild.members.fetch(ev.author.id).then(function(member) {  
 		var memberVillage = '';
 		var memberRole = '';
-		ev.member.roles.forEach(function(role) {
+		ev.member.roles.cache.forEach(function(role) {
 			if (role.name.toLowerCase() == 'shinobi alliance' || 
 				role.name.toLowerCase() == 'otogakure' ||
 				role.name.toLowerCase() == 'akatsuki') {
@@ -67,7 +67,7 @@ module.exports = function(ev, mission) {
 			res.on('data', function(chunk) {
 				body += chunk;
 			}); 
-			res.on('end', function() {
+			res.on('end', async function() {
 				console.log(body);
 				if (res.statusCode != 200) {
 					try {
@@ -79,14 +79,15 @@ module.exports = function(ev, mission) {
 					}
 				} else { 
 					if (mission == 'kage') {
-						ev.guild.members.forEach(function(anotherMember) {
+						await ev.guild.members.fetch();
+						ev.guild.members.cache.forEach(function(anotherMember) {
 							if (member.user.id != anotherMember.user.id) {
 								anotherMember.roles.forEach(function(role) {
 									if (role.name.toLowerCase() == memberVillage) {
-										anotherMember.roles.forEach(function(anotherRole) {
+										anotherMember.roles.forEach(async function(anotherRole) {
 											if (anotherRole.name.toLowerCase() == 'kage') {
-												anotherMember.removeRole(ranks['kage'].id);
-												anotherMember.addRole(ranks['genin'].id);
+												anotherMember.roles.remove(ranks['kage']);
+												anotherMember.roles.add(ranks['genin']);
 												http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + anotherMember.user.id + '/rank/genin', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }).end();
 											}
 										});
@@ -97,10 +98,10 @@ module.exports = function(ev, mission) {
 					} 
 					for (var rank in ranks) {
 						if (ranks[rank].name.toLowerCase() != mission) {
-							member.removeRole(ranks[rank].id);
+							await member.roles.remove(ranks[rank]);
 						}
 					}
-					member.addRole(ranks[mission].id);
+					await member.roles.add(ranks[mission]);
 					ev.channel.send('Congratulation!! You are now: **' + (mission.charAt(0).toUpperCase() + mission.substr(1)) + '**! Oink!!');  
 				} 
 			});

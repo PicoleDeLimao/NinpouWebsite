@@ -62,7 +62,6 @@ router.post('/balance', function(req, res) {
 		players: players.length,
 		progress: false,
 		recorded: false,
-		balance_factor: 1.0,
 		recordable: true
 	});
 	for (var i = 0; i < players.length; i++) {

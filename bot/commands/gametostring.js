@@ -1,6 +1,7 @@
 'use strict';
 
 var getPlayerName = require('./getplayername');
+var whois_promise = require('./whois_promise');
 var moment = require('moment');
 
 function dateFromObjectId(objectId) {
@@ -64,8 +65,8 @@ module.exports = function(ev, game, callback, criteria) {
 					var m = moment(date);
 					response += '     Hosted; ' + m.fromNow() + '\n';
 				}
+				response += '     Ranked; ' + (game.ranked ? 'yes' : 'no') + '\n';
 				response += '\nSlots; [' + players + '/' + game.slots.length + ']';
-				response += '\nBalance factor; ' + (game.balance_factor && game.balance_factor.toFixed(2) || 1) + '\n';
 				if (game.slots.length >= 9) {
 					if (game.recorded) {
 						var points = 0;
@@ -141,25 +142,32 @@ module.exports = function(ev, game, callback, criteria) {
 				response += '```\n'; 
 				return callback(response);
 			});
-		} else {   
-			getPlayerName(ev, game.slots[i].alias || game.slots[i].username, function(err, playerName) {
-				if (playerName) {
-					game.slots[i].username = playerName;
-					++players;
-					if (game.slots[i].username.length > largestName) {
-						largestName = game.slots[i].username.length;
+		} else { 
+			var getPlayerNameAndNext = function(nameToFetch) {
+				getPlayerName(ev, nameToFetch, function(err, playerName) {
+					if (playerName) {
+						game.slots[i].username = playerName;
+						++players;
+						if (game.slots[i].username.length > largestName) {
+							largestName = game.slots[i].username.length;
+						}
+						if (game.slots[i].realm == 'server.eurobattle.net') {
+							game.slots[i].realm = 'EuroBattle';
+						}
+						if (game.slots[i].realm.length > largestRealm) {
+							largestRealm = game.slots[i].realm.length;
+						}
+						if ((Math.round(criteriaOnSlot(game.slots[i], criteria)) + '').length > largestCriteria) {
+							largestCriteria = (Math.round(criteriaOnSlot(game.slots[i], criteria)) + '').length;
+						}
 					}
-					if (game.slots[i].realm == 'server.eurobattle.net') {
-						game.slots[i].realm = 'EuroBattle';
-					}
-					if (game.slots[i].realm.length > largestRealm) {
-						largestRealm = game.slots[i].realm.length;
-					}
-					if ((Math.round(criteriaOnSlot(game.slots[i], criteria)) + '').length > largestCriteria) {
-						largestCriteria = (Math.round(criteriaOnSlot(game.slots[i], criteria)) + '').length;
-					}
-				}
-				return next(i + 1, players, largestName, largestRealm, largestCriteria);
+					return next(i + 1, players, largestName, largestRealm, largestCriteria);
+				});
+			};
+			whois_promise(ev, game.slots[i].username).then(function(username) {
+				getPlayerNameAndNext(username);
+			}).catch(function(err) {
+				getPlayerNameAndNext(game.slots[i].username);
 			});
 		}
 	})(0, players, largestName, largestRealm, largestCriteria);

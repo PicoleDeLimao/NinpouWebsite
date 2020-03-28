@@ -3,9 +3,10 @@
 var http = require('http');
 var getPlayerName = require('./getplayername');
 
-module.exports = function(ev, mission) {   
-	ev.guild.members.forEach(function(anotherMember) {
-		anotherMember.roles.forEach(function(role) {
+module.exports = async function(ev, mission) {  
+	await ev.guild.members.fetch(); 
+	ev.guild.members.cache.forEach(async function(anotherMember) {
+		anotherMember.roles.cache.forEach(function(role) {
 			var roleName = role.name.toLowerCase();
 			var newRank = null;
 			if (roleName == 'genin') {

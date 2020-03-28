@@ -5,7 +5,7 @@ var http = require('http');
 var moment = require('moment');
 
 // Initialize Discord Bot
-var bot = new Discord.Client();
+var bot = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
 // commands  
 var trivia = require('./commands/trivia')(bot);
@@ -144,7 +144,7 @@ setInterval(function() {
 				var date = new Date(stream.created_at);
 				var m = moment(date);    
 				var msg = '@here **' + stream.channel.display_name + '** is online. Watch it now: <' + stream.channel.url + '>.';
-				var msgEmbed = new Discord.RichEmbed()
+				var msgEmbed = new Discord.MessageEmbed()
 						.setTitle('Playing ' + stream.game)
 						.setAuthor(stream.channelname)  
 						.setDescription(stream.channel.status)
@@ -223,105 +223,66 @@ function completeAllMissions(ev) {
 	});
 }
 
-bot.on('ready', function (evt) {
+bot.on('ready', async function (evt) {
 	console.error('Logged in as: ' + bot.user.tag);
-	bot.channels.forEach(function(channel) {
-		if (channel.name == 'games-hosted') {
-			channel.fetchMessages().then(function(messages) {
-				var deleted = 0;
-				var count = 0;
-				messages.forEach(function(message) {
-					if (message.author.id == bot.user.id) {
-						++count;
-						message.delete().then(function() {
-							++deleted;
-							if (deleted == count) {
-								channel.send('Broadcasting hosted games on battle.net.\nVia: http://wc3maps.com').then(function(ev) {
-									broadcastings[channel] = ev;
-								});
-							}
-						});
-					}
-				});
-				if (count == 0) {
-					channel.send('Broadcasting hosted games on battle.net.\nVia: http://wc3maps.com').then(function(ev) {
-						broadcastings[channel] = ev;
-					});
-				}
-			});
-		} else if (channel.name == 'games-in-progress') {
-			channel.fetchMessages().then(function(messages) {
-				var deleted = 0;
-				var count = 0;
-				messages.forEach(function(message) {
-					if (message.author.id == bot.user.id) {
-						++count;
-						message.delete().then(function() {
-							++deleted;
-							if (deleted == count) {
-								channel.send('Broadcasting in-progress games.').then(function(ev) {
-									ev.progress = true; 
-									broadcastings[channel] = ev;
-								});
-							}
-						});
-					}
-				});
-				if (count == 0) {
-					channel.send('Broadcasting in-progress games.').then(function(ev) {
-						ev.progress = true; 
-						broadcastings[channel] = ev;
-					});
-				}
-			});
-		}
-	});
+	var channel = await bot.channels.fetch('356042944173834242');
+	channel.send('Broadcasting hosted games on battle.net.\nVia: http://wc3maps.com');
 });
 
-bot.on('messageReactionAdd', function(ev) {
-	var channelId = ev.channel.id;
+bot.on('messageReactionAdd', async function(ev, user) {
+	if (ev.partial) {
+		// If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle
+		try {
+			await ev.fetch();
+		} catch (error) {
+			console.log('Something went wrong when fetching the message: ', error);
+			// Return as `reaction.message.author` may be undefined/null
+			return;
+		}
+	}
+	
+	var channelId = ev.message.channel.id;
 	var bugReportingId = '692551415394205746';
 	var balanceIssueId = '692551380786872352';
 	var mapIdeaId = '692551338743037952';
 	var musicIdeaId = '693108450749841478';
 	if (channelId == bugReportingId || channelId == balanceIssueId || channelId == mapIdeaId || channelId == musicIdeaId) {
-		if (ev.emoji == '❌' || ev.emoji == '✔') {
-			content = ev.message.content;
+		if (ev.emoji.name == '❌' || ev.emoji.name == '⭐') {
+			var content = ev.message.content.split('\n');
+			content.pop();
+			content = content.join('\n');
 			var targetChannel;
-			if (ev.emoji == '❌') {
+			if (ev.emoji.name == '❌') {
 				targetChannel = '693442144475545631';
 			} else {
 				targetChannel = '693442059578638418';
 			}
-			ev.message.delete().then(function() {
-				bot.channels.forEach(function(channel) {
-					if (channel.id == targetChannel) {
-						var type; 
-						if (channelId == bugReportingId) {
-							type = 'bug';
-						} else if (channelId == balanceIssueId) {
-							type = 'balance issue';
-						} else if (channelId == mapIdeaId) {
-							type = 'map idea';
-						} else if (channeLid == musicIdeaId) {
-							type = 'music idea';
-						}
-						var status;
-						if (ev.emoji == '❌') {
-							status = 'rejected';
-						} else {
-							status = 'approved';
-						}
-						var message = 'The following **' + type + '** was **' + status + '**: ' + content;
-						channel.send(message);
-					}
-				});
+			ev.message.delete().then(async function() {
+				var channel = await bot.channels.fetch(targetChannel);
+				var type; 
+				if (channelId == bugReportingId) {
+					type = 'bug';
+				} else if (channelId == balanceIssueId) {
+					type = 'balance issue';
+				} else if (channelId == mapIdeaId) {
+					type = 'map idea';
+				} else if (channeLid == musicIdeaId) {
+					type = 'music idea';
+				}
+				var status;
+				if (ev.emoji.name == '❌') {
+					status = 'rejected';
+				} else {
+					status = 'approved';
+				}
+				var message = 'The following **' + type + '** was **' + status + '**\n\n: ' + content;
+				channel.send(message);
 			});
 		}
 	}
 }); 
 
-bot.on('message', function(ev) {
+bot.on('message', async function(ev) {
 	var message = ev.content;
 	
     // Our bot needs to know if it will execute a command
@@ -402,10 +363,10 @@ bot.on('message', function(ev) {
 				'```'
 			);  
 		} else if (cmd == 'admincmds' && ev && ev.guild) {
-			ev.guild.fetchMember(ev.author.id).then(function(author) {
+			ev.guild.members.fetch(ev.author.id).then(function(author) {
 				var isAdmin = false;
-				author.roles.forEach(function(role) {
-					if (role.name.toLowerCase() == 'moderator') {
+				author.roles.cache.forEach(function(role) {
+					if (role == '340206323708985345') {
 						isAdmin = true; 
 					}
 				});
@@ -427,13 +388,13 @@ bot.on('message', function(ev) {
 				}
 			});
 		} else if (cmd == 'a') {
-			ev.guild.fetchMember(ev.author.id).then(function(author) {
+			ev.guild.members.fetch(ev.author.id).then(function(author) {
 				var isAdmin = false;
 				var isSuperAdmin = false; 
-				author.roles.forEach(function(role) {
-					if (role.name.toLowerCase() == 'moderator') {
+				author.roles.cache.forEach(function(role) {
+					if (role == '340206323708985345') {
 						isAdmin = true; 
-					} else if (role.name.toLowerCase() == 'admin') {
+					} else if (role == '417775674586169355') {
 						isSuperAdmin = true; 
 					}
 				});
@@ -506,7 +467,7 @@ bot.on('message', function(ev) {
 				//}
 			});
 		} else {
-			getAliasOf(ev.author.id, function(err, alias) {
+			getAliasOf(ev.author.id, async function(err, alias) {
 				if (err) {
 					ev.channel.send('Bot is down. :( #bacon');
 				} else if (!alias || alias.length == 0) {
@@ -1068,15 +1029,12 @@ bot.on('message', function(ev) {
 							break;*/
 						case 'bug':
 							if (args.length > 0) {
-								bot.channels.forEach(function(channel) {
-									if (channel.id == '692551415394205746') {
-										channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.**').then(function(message) {
-											message.react('👍').then(function(){
-												message.react('👎');
-											});
-											ev.channel.send('Bug reported in <#692551415394205746> . Thank you!! **Oink!** :pig:');
-										});
-									}
+								var channel = await bot.channels.fetch('692551415394205746');
+								channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.**').then(function(message) {
+									message.react('👍').then(function(){
+										message.react('👎');
+									});
+									ev.channel.send('Bug reported in <#692551415394205746> . Thank you!! **Oink!** :pig:');
 								});
 							} else {
 								ev.channel.send('You need to type a description! **Oink**! :pig:')
@@ -1084,15 +1042,12 @@ bot.on('message', function(ev) {
 							break; 
 						case 'balance':
 							if (args.length > 0) {
-								bot.channels.forEach(function(channel) {
-									if (channel.id == '692551380786872352') {
-										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
-											message.react('👍').then(function(){
-												message.react('👎');
-											});
-											ev.channel.send('Issue created in <#692551380786872352> . Thank you!! **Oink!** :pig:');
-										});
-									}
+								var channel = await bot.channels.fetch('692551380786872352');
+								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
+									message.react('👍').then(function(){
+										message.react('👎');
+									});
+									ev.channel.send('Issue created in <#692551380786872352> . Thank you!! **Oink!** :pig:');
 								});
 							} else {
 								ev.channel.send('You need to type a description! **Oink**! :pig:')
@@ -1100,16 +1055,12 @@ bot.on('message', function(ev) {
 							break; 
 						case 'idea':
 							if (args.length > 0) {
-								bot.channels.forEach(function(channel) {
-									console.log(channel.id);
-									if (channel.id == '692551338743037952') {
-										channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
-											message.react('👍').then(function(){
-												message.react('👎');
-											});
-											ev.channel.send('Idea posted in <#692551338743037952> . Thank you!! **Oink!** :pig:');
-										});
-									}
+								var channel = await bot.channels.fetch('692551338743037952');
+								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
+									message.react('👍').then(function(){
+										message.react('👎');
+									});
+									ev.channel.send('Idea posted in <#692551338743037952> . Thank you!! **Oink!** :pig:');
 								});
 							} else {
 								ev.channel.send('You need to type a description! **Oink**! :pig:')
@@ -1117,15 +1068,12 @@ bot.on('message', function(ev) {
 							break; 
 						case 'poll':
 							if (args.length > 0) {
-								bot.channels.forEach(function(channel) {
-									if (channel.id == '692543421826727968') {
-										channel.send(args.join(' ') + '\n\n**React with :thumbsup: for yes and :thumbsdown: for no.**').then(function(message) {
-											message.react('👍').then(function(){
-												message.react('👎');
-											});
-											ev.channel.send('Poll created in <#692543421826727968> . Thank you!! **Oink!** :pig:');
-										});
-									}
+								var channel = await bot.channels.fetch('692543421826727968');
+								channel.send(args.join(' ') + '\n\n**React with :thumbsup: for yes and :thumbsdown: for no.**').then(function(message) {
+									message.react('👍').then(function(){
+										message.react('👎');
+									});
+									ev.channel.send('Poll created in <#692543421826727968> . Thank you!! **Oink!** :pig:');
 								});
 							} else {
 								ev.channel.send('You need to type a description! **Oink**! :pig:')

@@ -9,7 +9,7 @@ module.exports = function(ev, affiliation) {
 		res.on('data', function(chunk) {
 			body += chunk;
 		});
-		res.on('end', function() {
+		res.on('end', async function() {
 			if (res.statusCode != 200) {
 				console.log(body);
 				try {
@@ -21,6 +21,7 @@ module.exports = function(ev, affiliation) {
 				}
 			} else { 
 				var description;
+				affiliation = affiliation.toLowerCase();
 				if (affiliation == 'konohagakure') {
 					description = 'Naruto: Hey!! Are you new? Welcome!! You hungry? The Ichiraku has the best Ramen in the world!! Let\'s go there!! Dattebayo!!'; 
 				} else if (affiliation == 'sunagakure') {
@@ -37,15 +38,16 @@ module.exports = function(ev, affiliation) {
 					description = 'Konan: So you are the new missing ninja they were talking about. Welcome to Akatsuki. Our leader wants to speak to you. Follow me.';
 				}
 				var img = 'http://www.narutoninpou.com/images/welcome-' + affiliation + '.png';
-				var msgEmbed = new Discord.RichEmbed() 
+				var msgEmbed = new Discord.MessageEmbed() 
 						.setDescription('Welcome! Now you are a member of: **' + affiliation.charAt(0).toUpperCase() + affiliation.substr(1) + '**!')
 						.setFooter(description)
 						.setImage(img);
 				ev.channel.send(msgEmbed);
-				ev.guild.fetchMember(ev.author.id).then(function(member) {   
+				ev.guild.members.fetch(ev.author.id).then(async function(member) {   
 					var villages = { };
 					var ranks = { };
-					ev.guild.roles.forEach(function(guildRole) {
+					await ev.guild.roles.fetch();
+					ev.guild.roles.cache.forEach(function(guildRole) {
 						if (guildRole.name.toLowerCase() == 'konohagakure' || 
 							guildRole.name.toLowerCase() == 'sunagakure' || 
 							guildRole.name.toLowerCase() == 'kirigakure' ||
@@ -67,25 +69,25 @@ module.exports = function(ev, affiliation) {
 					});
 					for (var village in villages) {
 						if (villages[village].name.toLowerCase() != affiliation && villages[village].name.toLowerCase() != 'shinobi alliance') {
-							member.removeRole(villages[village].id);
+							await member.roles.remove(villages[village]);
 						} 
 					}
 					if (affiliation == 'otogakure' || affiliation == 'akatsuki') {
-						member.removeRole(villages['shinobi alliance'].id);
+						await member.roles.remove(villages['shinobi alliance']);
 					}
 					for (var rank in ranks) {
 						if (ranks[rank].name.toLowerCase() != 'genin') {
-							member.removeRole(ranks[rank].id);
+							await member.roles.remove(ranks[rank]);
 						}
 					}
-					member.addRole(ranks['genin'].id);
-					member.addRole(villages[affiliation].id);
+					await member.roles.add(ranks['genin']);
+					await member.roles.add(villages[affiliation]);
 					if (affiliation == 'konohagakure' || 
 						affiliation == 'sunagakure' || 
 						affiliation == 'kirigakure' || 
 						affiliation == 'kumogakure' || 
 						affiliation == 'iwagakure') {
-						member.addRole(villages['shinobi alliance'].id);		
+						await member.roles.add(villages['shinobi alliance']);		
 					}
 				});
 			}

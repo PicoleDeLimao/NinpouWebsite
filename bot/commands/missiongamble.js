@@ -27,14 +27,14 @@ module.exports = function(ev, amount) {
 					var response = '';
 					if (data.amount < 0) {
 						var img = 'http://www.narutoninpou.com/images/tsunade-gamble-win.png';
-						var msgEmbed = new Discord.RichEmbed() 
+						var msgEmbed = new Discord.MessageEmbed() 
 								.setDescription('Tsunade won!! You lost **' + printGold(-data.amount) + 'g**!')
 								.setFooter('Ha! That\'s all you got!? Loser!!!')
 								.setImage(img);
 						ev.channel.send(msgEmbed);
 					} else {
 						var img = 'http://www.narutoninpou.com/images/tsunade-gamble-lose.png';
-						var msgEmbed = new Discord.RichEmbed() 
+						var msgEmbed = new Discord.MessageEmbed() 
 								.setDescription('You won!! You got **' + printGold(data.amount) + 'g**!')
 								.setFooter('Get out of my sight before I smash your face on the floor!!!')
 								.setImage(img);
