@@ -66,7 +66,7 @@ module.exports = function(ev, game, callback, criteria) {
 					response += '     Hosted; ' + m.fromNow() + '\n';
 				}
 				response += '     Ranked; ' + (game.ranked ? 'yes' : 'no') + '\n';
-				response += '\nSlots; [' + players + '/' + game.slots.length + ']';
+				response += '\nSlots; [' + players + '/' + game.slots.length + ']\n';
 				if (game.slots.length >= 9) {
 					if (game.recorded) {
 						var points = 0;
