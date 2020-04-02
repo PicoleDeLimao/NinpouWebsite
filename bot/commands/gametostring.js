@@ -164,7 +164,7 @@ module.exports = function(ev, game, callback, criteria) {
 					return next(i + 1, players, largestName, largestRealm, largestCriteria);
 				});
 			};
-			whois_promise(ev, game.slots[i].username).then(function(username) {
+			whois_promise(ev, encodeURIComponent(game.slots[i].username)).then(function(username) {
 				getPlayerNameAndNext(username);
 			}).catch(function(err) {
 				getPlayerNameAndNext(game.slots[i].username);
