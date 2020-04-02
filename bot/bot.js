@@ -834,7 +834,7 @@ bot.on('message', async function(ev) {
 						case 'r':
 						case 'record':
 							if (args.length == 1) {
-								recordGame(ev, args[0]);
+								recordGame(ev, encodeURIComponent(args[0]));
 							} else {
 								ev.channel.send('Me no understand! Use **!record <code>**');
 							}
