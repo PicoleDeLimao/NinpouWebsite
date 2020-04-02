@@ -62,7 +62,8 @@ router.post('/balance', function(req, res) {
 		players: players.length,
 		progress: false,
 		recorded: false,
-		recordable: true
+		recordable: true,
+		ranked: false
 	});
 	for (var i = 0; i < players.length; i++) {
 		game.slots.push({

@@ -130,7 +130,8 @@ router.post('/', function(req, res) {
 		players: 0,
 		progress: false,
 		recorded: true,
-		recordable: true
+		recordable: true,
+		ranked: false
 	});
 	var body = req.body.contents;
 	if (body.length < 11) return res.status(400).json({ error: 'Invalid code.' });

@@ -55,12 +55,6 @@ var port = process.env.PORT || 8080;
 app.listen(port, function() {
 	console.log('Listening on port ' + port + '...');
 	setInterval(function() {
-		Game.find({}, function(err, games) {
-			for (var i = 0; i < games.length; i++) {
-				games[i].ranked = true;
-				games[i].save();
-			}
-		});
 		Stat.find({ }, function(err, stats) {
 			if (err) {
 				console.error(err);
