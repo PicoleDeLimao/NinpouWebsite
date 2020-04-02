@@ -188,6 +188,10 @@ function decodeGame(body, game, callback) {
 			for (var j = 0; j < nameLength; j++) {
 				var nameIndex = decoded[index++] - 10;
 				if (nameIndex < 0) nameIndex = 90 + nameIndex;
+				if (isNaN(nameIndex)) {
+					game.slots[slot].username += '_';
+					continue;
+				}
 				var c = encodedInts[nameIndex].toLowerCase();
 				if (c === ",") c = "k";
 				game.slots[slot].username += c;
