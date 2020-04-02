@@ -42,6 +42,7 @@ function saveHeroStats(game, callback) {
 				stat.kills += game.slots[slot].kills;
 				stat.deaths += game.slots[slot].deaths;
 				stat.assists += game.slots[slot].assists;
+				stat.points = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
 				stat.gpm += game.slots[slot].gpm;
 				if (game.slots[slot].win) stat.wins += 1;
 				stat.games += 1;
@@ -72,17 +73,20 @@ function savePlayerStats(game, callback) {
 						kills: game.slots[slot].kills,
 						deaths: game.slots[slot].deaths,
 						assists: game.slots[slot].assists,
-						gpm: game.slots[slot].gpm
+						points: game.slots[slot].kills * 10 + game.slots[slot].assists * 2 - game.slots[slot].deaths * 5,
+						gpm: game.slots[slot].gpm,
+						count: 0
 					});
 					var alpha = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
 					var beta = 1 - alpha; 
-					console.log("alpha: " + alpha + "beta: " + beta);
 					stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
 					stat.deaths = stat.deaths * alpha + game.slots[slot].deaths * beta;
 					stat.assists = stat.assists * alpha + game.slots[slot].assists * beta;
+					stat.points = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
 					stat.gpm = stat.gpm * alpha + game.slots[slot].gpm * beta;
 					if (game.slots[slot].win) stat.wins += 1;
 					stat.games += 1; 
+					stat.count += 1;
 					stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
 					stat.score = Calculator.calculateScore(stat);
 					stat.save(function(err) {
@@ -409,6 +413,57 @@ router.post('/players/:username/merge/:another_username', function(req, res) {
 					return res.status(200).send();
 				});
 			}); 
+		});
+	});
+});
+
+router.get('/players/:username/rerank', function(req, res) {
+	StatCalculator.getPlayerStats(req.params.username, function(err, allStat) {
+		if (err) return res.status(400).json({ error: err });
+		var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'ranked': true };
+		Game.find(query).sort('-_id').exec(function(err, games) {
+			if (err) return res.status(500).json({ error: err }); 
+			if (games.length > 0) {
+				var i = 0;
+				var stat;
+				for (; i < games.length; i++) {
+					var game = games[i];
+					var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
+					if (slot != -1 && games[i].slots[slot].hero != 0 && game.slots[slot].kills != null) {
+						stat = new Stat({
+							username: game.slots[slot].username.toLowerCase(),
+							kills: game.slots[slot].kills,
+							deaths: game.slots[slot].deaths,
+							assists: game.slots[slot].assists,
+							gpm: game.slots[slot].gpm,
+							count: 0
+						});
+						break;
+					}
+				}
+				for (; i < games.length; i++) {
+					var game = games[i];
+					var alpha = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
+					var beta = 1 - alpha; 
+					var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
+					stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
+					stat.deaths = stat.deaths * alpha + game.slots[slot].deaths * beta;
+					stat.assists = stat.assists * alpha + game.slots[slot].assists * beta;
+					stat.points = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
+					stat.gpm = stat.gpm * alpha + game.slots[slot].gpm * beta;
+					if (game.slots[slot].win) stat.wins += 1;
+					stat.games += 1; 
+					stat.count += 1;
+					stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+					stat.score = Calculator.calculateScore(stat);
+				}
+				stat.save(function(err) {
+					if (err) return res.status(500).json({ error: err }); 
+					return res.status(200).send();
+				});
+			} else {
+				res.status(400).json({ error: 'This player has no ranked games.' });
+			}
 		});
 	});
 });

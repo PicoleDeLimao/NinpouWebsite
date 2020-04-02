@@ -59,6 +59,7 @@ var syncRank = require('./commands/syncrank');
 var tipsShow = require('./commands/tipsShow');
 var tipCreate = require('./commands/tipCreate');
 var heroExists = require('./commands/heroExists');
+var rerank = require('./commands/rerank');
 
 var hostedGamesWC3 = [];
 var hostedGamesWC3Messages = {};
@@ -496,7 +497,13 @@ bot.on('message', async function(ev) {
 							ev.channel.send('Me no understand! Use **!a deletealias <alias>**');
 						}
 					} else if (args[0] == 'sync') {
-						syncRank(ev);
+						syncRank(ev); 
+					} else if (args[0] == 'rerank') {
+						if (args.length == 2) {
+							rerank(encodeURIComponent(args[1]));
+						} else {
+							ev.channel.send('Me no understand! Use **!a rerank <player>**');
+						}
 					} else {
 						ev.channel.send('Admin command not found! **Oink!** :pig:');
 					}
