@@ -158,7 +158,10 @@ function decodeGame(body, game, callback) {
 	++index;
 	var winningTeam = decoded[index++];
 	for (var i = 0; i < 9; i++) {
-		var state = encodedInts[decoded[index++]];	
+		var state;
+		do {
+			state = encodedInts[decoded[index++]];	
+		} while (state != '0' && state != '1' && state != '2' && index < decoded.length);
 		var playerIndex = encodedPlayersId[i];
 		var slot = getSlotId(encodedPlayersId[i]);
 		while (state != '0' && state != '1' && state != '2') {
@@ -194,7 +197,6 @@ function decodeGame(body, game, callback) {
 			}
 			game.slots[slot].username = game.slots[slot].username.substring(0, game.slots[slot].username.length - 4);
 			if (letter != game.slots[slot].username[0]) return callback('Invalid code.');
-			index++;
 			game.slots[slot].win = (winningTeam == 3 && (playerIndex == 0 || playerIndex == 1 || playerIndex == 2)) || (winningTeam == 7 && (playerIndex == 4 || playerIndex == 5 || playerIndex == 6)) || (winningTeam == 11 && (playerIndex == 8 || playerIndex == 9 || playerIndex == 10));
 		}
 	}
