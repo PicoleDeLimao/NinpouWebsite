@@ -4,8 +4,7 @@ var http = require('http');
 var getPlayerName = require('./getplayername');
 
 function getGameString(game) {
-	var ranked = game.ranked ? '  Ranked  ' : 'Not ranked';
-	return '<' + game.id + '>\t< ' + ranked + ' >\t< ' + (game.hero && game.hero || 'Unknown') + ' >\tKDA: <' + game.kills + '/' + game.deaths + '/' + game.assists + '>\tPoints: <' + game.points + '>\t' + (game.win ? '< VICTORY >' : '< DEFEAT >') + '\t(' + game.date + ')\n';
+	return '<' + game.id + '>\t< ' + (game.hero && game.hero || 'Unknown') + ' >\tKDA: <' + game.kills + '/' + game.deaths + '/' + game.assists + '>\tPoints: <' + game.points + '>\t' + (game.win ? '< VICTORY >' : '< DEFEAT >') + '\t(' + game.date + ')\n';
 }
 
 function getHeroString(hero, index) {
@@ -42,6 +41,35 @@ function getStringsFormatted(strings) {
 		newStrings.push(str);
 	}
 	return newStrings;
+}
+
+function getLastPlayedGames(games, ranked) {
+	var response = '';
+	if (hero) {
+		response += '\nLast 5 ' + (ranked ? 'ranked' : 'not ranked') + ' games (from ' + games.numGames + ' games with this hero):\n';
+	} else {
+		response += '\nLast 5 ' + (ranked ? 'ranked' : 'not ranked') + ' games (from ' + games.numGames + ' games):\n';
+	}
+	var allGames = [];
+	allGames.push(getGameString(games.bestGame));
+	allGames.push(getGameString(games.worstGame));
+	for (var i = 0; i < games.lastGames.length; i++) {
+		allGames.push(getGameString(games.lastGames[i]));
+	}
+	var gameStrings = getStringsFormatted(allGames);
+	for (var i = 2; i < gameStrings.length; i++) {
+		response += gameStrings[i];
+	}
+	response += 'Best game:\n';
+	if (games.bestGame) {
+		response += gameStrings[0];
+	}
+	response += 'Worst game:\n';
+	if (games.worstGame) {
+		response += gameStrings[1];
+	}
+	response + '\n\n';
+	return response;
 }
 
 module.exports = function(ev, playerName, hist, hero) {
@@ -103,30 +131,8 @@ module.exports = function(ev, playerName, hist, hero) {
 								response = '```md';
 							}
 							
-							if (hero) {
-								response += '\nLast 10 games (from ' + ranking.numGames + ' games with this hero):\n';
-							} else {
-								response += '\nLast 10 games (from ' + ranking.numGames + ' games):\n';
-							}
-							var allGames = [];
-							allGames.push(getGameString(ranking.bestGame));
-							allGames.push(getGameString(ranking.worstGame));
-							for (var i = 0; i < ranking.lastGames.length; i++) {
-								allGames.push(getGameString(ranking.lastGames[i]));
-							}
-							var gameStrings = getStringsFormatted(allGames);
-							for (var i = 2; i < gameStrings.length; i++) {
-								response += gameStrings[i];
-							}
-							response += '\nBest game:\n';
-							if (ranking.bestGame) {
-								response += gameStrings[0];
-							}
-							response += 'Worst game:\n';
-							if (ranking.worstGame) {
-								response += gameStrings[1];
-							}
-							
+							response += getLastPlayedGames(ranking.ranked, true);
+							response += getLastPlayedGames(ranking.notRanked, false);
 							response += '\n\n';
 							response += '```';  
 							ev.channel.send(response);

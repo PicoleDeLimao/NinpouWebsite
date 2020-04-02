@@ -289,11 +289,12 @@ router.get('/players/:username', function(req, res) {
 				}
 				Game.find(query).sort('-_id').exec(function(err, games) {
 					if (err) return res.status(500).json({ error: err }); 
-					var newGames = [];
+					var newGamesRanked = [];
+					var newGamesNotRanked = [];
 					for (var i = 0; i < games.length; i++) {
 						var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
 						if (slot != -1 && games[i].slots[slot].hero != 0 && games[i].slots[slot].kills != null) {
-							newGames.push({
+							var game = {
 								id: games[i].id,
 								kills: games[i].slots[slot].kills,
 								deaths: games[i].slots[slot].deaths,
@@ -303,17 +304,28 @@ router.get('/players/:username', function(req, res) {
 								date: moment(dateFromObjectId(games[i]._id.toString())).fromNow(),
 								win: games[i].slots[slot].win,
 								ranked: games[i].ranked
-							});
+							};
+							if (games[i].ranked) {
+								newGamesRanked.push(game);
+							} else {
+								newGamesNotRanked.push(game);
+							}
 						}
 					}
-					var lastGames = newGames.slice(0, 10);
+					var lastGamesRanked = newGamesRanked.slice(0, 5);
+					var lastGamesNotRanked = newGamesNotRanked.slice(0, 5);
 					getPlayerHeroesRanking(req.params.username.toLowerCase(), allStat.usernames, heroes, timePeriod, function(err, bestHeroes, worstHeroes, allHeroes) {
 						if (err) return res.status(500).json({ error: err }); 
-						newGames.sort(function(a, b) {
+						newGamesRanked.sort(function(a, b) {
 							return b.points - a.points;
 						});
-						var bestGame = newGames.length > 0 ? newGames[0] : null;
-						var worstGame = newGames.length > 0 ? newGames[newGames.length - 1] : null;
+						newGamesNotRanked.sort(function(a, b) {
+							return b.points - a.points;
+						});
+						var bestGameRanked = newGamesRanked.length > 0 ? newGamesRanked[0] : null;
+						var worstGameRanked = newGamesRanked.length > 0 ? newGamesRanked[newGamesRanked.length - 1] : null;
+						var bestGameNotRanked = newGamesNotRanked.length > 0 ? newGamesNotRanked[0] : null;
+						var worstGameNotRanked = newGamesNotRanked.length > 0 ? newGamesNotRanked[newGamesNotRanked.length - 1] : null;
 						if (heroId) {
 							for (var i = 0; i < allHeroes.length; i++) {
 								if (allHeroes[i]._id == heroId) {
@@ -324,7 +336,24 @@ router.get('/players/:username', function(req, res) {
 							allHeroes.sort(function(a, b) {
 								return b.games - a.games;
 							});
-							return res.json({ 'stat': allStat, 'lastGames': lastGames, 'bestHeroes': bestHeroes, 'worstHeroes': worstHeroes, 'bestGame': bestGame, 'worstGame': worstGame, 'numGames': games.length, 'numHeroes': allHeroes.length, 'mostPlayed': allHeroes.slice(0, 5) });
+							return res.json({ 
+								'stat': allStat, 
+								'ranked': {
+									'bestGame': bestGameRanked, 
+									'worstGame': worstGameRanked, 
+									'numGames': newGamesRanked.length, 
+									'lastGames': lastGamesRanked
+								},
+								'notRanked': {
+									'bestGame': bestGameNotRanked, 
+									'worstGame': worstGameNotRanked, 
+									'numGames': newGamesNotRanked.length, 
+									'lastGames': lastGamesNotRanked
+								},
+								'bestHeroes': bestHeroes, 
+								'worstHeroes': worstHeroes, 
+								'numHeroes': allHeroes.length, 
+								'mostPlayed': allHeroes.slice(0, 5) });
 						}
 					});
 				});
