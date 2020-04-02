@@ -11,6 +11,7 @@ module.exports = function(ev, playerId) {
 		res.on('end', function() {
 			if (res.statusCode != 200) {
 				try {
+					console.log(body);
 					var data = JSON.parse(body);
 					ev.channel.send(data.error); 
 				} catch (err) {

@@ -417,7 +417,7 @@ router.post('/players/:username/merge/:another_username', function(req, res) {
 	});
 });
 
-router.get('/players/:username/rerank', function(req, res) {
+router.post('/players/:username/rerank', function(req, res) {
 	StatCalculator.getPlayerStats(req.params.username, function(err, allStat) {
 		if (err) return res.status(400).json({ error: err });
 		var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'ranked': true };
