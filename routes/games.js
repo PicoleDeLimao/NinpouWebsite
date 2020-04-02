@@ -43,7 +43,7 @@ router.get('/', function(req, response) {
 });
 
 router.get('/recorded', function(req, res) {
-	var page = parseInt(req.params.page, 0);
+	var page = (parseInt(req.query.page, 0) - 1);
 	Game.find({ recorded: true }).sort({ _id: -1 }).skip(20*page).limit(20).exec(function(err, games) {
 		if (err) return res.status(500).json({ error:err });
 		return res.json(games);
