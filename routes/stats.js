@@ -421,7 +421,7 @@ router.post('/players/:username/rerank', function(req, res) {
 	StatCalculator.getPlayerStats(req.params.username, function(err, allStat) {
 		if (err) return res.status(400).json({ error: err });
 		var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'ranked': true };
-		Game.find(query).sort('-_id').exec(function(err, games) {
+		Game.find(query).sort('_id').exec(function(err, games) {
 			if (err) return res.status(500).json({ error: err }); 
 			if (games.length > 0) {
 				var i = 0;
