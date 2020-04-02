@@ -53,7 +53,6 @@ app.get('/donate', function(req, res) {
  
 var port = process.env.PORT || 8080;
 app.listen(port, async function() {
-	await Game.updateMany({}, { $set: { ranked: true }});
 	console.log('Listening on port ' + port + '...');
 	setInterval(function() {
 		Stat.find({ }, function(err, stats) {
