@@ -60,7 +60,7 @@ function getLastPlayedGames(hero, games, ranked) {
 	for (var i = 2; i < gameStrings.length; i++) {
 		response += gameStrings[i];
 	}
-	response += 'Best game:\n';
+	response += '\nBest game:\n';
 	if (games.bestGame) {
 		response += gameStrings[0];
 	}
@@ -103,7 +103,7 @@ module.exports = function(ev, playerName, hist, hero) {
 							if (hero) {
 								response += 'Hero ranking (from ' + ranking.numHeroes + ' played heroes):\n';
 								response += getHeroString(ranking.hero, ranking.heroRanking);
-							} else {
+							} else if (ranking.bestHeroes.length + ranking.worstHeroes.length + ranking.mostPlayed.length > 0) {
 								var allHeroes = [];
 								for (var i = 0; i < ranking.bestHeroes.length; i++) {
 									allHeroes.push(getHeroString(ranking.bestHeroes[i], i));
@@ -111,7 +111,7 @@ module.exports = function(ev, playerName, hist, hero) {
 								for (var i = 0; i < ranking.worstHeroes.length; i++) {
 									allHeroes.push(getHeroString(ranking.worstHeroes[i], i));
 								}
-								if (allHeroes.length > 0) {
+								if (ranking.bestHeroes.length + ranking.worstHeroes.length > 0) {
 									var heroStrings = getStringsFormatted(allHeroes);
 									response += 'Top-5 best heroes (from ' + ranking.numHeroes + ' played heroes):\n';
 									for (var i = 0; i < ranking.bestHeroes.length; i++) {
