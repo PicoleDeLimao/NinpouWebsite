@@ -359,7 +359,7 @@ bot.on('message', async function(ev) {
 				'< ![o]ptimal > < name_of_players>: Display the optimal balance of a game composed by given player names\n' + 
 				//'< ![p]rogress >                : List games in progress (on ENTConnect)\n' + 
 				//'< ![l]ast >                    : Fetch last non-recorded played games (on ENTConnect)\n' + 
-				'< !recorded >                   : Fetch last recorded played games\n' + 
+				'< !recorded > [page]            : Fetch last recorded played games\n' + 
 				'< ![i]nfo > <game_id>           : Fetch info about a played game\n' + 
 				'< ![r]ecord > <code>            : Record a game\n' +  
 				'< !ra[n]k > <game_id>           : Make a recorded game ranked so it will impact on players\' score\n' +
@@ -422,6 +422,7 @@ bot.on('message', async function(ev) {
 				if (isAdmin) {
 					ev.channel.send(  
 						'Admin-related commands:\n```md\n' + 
+						'< !a > unrank <game_id>                     : Make a ranked game not ranked\n' +
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
 						'< !a > removealias <alias>                  : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
@@ -490,7 +491,7 @@ bot.on('message', async function(ev) {
 						if (!isSuperAdmin) {
 							ev.channel.send('Only super-admins can use this command! **Oink!!**');
 						} else if (args.length == 2) {
-							deleteAlias(ev, encodeURICompoent(args[1]));
+							deleteAlias(ev, encodeURIComponent(args[1]));
 						} else { 
 							ev.channel.send('Me no understand! Use **!a deletealias <alias>**');
 						}
