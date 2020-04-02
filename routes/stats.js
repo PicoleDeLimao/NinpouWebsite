@@ -329,7 +329,23 @@ router.get('/players/:username', function(req, res) {
 						if (heroId) {
 							for (var i = 0; i < allHeroes.length; i++) {
 								if (allHeroes[i]._id == heroId) {
-									return res.json({ 'stat': allStat, 'lastGames': lastGames, 'hero': allHeroes[i], 'heroRanking': i, 'numGames': games.length, 'numHeroes': allHeroes.length, 'bestGame': bestGame, 'worstGame': worstGame });
+									return res.json({ 
+										'stat': allStat, 
+										'ranked': {
+											'bestGame': bestGameRanked, 
+											'worstGame': worstGameRanked, 
+											'numGames': newGamesRanked.length, 
+											'lastGames': lastGamesRanked
+										},
+										'notRanked': {
+											'bestGame': bestGameNotRanked, 
+											'worstGame': worstGameNotRanked, 
+											'numGames': newGamesNotRanked.length, 
+											'lastGames': lastGamesNotRanked
+										},
+										'hero': allHeroes[i], 
+										'heroRanking': i, 
+										'numHeroes': allHeroes.length });
 								}
 							}
 						} else {
