@@ -163,18 +163,21 @@ router.post('/ranked/:game_id', function(req, res) {
 		if (err) return res.status(500).json({ error: err });
 		else if (!game) return res.status(404).json({ error: 'Game not found.' });
 		else if (game.ranked) return res.status(400).json({ error: 'This game is already ranked.' });
-		var changes = [];
-		getPlayerPoints(game, function(err, oldPoints) {
+		game.ranked = true;
+		game.save(function(err) {
 			if (err) return res.status(500).json({ error: err });
-			savePlayerStats(game, function(err) {
+			getPlayerPoints(game, function(err, oldPoints) {
 				if (err) return res.status(500).json({ error: err });
-				getPlayerPoints(game, function(err, newPoints) {
+				savePlayerStats(game, function(err) {
 					if (err) return res.status(500).json({ error: err });
-					var changes = [];
-					for (var username in oldPoints) {
-						changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
-					}
-					return res.status(200).json({ changes: changes });
+					getPlayerPoints(game, function(err, newPoints) {
+						if (err) return res.status(500).json({ error: err });
+						var changes = [];
+						for (var username in oldPoints) {
+							changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
+						}
+						return res.status(200).json({ changes: changes });
+					});
 				});
 			});
 		});
