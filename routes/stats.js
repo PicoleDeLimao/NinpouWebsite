@@ -301,7 +301,8 @@ router.get('/players/:username', function(req, res) {
 								points: games[i].slots[slot].kills * 10 + games[i].slots[slot].assists * 2 - games[i].slots[slot].deaths * 5,
 								hero: heroes[games[i].slots[slot].hero],
 								date: moment(dateFromObjectId(games[i]._id.toString())).fromNow(),
-								win: games[i].slots[slot].win
+								win: games[i].slots[slot].win,
+								ranked: games[i].ranked
 							});
 						}
 					}
