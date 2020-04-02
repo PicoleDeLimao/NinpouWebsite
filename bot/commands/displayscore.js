@@ -43,7 +43,7 @@ function getStringsFormatted(strings) {
 	return newStrings;
 }
 
-function getLastPlayedGames(games, ranked) {
+function getLastPlayedGames(hero, games, ranked) {
 	var response = '';
 	if (hero) {
 		response += '\nLast 5 ' + (ranked ? 'ranked' : 'not ranked') + ' games (from ' + games.numGames + ' games with this hero):\n';
@@ -131,8 +131,8 @@ module.exports = function(ev, playerName, hist, hero) {
 								response = '```md';
 							}
 							
-							response += getLastPlayedGames(ranking.ranked, true);
-							response += getLastPlayedGames(ranking.notRanked, false);
+							response += getLastPlayedGames(hero, ranking.ranked, true);
+							response += getLastPlayedGames(hero, ranking.notRanked, false);
 							response += '\n\n';
 							response += '```';  
 							ev.channel.send(response);
