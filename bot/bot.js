@@ -35,6 +35,7 @@ var getPlayerName = require('./commands/getplayername');
 var displayScore = require('./commands/displayscore');
 var displayRanking = require('./commands/displayranking');
 var recordGame = require('./commands/recordgame');
+var recordRankedGame = require('./commands/recordrankedgame');
 var displayLastRecordedGames = require('./commands/displaylastrecordedgames');
 var displayGameInfo = require('./commands/displaygameinfo');
 var buy = require('./commands/buy');
@@ -248,8 +249,12 @@ bot.on('messageReactionAdd', async function(ev, user) {
 	var balanceIssueId = '692551380786872352';
 	var mapIdeaId = '692551338743037952';
 	var musicIdeaId = '693108450749841478';
-	if (channelId == bugReportingId || channelId == balanceIssueId || channelId == mapIdeaId || channelId == musicIdeaId) {
-		if (ev.emoji.name == '❌' || ev.emoji.name == '⭐' || ev.emoji.name == '✅') {
+	var rankedGames = '692560325584748616';
+	if (channelId == rankedGames &&  ev.emoji.name == '👍') {
+		var gameId = ev.message.content.split('\n')[0].split('`')[1];
+		channel.send('Game `' + gameId + '` was approved as a ranked game.');
+	} else if (channelId == bugReportingId || channelId == balanceIssueId || channelId == mapIdeaId || channelId == musicIdeaId) {
+		if (ev.emoji.name == '❌' || ev.emoji.name == '⭐' || ev.emoji.name == '👍' || ev.emoji.name == '✅') {
 			var content = ev.message.content.split('\n');
 			content.pop();
 			content = content.join('\n');
@@ -853,7 +858,9 @@ bot.on('message', async function(ev) {
 						case 'n':
 						case 'rank':
 						case 'ranking': 
-							if (args.length == 3) {
+							if (args.length == 1 && ev.mentions.users.array().length == 0 && args[0].startsWith('5e')) {
+								recordRankedGame(bot, ev, args[0]);
+							} else if (args.length == 3) {
 								if (ev.mentions.users.array().length > 0) {
 									displayRanking(ev, ev.mentions.users.array()[0].id, args[1], args[2]);
 								} else {  
