@@ -164,9 +164,6 @@ function decodeGame(body, game, callback) {
 		} while (state != '0' && state != '1' && state != '2' && index < decoded.length);
 		var playerIndex = encodedPlayersId[i];
 		var slot = getSlotId(encodedPlayersId[i]);
-		while (state != '0' && state != '1' && state != '2') {
-			state = encodedInts[decoded[index++]];	
-		}
 		if (state == '0') {
 			game.slots[slot].state = 'EMPTY';
 		} else if (state != '1' && state != '2') {
