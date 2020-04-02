@@ -75,9 +75,9 @@ function savePlayerStats(game, callback) {
 						gpm: game.slots[slot].gpm
 					});
 					var decayFactor = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
-					var alpha = decayFactor + (1 - decayFactor);
-					var beta = (1 - decayFactor); 
-					var oldPoints = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
+					var alpha = min(1, decayFactor + (1 - decayFactor));
+					var beta = 1 - alpha; 
+					console.log("alpha: " + alpha + "beta: " + beta);
 					stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
 					stat.deaths = stat.deaths * alpha + game.slots[slot].deaths * beta;
 					stat.assists = stat.assists * alpha + game.slots[slot].assists * beta;
