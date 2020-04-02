@@ -131,8 +131,12 @@ module.exports = function(ev, playerName, hist, hero) {
 								response = '```md';
 							}
 							
-							response += getLastPlayedGames(hero, ranking.ranked, true);
-							response += getLastPlayedGames(hero, ranking.notRanked, false);
+							if (ranking.ranked.length > 0) {
+								response += getLastPlayedGames(hero, ranking.ranked, true);
+							}
+							if (ranking.notRanked.length > 0) {
+								response += getLastPlayedGames(hero, ranking.notRanked, false);
+							}
 							response += '\n\n';
 							response += '```';  
 							ev.channel.send(response);
