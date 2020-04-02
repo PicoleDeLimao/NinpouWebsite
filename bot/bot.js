@@ -482,9 +482,7 @@ bot.on('message', async function(ev) {
 							ev.channel.send('Me no understand! Use **!a unrecord <game_id>**');
 						} */
 					} else if (args[0] == 'mergealiases') {
-						if (!isSuperAdmin) { 
-							ev.channel.send('Only super-admins can use this command! **Oink!!**');
-						} else if (args.length == 3) {
+						if (args.length == 3) {
 							mergeAliases(ev, encodeURIComponent(args[1]), encodeURIComponent(args[2]));
 						} else { 
 							ev.channel.send('Me no understand! Use **!a mergealiases <old_alias> <new_alias>**');
