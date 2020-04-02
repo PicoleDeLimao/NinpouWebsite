@@ -22,16 +22,30 @@ module.exports = function(ev, code) {
 					ev.channel.send('Error while recording game. :( **Oink!** :pig:');
 				}
 			} else { 
+				var today = new Date();
+				if (today.getDay() == 6 || today.getDay() == 0) {
+					ev.channel.send('Game recorded! Double XP is on today!! **Oink!** :pig:');
+				} else {
+					ev.channel.send('Game recorded! **Oink!** :pig:');
+				}
 				try {
-					var game = JSON.parse(body);
-					var today = new Date();
-					if (today.getDay() == 6 || today.getDay() == 0) {
-						ev.channel.send('Game recorded! Double XP is on today!! **Oink!** :pig:\n\nTip: Type `!rank ' + game.id + '` to make this game a ranked game.');
-					} else {
-						ev.channel.send('Game recorded! **Oink!** :pig:\n\nTip: Type `!rank ' + game.id + '` to make this game a ranked game.');
+					var data = JSON.parse(body);
+					if (data.changes.length > 0) {
+						var msg = '```md\nAverage point changes\n\n';
+						(function next(i) {
+							if (i == data.changes.length) {
+								msg += '```';
+								ev.channel.send(msg);
+							} else {
+								getPlayerName(ev, data.changes[i].alias, function(err, name) {
+									msg += name + ': ' + Math.floor(data.changes[i].oldPoints) + ' -> ' + Math.floor(data.changes[i].newPoints) + '\n';
+									next(i + 1);
+								}, true);
+							}
+						})(0);
 					}
 				} catch (e) {
-					ev.channel.send('Error while recording game. :( **Oink!** :pig:');
+					console.error(e);
 				}
 			}
 		});

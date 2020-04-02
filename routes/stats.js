@@ -150,7 +150,7 @@ router.post('/', function(req, res) {
 					if (err) return res.status(500).json({ error: err });
 					saveHeroStats(game, function(err) {
 						if (err) return res.status(500).json({ error: err });
-						return res.status(200).send();
+						return res.status(200).json(game);
 					});
 				});
 			});
