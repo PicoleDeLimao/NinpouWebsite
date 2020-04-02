@@ -424,6 +424,7 @@ bot.on('message', async function(ev) {
 					ev.channel.send(  
 						'Admin-related commands:\n```md\n' + 
 						'< !a > unrank <game_id>                     : Make a ranked game not ranked\n' +
+						'< !a > rerank <player>                      : Recompute the stats for a player\n' +
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
 						'< !a > removealias <alias>                  : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
