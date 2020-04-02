@@ -132,7 +132,7 @@ router.post('/', function(req, res) {
 		recordable: true,
 		ranked: false
 	});
-	var body = decodeURIComponent(req.body.contents);
+	var body = decodeURIComponent(req.body.contents).trim().replace('\n', '').replace('\r', '');
 	if (body.length < 11) return res.status(400).json({ error: 'Invalid code.' });
 	Code.findOne({ code: body }, function(err, code) {
 		if (err) return res.status(500).json({ error: err });
