@@ -39,6 +39,7 @@ module.exports = function(ev, gameId, callback) {
 						callback(null, "");
 					}
 				} catch (e) {
+					console.error(e);
 					callback('Error while ranking game. :( **Oink!** :pig:');
 				}
 			}
@@ -46,7 +47,7 @@ module.exports = function(ev, gameId, callback) {
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		callback('Error while recording game. :( **Oink!** :pig:');
+		callback('Error while ranking game. :( **Oink!** :pig:');
 	});
 	request.write('');
 	request.end();

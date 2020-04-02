@@ -257,6 +257,7 @@ bot.on('messageReactionAdd', async function(ev, user) {
 		if (ev.emoji.name == '👍') {
 			recordRankedGameApprove(ev, gameId, function(err, message) {
 				if (err) {
+					console.log(err);
 					channel.send(err);
 				} else {
 					channel.send('<@' + ev.message.mentions.users.array()[0] + '> Game `' + gameId + '` was ✅ approved as a ranked game.\n\n' + message);

@@ -159,7 +159,7 @@ router.post('/', function(req, res) {
 });
 
 router.post('/ranked/:game_id', function(req, res) {
-	Game.findOne(req.params.game_id, function(err, game) {
+	Game.findOne({ id: req.params.game_id }, function(err, game) {
 		if (err) return res.status(500).json({ error: err });
 		else if (!game) return res.status(404).json({ error: 'Game not found.' });
 		else if (game.ranked) return res.status(400).json({ error: 'This game is already ranked.' });

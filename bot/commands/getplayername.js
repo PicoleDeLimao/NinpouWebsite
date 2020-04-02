@@ -5,7 +5,13 @@ var http = require('http');
 module.exports = function(ev, name, callback, hideRole) {
 	if (!name) return callback(null, null);
 	if (!isNaN(parseInt(name))) {
-		ev.guild.members.fetch(name).then(function(member) { 
+		var members;
+		if (!ev.guild) {
+			members = ev.message.guild.members;
+		} else {
+			members = ev.guild.members;
+		}
+		members.fetch(name).then(function(member) { 
 			var roleName = member.roles.hoist.name;
 			return callback(null, member.displayName + (hideRole ? '' : ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')' )); 
 		}).catch(function(err) { 
