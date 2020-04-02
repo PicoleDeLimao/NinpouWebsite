@@ -252,7 +252,8 @@ bot.on('messageReactionAdd', async function(ev, user) {
 	var rankedGames = '692560325584748616';
 	if (channelId == rankedGames &&  ev.emoji.name == '👍') {
 		var gameId = ev.message.content.split('\n')[0].split('`')[1];
-		ev.channel.send('Game `' + gameId + '` was approved as a ranked game.');
+		var channel = await bot.channels.fetch(rankedGames);
+		channel.send('Game `' + gameId + '` was approved as a ranked game.');
 	} else if (channelId == bugReportingId || channelId == balanceIssueId || channelId == mapIdeaId || channelId == musicIdeaId) {
 		if (ev.emoji.name == '❌' || ev.emoji.name == '⭐' || ev.emoji.name == '✅') {
 			var content = ev.message.content.split('\n');
