@@ -123,24 +123,26 @@ module.exports = function(ev, playerName, hist, hero) {
 									}
 								}
 								response += '\nTop-5 most played heroes:\n';
+								ranking.numGames = ranking.ranked.numGames + ranking.notRanked.numGames;
 								for (var i = 0; i < ranking.mostPlayed.length; i++) {
 									response += (i + 1) + '. < ' + ranking.mostPlayed[i].hero + ' > with <' + ranking.mostPlayed[i].games + '> games (' + Math.floor(ranking.mostPlayed[i].games / ranking.numGames * 100) + '% of the games)\n';
 								}
 								response += '```';
 								ev.channel.send(response);
-								response = '```md';
 							}
 							
-							console.log(ranking.ranked);
 							if (ranking.ranked.numGames > 0) {
+								response = '```md';
 								response += getLastPlayedGames(hero, ranking.ranked, true);
+								response += '```';
+								ev.channel.send(response);
 							}
 							if (ranking.notRanked.numGames > 0) {
+								response = '```md';
 								response += getLastPlayedGames(hero, ranking.notRanked, false);
+								response += '```';
+								ev.channel.send(response);
 							}
-							response += '\n\n';
-							response += '```';  
-							ev.channel.send(response);
 						} 
 						if (ranking.numGames == 0) {
 							ev.channel.send('Nothing to display.');
