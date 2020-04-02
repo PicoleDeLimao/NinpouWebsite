@@ -430,38 +430,39 @@ router.post('/players/:username/rerank', function(req, res) {
 				for (; i < games.length; i++) {
 					var game = games[i];
 					var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
-					if (slot != -1 && games[i].slots[slot].hero != 0 && game.slots[slot].kills != null) {
-						stat = new Stat({
-							username: game.slots[slot].username.toLowerCase(),
-							kills: game.slots[slot].kills,
-							deaths: game.slots[slot].deaths,
-							assists: game.slots[slot].assists,
-							gpm: game.slots[slot].gpm,
-							count: 0
+					if (slot != -1 && game.slots[slot].hero != 0 && game.slots[slot].kills != null) {
+						Stat.findOne({ username: game.slots[slot].username.toLowerCase() }, function(err, stat) {
+							stat.kills = game.slots[slot].kills,
+							stat.deaths = game.slots[slot].deaths,
+							stat.assists = game.slots[slot].assists,
+							stat.gpm = game.slots[slot].gpm,
+							stat.count = 0;
+							stat.games = 0;
+							stat.wins = 0;
+							for (; i < games.length; i++) {
+								var game = games[i];
+								var alpha = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
+								var beta = 1 - alpha; 
+								var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
+								stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
+								stat.deaths = stat.deaths * alpha + game.slots[slot].deaths * beta;
+								stat.assists = stat.assists * alpha + game.slots[slot].assists * beta;
+								stat.points = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
+								stat.gpm = stat.gpm * alpha + game.slots[slot].gpm * beta;
+								if (game.slots[slot].win) stat.wins += 1;
+								stat.games += 1; 
+								stat.count = stat.games;
+								stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
+								stat.score = Calculator.calculateScore(stat);
+							}
+							stat.save(function(err) {
+								if (err) return res.status(500).json({ error: err }); 
+								return res.status(200).send();
+							});
 						});
 						break;
 					}
 				}
-				for (; i < games.length; i++) {
-					var game = games[i];
-					var alpha = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
-					var beta = 1 - alpha; 
-					var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
-					stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
-					stat.deaths = stat.deaths * alpha + game.slots[slot].deaths * beta;
-					stat.assists = stat.assists * alpha + game.slots[slot].assists * beta;
-					stat.points = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
-					stat.gpm = stat.gpm * alpha + game.slots[slot].gpm * beta;
-					if (game.slots[slot].win) stat.wins += 1;
-					stat.games += 1; 
-					stat.count = stat.games;
-					stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
-					stat.score = Calculator.calculateScore(stat);
-				}
-				stat.save(function(err) {
-					if (err) return res.status(500).json({ error: err }); 
-					return res.status(200).send();
-				});
 			} else {
 				res.status(400).json({ error: 'This player has no ranked games.' });
 			}
