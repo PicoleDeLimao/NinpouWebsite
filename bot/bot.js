@@ -500,8 +500,8 @@ bot.on('message', async function(ev) {
 					} else if (args[0] == 'sync') {
 						syncRank(ev); 
 					} else if (args[0] == 'rerank') {
-						if (args.length == 2) {
-							rerank(encodeURIComponent(args[1]));
+						if (args.length == 2 && ev.mentions.users.array().length > 0) {
+							rerank(ev.mentions.users.array()[0].id);
 						} else {
 							ev.channel.send('Me no understand! Use **!a rerank <player>**');
 						}
