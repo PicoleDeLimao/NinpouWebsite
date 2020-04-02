@@ -4,6 +4,7 @@ var version = require('../version').version;
 
 var Discord = require('discord.js');
 var http = require('http');
+var https = require('https');
 var moment = require('moment');
 
 // Initialize Discord Bot
@@ -311,6 +312,27 @@ bot.on('messageReactionAdd', async function(ev, user) {
 
 bot.on('message', async function(ev) {
 	var message = ev.content;
+
+	if (ev.attachments) {
+		ev.attachments.forEach(function(attachment) {
+			if (attachment.name.startsWith('record_') && attachment.name.endsWith('.txt')) {
+				var url = attachment.url;
+				https.get(url, function(res) {
+					var body = '';
+					res.on('data', function(chunk) {
+						body += chunk;
+					});
+					res.on('end', function() {
+						body = body.split("Your code is:")[1].split("\" )")[0].replace('\n', '').replace('\r', '');
+						recordGame(ev, encodeURIComponent(body));
+					});
+				}).on('error', function(err) {
+					console.error(err);
+				});
+			}
+		});
+	}
+	
 	
     // Our bot needs to know if it will execute a command
     // It will listen for messages that will start with `!`
