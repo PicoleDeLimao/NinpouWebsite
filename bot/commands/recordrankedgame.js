@@ -26,6 +26,7 @@ module.exports = function(bot, ev, gameId) {
 					message += gameString;
 					var channel = await bot.channels.fetch('692560325584748616');
 					channel.send(message);
+					ev.channel.send('Request was sent to channel <#692560325584748616>. Wait for a moderator to approve it. **Oink!** :pig:');
 				});
 			}
 		});
