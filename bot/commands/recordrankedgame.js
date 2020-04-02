@@ -21,7 +21,7 @@ module.exports = function(bot, ev, gameId) {
 				}
 			} else { 
 				var game = JSON.parse(body);
-				var message = '<@' + ev.author.id + '> asked to make the game `' + gameId + '` ranked. React with 👍 to approve it.\n\n';
+				var message = '<@' + ev.author.id + '> asked to make the game `' + gameId + '` ranked. React with 👍 to approve it or 👎 to reject it.\n\n';
 				gameToString(ev, game, async function(gameString) {
 					message += gameString;
 					var channel = await bot.channels.fetch('692560325584748616');
