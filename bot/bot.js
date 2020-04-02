@@ -840,7 +840,11 @@ bot.on('message', async function(ev) {
 							displayLastGames(ev);
 							break;*/
 						case 'recorded':
-							displayLastRecordedGames(ev);
+							if (args.length > 0) {
+								displayLastRecordedGames(ev, args[0]);
+							} else {
+								displayLastRecordedGames(ev, 0);
+							}
 							break;
 						case 'i':
 						case 'info': 
