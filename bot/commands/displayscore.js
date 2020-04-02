@@ -4,7 +4,8 @@ var http = require('http');
 var getPlayerName = require('./getplayername');
 
 function getGameString(game) {
-	return '<' + game.id + '>\t< ' + (game.hero && game.hero || 'Unknown') + ' >\tKDA: <' + game.kills + '/' + game.deaths + '/' + game.assists + '>\tPoints: <' + game.points + '>\t' + (game.win ? '< VICTORY >' : '< DEFEAT >') + '\t(' + game.date + ')\n';
+	ranked = game.ranked ? '  Ranked  ' : 'Not ranked';
+	return '<' + game.id + '>\t< ' + ranked + ' >\t< ' + (game.hero && game.hero || 'Unknown') + ' >\tKDA: <' + game.kills + '/' + game.deaths + '/' + game.assists + '>\tPoints: <' + game.points + '>\t' + (game.win ? '< VICTORY >' : '< DEFEAT >') + '\t(' + game.date + ')\n';
 }
 
 function getHeroString(hero, index) {
