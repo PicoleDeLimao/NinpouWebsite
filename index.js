@@ -8,6 +8,7 @@ var auth = require('./config/auth');
 var bot = require('./bot/bot');
 var Stat = require('./models/Stat');
 var Alias = require('./models/Alias');
+var Game = require('./models/Game')
 var version = require('./version');
 
 var app = express();
@@ -54,6 +55,12 @@ var port = process.env.PORT || 8080;
 app.listen(port, function() {
 	console.log('Listening on port ' + port + '...');
 	setInterval(function() {
+		Game.find({}, function(err, games) {
+			for (var i = 0; i < games.length; i++) {
+				games[i].ranked = true;
+				games[i].save();
+			}
+		});
 		Stat.find({ }, function(err, stats) {
 			if (err) {
 				console.error(err);

@@ -118,7 +118,7 @@ function getPlayerPoints(game, callback) {
 	})(0);
 }
 
-router.post('/', function(req, res) {  
+router.post('/', function(req, res) { 
 	var game = new Game({
 		id: mongoose.Types.ObjectId().toString(),
 		createdAt: new Date(),
@@ -147,24 +147,33 @@ router.post('/', function(req, res) {
 				if (err) return res.status(500).json({ error: err });
 				game.save(function(err) {
 					if (err) return res.status(500).json({ error: err });
-					var changes = [];
 					saveHeroStats(game, function(err) {
 						if (err) return res.status(500).json({ error: err });
-						getPlayerPoints(game, function(err, oldPoints) {
-							if (err) return res.status(500).json({ error: err });
-							savePlayerStats(game, function(err) {
-								if (err) return res.status(500).json({ error: err });
-								getPlayerPoints(game, function(err, newPoints) {
-									if (err) return res.status(500).json({ error: err });
-									var changes = [];
-									for (var username in oldPoints) {
-										changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
-									}
-									return res.status(200).json({ changes: changes });
-								});
-							});
-						});
+						return res.status(200).send();
 					});
+				});
+			});
+		});
+	});
+});
+
+router.post('/ranked/:game_id', function(req, res) {
+	Game.findOne(req.params.game_id, function(err, game) {
+		if (err) return res.status(500).json({ error: err });
+		else if (!game) return res.status(404).json({ error: 'Game not found.' });
+		else if (game.ranked) return res.status(400).json({ error: 'This game is already ranked.' });
+		var changes = [];
+		getPlayerPoints(game, function(err, oldPoints) {
+			if (err) return res.status(500).json({ error: err });
+			savePlayerStats(game, function(err) {
+				if (err) return res.status(500).json({ error: err });
+				getPlayerPoints(game, function(err, newPoints) {
+					if (err) return res.status(500).json({ error: err });
+					var changes = [];
+					for (var username in oldPoints) {
+						changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
+					}
+					return res.status(200).json({ changes: changes });
 				});
 			});
 		});
