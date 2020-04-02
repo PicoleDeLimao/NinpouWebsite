@@ -75,7 +75,8 @@ function savePlayerStats(game, callback) {
 						assists: game.slots[slot].assists,
 						points: game.slots[slot].kills * 10 + game.slots[slot].assists * 2 - game.slots[slot].deaths * 5,
 						gpm: game.slots[slot].gpm,
-						count: 0
+						count: 0,
+						games: 0
 					});
 					var alpha = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
 					var beta = 1 - alpha; 
@@ -86,7 +87,7 @@ function savePlayerStats(game, callback) {
 					stat.gpm = stat.gpm * alpha + game.slots[slot].gpm * beta;
 					if (game.slots[slot].win) stat.wins += 1;
 					stat.games += 1; 
-					stat.count += 1;
+					stat.count = stat.games;
 					stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
 					stat.score = Calculator.calculateScore(stat);
 					stat.save(function(err) {
@@ -453,7 +454,7 @@ router.post('/players/:username/rerank', function(req, res) {
 					stat.gpm = stat.gpm * alpha + game.slots[slot].gpm * beta;
 					if (game.slots[slot].win) stat.wins += 1;
 					stat.games += 1; 
-					stat.count += 1;
+					stat.count = stat.games;
 					stat.chanceWin = Calculator.AgrestiCoullLower(stat.games, stat.wins);
 					stat.score = Calculator.calculateScore(stat);
 				}
