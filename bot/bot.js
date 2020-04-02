@@ -36,6 +36,7 @@ var displayScore = require('./commands/displayscore');
 var displayRanking = require('./commands/displayranking');
 var recordGame = require('./commands/recordgame');
 var recordRankedGame = require('./commands/recordrankedgame');
+var recordRankedGameApprove = require('./commands/recordrankedgameapprove');
 var displayLastRecordedGames = require('./commands/displaylastrecordedgames');
 var displayGameInfo = require('./commands/displaygameinfo');
 var buy = require('./commands/buy');
@@ -251,10 +252,16 @@ bot.on('messageReactionAdd', async function(ev, user) {
 	var musicIdeaId = '693108450749841478';
 	var rankedGames = '692560325584748616';
 	if (channelId == rankedGames) {
+		var gameId = ev.message.content.split('\n')[0].split('`')[1];
+		var channel = await bot.channels.fetch(rankedGames);
 		if (ev.emoji.name == '👍') {
-			var gameId = ev.message.content.split('\n')[0].split('`')[1];
-			var channel = await bot.channels.fetch(rankedGames);
-			channel.send('<@' + ev.message.mentions.users.array()[0] + '> Game `' + gameId + '` was ✅ approved as a ranked game.');
+			recordRankedGameApprove(ev, gameId, function(err, message) {
+				if (err) {
+					channel.send(err);
+				} else {
+					channel.send('<@' + ev.message.mentions.users.array()[0] + '> Game `' + gameId + '` was ✅ approved as a ranked game.\n\n' + message);
+				}
+			});
 		} else if (ev.emoji.name == '👎') {
 			channel.send('<@' + ev.message.mentions.users.array()[0] + '> Game `' + gameId + '` was ❌ rejected as a ranked game.');
 		}
