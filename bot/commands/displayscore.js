@@ -97,7 +97,7 @@ module.exports = function(ev, playerName, hist, hero) {
 						'Average gold/minute: <' + Math.round(player.gpm) + '> (Ranking <' + player.ranking.gpm + '>)\n' +   
 						'Chance of winning:   <' + (player.chance).toFixed(2) + '%> (Ranking <' + player.ranking.chance + '>)\n\n```';
 						if (!hist) ev.channel.send(response);
-						if (hist && ranking.lastGames.length > 0) {
+						if (hist && (ranking.ranked.lastGames.length + ranking.notRanked.lastGames.length) > 0) {
 							response = '```md\nHistory (last six months):\n\n';
 							
 							if (hero) {
