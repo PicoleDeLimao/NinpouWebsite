@@ -206,7 +206,7 @@ router.get('/:alias', function(req, res) {
 			Item.findOne({ id: alias.itemArmor.id }, function(err, itemArmor) {
 				if (itemArmor) alias.itemArmor = mergeObjects(alias.itemArmor, itemArmor.toObject());
 				Item.findOne({ id: alias.itemSupport.id }, function(err, itemSupport) {
-					alias.itemSupport = mergeObjects(alias.itemSupport, itemSupport.toObject());
+					if (itemSupport) alias.itemSupport = mergeObjects(alias.itemSupport, itemSupport.toObject());
 					var ids = [];
 					for (var i = 0; i < alias.itemConsumables.length; i++) {
 						ids.push(alias.itemConsumables[i].id);

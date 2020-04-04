@@ -767,7 +767,7 @@ bot.on('message', async function(ev) {
 								'[15] [ 100000g] [Jounin Cloth]              : +1000 armor\n' + 
 								'[16] [ 500000g] [ANBU Cloth]                : +5000 armor\n' + 
 								'[17] [1000000g] [Kage Cloth]                : +10000 armor\n' + 
-								'< ACCESSORIES >\n' + 
+								'< SUPPORT >\n' + 
 								'[18] [   1000g] [Genin Forehead]            : +100 hp\n' + 
 								'[19] [   5000g] [Reinforced Genin Forehead] : +500 hp\n' + 
 								'[20] [  10000g] [Shinigami Mask]            : +1000 hp\n' + 

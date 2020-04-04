@@ -97,7 +97,7 @@ module.exports = function(ev, user) {
 						'Armor:     [' + printGold(getArmor(data)) + ']\n\n' +
 						'Weapon:    \n' + getItem(data.itemWeapon, spaces) + '\n' +
 						'Cloth:     \n' + getItem(data.itemArmor, spaces) + '\n' + 
-						'Accessory: \n' + getItem(data.itemSupport, spaces) + '```'; 
+						'Support:   \n' + getItem(data.itemSupport, spaces) + '```'; 
 						var previewCacheUrl = '?_=' + (new Date()).getTime();
 						var img = 'http://www.narutoninpou.com/images/users/' + user + '.png' + previewCacheUrl;
 						var msgEmbed = new Discord.MessageEmbed() 
