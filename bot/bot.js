@@ -396,7 +396,7 @@ bot.on('message', async function(ev) {
 				'< !characters >           : Display characters available to buy\n' + 
 				'< !summons >              : Display summons available to buy\n' + 
 				'< !status > <status>      : Set a status\n' + 
-				'< !upgrade > [weapon|cloth|support] [times] : Double the attributes of an item in your inventory\n' +
+				'< !upgrade > <weapon|cloth|support> [times] : Double the attributes of an item in your inventory\n' +
 				//'< !jutsus >            : Display jutsus available to be purchased\n' +
 				'```'
 			);  
