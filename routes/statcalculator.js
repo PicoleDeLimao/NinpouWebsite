@@ -79,6 +79,7 @@ function getPlayerStats(username, callback, autocomplete) {
 				kills: 0,
 				deaths: 0,
 				assists: 0,
+				points: 0,
 				gpm: 0,
 				wins: 0,
 				games: 0,
