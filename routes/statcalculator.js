@@ -159,7 +159,7 @@ function getAllPlayersRanking(callback, minNumGames) {
 			stats[i].score = Calculator.calculateScore(stats[i]); 
 		}
 		for (var i = stats.length - 1; i >= 0; i--) {
-			if (stats[i]._id == null || stats[i].gamesRanked < minNumGames) {
+			if (stats[i]._id == null || stats[i].gamesRanked < minNumGames || stats[i].games < 10) {
 				stats.splice(i, 1); 
 			}   
 		} 
