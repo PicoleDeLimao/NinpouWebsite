@@ -75,45 +75,6 @@ router.use('/:alias', function(req, res, next) {
 	});
 });
  
-router.use('/:alias/:item_id', function(req, res, next) {
-	Item.findOne({ id: parseInt(req.params.item_id) }, function(err, item) {
-		if (err) return res.status(500).json({ error: err });
-		else if (!item) return res.status(404).json({ error: 'Item not found.' });
-		req.item = item;
-		next(); 
-	});
-});
-
-router.post('/:alias/:item_id', function(req, res) {
-	if (req.alias.gold < req.item.price) {
-		return res.status(400).json({ error: 'You don\'t have enough gold.' });
-	}
-	if (req.item.classification == 'weapon') {
-		req.alias.itemWeapon = req.item;
-	} else if (req.item.classification == 'armor') {
-		req.alias.itemArmor = req.item;
-	} else if (req.item.classification == 'support') {
-		req.alias.itemSupport = req.item;
-	} else {
-		var contains = false; 
-		for (var i = 0; i < req.alias.itemConsumables.length; i++) {
-			if (req.alias.itemConsumables[i].id == req.item.id) {
-				req.alias.itemConsumables[i].amount += 1;
-				contains = true;
-				break;
-			}
-		}
-		if (!contains) {
-			req.alias.itemConsumables.push({ id: req.item.id, amount: 1 }); 
-		}
-	}
-	req.alias.gold -= req.item.price; 
-	req.alias.save(function(err) {
-		if (err) return res.status(500).json({ error: err });
-		return res.status(200).json(req.alias); 
-	});
-});
-
 function printGold(x) {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -138,7 +99,7 @@ router.post('/:alias/:type/level', function(req, res) {
 				}
 			});
 		}
-	} else if (req.params.type == 'armor') {
+	} else if (req.params.type == 'cloth') {
 		if (!req.alias.itemArmor) {
 			return res.status(400).json({ error: 'You don\'t have a cloth.' });
 		} else {
@@ -177,6 +138,45 @@ router.post('/:alias/:type/level', function(req, res) {
 	} else {
 		return res.status(400).json({ error: 'Item type not allowed.' });
 	}
+});
+
+router.use('/:alias/:item_id', function(req, res, next) {
+	Item.findOne({ id: parseInt(req.params.item_id) }, function(err, item) {
+		if (err) return res.status(500).json({ error: err });
+		else if (!item) return res.status(404).json({ error: 'Item not found.' });
+		req.item = item;
+		next(); 
+	});
+});
+
+router.post('/:alias/:item_id', function(req, res) {
+	if (req.alias.gold < req.item.price) {
+		return res.status(400).json({ error: 'You don\'t have enough gold.' });
+	}
+	if (req.item.classification == 'weapon') {
+		req.alias.itemWeapon = req.item;
+	} else if (req.item.classification == 'armor') {
+		req.alias.itemArmor = req.item;
+	} else if (req.item.classification == 'support') {
+		req.alias.itemSupport = req.item;
+	} else {
+		var contains = false; 
+		for (var i = 0; i < req.alias.itemConsumables.length; i++) {
+			if (req.alias.itemConsumables[i].id == req.item.id) {
+				req.alias.itemConsumables[i].amount += 1;
+				contains = true;
+				break;
+			}
+		}
+		if (!contains) {
+			req.alias.itemConsumables.push({ id: req.item.id, amount: 1 }); 
+		}
+	}
+	req.alias.gold -= req.item.price; 
+	req.alias.save(function(err) {
+		if (err) return res.status(500).json({ error: err });
+		return res.status(200).json(req.alias); 
+	});
 });
 
 module.exports = router;

@@ -396,7 +396,7 @@ bot.on('message', async function(ev) {
 				'< !characters >           : Display characters available to buy\n' + 
 				'< !summons >              : Display summons available to buy\n' + 
 				'< !status > <status>      : Set a status\n' + 
-				'< !upgrade > [weapon|armor|support] [times] : Double the attributes of an item in your inventory\n' +
+				'< !upgrade > [weapon|cloth|support] [times] : Double the attributes of an item in your inventory\n' +
 				//'< !jutsus >            : Display jutsus available to be purchased\n' +
 				'```'
 			);  
@@ -1044,7 +1044,7 @@ bot.on('message', async function(ev) {
 							}
 							break;
 						case 'upgrade':
-							if (args.length > 1) {
+							if (args.length > 0) {
 								upgradeItem(ev, args[0], args[1] || 1);
 							} else {
 								ev.channel.send('Me no understand! Use **!upgrade <item_type> <num_times>**');
