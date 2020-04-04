@@ -50,7 +50,7 @@ function getRankingPositions(players, player) {
 	player.ranking.wins = getRankingPosition(players, player, 'wins');
 	return player; 
 }; 
-  
+
 function getPlayerStats(username, callback, autocomplete) {
 	var search;
 	if (autocomplete) {
@@ -68,7 +68,7 @@ function getPlayerStats(username, callback, autocomplete) {
 				aliases.push(new RegExp(['^', escapeRegExp(usernames[i].toLowerCase()), '$'].join(''), 'i'));
 			}  
 			usernames = aliases; 
-		} else { 
+		} else {
 			usernames = [new RegExp(['^', escapeRegExp(username.toLowerCase()), '$'].join(''), 'i')];
 		}
 		Stat.find({ username: { $in: usernames } }).sort('_id').exec(function(err, stats) {
@@ -82,24 +82,27 @@ function getPlayerStats(username, callback, autocomplete) {
 				gpm: 0,
 				wins: 0,
 				games: 0,
+				gamesRanked: 0,
 				chance: 0,
-				score: 0
-			};     
+				score: 0,
+				count: 0
+			};
 			for (var i = 0; i < stats.length; i++) {
-				allStat.kills += stats[i].kills;
-				allStat.deaths += stats[i].deaths;
-				allStat.assists += stats[i].assists;
-				allStat.gpm += stats[i].gpm;
-				allStat.wins += stats[i].wins;
 				allStat.games += stats[i].games;
-			}  
-			allStat.chance = Calculator.AgrestiCoullLower(allStat.games, allStat.wins); 
-			allStat.kills /= stats.length;
-			allStat.deaths /= stats.length;
-			allStat.assists /= stats.length; 
-			allStat.gpm = allStat.gpm / stats.length * 100;
-			allStat.points = allStat.kills * 10 + allStat.assists * 2 - allStat.deaths * 5; 
-			allStat.chance *= 100;
+				allStat.wins += stats[i].wins;
+				allStat.gamesRanked += stats[i].gamesRanked || 0;
+			}
+			if (allStat.gamesRanked > 0) {
+				for (var i = 0; i < stats.length; i++) {
+					var factor = (stats[i].gamesRanked || 0) / allStat.gamesRanked;
+					allStat.kills += stats[i].kills * factor;
+					allStat.deaths += stats[i].deaths * factor;
+					allStat.assists += stats[i].assists * factor;
+					allStat.points += stats[i].points * factor;
+					allStat.gpm += stats[i].gpm * factor;
+				}
+			}
+			allStat.chance = Calculator.AgrestiCoullLower(allStat.gamesRanked, allStat.wins) * 100; 
 			allStat.score = Calculator.calculateScore(allStat);
 			//allStat.gpm = allStat.gpm * 100;
 			allStat.usernames = usernames; 
@@ -119,8 +122,8 @@ function getHeroStats(name, callback) {
 			stat.kills /= stat.games;
 			stat.deaths /= stat.games;
 			stat.assists /= stat.games;
+			stat.points /= stat.games;
 			stat.gpm = stat.gpm / stat.games * 100; 
-			stat.points = stat.kills * 10 + stat.assists * 2 - stat.deaths * 5;
 			stat.chance *= 100;
 			stat.score = Calculator.calculateScore(stat); 
 			return callback(null, stat);
@@ -128,34 +131,35 @@ function getHeroStats(name, callback) {
 	});
 };
 
-function getAllPlayersRanking(callback) {
+function getAllPlayersRanking(callback, minNumGames) {
+	minNumGames = minNumGames || 10;
 	Stat.aggregate([
 	{
 		$group: {
 			_id: '$alias',
-			kills: { $sum: '$kills' },
-			deaths: { $sum: '$deaths' },
-			assists: { $sum: '$assists' },
-			gpm: { $sum: '$gpm' },
+			kills: { $sum: { $multiply: [ '$kills', '$gamesRanked' ] } },
+			deaths: { $sum: { $multiply: [ '$deaths', '$gamesRanked' ] } },
+			assists: { $sum: { $multiply: [ '$assists', '$gamesRanked' ] } },
+			points: { $sum: { $multiply: [ '$points', '$gamesRanked' ] } },
+			gpm: { $sum: { $multiply: [ '$gpm', '$gamesRanked' ] } },
 			wins: { $sum: '$wins' },
 			games: { $sum: '$games' },
-			count: { $sum: 1 }
+			gamesRanked: { $sum: '$gamesRanked' }
 		}
 	}
 	]).exec(function(err, stats) {
 		if (err) return callback(err); 
 		for (var i = 0; i < stats.length; i++) {
-			stats[i].chance = Calculator.AgrestiCoullLower(stats[i].games, stats[i].wins);
-			stats[i].kills /= stats[i].count;
-			stats[i].deaths /= stats[i].count;
-			stats[i].assists /= stats[i].count;
-			stats[i].gpm = stats[i].gpm / stats[i].count * 100; 
-			stats[i].points = stats[i].kills * 10 + stats[i].assists * 2 - stats[i].deaths * 5;
-			stats[i].chance *= 100;
+			stats[i].kills /= stats[i].gamesRanked;
+			stats[i].deaths /= stats[i].gamesRanked;
+			stats[i].assists /= stats[i].gamesRanked;
+			stats[i].points /= stats[i].gamesRanked;
+			stats[i].gpm = stats[i].gpm / stats[i].gamesRanked * 100; 
+			stats[i].chance = Calculator.AgrestiCoullLower(stats[i].gamesRanked, stats[i].wins) * 100;
 			stats[i].score = Calculator.calculateScore(stats[i]); 
 		}    
 		for (var i = stats.length - 1; i >= 0; i--) {
-			if (stats[i].games < 10) {
+			if (stats[i].gamesRanked < minNumGames) {
 				stats.splice(i, 1); 
 			}   
 		} 
@@ -180,8 +184,8 @@ function getAllHeroesRanking(callback) {
 				heroes[i].kills /= heroes[i].games;
 				heroes[i].deaths /= heroes[i].games;
 				heroes[i].assists /= heroes[i].games;
+				heroes[i].points /= heroes[i].games;
 				heroes[i].gpm = heroes[i].gpm / heroes[i].games * 100; 
-				heroes[i].points = heroes[i].kills * 10 + heroes[i].assists * 2 - heroes[i].deaths * 5;
 				heroes[i].chance *= 100;
 				heroes[i].score = Calculator.calculateScore(heroes[i]); 
 				Hero.findOne({ id: heroes[i].hero }, function(err, hero) {
@@ -196,6 +200,64 @@ function getAllHeroesRanking(callback) {
 		});
 	});
 };
+
+function getPlayerHeroesRanking(username, usernames, heroNames, timePeriod, callback) {
+	Alias.findOne({ $or: [{username: username }, { alias: username }] }, function(err, user) {
+		if (err) return callback(err);
+		Game.aggregate([
+			{
+				$unwind: '$slots',
+			},
+			{
+				$match: {
+					'createdAt': { $gt: timePeriod },
+					'slots.username': { $in: usernames },
+					'recorded': true
+				}
+			},
+			{
+				$group: {
+					_id: '$slots.hero',
+					kills: { $sum: '$slots.kills' },
+					deaths: { $sum: '$slots.deaths' },
+					assists: { $sum: '$slots.assists' },
+					points: { $sum: '$slots.points' },
+					gpm: { $sum: '$slots.gpm' },
+					wins: { $sum: { $cond: ['$slots.win', 1, 0] } },
+					games: { $sum: 1 }
+				}
+			}
+		]).exec(function(err, heroes) {
+			if (err) return callback(err);
+			var newHeroes = [];
+			for (var i = 0; i < heroes.length; i++) {
+				heroes[i].kills /= heroes[i].games;
+				heroes[i].deaths /= heroes[i].games;
+				heroes[i].assists /= heroes[i].games;
+				heroes[i].points /= heroes[i].games;
+				heroes[i].gpm = heroes[i].gpm / heroes[i].games * 100; 
+				heroes[i].chance *= 100;
+				heroes[i].score = Calculator.calculateScore(heroes[i]); 
+				heroes[i].hero = heroNames[heroes[i]._id];
+				if (heroes[i]._id != 0 && heroes[i].points != 0 && heroes[i].hero && heroes[i].games >= 3) {
+					newHeroes.push(heroes[i]);
+				}
+			}
+			newHeroes.sort(function(a, b) {
+				return b.points - a.points;
+			});
+			var bestHeroes = newHeroes.slice(0, 5);
+			newHeroes.sort(function(a, b) {
+				return a.points - b.points;
+			});
+			var worstHeroes = newHeroes.slice(0, 5);
+			newHeroes.sort(function(a, b) {
+				return b.points - a.points;
+			});
+			return callback(null, bestHeroes, worstHeroes, newHeroes);
+		});
+	});
+}
 
 function calculateBalanceFactor(game, callback) {
 	var slots = [];
@@ -232,5 +294,6 @@ module.exports = {
 	'getHeroStats': getHeroStats,
 	'getAllPlayersRanking': getAllPlayersRanking,
 	'getAllHeroesRanking': getAllHeroesRanking,
+	'getPlayerHeroesRanking': getPlayerHeroesRanking,
 	'calculateBalanceFactor': calculateBalanceFactor
 };

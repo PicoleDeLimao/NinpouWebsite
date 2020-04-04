@@ -8,7 +8,8 @@ var auth = require('./config/auth');
 var bot = require('./bot/bot');
 var Stat = require('./models/Stat');
 var Alias = require('./models/Alias');
-var Game = require('./models/Game')
+var Game = require('./models/Game');
+var HeroStat = require('./models/HeroStat');
 var version = require('./version');
 
 var app = express();
