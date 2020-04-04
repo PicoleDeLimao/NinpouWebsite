@@ -89,7 +89,7 @@ module.exports = function(ev, playerName, hist, hero) {
 						if (err) return ev.channel.send('Couldn\'t fetch player score. :( **Oink!** :pig:');
 						var player = ranking.stat;
 						var response = '```md\n';  
-						response += '< ' + playerName + ' > is on ranking <' + player.ranking.score + '> with a score of <' + Math.round(player.score) + '> and a win percentage of <' + (player.wins / player.games * 100).toFixed(2) + '%> out of <' + player.gamesRanked + '> games. More info:\n\n' +   
+						response += '< ' + playerName + ' > is on ranking <' + player.ranking.score + '> with a score of <' + Math.round(player.score) + '> and a win percentage of <' + (player.wins / player.games * 100).toFixed(2) + '%> out of <' + player.gamesRanked + '> ranked games. More info:\n\n' +   
 						'Average kills:       <' + Math.round(player.kills) + '> (Ranking <' + player.ranking.kills + '>)\n' + 
 						'Average deaths:      <' + Math.round(player.deaths) + '> (Ranking <' + player.ranking.deaths + '>)\n' + 
 						'Average assists:     <' + Math.round(player.assists) + '> (Ranking <' + player.ranking.assists + '>)\n' + 

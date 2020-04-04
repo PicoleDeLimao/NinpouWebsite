@@ -76,7 +76,7 @@ module.exports = function(ev, attribute) {
 								member.roles.remove(role);
 							}
 						});
-						await author.roles.add(role);
+						author.roles.add(role);
 						return ev.channel.send('Congratulations! From ' + ev.guild.memberCount + ' players, you are the best!!!!! **Oink**!!!');
 					} else {
 						return ev.channel.send('You are not top ranking!');

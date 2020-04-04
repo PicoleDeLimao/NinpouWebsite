@@ -38,7 +38,7 @@ function slotToString(slot, largestName, largestRealm, largestCriteria, recorded
 			criteriaSpaces += ' ';
 		}
 		if (recorded && !spectator) {
-			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + '] [' + (slot.hero && slot.hero.name ? slot.hero.name : 'Unknown' ) + ']\n'; 
+			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [P: ' + (' '.repeat(3 - (slot.points + '').length)) + slot.points '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + '] [' + (slot.hero && slot.hero.name ? slot.hero.name : 'Unknown' ) + ']\n'; 
 		} else {
 			response += '[' + nameSpaces + slot.username + ']' + ' [' + capitalizeFirstLetter(criteria) + ': ' + criteriaSpaces + Math.round(criteriaOnSlot(slot, criteria)) + ']\n';
 		}
@@ -72,7 +72,7 @@ module.exports = function(ev, game, callback, criteria) {
 						var points = 0;
 						var win = false;
 						for (var i = 0; i < 3; i++) {
-							points += game.slots[i].kills * 10 + game.slots[i].assists * 2 - game.slots[i].deaths * 5;
+							points += game.slots[i].points;
 							if (game.slots[i].win) {
 								win = true;
 							}
@@ -92,7 +92,7 @@ module.exports = function(ev, game, callback, criteria) {
 						var points = 0;
 						var win = false;
 						for (var i = 3; i < 6; i++) {
-							points += game.slots[i].kills * 10 + game.slots[i].assists * 2 - game.slots[i].deaths * 5;
+							points += game.slots[i].points;
 							if (game.slots[i].win) {
 								win = true;
 							}
@@ -112,7 +112,7 @@ module.exports = function(ev, game, callback, criteria) {
 						var points = 0;
 						var win = false;
 						for (var i = 6; i < 9; i++) {
-							points += game.slots[i].kills * 10 + game.slots[i].assists * 2 - game.slots[i].deaths * 5;
+							points += game.slots[i].points;
 							if (game.slots[i].win) {
 								win = true;
 							}

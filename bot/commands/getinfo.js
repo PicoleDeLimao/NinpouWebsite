@@ -52,7 +52,7 @@ function getSummonName(summon) {
 	} else if (summon == 'snake2') {
 		return 'Snake lvl. 2';
 	} else if (summon == 'snake3') {
-		return 'Manda';
+		return 'Aoda';
 	} else if (summon == 'slug1') {
 		return 'Katsuyu lvl. 1';
 	} else if (summon == 'slug2') {
