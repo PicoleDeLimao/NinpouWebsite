@@ -1045,7 +1045,7 @@ bot.on('message', async function(ev) {
 							break;
 						case 'upgrade':
 							if (args.length > 0) {
-								upgradeItem(ev, args[0], args[1] || 1);
+								upgradeItem(ev, args[0], args[1]);
 							} else {
 								ev.channel.send('Me no understand! Use **!upgrade <item_type> <num_times>**');
 							}

@@ -80,7 +80,7 @@ function printGold(x) {
 }
 
 router.post('/:alias/:type/level', function(req, res) {
-	var times = Math.min(1, req.query.times || 1);
+	var times = Math.max(1, parseInt(req.query.times, 2) || 1);
 	if (req.params.type == 'weapon') {
 		if (!req.alias.itemWeapon) {
 			return res.status(400).json({ error: 'You don\'t have a weapon.' });
