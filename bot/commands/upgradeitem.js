@@ -3,7 +3,7 @@
 var http = require('http');
  
 module.exports = function(ev, itemType, times) {
-	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/items/' + ev.author.id + '/' + itemType + '/level?times' + times, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
+	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/items/' + ev.author.id + '/' + itemType + '/level?times=' + times, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
 			body += chunk;
