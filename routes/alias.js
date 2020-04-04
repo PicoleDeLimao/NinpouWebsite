@@ -185,12 +185,12 @@ router.get('/characters', function(req, res) {
 });
 
 function mergeObjects(obj1, obj2) {
+	var level = obj1['level'];
 	for (var property in obj2) {
 		obj1[property] = obj2[property];
 	}
-	if (!obj1['level']) {
-		obj1['level'] = 1;
-	}
+	obj1['level'] = level || 1;
+	return obj1;
 };
 
 router.get('/:alias', function(req, res) {
@@ -202,11 +202,11 @@ router.get('/:alias', function(req, res) {
 		alias.itemSupport = alias.itemSupport || { id: null };
 		alias.itemConsumables = alias.itemConsumables || [];
 		Item.findOne({ id: alias.itemWeapon.id }, function(err, itemWeapon) {
-			if (itemWeapon) alias.itemWeapon = mergeObjects(alias.itemWeapon, itemWeapon);
+			if (itemWeapon) alias.itemWeapon = mergeObjects(alias.itemWeapon, itemWeapon.toObject());
 			Item.findOne({ id: alias.itemArmor.id }, function(err, itemArmor) {
-				if (itemArmor) alias.itemArmor = mergeObjects(alias.itemArmor, itemArmor);
+				if (itemArmor) alias.itemArmor = mergeObjects(alias.itemArmor, itemArmor.toObject());
 				Item.findOne({ id: alias.itemSupport.id }, function(err, itemSupport) {
-					alias.itemSupport = mergeObjects(alias.itemSupport, itemSupport);
+					alias.itemSupport = mergeObjects(alias.itemSupport, itemSupport.toObject());
 					var ids = [];
 					for (var i = 0; i < alias.itemConsumables.length; i++) {
 						ids.push(alias.itemConsumables[i].id);
