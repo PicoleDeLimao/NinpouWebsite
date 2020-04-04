@@ -41,6 +41,7 @@ var recordRankedGameApprove = require('./commands/recordrankedgameapprove');
 var displayLastRecordedGames = require('./commands/displaylastrecordedgames');
 var displayGameInfo = require('./commands/displaygameinfo');
 var buy = require('./commands/buy');
+var upgradeItem = require('./commands/upgradeitem');
 var join = require('./commands/join'); 
 var summon = require('./commands/summon');
 var character = require('./commands/character');
@@ -1040,6 +1041,13 @@ bot.on('message', async function(ev) {
 								setStatus(ev, args.join(' '));
 							} else {
 								ev.channel.send('Me no understand! Use **!status <status>**');
+							}
+							break;
+						case 'upgrade':
+							if (args.length > 1) {
+								upgradeItem(ev, args[0], args[1] || 1);
+							} else {
+								ev.channel.send('Me no understand! Use **!upgrade <item_type> <num_times>**');
 							}
 							break;
 						case 'setcolor':
