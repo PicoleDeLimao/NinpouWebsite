@@ -108,7 +108,7 @@ function savePlayerStats(game, callback) {
 					stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
 					stat.deaths = stat.deaths * alpha + game.slots[slot].deaths * beta;
 					stat.assists = stat.assists * alpha + game.slots[slot].assists * beta;
-					stat.points = stat.points * alpha + points * beta;
+					stat.points = stat.points * alpha + game.slots[slot].points * beta;
 					stat.gpm = stat.gpm * alpha + game.slots[slot].gpm * beta;
 					if (game.slots[slot].win) stat.wins += 1;
 					stat.gamesRanked += 1; 
