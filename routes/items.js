@@ -94,7 +94,7 @@ router.post('/:alias/:type/level', function(req, res) {
 					return res.status(400).json({ error: 'You don\'t have enough gold (need ' + printGold(cost) + 'g).' })
 				} else {
 					req.alias.itemWeapon.level = (req.alias.itemWeapon.level || 1) + times;
-					req.alias.gold -= costç
+					req.alias.gold -= cost;
 					req.alias.save(function(err) {
 						if (err) return res.status(500).json({ error: err });
 						return res.status(200).send('Weapon leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemWeapon.level + '\n\n**Balance:** -' + printGold(cost) + 'g')
@@ -113,7 +113,7 @@ router.post('/:alias/:type/level', function(req, res) {
 					return res.status(400).json({ error: 'You don\'t have enough gold (need ' + printGold(cost) + 'g).' })
 				} else {
 					req.alias.itemArmor.level = (req.alias.itemArmor.level || 1) + times;
-					req.alias.gold -= costç
+					req.alias.gold -= cost;
 					req.alias.save(function(err) {
 						if (err) return res.status(500).json({ error: err });
 						return res.status(200).send('Cloth leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemArmor.level + '\n\n**Balance:** -' + printGold(cost) + 'g')
@@ -132,7 +132,7 @@ router.post('/:alias/:type/level', function(req, res) {
 					return res.status(400).json({ error: 'You don\'t have enough gold (need ' + printGold(cost) + 'g).' })
 				} else {
 					req.alias.itemSupport.level = (req.alias.itemSupport.level || 1) + times;
-					req.alias.gold -= costç
+					req.alias.gold -= cost;
 					req.alias.save(function(err) {
 						if (err) return res.status(500).json({ error: err });
 						return res.status(200).send('Support item leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemSupport.level + '\n\n**Balance:** -' + printGold(cost) + 'g')
