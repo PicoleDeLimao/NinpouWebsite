@@ -434,10 +434,6 @@ router.post('/players/:username/rerank', function(req, res) {
 						Stat.findOne({ username: { $in: allStat.usernames } }, function(err, stat) {
 							var game = games[i];
 							var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
-							console.log(game);
-							console.log(slot);
-							console.log(game.slots[slot]);
-							console.log(stat);
 							stat.kills = game.slots[slot].kills,
 							stat.deaths = game.slots[slot].deaths,
 							stat.assists = game.slots[slot].assists,

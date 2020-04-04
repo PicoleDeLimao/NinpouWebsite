@@ -10,7 +10,6 @@ module.exports = function(ev, summon) {
 		});
 		res.on('end', function() {
 			if (res.statusCode != 200) {
-				console.log(body);
 				try {
 					var data = JSON.parse(body);
 					ev.channel.send(data.error);

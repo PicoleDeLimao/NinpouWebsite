@@ -68,7 +68,6 @@ module.exports = function(ev, mission) {
 				body += chunk;
 			}); 
 			res.on('end', async function() {
-				console.log(body);
 				if (res.statusCode != 200) {
 					try {
 						var data = JSON.parse(body);

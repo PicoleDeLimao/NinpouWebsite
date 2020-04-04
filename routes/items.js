@@ -14,7 +14,6 @@ router.get('/reset', function(req, res) {
 			if (index == alias.length) {
 				return;
 			}
-			console.log(alias[index].username);
 			Mission.find({ username: alias[index].username }, function(err, missions) {
 				var gold = 0;
 				for (var i = 0; i < missions.length; i++) {
@@ -80,9 +79,7 @@ function printGold(x) {
 }
 
 router.post('/:alias/:type/level', function(req, res) {
-	console.log(req.query.times);
 	var times = Math.max(1, parseInt(req.query.times, 0) || 1);
-	console.log(times);
 	if (req.params.type == 'weapon') {
 		if (!req.alias.itemWeapon) {
 			return res.status(400).json({ error: 'You don\'t have a weapon.' });

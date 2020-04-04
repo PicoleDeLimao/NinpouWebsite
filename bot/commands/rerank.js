@@ -3,7 +3,6 @@
 var http = require('http');
 
 module.exports = function(ev, playerId) { 
-	console.log(playerId);
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/players/' + playerId + '/rerank', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
@@ -12,7 +11,6 @@ module.exports = function(ev, playerId) {
 		res.on('end', function() {
 			if (res.statusCode != 200) {
 				try {
-					console.log(body);
 					var data = JSON.parse(body);
 					ev.channel.send(data.error); 
 				} catch (err) {

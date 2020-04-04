@@ -9,7 +9,6 @@ module.exports = function(ev, alias, author) {
 			body += chunk;
 		});
 		res.on('end', function() {
-			console.log(body);
 			if (res.statusCode != 201) {
 				try {
 					var data = JSON.parse(body);
