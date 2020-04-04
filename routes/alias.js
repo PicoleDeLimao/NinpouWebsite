@@ -184,6 +184,15 @@ router.get('/characters', function(req, res) {
 	});
 });
 
+function mergeObjects(obj1, obj2) {
+	for (var property in obj2) {
+		obj1[property] = obj2[property];
+	}
+	if (!obj1['level']) {
+		obj1['level'] = 1;
+	}
+};
+
 router.get('/:alias', function(req, res) {
 	Alias.findOne({ $or: [{username: req.params.alias.toLowerCase() }, { alias: req.params.alias.toLowerCase() }] }).lean().exec(function(err, alias) {
 		if (err) return res.status(500).json({ error: err }); 
@@ -193,11 +202,11 @@ router.get('/:alias', function(req, res) {
 		alias.itemSupport = alias.itemSupport || { id: null };
 		alias.itemConsumables = alias.itemConsumables || [];
 		Item.findOne({ id: alias.itemWeapon.id }, function(err, itemWeapon) {
-			alias.itemWeapon = itemWeapon;
+			if (itemWeapon) alias.itemWeapon = mergeObjects(alias.itemWeapon, itemWeapon);
 			Item.findOne({ id: alias.itemArmor.id }, function(err, itemArmor) {
-				alias.itemArmor = itemArmor;
+				if (itemArmor) alias.itemArmor = mergeObjects(alias.itemArmor, itemArmor);
 				Item.findOne({ id: alias.itemSupport.id }, function(err, itemSupport) {
-					alias.itemSupport = itemSupport;
+					alias.itemSupport = mergeObjects(alias.itemSupport, itemSupport);
 					var ids = [];
 					for (var i = 0; i < alias.itemConsumables.length; i++) {
 						ids.push(alias.itemConsumables[i].id);

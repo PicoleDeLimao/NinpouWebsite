@@ -114,4 +114,69 @@ router.post('/:alias/:item_id', function(req, res) {
 	});
 });
 
+function printGold(x) {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+router.post('/:alias/:type/level', function(req, res) {
+	var times = Math.min(1, req.query.times || 1);
+	if (req.params.type == 'weapon') {
+		if (!req.alias.itemWeapon) {
+			return res.status(400).json({ error: 'You don\'t have a weapon.' });
+		} else {
+			Item.findOne({ id: req.alias.itemWeapon.id }, function(err, item) {
+				if (err) return res.status(400).json({ error: err });
+				var cost = item.price * Math.pow(2, (req.alias.itemWeapon.level || 1) + times - 1);
+				if (req.alias.gold < cost) {
+					return res.status(400).json({ error: 'You don\'t have enough gold (need ' + printGold(cost) + 'g).' })
+				} else {
+					req.alias.itemWeapon.level = (req.alias.itemWeapon.level || 1) + times;
+					req.alias.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(200).send('Weapon leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemWeapon.level + '\n\n**Balance:** -' + printGold(cost) + 'g')
+					});
+				}
+			});
+		}
+	} else if (req.params.type == 'armor') {
+		if (!req.alias.itemArmor) {
+			return res.status(400).json({ error: 'You don\'t have a cloth.' });
+		} else {
+			Item.findOne({ id: req.alias.itemArmor.id }, function(err, item) {
+				if (err) return res.status(400).json({ error: err });
+				var cost = item.price * Math.pow(2, (req.alias.itemArmor.level || 1) + times - 1);
+				if (req.alias.gold < cost) {
+					return res.status(400).json({ error: 'You don\'t have enough gold (need ' + printGold(cost) + 'g).' })
+				} else {
+					req.alias.itemArmor.level = (req.alias.itemArmor.level || 1) + times;
+					req.alias.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(200).send('Cloth leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemArmor.level + '\n\n**Balance:** -' + printGold(cost) + 'g')
+					});
+				}
+			});
+		}
+	} else if (req.params.type == 'support') {
+		if (!req.alias.itemSupport) {
+			return res.status(400).json({ error: 'You don\'t have a support item.' });
+		} else {
+			Item.findOne({ id: req.alias.itemSupport.id }, function(err, item) {
+				if (err) return res.status(400).json({ error: err });
+				var cost = item.price * Math.pow(2, (req.alias.itemSupport.level || 1) + times - 1);
+				if (req.alias.gold < cost) {
+					return res.status(400).json({ error: 'You don\'t have enough gold (need ' + printGold(cost) + 'g).' })
+				} else {
+					req.alias.itemSupport.level = (req.alias.itemSupport.level || 1) + times;
+					req.alias.save(function(err) {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(200).send('Support item leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemSupport.level + '\n\n**Balance:** -' + printGold(cost) + 'g')
+					});
+				}
+			});
+		}
+	} else {
+		return res.status(400).json({ error: 'Item type not allowed.' });
+	}
+});
+
 module.exports = router;

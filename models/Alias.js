@@ -9,11 +9,10 @@ var aliasSchema = mongoose.Schema({
 	jutsus: [{
 		id: { type: Number, required: true },
 		level: { type: Number, default: 0 }
-	}
-	], 
-	itemWeapon: { id: Number },
-	itemArmor: { id: Number },
-	itemSupport: { id: Number },
+	}], 
+	itemWeapon: { id: Number, level: { type: Number, default: 1 } },
+	itemArmor: { id: Number, level: { type: Number, default: 1 } },
+	itemSupport: { id: Number, level: { type: Number, default: 1 } },
 	itemConsumables: [{
 		id: { type: Number, required: true },
 		amount: { type: Number, default: 0 }

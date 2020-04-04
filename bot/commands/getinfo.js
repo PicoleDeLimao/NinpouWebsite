@@ -8,35 +8,35 @@ var printGold = require('./printgold');
 function getItem(item, spaces) {
 	if (!item) return '';
 	var res = item.name;
-	res += ' [ ';
-	if (item.attackBonus) res += '+' + item.attackBonus + ' attack ';
-	if (item.armorBonus) res += '+' + item.armorBonus + ' armor ';
-	if (item.hpBonus) res += '+' + item.hpBonus + ' hp ';
+	res += ' lvl. ' + item.level + ' [ ';
+	if (item.attackBonus) res += '+' + printGold(item.attackBonus * item.level) + ' attack ';
+	if (item.armorBonus) res += '+' + printGold(item.armorBonus * item.level) + ' armor ';
+	if (item.hpBonus) res += '+' + printGold(item.hpBonus * item.level) + ' hp ';
 	res += ']';
 	return res; 
 };
 
 function getHP(data) {
 	var base = (data.level || 1) * 100;
-	if (data.itemWeapon) base += data.itemWeapon.hpBonus;
-	if (data.itemArmor) base += data.itemArmor.hpBonus;
-	if (data.itemSupport) base += data.itemSupport.hpBonus;
+	if (data.itemWeapon) base += (data.itemWeapon.hpBonus * data.itemWeapon.level);
+	if (data.itemArmor) base += (data.itemArmor.hpBonus * data.itemArmor.level);
+	if (data.itemSupport) base += (data.itemSupport.hpBonus * data.itemSupport.level);
 	return base; 
 }
 
 function getAttack(data) {
 	var base = (data.level || 1) * 10;
-	if (data.itemWeapon) base += data.itemWeapon.attackBonus;
-	if (data.itemArmor) base += data.itemArmor.attackBonus;
-	if (data.itemSupport) base += data.itemSupport.attackBonus;
+	if (data.itemWeapon) base += (data.itemWeapon.attackBonus * data.itemWeapon.level);
+	if (data.itemArmor) base += (data.itemArmor.attackBonus * data.itemArmor.level);
+	if (data.itemSupport) base += (data.itemSupport.attackBonus * data.itemSupport.level);
 	return base;  
 }
 
 function getArmor(data) {
 	var base = (data.level || 1) * 5;
-	if (data.itemWeapon) base += data.itemWeapon.armorBonus;
-	if (data.itemArmor) base += data.itemArmor.armorBonus;
-	if (data.itemSupport) base += data.itemSupport.armorBonus;
+	if (data.itemWeapon) base += (data.itemWeapon.armorBonus * data.itemWeapon.level);
+	if (data.itemArmor) base += (data.itemArmor.armorBonus * data.itemArmor.level);
+	if (data.itemSupport) base += (data.itemSupport.armorBonus * data.itemSupport.level);
 	return base; 
 }
 
@@ -92,9 +92,9 @@ module.exports = function(ev, user) {
 						'XP:        [' + (data.xp || 0) + '%]\n' + 
 						'Rank:      [' + (data.rank && (data.rank.charAt(0).toUpperCase() + data.rank.substr(1)) || 'Genin') + ']\n' + 
 						'Gold:      [' + printGold(Math.round(data.gold) || 0) + ']``` ```ini\n' + 
-						'HP:        [' + getHP(data) + ']\n' + 
-						'Attack:    [' + getAttack(data) + ']\n' + 
-						'Armor:     [' + getArmor(data) + ']\n\n' +
+						'HP:        [' + printGold(getHP(data)) + ']\n' + 
+						'Attack:    [' + printGold(getAttack(data)) + ']\n' + 
+						'Armor:     [' + printGold(getArmor(data)) + ']\n\n' +
 						'Weapon:    \n' + getItem(data.itemWeapon, spaces) + '\n' +
 						'Cloth:     \n' + getItem(data.itemArmor, spaces) + '\n' + 
 						'Accessory: \n' + getItem(data.itemSupport, spaces) + '```'; 

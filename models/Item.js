@@ -10,7 +10,7 @@ var itemSchema = mongoose.Schema({
 	armorBonus: { type: Number, required: true, default: 0 },
 	hpBonus: { type: Number, required: true, default: 0 },
 	effects: [{  
-		type: { type: String, required: true, enum: ['critical', 'stun', 'silence', 'instant_kill', 'invulnerability'] },
+		type: { type: String, required: true, enum: ['critical', 'stun', 'silence', 'life_steal', 'instant_kill', 'invulnerability'] },
 		triggerChance: { type: Number, required: true, default: 1 },
 		effectDuration: { type: Number, required: true, default: 1 },
 		damagePerLevel: { type: Number, required: true, default: 0 },
