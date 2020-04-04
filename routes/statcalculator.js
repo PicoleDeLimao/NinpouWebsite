@@ -157,9 +157,9 @@ function getAllPlayersRanking(callback, minNumGames) {
 			stats[i].gpm = stats[i].gpm / stats[i].gamesRanked * 100; 
 			stats[i].chance = Calculator.AgrestiCoullLower(stats[i].gamesRanked, stats[i].wins) * 100;
 			stats[i].score = Calculator.calculateScore(stats[i]); 
-		}    
+		}
 		for (var i = stats.length - 1; i >= 0; i--) {
-			if (stats[i].gamesRanked < minNumGames) {
+			if (stats[i]._id == null || stats[i].gamesRanked < minNumGames) {
 				stats.splice(i, 1); 
 			}   
 		} 

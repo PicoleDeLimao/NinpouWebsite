@@ -50,44 +50,48 @@ app.get('/changelog', function(req, res) {
 
 app.get('/donate', function(req, res) { 
 	res.redirect('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3JF66XY2HPUSC');
-});
- 
-var port = process.env.PORT || 8080;
-app.listen(port, async function() {
-	console.log('Listening on port ' + port + '...');
-	setInterval(function() {
-		Stat.find({ }, function(err, stats) {
+})
+
+function updateAliases() {
+	Stat.find({ }, function(err, stats) {
+		if (err) {
+			console.error(err);
+			return;
+		}
+		Alias.find({ }, async function(err, alias) {
 			if (err) {
 				console.error(err);
 				return;
 			}
-			Alias.find({ }, function(err, alias) {
-				if (err) {
-					console.error(err);
-					return;
-				}
-				for (var i = 0; i < stats.length; i++) {
-					var found = false;
-					var oldValue = stats[i].alias;
-					for (var j = 0; j < alias.length; j++) {
-						for (var k = 0; k < alias[j].alias.length; k++) {
-							if (alias[j].alias[k].toLowerCase() == stats[i].username.toLowerCase()) {
-								found = true;
-							}
-						}
-						if (found) {
-							stats[i].alias = alias[j].username;
-							break;
+			for (var i = 0; i < stats.length; i++) {
+				var found = false;
+				var oldValue = stats[i].alias;
+				for (var j = 0; j < alias.length; j++) {
+					for (var k = 0; k < alias[j].alias.length; k++) {
+						if (alias[j].alias[k].toLowerCase() == stats[i].username.toLowerCase()) {
+							found = true;
 						}
 					}
-					if (!found) {
-						stats[i].alias = stats[i].username;
-					}
-					if (stats[i].alias != oldValue) {
-						stats[i].save();
+					if (found) {
+						stats[i].alias = alias[j].username;
+						break;
 					}
 				}
-			});
+				if (!found) {
+					stats[i].alias = stats[i].username;
+				}
+				if (stats[i].alias != oldValue) {
+					await stats[i].save();
+				}
+			}
+			console.log('done');
 		});
-	}, 60000);
+	});
+}
+
+var port = process.env.PORT || 8080;
+app.listen(port, async function() {
+	console.log('Listening on port ' + port + '...');
+	setInterval(updateAliases, 600000);
+	updateAliases();
 });

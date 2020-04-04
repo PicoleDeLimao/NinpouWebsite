@@ -472,7 +472,7 @@ router.use('/ranking', function(req, res, next) {
 router.get('/ranking', function(req, res) {  
 	var minNumGames = 10;
 	if (req.query.sort == 'games') {
-		minNumGames = 0;
+		minNumGames = -1;
 	}
 	StatCalculator.getAllPlayersRanking(function(err, stats) {
 		if (err) return res.status(400).json({ error: err });
