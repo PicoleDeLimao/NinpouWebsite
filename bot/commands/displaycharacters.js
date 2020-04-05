@@ -37,7 +37,7 @@ module.exports = function(ev, user) {
 						} else {
 							if (i % 20 == 0) {
 								msg += '```';
-								ev.channel.sed(msg);
+								ev.channel.send(msg);
 								msg = '```';
 							}
 							for (var j = 0; j < maxLength - characters[i].name.length; j++) {
