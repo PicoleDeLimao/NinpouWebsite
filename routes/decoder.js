@@ -141,7 +141,7 @@ function addZero(s) {
 }
 
 function decodeGame(body, game, callback) {
-	body = body.replace(/\//g, '\\');
+	//body = body.replace(/\//g, '\\');
 	console.log(body);
 	for (var i = 0; i < 9; i++) {
 		game.slots.push({
