@@ -203,7 +203,7 @@ function decodeGame(body, game, callback) {
 			game.slots[slot].win = (winningTeam == 3 && (playerIndex == 0 || playerIndex == 1 || playerIndex == 2)) || (winningTeam == 7 && (playerIndex == 4 || playerIndex == 5 || playerIndex == 6)) || (winningTeam == 11 && (playerIndex == 8 || playerIndex == 9 || playerIndex == 10));
 		}
 	}
-	if (count + 1 != sum) return callback('Invalid code.');
+	//if (count + 1 != sum) return callback('Invalid code.');
 	return callback(null, game);
 }
 
