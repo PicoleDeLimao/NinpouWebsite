@@ -1,6 +1,7 @@
 'use strict';
 
 var http = require('http');
+var printGold = require('./printgold');
 
 module.exports = function(ev, user) {
 	ev.guild.members.fetch(ev.author.id).then(function(authorMember) { 
@@ -48,9 +49,9 @@ module.exports = function(ev, user) {
 									var data = JSON.parse(body);
 									var response = '';
 									if (data.won) {
-										response += 'You won!! You stole **' + Math.floor(data.amount) + 'g** from <@' + user + '>!';
+										response += 'You won!! You stole **' + printGold(Math.floor(data.amount)) + 'g** from <@' + user + '>!';
 									} else {
-										response += '<@' + user + '> won!! You lost **' + Math.floor(data.amount) + 'g**!';
+										response += '<@' + user + '> won!! You lost **' + printGold(Math.floor(data.amount)) + 'g**!';
 									} 
 									ev.channel.send(response);
 								} catch (err) {

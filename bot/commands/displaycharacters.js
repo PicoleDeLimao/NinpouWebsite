@@ -35,6 +35,11 @@ module.exports = function(ev, user) {
 							msg += '```';
 							ev.channel.send(msg);
 						} else {
+							if (i % 20 == 0) {
+								msg += '```';
+								ev.channel.sed(msg);
+								msg = '```';
+							}
 							for (var j = 0; j < maxLength - characters[i].name.length; j++) {
 								msg += ' ';
 							}
