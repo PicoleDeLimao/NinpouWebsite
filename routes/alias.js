@@ -203,10 +203,13 @@ router.get('/:alias', function(req, res) {
 		alias.itemConsumables = alias.itemConsumables || [];
 		Item.findOne({ id: alias.itemWeapon.id }, function(err, itemWeapon) {
 			if (itemWeapon) alias.itemWeapon = mergeObjects(alias.itemWeapon, itemWeapon.toObject());
+			if (alias.itemWeapon && !alias.itemWeapon.name) alias.itemWeapon = null;
 			Item.findOne({ id: alias.itemArmor.id }, function(err, itemArmor) {
 				if (itemArmor) alias.itemArmor = mergeObjects(alias.itemArmor, itemArmor.toObject());
+				if (alias.itemArmor && !alias.itemArmor.name) alias.itemArmor = null;
 				Item.findOne({ id: alias.itemSupport.id }, function(err, itemSupport) {
 					if (itemSupport) alias.itemSupport = mergeObjects(alias.itemSupport, itemSupport.toObject());
+					if (alias.itemSupport && !alias.itemSupport.name) alias.itemSupport = null;
 					var ids = [];
 					for (var i = 0; i < alias.itemConsumables.length; i++) {
 						ids.push(alias.itemConsumables[i].id);
