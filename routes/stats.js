@@ -162,7 +162,8 @@ router.post('/', function(req, res) {
 		ranked: false
 	});
 	var body = req.body.contents.replace(/\n/g, '').replace(/\r/g, '').trim();
-	if (body.length < 11) return res.status(400).json({ error: 'Invalid code.' });
+	if (body.length < 11) return res.status(400).json({ error: 'Invalid code. Reason: 0' });
+	console.log(body);
 	Code.findOne({ code: body }, function(err, code) {
 		if (err) return res.status(500).json({ error: err });
 		else if (code) return res.status(400).json({ error: 'This game was already recorded.' });
