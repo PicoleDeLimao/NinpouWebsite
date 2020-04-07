@@ -5,7 +5,7 @@ var getPlayerName = require('./getplayername');
 var http = require('http');
 
 module.exports = function(ev, code) {
-	var dataToSend = '{ "contents": "' + code + '" }';
+	var dataToSend = '{ "contents": "' + code.replace(/"/g, '\\"') + '" }';
 	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(dataToSend) } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
