@@ -6,7 +6,8 @@ var getPlayerName = require('./getplayername');
 module.exports = function(ev, mission) {   
 	var villages = { };
 	var ranks = { };
-	ev.guild.roles.forEach(function(guildRole) {
+	await ev.guild.roles.fetch();
+	ev.guild.roles.cache.forEach(function(guildRole) {
 		if (guildRole.name.toLowerCase() == 'shinobi alliance' || 
 			guildRole.name.toLowerCase() == 'otogakure' ||
 			guildRole.name.toLowerCase() == 'akatsuki') {
