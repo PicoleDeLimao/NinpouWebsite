@@ -101,7 +101,7 @@ module.exports = async function(ev, mission) {
 							await member.roles.remove(ranks[rank]);
 						}
 					}
-					await member.roles.add(ranks[mission]);
+					member.roles.add(ranks[mission]);
 					ev.channel.send('Congratulation!! You are now: **' + (mission.charAt(0).toUpperCase() + mission.substr(1)) + '**! Oink!!');  
 				} 
 			});
