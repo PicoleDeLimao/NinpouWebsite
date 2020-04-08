@@ -99,7 +99,7 @@ module.exports = async function(ev, mission) {
 					var roles = [];
 					for (var rank in ranks) {
 						if (ranks[rank].name.toLowerCase() != mission) {
-							roles.add(ranks[rank]);
+							roles.push(ranks[rank]);
 						}
 					}
 					await member.roles.remove(roles);
