@@ -418,7 +418,7 @@ router.post('/players/:username/rerank', function(req, res) {
 							stat.wins = 0;
 							for (; i < games.length; i++) {
 								var game = games[i];
-								var alpha = Math.min(1 - 1.0 / (stat.games + 1), 0.95);
+								var alpha = Math.min(1 - 1.0 / (stat.gamesRanked + 1), 0.95);
 								var beta = 1 - alpha; 
 								var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
 								stat.kills = stat.kills * alpha + game.slots[slot].kills * beta
