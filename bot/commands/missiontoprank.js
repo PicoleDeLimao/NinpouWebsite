@@ -3,7 +3,7 @@
 var http = require('http');
 var getPlayerName = require('./getplayername');
 
-module.exports = function(ev, mission) {   
+module.exports = async function(ev, mission) {   
 	var villages = { };
 	var ranks = { };
 	await ev.guild.roles.fetch();
