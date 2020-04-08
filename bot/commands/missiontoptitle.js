@@ -73,7 +73,11 @@ module.exports = function(ev, attribute) {
 						} 
 						ev.guild.members.cache.forEach(async function(member) {
 							if (member.id != author.id) {
-								member.roles.remove(role);
+								member.roles.cache.forEach(function(anotherRole) {
+									if (anotherRole.id == role.id) {
+										await member.roles.remove(role);
+									}
+								});
 							}
 						});
 						author.roles.add(role);
