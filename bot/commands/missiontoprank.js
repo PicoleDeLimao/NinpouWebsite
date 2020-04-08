@@ -96,11 +96,13 @@ module.exports = async function(ev, mission) {
 							}
 						});
 					} 
+					var roles = [];
 					for (var rank in ranks) {
 						if (ranks[rank].name.toLowerCase() != mission) {
-							await member.roles.remove(ranks[rank]);
+							roles.add(ranks[rank]);
 						}
 					}
+					await member.roles.remove(roles);
 					member.roles.add(ranks[mission]);
 					ev.channel.send('Congratulation!! You are now: **' + (mission.charAt(0).toUpperCase() + mission.substr(1)) + '**! Oink!!');  
 				} 
