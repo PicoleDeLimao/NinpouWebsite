@@ -40,7 +40,7 @@ module.exports = function(ev, player, attribute, order) {
 										}  
 										response += (ranking.minIndex + i + 1) + '. < ' + playerName + ' >' + space + ' <' + Math.round(ranking.ranking[i][attribute]) + '>\n';
 									} else {  
-										response += (ranking.minIndex + i + 1) + '. < ' + playerName + ' > with a score of <' + Math.round(ranking.ranking[i].score) + '> and win percentage of <' + Math.round(ranking.ranking[i].wins / ranking.ranking[i].games * 100) + '%>\n';
+										response += (ranking.minIndex + i + 1) + '. < ' + playerName + ' > with a score of <' + Math.round(ranking.ranking[i].score) + '> and win percentage of <' + Math.round(ranking.ranking[i].wins / ranking.ranking[i].gamesRanked * 100) + '%>\n';
 									}
 									return next(i + 1, ranking, response);
 								});
