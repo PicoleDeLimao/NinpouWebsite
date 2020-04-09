@@ -676,7 +676,7 @@ router.post('/:username/rank/chunnin', function(req, res) {
 		else if (alias.affiliation == 'none') return res.status(400).json({ error: 'You must join a village before doing a rank mission.' });
 		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
 			if (err) return res.status(400).json({ 'error': err });
-			if (stats.gamesRanked < 10) return res.status(400).json({ error: 'You must play at least 10 games to complete this mission.' });
+			if (stats.gamesRanked < 10) return res.status(400).json({ error: 'You must play at least 10 ranked games to complete this mission.' });
 			else if (stats.points < 50) return res.status(400).json({ error: 'You must have at least 50 average points to complete this mission.' });
 			var aliases = [];
 			for (var i = 0; i < alias.alias.length; i++) {
@@ -704,7 +704,7 @@ router.post('/:username/rank/tokubetsu', function(req, res) {
 		else if (alias.affiliation == 'none') return res.status(400).json({ error: 'You must join a village before doing a rank mission.' });
 		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
 			if (err) return res.status(400).json({ 'error': err });
-			if (stats.gamesRanked < 25) return res.status(400).json({ error: 'You must play at least 25 games to complete this mission.' });
+			if (stats.gamesRanked < 25) return res.status(400).json({ error: 'You must play at least 25 ranked games to complete this mission.' });
 			else if (stats.points < 100) return res.status(400).json({ error: 'You must have at least 100 average points to complete this mission.' });
 			var aliases = [];
 			for (var i = 0; i < alias.alias.length; i++) {
@@ -732,7 +732,7 @@ router.post('/:username/rank/jounin', function(req, res) {
 		else if (alias.affiliation == 'none') return res.status(400).json({ error: 'You must join a village before doing a rank mission.' });
 		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
 			if (err) return res.status(400).json({ 'error': err });
-			if (stats.gamesRanked < 35) return res.status(400).json({ error: 'You must play at least 35 games to complete this mission.' });
+			if (stats.gamesRanked < 35) return res.status(400).json({ error: 'You must play at least 35 ranked games to complete this mission.' });
 			else if (stats.points < 150) return res.status(400).json({ error: 'You must have at least 150 average points to complete this mission.' });
 			var aliases = [];
 			for (var i = 0; i < alias.alias.length; i++) {
@@ -760,7 +760,7 @@ router.post('/:username/rank/anbu', function(req, res) {
 		else if (alias.affiliation == 'none') return res.status(400).json({ error: 'You must join a village before doing a rank mission.' });
 		StatCalculator.getPlayerStats(req.params.username, function(err, stats) {
 			if (err) return res.status(400).json({ 'error': err });
-			if (stats.gamesRanked < 50) return res.status(400).json({ error: 'You must play at least 50 games to complete this mission.' });
+			if (stats.gamesRanked < 50) return res.status(400).json({ error: 'You must play at least 50 ranked games to complete this mission.' });
 			else if (stats.points < 200) return res.status(400).json({ error: 'You must have at least 200 average points to complete this mission.' });
 			var aliases = [];
 			for (var i = 0; i < alias.alias.length; i++) {
