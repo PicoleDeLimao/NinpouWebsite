@@ -44,13 +44,13 @@ function getSummonName(summon) {
 	if (summon == 'frog1') {
 		return 'Gamakichi';
 	} else if (summon == 'frog2') {
-		return 'Gamahiro';
-	} else if (summon == 'frog3') {
 		return 'Gamabunta';
+	} else if (summon == 'frog3') {
+		return 'Two great sage toads';
 	} else if (summon == 'snake1') {
 		return 'Snake lvl. 1';
 	} else if (summon == 'snake2') {
-		return 'Snake lvl. 2';
+		return 'Manda';
 	} else if (summon == 'snake3') {
 		return 'Aoda';
 	} else if (summon == 'slug1') {
@@ -62,7 +62,7 @@ function getSummonName(summon) {
 	} else if (summon == 'crow') {
 		return 'Crow';
 	} else if (summon == 'dog') {
-		return 'Paku';
+		return 'Pakkun';
 	} else {
 		return 'None';
 	}
