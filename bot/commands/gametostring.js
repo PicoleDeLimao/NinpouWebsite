@@ -57,8 +57,8 @@ module.exports = function(ev, game, callback, criteria) {
 			getPlayerName(ev, game.owner, function(err, ownerName) {
 				var response = '```ini\n'; 
 				response += '         Id; ' + game.id + '\n';
-				response += '        Map; ' + game.map + '\n';
 				response += '   Duration; ' + game.duration + '\n';
+				response += '    Balance; ' + Math.toFixed(game.balance * 100, 0) + '%\n';
 				//response += 'Recordable?; ' + (game.recordable ? 'Yes' : 'No') + '\n';
 				if (game.progress) { 
 					var date = dateFromObjectId(game._id);

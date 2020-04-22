@@ -26,6 +26,7 @@ var gameSchema = mongoose.Schema({
 	recorded: { type: Boolean, default: false },
 	recordable: { type: Boolean, default: true },
 	ranked: { type: Boolean, default: false },
+	balance: { type: Number, default: 1 },
 	missionPlayed: [String],
 	missionWon: [String]
 });

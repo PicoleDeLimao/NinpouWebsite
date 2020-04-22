@@ -87,6 +87,7 @@ router.post('/balance', function(req, res) {
 					game.slots[swaps[j][0]] = game.slots[swaps[j][1]];
 					game.slots[swaps[j][1]] = tmp;
 				}
+				game.balance = 1;
 				return res.json({ game: game, swaps: swaps });
 			}); 
 		} else {
@@ -99,6 +100,7 @@ router.post('/balance', function(req, res) {
 					}
 				} else {
 					stat.alias = stat._id;
+					stat.username = stat._id;
 					stat.realm = 'Unknown';
 				}
 				game.slots[i] = stat;
@@ -115,7 +117,19 @@ router.get('/:game_id', function(req, res) {
 		if (game.recorded) { 
 			(function getHeroOnSlot(slot) {
 				if (slot == game.slots.length) {
-					return res.json(game);
+					BalanceCalculator.getOptimalBalance(game.slots, 'points', true, function(err, swaps) {
+						if (err) return res.status(500).json({ error: err });
+						var balancedGameSlots = game.slots.slice();
+						for (var j = 0; j < swaps.length; j++) {
+							var tmp = balancedGameSlots[swaps[j][0]];
+							balancedGameSlots[swaps[j][0]] = balancedGameSlots[swaps[j][1]];
+							balancedGameSlots[swaps[j][1]] = tmp;
+						}
+						var bestBalance = BalanceCalculator.getBalanceFactor(balancedGameSlots, 'points');
+						var currentBalance = BalanceCalculator.getBalanceFactor(game.slots, 'points');
+						game.balance = bestBalance / currentBalance;
+						return res.json(game);
+					});
 				} else {
 					Hero.findOne({ id: game.slots[slot].hero }, function(err, hero) {
 						if (err) return res.status(500).json({ error:err });
