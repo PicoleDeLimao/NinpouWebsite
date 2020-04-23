@@ -52,6 +52,11 @@ router.get('/recorded', function(req, res) {
  
 router.post('/balance', function(req, res) {
 	var players = req.body.players;
+	for (var i = players.length - 1; i >= 0; i--) {
+		if (players[i].trim() == "") {
+			players.splice(i, 1);
+		}
+	}
 	var game = new Game({
 		id: mongoose.Types.ObjectId().toString(),
 		createdAt: new Date(),
@@ -105,7 +110,7 @@ router.post('/balance', function(req, res) {
 				}
 				game.slots[i] = stat;
 				next(i + 1);
-			}, true);
+			});
 		}
 	})(0);
 });
