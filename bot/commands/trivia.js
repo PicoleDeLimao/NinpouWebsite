@@ -456,12 +456,49 @@ module.exports = function(bot) {
 		return scoreboard;
 	}
 	
+	function showGlobalScore(channel, callback) {
+		var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/trivias', method: 'GET', 
+			headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
+			var body = '';
+			res.on('data', function(chunk) {
+				body += chunk;
+			});
+			res.on('end', function() {
+				try {
+					data = JSON.parse(body);
+					if (res.statusCode != 200) {
+						channel.ev.channel.send(data.error);
+						callback();
+					} else {
+						var msg = "";
+						msg += "Top-5 Trivia Hall of Fame:\n\n\n";
+						for (var i = 0; i < data.length; i++) {
+							msg += '**<@' + data[i].username + '>**: ' + data[i].answers + ' answers\n'
+						}
+						channel.ev.channel.send(msg);
+						callback();
+					}
+				} catch (err) {
+					console.error(err);
+					channel.ev.channel.send('Error on trivia. :( **Oink!** :pig:');
+					callback();
+				}
+			});
+		});
+		request.on('error', function(err) {
+			console.error(err);
+			ev.channel.send('Error on trivia. :( **Oink!** :pig:');
+			callback();
+		});
+		request.end();
+	}
+
 	function tryAnswer(user, userAnswer, channel) {
 		try {
 			var answer = trivia[channel.category][channel.questionID][1];
 			if (answer.toLowerCase() == userAnswer) {
 				var scoreboard = scoreToUserAndReturnScoreboard(user, channel);
-				channel.ev.channel.send('Congratulations, **' + user.name + '**!\n\n' + scoreboard + '\n\n' + returnNewQuestion(channel));
+				channel.ev.channel.send('Congratulations, **<@' + user + '>**!\n\n' + scoreboard + '\n\n' + returnNewQuestion(channel));
 				var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/trivias/' + user.id, method: 'POST', 
 					headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 					var body = '';
@@ -472,16 +509,16 @@ module.exports = function(bot) {
 						if (res.statusCode != 200) { 
 							try {
 								data = JSON.parse(body);
-								ev.channel.send(data.error);
+								channel.ev.channel.send(data.error);
 							} catch (err) {
-								ev.channel.send('Error on trivia. :( **Oink!** :pig:');
+								channel.ev.channel.send('Error on trivia. :( **Oink!** :pig:');
 							}
 						}
 					});
 				});
 				request.on('error', function(err) {
 					console.error(err);
-					ev.channel.send('Error on trivia. :( **Oink!** :pig:');
+					channel.ev.channel.send('Error on trivia. :( **Oink!** :pig:');
 				});
 				request.end();
 			} 
@@ -501,31 +538,37 @@ module.exports = function(bot) {
 		}
 	}, 30000);
 
+	function startTrivia(category, ev) {
+		if (channels.hasOwnProperty(ev.channel)) {
+			showGlobalScore(channels[ev.channel], function() {
+				stopTrivia(channels[ev.channel]);
+			});
+		} else {
+			var ids = [];
+			for (var i = 0; i < trivia[category].length; i++) {
+				ids.push(i);
+			}
+			shuffle(ids);
+			channels[ev.channel] = {
+				channel: ev.channel,
+				category: category,
+				points: { },
+				ev: ev,
+				questions: ids,
+				questionIndex: 0
+			};
+			showGlobalScore(channels[ev.channel], function() {
+				ev.channel.send('Trivia started. Use ***!t*** to answer a question. **Oink**!\n\n' + returnNewQuestion(channels[ev.channel]));
+			});
+		}
+	}
+
 	return {
 		start: function(category, ev) {
-			if (channels.hasOwnProperty(ev.channel)) {
-				stopTrivia(channels[ev.channel]);
-			} else {
-				var ids = [];
-				for (var i = 0; i < trivia[category].length; i++) {
-					ids.push(i);
-				}
-				shuffle(ids);
-				channels[ev.channel] = {
-					channel: ev.channel,
-					category: category,
-					points: { },
-					ev: ev,
-					questions: ids,
-					questionIndex: 0
-				};
-				ev.channel.send('Trivia started. Use ***!t*** to answer a question. **Oink**!\n\n' + returnNewQuestion(channels[ev.channel]));
-			}
+			startTrivia(category, ev);
 		},
 		stop: function(ev) {
-			if (channels.hasOwnProperty(ev.channel)) {
-				stopTrivia(channels[ev.channel]);
-			}
+			startTrivia('naruto', ev);
 		},
 		answer: function(user, answerStr, ev) {
 			if (channels.hasOwnProperty(ev.channel)) {
