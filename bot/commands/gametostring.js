@@ -58,7 +58,7 @@ module.exports = function(ev, game, callback, criteria) {
 				var response = '```ini\n'; 
 				response += '         Id; ' + game.id + '\n';
 				response += '   Duration; ' + game.duration + '\n';
-				response += '    Balance; ' + Math.toFixed(game.balance * 100, 0) + '%\n';
+				response += '    Balance; ' + (game.balance * 100, 0).toFixed(0) + '%\n';
 				//response += 'Recordable?; ' + (game.recordable ? 'Yes' : 'No') + '\n';
 				if (game.progress) { 
 					var date = dateFromObjectId(game._id);
