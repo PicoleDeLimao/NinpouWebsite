@@ -110,7 +110,7 @@ router.post('/balance', function(req, res) {
 				}
 				game.slots[i] = stat;
 				next(i + 1);
-			});
+			}, true);
 		}
 	})(0);
 });
