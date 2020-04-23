@@ -471,7 +471,7 @@ module.exports = function(bot) {
 						callback();
 					} else {
 						var msg = "";
-						msg += "Top-5 Trivia Hall of Fame:\n\n\n";
+						msg += "**Top-5 Trivia Hall of Fame:**\n\n\n";
 						for (var i = 0; i < data.length; i++) {
 							msg += '**<@' + data[i].username + '>**: ' + data[i].answers + ' answers\n'
 						}
