@@ -127,7 +127,7 @@ router.get('/:game_id', function(req, res) {
 						}
 						var bestBalance = BalanceCalculator.getBalanceFactor(balancedGameSlots, 'points');
 						var currentBalance = BalanceCalculator.getBalanceFactor(game.slots, 'points');
-						game.balance = bestBalance / currentBalance;
+						game.balance = Math.log(1 + bestBalance) / Math.log(1 + currentBalance);
 						return res.json(game);
 					});
 				} else {
