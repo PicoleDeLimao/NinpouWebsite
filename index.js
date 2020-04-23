@@ -39,6 +39,7 @@ app.use('/streams', require('./routes/streams'));
 app.use('/missions', require('./routes/missions')); 
 app.use('/items', require('./routes/items'));  
 app.use('/heroes', require('./routes/heroes'));  
+app.use('/trivias', require('./routes/trivias'));  
 
 app.get('/latest', function(req, res) {
 	res.redirect(version.download_link);
