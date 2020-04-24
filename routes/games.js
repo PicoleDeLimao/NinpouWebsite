@@ -66,7 +66,7 @@ function getPlayerStats(players, callback) {
 	}
 	(function next(i) {
 		if (i == players.length) {
-			callback(players);
+			callback(slots);
 		} else {
 			StatCalculator.getPlayerStats(players[i], function(err, stat) {
 				if (err) stat = null; 
@@ -80,7 +80,7 @@ function getPlayerStats(players, callback) {
 					stat.username = stat._id;
 					stat.realm = 'Unknown';
 				}
-				game.slots[i] = stat;
+				slots[i] = stat;
 				next(i + 1);
 			}, true);
 		}
@@ -131,12 +131,13 @@ router.get('/:game_id', function(req, res) {
 			(function getHeroOnSlot(slot) {
 				if (slot == game.slots.length) {
 					var players = [];
-					for (var i = 0; i < game.slots; i++) {
+					for (var i = 0; i < game.slots.length; i++) {
 						players.push(game.slots[i].username);
 					}
 					getPlayerStats(players, function(slots) {
 						BalanceCalculator.getOptimalBalance(slots, 'points', true, function(err, swaps) {
 							if (err) return res.status(500).json({ error: err });
+							var currentBalance = BalanceCalculator.getBalanceFactor(slots, 'points');
 							var balancedGameSlots = slots.slice();
 							for (var j = 0; j < swaps.length; j++) {
 								var tmp = balancedGameSlots[swaps[j][0]];
@@ -144,7 +145,6 @@ router.get('/:game_id', function(req, res) {
 								balancedGameSlots[swaps[j][1]] = tmp;
 							}
 							var bestBalance = BalanceCalculator.getBalanceFactor(balancedGameSlots, 'points');
-							var currentBalance = BalanceCalculator.getBalanceFactor(slots, 'points');
 							game.balance = Math.log(1 + bestBalance) / Math.log(1 + currentBalance);
 							return res.json(game);
 						});
