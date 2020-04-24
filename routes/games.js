@@ -50,6 +50,43 @@ router.get('/recorded', function(req, res) {
 	});
 });
  
+function getPlayerStats(players, callback) {
+	var slots = [];
+	for (var i = 0; i < players.length; i++) {
+		slots.push({
+			username: players[i],
+			realm: 'Unknown'
+		});
+	}
+	for (var i = players.length; i < 9; i++) {
+		slots.push({
+			username: null,
+			realm: 'Unknown'
+		});
+	}
+	(function next(i) {
+		if (i == players.length) {
+			callback(players);
+		} else {
+			StatCalculator.getPlayerStats(players[i], function(err, stat) {
+				if (err) stat = null; 
+				if (stat == null) {
+					stat = {
+						username: players[i],
+						realm: 'Unknown'
+					}
+				} else {
+					stat.alias = stat._id;
+					stat.username = stat._id;
+					stat.realm = 'Unknown';
+				}
+				game.slots[i] = stat;
+				next(i + 1);
+			}, true);
+		}
+	})(0);
+}
+
 router.post('/balance', function(req, res) {
 	var players = req.body.players;
 	for (var i = players.length - 1; i >= 0; i--) {
@@ -71,48 +108,19 @@ router.post('/balance', function(req, res) {
 		recordable: true,
 		ranked: false
 	});
-	for (var i = 0; i < players.length; i++) {
-		game.slots.push({
-			username: players[i],
-			realm: 'Unknown'
-		});
-	}
-	for (var i = players.length; i < 9; i++) {
-		game.slots.push({
-			username: null,
-			realm: 'Unknown'
-		});
-	}
-	(function next(i) {
-		if (i == players.length) {
-			BalanceCalculator.getOptimalBalance(game.slots, 'points', true, function(err, swaps) {
-				if (err) return res.status(500).json({ error: err });
-				for (var j = 0; j < swaps.length; j++) {
-					var tmp = game.slots[swaps[j][0]];
-					game.slots[swaps[j][0]] = game.slots[swaps[j][1]];
-					game.slots[swaps[j][1]] = tmp;
-				}
-				game.balance = 1;
-				return res.json({ game: game, swaps: swaps });
-			}); 
-		} else {
-			StatCalculator.getPlayerStats(players[i], function(err, stat) {
-				if (err) stat = null; 
-				if (stat == null) {
-					stat = {
-						username: players[i],
-						realm: 'Unknown'
-					}
-				} else {
-					stat.alias = stat._id;
-					stat.username = stat._id;
-					stat.realm = 'Unknown';
-				}
-				game.slots[i] = stat;
-				next(i + 1);
-			}, true);
-		}
-	})(0);
+	getPlayerStats(players, function(slots) {
+		game.slots = slots;
+		BalanceCalculator.getOptimalBalance(game.slots, 'points', true, function(err, swaps) {
+			if (err) return res.status(500).json({ error: err });
+			for (var j = 0; j < swaps.length; j++) {
+				var tmp = game.slots[swaps[j][0]];
+				game.slots[swaps[j][0]] = game.slots[swaps[j][1]];
+				game.slots[swaps[j][1]] = tmp;
+			}
+			game.balance = 1;
+			return res.json({ game: game, swaps: swaps });
+		}); 
+	});
 });
 
 router.get('/:game_id', function(req, res) {
@@ -122,20 +130,24 @@ router.get('/:game_id', function(req, res) {
 		if (game.recorded) { 
 			(function getHeroOnSlot(slot) {
 				if (slot == game.slots.length) {
-					BalanceCalculator.getOptimalBalance(game.slots, 'points', true, function(err, swaps) {
-						if (err) return res.status(500).json({ error: err });
-						var balancedGameSlots = game.slots.slice();
-						for (var j = 0; j < swaps.length; j++) {
-							var tmp = balancedGameSlots[swaps[j][0]];
-							balancedGameSlots[swaps[j][0]] = balancedGameSlots[swaps[j][1]];
-							balancedGameSlots[swaps[j][1]] = tmp;
-						}
-						var bestBalance = BalanceCalculator.getBalanceFactor(balancedGameSlots, 'points');
-						var currentBalance = BalanceCalculator.getBalanceFactor(game.slots, 'points');
-						console.log(bestBalance + " " + Math.log(1 + bestBalance) + " " + currentBalance + " " + Math.log(1 + currentBalance));
-						game.balance = Math.log(1 + bestBalance) / Math.log(1 + currentBalance);
-						console.log(game.balance);
-						return res.json(game);
+					var players = [];
+					for (var i = 0; i < game.slots; i++) {
+						players.push(game.slots[i].username);
+					}
+					getPlayerStats(players, function(slots) {
+						BalanceCalculator.getOptimalBalance(slots, 'points', true, function(err, swaps) {
+							if (err) return res.status(500).json({ error: err });
+							var balancedGameSlots = slots.slice();
+							for (var j = 0; j < swaps.length; j++) {
+								var tmp = balancedGameSlots[swaps[j][0]];
+								balancedGameSlots[swaps[j][0]] = balancedGameSlots[swaps[j][1]];
+								balancedGameSlots[swaps[j][1]] = tmp;
+							}
+							var bestBalance = BalanceCalculator.getBalanceFactor(balancedGameSlots, 'points');
+							var currentBalance = BalanceCalculator.getBalanceFactor(slots, 'points');
+							game.balance = Math.log(1 + bestBalance) / Math.log(1 + currentBalance);
+							return res.json(game);
+						});
 					});
 				} else {
 					Hero.findOne({ id: game.slots[slot].hero }, function(err, hero) {
