@@ -136,7 +136,8 @@ router.post('/balance', function(req, res) {
 				if (game.slots[i].gamesRanked > 5 && regressions[game.slots[i].username] != null) {
 					var features = PlayerPredictor.getPlayerFeatures(game.slots, i);
 					if (features.length > 0) {
-						game.slots[i].points = regressions[game.slots[i].username].transform(features) * 300;
+						var averagePonts = game.slots[i].kills * 10 + game.slots[i].assists * 2 - game.slots[i].deaths * 5;
+						game.slots[i].points = (regressions[game.slots[i].username].transform(features) * 300 + averagePonts) / 2;
 					}
 				}
 			}
