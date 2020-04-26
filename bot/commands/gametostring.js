@@ -56,16 +56,18 @@ module.exports = function(ev, game, callback, criteria) {
 		if (i == game.slots.length) {
 			getPlayerName(ev, game.owner, function(err, ownerName) {
 				var response = '```ini\n'; 
-				response += '         Id; ' + game.id + '\n';
-				response += '   Duration; ' + game.duration + '\n';
-				response += '    Balance; ' + (game.balance * 100).toFixed(2) + '%\n';
-				//response += 'Recordable?; ' + (game.recordable ? 'Yes' : 'No') + '\n';
-				if (game.progress) { 
-					var date = dateFromObjectId(game._id);
-					var m = moment(date);
-					response += '     Hosted; ' + m.fromNow() + '\n';
+				if (game.recorded) {
+					response += '         Id; ' + game.id + '\n';
+					response += '   Duration; ' + game.duration + '\n';
+					response += '    Balance; ' + (game.balance * 100).toFixed(2) + '%\n';
+					//response += 'Recordable?; ' + (game.recordable ? 'Yes' : 'No') + '\n';
+					if (game.progress) { 
+						var date = dateFromObjectId(game._id);
+						var m = moment(date);
+						response += '     Hosted; ' + m.fromNow() + '\n';
+					}
+					response += '     Ranked; ' + (game.ranked ? 'yes' : 'no') + '\n';
 				}
-				response += '     Ranked; ' + (game.ranked ? 'yes' : 'no') + '\n';
 				response += '\nSlots; [' + players + '/' + game.slots.length + ']\n';
 				if (game.slots.length >= 9) {
 					if (game.recorded) {
