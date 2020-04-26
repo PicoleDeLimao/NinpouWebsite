@@ -147,9 +147,9 @@ function calculateBalanceFactor(gameSlots, regressions, callback) {
 		if (err) return callback(err);
 		getOptimalBalance(slots, regressions, false, function(err, worstSlots) {
 			if (err) return callback(err); 
-			var bestBalance = getBalanceFactor(swapSlots(slots, bestSlots), regressions);
-			var worstBalance = getBalanceFactor(swapSlots(slots, worstSlots), regressions);
-			var actualBalance = getBalanceFactor(slots, regressions); 
+			var bestBalance = Math.log(1 + getBalanceFactor(swapSlots(slots, bestSlots), regressions));
+			var worstBalance = Math.log(1 + getBalanceFactor(swapSlots(slots, worstSlots), regressions));
+			var actualBalance = Math.log(1 + getBalanceFactor(slots, regressions)); 
 			var balanceFactor;
 			if (worstBalance == bestBalance) {
 				balanceFactor = 1;
