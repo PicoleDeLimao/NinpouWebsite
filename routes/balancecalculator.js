@@ -49,17 +49,17 @@ function getBalanceFactor(slots, regressions) {
 	var team2 = [];
 	var team3 = []; 
 	for (var i = 0; i < 3; i++) {
-		if (slots[i] && slots[i].points !== null) {
+		if (slots[i] && slots[i].points !== null && !isNaN(slots[i].points)) {
 			team1.push(slots[i].points);
 		}
 	}
 	for (var i = 3; i < 6; i++) {
-		if (slots[i] && slots[i].points !== null) {
+		if (slots[i] && slots[i].points !== null && !isNaN(slots[i].points)) {
 			team2.push(slots[i].points);
 		}
 	}
 	for (var i = 6; i < 9; i++) {
-		if (slots[i] && slots[i].points !== null) {
+		if (slots[i] && slots[i].points !== null && !isNaN(slots[i].points)) {
 			team3.push(slots[i].points);
 		}
 	}
@@ -72,8 +72,8 @@ function getBalanceFactor(slots, regressions) {
 		return s;
 	};
 	var max = function(x) {
-		var m = x.length && x[0] || 0;
-		for (var i = 0; i < x.length; x++) m = Math.max(m, x[i]);
+		var m = x.length > 0 && x[0] || 0;
+		for (var i = 0; i < x.length; i++) m = Math.max(m, x[i]);
 		return m;
 	};
 	var a = Math.pow(sum(team1) - sum(team2), 2);
