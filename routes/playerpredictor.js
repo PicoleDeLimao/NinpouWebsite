@@ -161,8 +161,7 @@ function getPlayerLinearRegressionData(username, cachedStats, callback) {
                 var game = games[i];
                 var playerSlot = getPlayerSlotInGame(allStat.usernames, game.slots);
                 if (playerSlot == -1 || game.slots[playerSlot].hero == 0 || game.slots[playerSlot].kills == null) {
-                    getGameData(i + 1);
-                    return;
+                    continue;
                 }
                 var y = game.slots[playerSlot].points;
                 var players = [];
