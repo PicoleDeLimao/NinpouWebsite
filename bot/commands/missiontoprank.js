@@ -82,12 +82,12 @@ module.exports = async function(ev, mission) {
 						await ev.guild.members.fetch();
 						ev.guild.members.cache.forEach(function(anotherMember) {
 							if (member.user.id != anotherMember.user.id) {
-								anotherMember.roles.forEach(function(role) {
+								anotherMember.roles.cache.forEach(function(role) {
 									if (role.name.toLowerCase() == memberVillage) {
-										anotherMember.roles.forEach(async function(anotherRole) {
+										anotherMember.roles.cache.forEach(async function(anotherRole) {
 											if (anotherRole.name.toLowerCase() == 'kage') {
-												anotherMember.roles.remove(ranks['kage']);
-												anotherMember.roles.add(ranks['genin']);
+												anotherMember.roles.cache.remove(ranks['kage']);
+												anotherMember.roles.cache.add(ranks['genin']);
 												http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/missions/' + anotherMember.user.id + '/rank/genin', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }).end();
 											}
 										});

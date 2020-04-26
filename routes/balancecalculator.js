@@ -25,7 +25,8 @@ function getBalanceFactor(slots, regressions) {
 		if (slots[i].gamesRanked > 5 && regressions[slots[i].username] != null) {
 			var features = PlayerPredictor.getPlayerFeatures(slots, i);
 			if (features.length > 0) {
-				slots[i].points = regressions[slots[i].username].transform(features) * 300;
+				var averagePoints = (slots[i].kills * 10 + slots[i].assists * 2 - slots[i].deaths * 5);
+				slots[i].points = (regressions[slots[i].username].transform(features) * 300 + averagePoints) / 2;
 			}
 		}
 	}

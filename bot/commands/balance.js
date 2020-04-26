@@ -44,7 +44,7 @@ module.exports = function(ev, players) {
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		return callback('Couldn\'t calculate balance. :( **Oink!** :pig:');
+		return ev.channel.send('Couldn\'t calculate balance. :( **Oink!** :pig:');
 	});
 	request.write(contentStr);
 	request.end();

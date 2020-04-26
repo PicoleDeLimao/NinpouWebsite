@@ -12,6 +12,8 @@ var BalanceCalculator = require('./balancecalculator');
 var StatCalculator = require('./statcalculator');
 var PlayerPredictor = require('./playerpredictor');
 
+var cachedRegressions = { };
+
 router.get('/', function(req, response) {
 	var request = https.request({ host: 'wc3maps.com', path: '/vue/gamelist.php?_=' + (new Date()).getTime(), method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 		var body = '';
@@ -70,8 +72,13 @@ function getPlayerStats(players, callback) {
 			var cache = { };
 			var regressions = { };
 			for (var i = 0; i < slots.length; i++) {
-				if (slots[i].username !== null) {
-					regressions[slots[i].username] = await PlayerPredictor.getPlayerLinearRegression(slots[i].username, cache);
+				if (slots[i].username !== null && slots[i].gamesRanked > 5) {
+					if (slots[i].username in cachedRegressions && cachedRegressions[slots[i].username].gamesRanked == slots[i].gamesRanked) {
+						regressions[slots[i].username] = cachedRegressions[slots[i].username].model;
+					} else {
+						regressions[slots[i].username] = await PlayerPredictor.getPlayerLinearRegression(slots[i].username, cache);
+						cachedRegressions[slots[i].username] = { gamesRanked: slots[i].gamesRanked, model: regressions[slots[i].username] };
+					}
 				}
 			}
 			callback(slots, regressions);
