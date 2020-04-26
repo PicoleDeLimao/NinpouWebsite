@@ -22,11 +22,22 @@ function flattenSlots(slots) {
 
 function getBalanceFactor(slots, regressions) {
 	for (var i = 0; i < slots.length; i++) {
-		if (slots[i].gamesRanked > 5 && regressions[slots[i].username] != null) {
-			var features = PlayerPredictor.getPlayerFeatures(slots, i);
-			if (features.length > 0) {
-				var averagePoints = (slots[i].kills * 10 + slots[i].assists * 2 - slots[i].deaths * 5);
-				slots[i].points = (regressions[slots[i].username].transform(features) * 300 + averagePoints) / 2;
+		if (slots[i].username == null) {
+			slots[i].points = 0;
+		} else {
+			var averagePoints = (slots[i].kills * 10 + slots[i].assists * 2 - slots[i].deaths * 5);
+			if (slots[i].gamesRanked > 5 && regressions[slots[i].username] != null) {
+				var features = PlayerPredictor.getPlayerFeatures(slots, i);
+				if (features.length > 0) {
+					slots[i].points = (regressions[slots[i].username].transform(features) * 300 + averagePoints) / 2;
+				} else {
+					slots[i].points = averagePoints;
+				}
+			} else {
+				slots[i].points = averagePoints;
+			}
+			if (isNaN(slots[i].points)) {
+				slots[i].points = averagePoints;
 			}
 		}
 	}
