@@ -405,7 +405,8 @@ router.post('/players/:username/rerank', function(req, res) {
 					var game = games[i];
 					var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
 					if (slot != -1 && game.slots[slot].hero != 0 && game.slots[slot].kills != null) {
-						Stat.findOne({ username: { $in: allStat.usernames } }, function(err, stat) {
+						Stat.find({ username: { $in: allStat.usernames } }).sort('-gamesRanked').limit(1).exec(function(err, stat) {
+							stat = stat[0];
 							var game = games[i];
 							var slot = getPlayerSlotInGame(allStat.usernames, games[i]);
 							stat.kills = game.slots[slot].kills;
