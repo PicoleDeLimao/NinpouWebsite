@@ -8,8 +8,9 @@ var Game = require('../models/Game');
 var Stat = require('../models/Stat');
 var Alias = require('../models/Alias');
 var Hero = require('../models/Hero');
-var StatCalculator = require('./statcalculator');
 var BalanceCalculator = require('./balancecalculator');
+var StatCalculator = require('./statcalculator');
+var PlayerPredictor = require('./playerpredictor');
 
 router.get('/', function(req, response) {
 	var request = https.request({ host: 'wc3maps.com', path: '/vue/gamelist.php?_=' + (new Date()).getTime(), method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
@@ -64,9 +65,16 @@ function getPlayerStats(players, callback) {
 			realm: 'Unknown'
 		});
 	}
-	(function next(i) {
+	(async function next(i) {
 		if (i == players.length) {
-			callback(slots);
+			var cache = { };
+			var regressions = { };
+			for (var i = 0; i < slots.length; i++) {
+				if (slots[i].username !== null) {
+					regressions[slots[i].username] = await PlayerPredictor.getPlayerLinearRegression(slots[i].username, cache);
+				}
+			}
+			callback(slots, regressions);
 		} else {
 			StatCalculator.getPlayerStats(players[i], function(err, stat) {
 				if (err) stat = null; 
@@ -79,6 +87,7 @@ function getPlayerStats(players, callback) {
 					stat.alias = stat._id;
 					stat.username = stat._id;
 					stat.realm = 'Unknown';
+					stat = JSON.parse(JSON.stringify(stat));
 				}
 				slots[i] = stat;
 				next(i + 1);
@@ -94,8 +103,7 @@ router.post('/balance', function(req, res) {
 			players.splice(i, 1);
 		}
 	}
-	var game = new Game({
-		id: mongoose.Types.ObjectId().toString(),
+	var game = {
 		createdAt: new Date(),
 		gamename: 'Naruto Ninpou Reforged',
 		map: 'Unknown',
@@ -107,15 +115,23 @@ router.post('/balance', function(req, res) {
 		recorded: false,
 		recordable: true,
 		ranked: false
-	});
-	getPlayerStats(players, function(slots) {
+	};
+	getPlayerStats(players, function(slots, regressions) {
 		game.slots = slots;
-		BalanceCalculator.getOptimalBalance(game.slots, 'points', true, function(err, swaps) {
+		BalanceCalculator.getOptimalBalance(game.slots, regressions, true, function(err, swaps) {
 			if (err) return res.status(500).json({ error: err });
 			for (var j = 0; j < swaps.length; j++) {
 				var tmp = game.slots[swaps[j][0]];
 				game.slots[swaps[j][0]] = game.slots[swaps[j][1]];
 				game.slots[swaps[j][1]] = tmp;
+			}
+			for (var i = 0; i < game.slots.length; i++) {
+				if (game.slots[i].gamesRanked > 5) {
+					var features = PlayerPredictor.getPlayerFeatures(game.slots, i);
+					if (features.length > 0) {
+						game.slots[i].points = regressions[game.slots[i].username].transform(features) * 300;
+					}
+				}
 			}
 			game.balance = 1;
 			return res.json({ game: game, swaps: swaps });
@@ -134,18 +150,10 @@ router.get('/:game_id', function(req, res) {
 					for (var i = 0; i < game.slots.length; i++) {
 						players.push(game.slots[i].username);
 					}
-					getPlayerStats(players, function(slots) {
-						BalanceCalculator.getOptimalBalance(slots, 'points', true, function(err, swaps) {
+					getPlayerStats(players, function(slots, regressions) {
+						BalanceCalculator.calculateBalanceFactor(slots, regressions, function(err, balanceFactor) {
 							if (err) return res.status(500).json({ error: err });
-							var currentBalance = BalanceCalculator.getBalanceFactor(slots, 'points');
-							var balancedGameSlots = slots.slice();
-							for (var j = 0; j < swaps.length; j++) {
-								var tmp = balancedGameSlots[swaps[j][0]];
-								balancedGameSlots[swaps[j][0]] = balancedGameSlots[swaps[j][1]];
-								balancedGameSlots[swaps[j][1]] = tmp;
-							}
-							var bestBalance = BalanceCalculator.getBalanceFactor(balancedGameSlots, 'points');
-							game.balance = Math.log(1 + bestBalance) / Math.log(1 + currentBalance);
+							game.balance = balanceFactor;
 							return res.json(game);
 						});
 					});

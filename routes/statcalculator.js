@@ -6,7 +6,6 @@ var Hero = require('../models/Hero');
 var HeroStat = require('../models/HeroStat');
 var Alias = require('../models/Alias');
 var Calculator = require('./calculator');
-var BalanceCalculator = require('./balancecalculator');
 
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -260,33 +259,6 @@ function getPlayerHeroesRanking(username, usernames, heroNames, timePeriod, call
 	});
 }
 
-function calculateBalanceFactor(game, callback) {
-	var slots = [];
-	for (var index = 0; index < 9; index++) {
-		if (game.slots[index] && game.slots[index].username) {
-			slots.push(game.slots[index].stat); 
-		} else {
-			slots.push(null);
-		}
-	}  
-	BalanceCalculator.getOptimalBalance(slots, 'points', true, function(err, bestSlots) {
-		if (err) return callback(err);
-		BalanceCalculator.getOptimalBalance(slots, 'points', false, function(err, worstSlots) {
-			if (err) return callback(err); 
-			var bestBalance = BalanceCalculator.getBalanceFactor(BalanceCalculator.swapSlots(slots, bestSlots), 'points');
-			var worstBalance = BalanceCalculator.getBalanceFactor(BalanceCalculator.swapSlots(slots, worstSlots), 'points');
-			var actualBalance = BalanceCalculator.getBalanceFactor(slots, 'points'); 
-			var balanceFactor;
-			if (worstBalance == bestBalance) {
-				balanceFactor = 1;
-			} else {
-				balanceFactor = (worstBalance - actualBalance) / (worstBalance - bestBalance);
-			}
-			return callback(null, balanceFactor || 1);
-		});
-	}); 
-};
-
 module.exports = {
 	'escapeRegExp': escapeRegExp,
 	'getRankingPosition': getRankingPosition,
@@ -295,6 +267,5 @@ module.exports = {
 	'getHeroStats': getHeroStats,
 	'getAllPlayersRanking': getAllPlayersRanking,
 	'getAllHeroesRanking': getAllHeroesRanking,
-	'getPlayerHeroesRanking': getPlayerHeroesRanking,
-	'calculateBalanceFactor': calculateBalanceFactor
+	'getPlayerHeroesRanking': getPlayerHeroesRanking
 };

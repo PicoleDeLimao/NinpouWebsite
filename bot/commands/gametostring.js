@@ -82,8 +82,8 @@ module.exports = function(ev, game, callback, criteria) {
 							response += 'WINNING TEAM\n';
 						}
 					} else {
-						var averageScore = ((criteriaOnSlot(game.slots[0], criteria)) + (criteriaOnSlot(game.slots[1], criteria)) + (criteriaOnSlot(game.slots[2], criteria))) / 3;
-						response += 'Konoha;   (Average ' + capitalizeFirstLetter(criteria) + ': ' + Math.round(averageScore) + ')\n';
+						var averageScore = ((criteriaOnSlot(game.slots[0], criteria)) + (criteriaOnSlot(game.slots[1], criteria)) + (criteriaOnSlot(game.slots[2], criteria)));
+						response += 'Konoha;   (Predicted ' + capitalizeFirstLetter(criteria) + ': ' + Math.round(averageScore) + ')\n';
 					} 
 					for (var i = 0; i < 3; i++) {
 						response += slotToString(game.slots[i], largestName, largestRealm, largestCriteria, game.recorded, false, criteria);
@@ -102,8 +102,8 @@ module.exports = function(ev, game, callback, criteria) {
 							response += 'WINNING TEAM\n';
 						}
 					} else {
-						var averageScore = ((criteriaOnSlot(game.slots[3], criteria)) + (criteriaOnSlot(game.slots[4], criteria)) + (criteriaOnSlot(game.slots[5], criteria))) / 3;
-						response += 'Oto;      (Average ' + capitalizeFirstLetter(criteria) + ': ' + Math.round(averageScore) + ')\n';
+						var averageScore = ((criteriaOnSlot(game.slots[3], criteria)) + (criteriaOnSlot(game.slots[4], criteria)) + (criteriaOnSlot(game.slots[5], criteria)));
+						response += 'Oto;      (Predicted ' + capitalizeFirstLetter(criteria) + ': ' + Math.round(averageScore) + ')\n';
 					}
 					for (var i = 3; i < 6; i++) {
 						response += slotToString(game.slots[i], largestName, largestRealm, largestCriteria, game.recorded, false, criteria);
@@ -122,8 +122,8 @@ module.exports = function(ev, game, callback, criteria) {
 							response += 'WINNING TEAM\n';
 						}
 					} else {
-						var averageScore = ((criteriaOnSlot(game.slots[6], criteria)) + (criteriaOnSlot(game.slots[7], criteria)) + (criteriaOnSlot(game.slots[8], criteria))) / 3;
-						response += 'Akatsuki; (Average ' + capitalizeFirstLetter(criteria) + ': ' + Math.round(averageScore) + ')\n';
+						var averageScore = ((criteriaOnSlot(game.slots[6], criteria)) + (criteriaOnSlot(game.slots[7], criteria)) + (criteriaOnSlot(game.slots[8], criteria)));
+						response += 'Akatsuki; (Predicted ' + capitalizeFirstLetter(criteria) + ': ' + Math.round(averageScore) + ')\n';
 					}
 					for (var i = 6; i < 9; i++) {
 						response += slotToString(game.slots[i], largestName, largestRealm, largestCriteria, game.recorded, false, criteria);
