@@ -126,7 +126,7 @@ router.post('/balance', function(req, res) {
 				game.slots[swaps[j][1]] = tmp;
 			}
 			for (var i = 0; i < game.slots.length; i++) {
-				if (game.slots[i].gamesRanked > 5) {
+				if (game.slots[i].gamesRanked > 5 && regressions[game.slots[i].username] != null) {
 					var features = PlayerPredictor.getPlayerFeatures(game.slots, i);
 					if (features.length > 0) {
 						game.slots[i].points = regressions[game.slots[i].username].transform(features) * 300;

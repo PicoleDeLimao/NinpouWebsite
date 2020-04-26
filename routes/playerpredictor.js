@@ -190,8 +190,12 @@ async function getPlayerLinearRegression(username, cachedStats) {
                 iterations: 10000,
                 lambda: 0.0
             });
-            regression.fit(data);
-            return resolve(regression);
+            if (data.length > 5) {
+                regression.fit(data);
+                return resolve(regression);
+            } else {
+                return resolve(null);
+            }
         });
     });
 }

@@ -22,7 +22,7 @@ function flattenSlots(slots) {
 
 function getBalanceFactor(slots, regressions) {
 	for (var i = 0; i < slots.length; i++) {
-		if (slots[i].gamesRanked > 5) {
+		if (slots[i].gamesRanked > 5 && regressions[slots[i].username] != null) {
 			var features = PlayerPredictor.getPlayerFeatures(slots, i);
 			if (features.length > 0) {
 				slots[i].points = regressions[slots[i].username].transform(features) * 300;
