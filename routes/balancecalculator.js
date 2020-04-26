@@ -29,7 +29,11 @@ function getBalanceFactor(slots, regressions) {
 			if (slots[i].gamesRanked > 5 && regressions[slots[i].username] != null) {
 				var features = PlayerPredictor.getPlayerFeatures(slots, i);
 				if (features.length > 0) {
-					slots[i].points = (regressions[slots[i].username].transform(features) * 300 + averagePoints) / 2;
+					var model = regressions[slots[i].username];
+					var predictedPoints = model.transform(features) * 300;
+					predictedPoints = Math.max(predictedPoints, model.avg - 2 * model.std);
+					predictedPoints = Math.min(predictedPoints, model.avg + 2 * model.std);
+					slots[i].points = (predictedPoints + averagePoints) / 2;
 				} else {
 					slots[i].points = averagePoints;
 				}

@@ -180,6 +180,26 @@ function getPlayerLinearRegressionData(username, cachedStats, callback) {
     });
 }
 
+function getMean(data) {
+    var mean = 0;
+    for (var i = 0; i < data.length; i++) {
+        mean += data[i];
+    }
+    mean /= data.length;
+    return mean;
+}
+
+function getStd(data) {
+    var mean = getMean(data);
+    var std = 0;
+    for (var i = 0; i < data.length; i++) {
+        std += Math.pow(data[i] - mean, 2);
+    }
+    std /= data.length - 1;
+    std = Math.sqrt(std);
+    return std;
+}
+
 async function getPlayerLinearRegression(username, cachedStats) {
     return new Promise(function(resolve, reject) {
         console.log("Getting linear regression for " + username + "...");
@@ -191,7 +211,13 @@ async function getPlayerLinearRegression(username, cachedStats) {
                 lambda: 0.0
             });
             if (data.length > 5) {
+                var outputs = [];
+                for (var i = 0; i < data.length; i++) {
+                    outputs.push(data[i][data[i].length - 1] * 300);
+                }
                 regression.fit(data);
+                regression.std = getStd(outputs);
+                regression.avg = getMean(outputs);
                 return resolve(regression);
             } else {
                 return resolve(null);
