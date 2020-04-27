@@ -139,8 +139,8 @@ router.post('/balance', function(req, res) {
 						var model = regressions[game.slots[i].username];
 						var averagePonts = game.slots[i].kills * 10 + game.slots[i].assists * 2 - game.slots[i].deaths * 5;
 						var predictedPoints = model.transform(features) * 300;
-						predictedPoints = Math.max(predictedPoints, model.avg - 2 * model.std);
-						predictedPoints = Math.min(predictedPoints, model.avg + 2 * model.std);
+						predictedPoints = Math.max(predictedPoints, model.avg - model.std);
+						predictedPoints = Math.min(predictedPoints, model.avg + model.std);
 						game.slots[i].points = (predictedPoints + averagePonts) / 2;
 					}
 				}
