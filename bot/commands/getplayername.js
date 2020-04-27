@@ -23,7 +23,11 @@ module.exports = function(ev, name, callback, hideRole) {
 				res.on('end', function() { 
 					if (res.statusCode != 200) { 
 						console.error(body);
-						return callback(null, user.username + ' (LEFT)');
+						if (user) {
+							return callback(null, user.username + ' (LEFT)');
+						} else {
+							return callback(null, 'null (LEFT)');
+						}
 					} else {
 						try { 
 							var data = JSON.parse(body); 
