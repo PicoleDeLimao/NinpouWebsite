@@ -31,8 +31,8 @@ function getBalanceFactor(slots, regressions) {
 				if (features.length > 0) {
 					var model = regressions[slots[i].username];
 					var predictedPoints = model.transform(features) * 300;
-					predictedPoints = Math.max(predictedPoints, model.avg - 2 * model.std);
-					predictedPoints = Math.min(predictedPoints, model.avg + 2 * model.std);
+					predictedPoints = Math.max(predictedPoints, model.avg - model.std);
+					predictedPoints = Math.min(predictedPoints, model.avg + model.std);
 					slots[i].points = (predictedPoints + averagePoints) / 2;
 				} else {
 					slots[i].points = averagePoints;
