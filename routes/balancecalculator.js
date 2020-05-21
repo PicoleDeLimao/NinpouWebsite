@@ -79,10 +79,10 @@ function getBalanceFactor(slots, regressions) {
 	var a = Math.pow(sum(team1) - sum(team2), 2);
 	var b = Math.pow(sum(team2) - sum(team3), 2);
 	var c = Math.pow(sum(team1) - sum(team3), 2);
-	var d = Math.pow(max(team1) - max(team2), 2);
-	var e = Math.pow(max(team2) - max(team3), 2);
-	var f = Math.pow(max(team1) - max(team3), 2);
-	return a + b + c + d + e + f;
+	//var d = Math.pow(max(team1) - max(team2), 2);
+	//var e = Math.pow(max(team2) - max(team3), 2);
+	//var f = Math.pow(max(team1) - max(team3), 2);
+	return a + b + c;
 };
 
 function isEnemyTeam(a, b) {
