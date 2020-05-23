@@ -190,7 +190,6 @@ function decodeGame(body, game, callback) {
 			console.log(game.slots[slot].points);
 			//game.slots[slot].points = game.slots[slot].kills * 10 + game.slots[slot].assists * 2 - game.slots[slot].deaths * 5;
 			game.slots[slot].gpm = decoded[index++]; 
-			console.log(game.slots[slot]);
 			count += Math.floor(game.slots[slot].gpm / 10);
 			var nameLength = decoded[index++];
 			game.slots[slot].username = "";
