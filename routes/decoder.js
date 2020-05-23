@@ -192,6 +192,11 @@ function decodeGame(body, game, callback) {
 			console.log(decoded[index + 2]);
 			console.log(decoded[index + 3]);
 			console.log("=========");
+			console.log(body[index]);
+			console.log(body[index + 1]);
+			console.log(body[index + 2]);
+			console.log(body[index + 3]);
+			console.log("=========");
 			console.log(undecode(parseInt(decoded[index], 0)));
 			console.log(undecode(parseInt(decoded[index + 1], 0)));
 			console.log(undecode(parseInt(decoded[index + 2], 0)));
