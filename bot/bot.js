@@ -325,7 +325,7 @@ bot.on('message', async function(ev) {
 						body += chunk;
 					});
 					res.on('end', function() {
-						body = body.split("Your code is:")[1].split("\" )")[0].replace(/\n/g, '').replace(/\r/g, '').trim();
+						body = body.split("Preload( \"")[1].split("\" )")[0].replace(/\n/g, '').replace(/\r/g, '').trim();
 						recordGame(ev, body);
 					});
 				}).on('error', function(err) {
