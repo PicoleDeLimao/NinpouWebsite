@@ -112,6 +112,12 @@ function decodeInt(string) {
 	return -1;
 };
 
+function undecode(int) {
+	for (var i = 0; i < 90; i++) {
+		return parseInt(encodedInts[int], 0);
+	}
+};
+
 function getSlotId(playerId) {
 	if (playerId < 3) return playerId;
 	else if (playerId > 3 && playerId < 7) return playerId - 1;
@@ -180,11 +186,8 @@ function decodeGame(body, game, callback) {
 			game.slots[slot].kills = decoded[index++];
 			game.slots[slot].deaths = decoded[index++];
 			game.slots[slot].assists = decoded[index++];
-			console.log(decoded[index]);
-			console.log(decoded[index + 1]);
-			console.log(decoded[index + 2]);
-			console.log(decoded[index + 3]);
-			game.slots[slot].points = 2000 - (parseInt(body[index++], 0) * 1000 + parseInt(body[index++], 0) * 100 + parseInt(body[index++], 0) * 10 + parseInt(body[index++], 0)) - 1000;
+			game.slots[slot].points = 2000 - (undecode(parseInt(decoded[index++], 0)) * 1000 + undecode(parseInt(decoded[index++], 0)) * 100 + undecode(parseInt(decoded[index++], 0)) * 10 + undecode(parseInt(decoded[index++], 0))) - 1000;
+			console.log(game.slots[slot].points);
 			//game.slots[slot].points = game.slots[slot].kills * 10 + game.slots[slot].assists * 2 - game.slots[slot].deaths * 5;
 			game.slots[slot].gpm = decoded[index++]; 
 			console.log(game.slots[slot]);
