@@ -186,6 +186,10 @@ function decodeGame(body, game, callback) {
 			game.slots[slot].kills = decoded[index++];
 			game.slots[slot].deaths = decoded[index++];
 			game.slots[slot].assists = decoded[index++];
+			console.log(undecode(parseInt(decoded[index], 0)));
+			console.log(undecode(parseInt(decoded[index + 1], 0)));
+			console.log(undecode(parseInt(decoded[index + 2], 0)));
+			console.log(undecode(parseInt(decoded[index + 3], 0)));
 			game.slots[slot].points = 2000 - (undecode(parseInt(decoded[index++], 0)) * 1000 + undecode(parseInt(decoded[index++], 0)) * 100 + undecode(parseInt(decoded[index++], 0)) * 10 + undecode(parseInt(decoded[index++], 0))) - 1000;
 			console.log(game.slots[slot].points);
 			//game.slots[slot].points = game.slots[slot].kills * 10 + game.slots[slot].assists * 2 - game.slots[slot].deaths * 5;
