@@ -187,10 +187,10 @@ function decodeGame(body, game, callback) {
 			game.slots[slot].deaths = decoded[index++];
 			game.slots[slot].assists = decoded[index++];
 			console.log("=========");
-			console.log(encoded[index]);
-			console.log(encoded[index + 1]);
-			console.log(encoded[index + 2]);
-			console.log(encoded[index + 3]);
+			console.log(decoded[index]);
+			console.log(decoded[index + 1]);
+			console.log(decoded[index + 2]);
+			console.log(decoded[index + 3]);
 			console.log("=========");
 			console.log(undecode(parseInt(decoded[index], 0)));
 			console.log(undecode(parseInt(decoded[index + 1], 0)));
