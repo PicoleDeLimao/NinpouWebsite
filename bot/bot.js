@@ -1101,9 +1101,9 @@ bot.on('message', async function(ev) {
 						case 'bug':
 							if (args.length > 0) {
 								var channel = await bot.channels.fetch('692551415394205746');
-								channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.**').then(function(message) {
+								channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.').then(function(message) {
 									message.react('👍').then(function(){
-										message.react('👎');
+										message.edit('**#' + message.id + '**: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this bug.**\n\n');
 									});
 									ev.channel.send('Bug reported in <#692551415394205746> . Thank you!! **Oink!** :pig:');
 								});
@@ -1114,9 +1114,13 @@ bot.on('message', async function(ev) {
 						case 'balance':
 							if (args.length > 0) {
 								var channel = await bot.channels.fetch('692551380786872352');
-								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
+								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree, :thinking: if you agree partially and :thumbsdown: if you disagree.').then(function(message) {
 									message.react('👍').then(function(){
-										message.react('👎');
+										message.react('🤔').then(function() {
+											message.react('👎').then(function() {
+												message.edit('**#' + message.id + '**: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this issue.**\n\n');
+											});
+										});
 									});
 									ev.channel.send('Issue created in <#692551380786872352> . Thank you!! **Oink!** :pig:');
 								});
@@ -1127,9 +1131,13 @@ bot.on('message', async function(ev) {
 						case 'idea':
 							if (args.length > 0) {
 								var channel = await bot.channels.fetch('692551338743037952');
-								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree and :thumbsdown: if you disagree.**').then(function(message) {
+								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree, :thinking: if you agree partially and :thumbsdown: if you disagree.').then(function(message) {
 									message.react('👍').then(function(){
-										message.react('👎');
+										message.react('🤔').then(function() {
+											message.react('👎').then(function() {
+												message.edit('**#' + message.id + '**: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this idea.**\n\n');
+											});
+										});
 									});
 									ev.channel.send('Idea posted in <#692551338743037952> . Thank you!! **Oink!** :pig:');
 								});
@@ -1140,9 +1148,13 @@ bot.on('message', async function(ev) {
 						case 'poll':
 							if (args.length > 0) {
 								var channel = await bot.channels.fetch('692543421826727968');
-								channel.send(args.join(' ') + '\n\n**React with :thumbsup: for yes and :thumbsdown: for no.**').then(function(message) {
+								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree, :neutral_face: if you are neutral and :thumbsdown: if you disagree.').then(function(message) {
 									message.react('👍').then(function(){
-										message.react('👎');
+										message.react('😐').then(function() {
+											message.react('👎').then(function() {
+												message.edit('**#' + message.id + '**: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this poll.**\n\n');
+											});
+										});
 									});
 									ev.channel.send('Poll created in <#692543421826727968> . Thank you!! **Oink!** :pig:');
 								});
@@ -1150,6 +1162,45 @@ bot.on('message', async function(ev) {
 								ev.channel.send('You need to type a description! **Oink**! :pig:')
 							}
 							break; 
+						case 'reply':
+							if (args.length > 1) {
+								var bugChannel = await bot.channels.fetch('692551415394205746');
+								var balanceChannel = await bot.channels.fetch('692551380786872352');
+								var ideaChannel = await bot.channels.fetch('692551338743037952');
+								var pollChannel = await bot.channels.fetch('692543421826727968');
+								var message = null;
+								try {
+									message = await bugChannel.messages.fetch(args[0]);
+								} catch {
+									try {
+										message = await balanceChannel.messages.fetch(args[0]);
+									} catch {
+										try {
+											message = await ideaChannel.messages.fetch(args[0]);
+										} catch {
+											try {
+												message = await pollChannel.messages.fetch(args[0]);
+											} catch {
+												// do nothing
+											}
+										}
+									}
+								}
+								if (message == null) {
+									ev.channel.send('Post not found! **Oink**! :pig:');
+								} else {
+									var numComments = (message.content.match(/Reply \#/g) || []).length + 1;
+									if (numComments == 1) {
+										message.edit(message.content + '\n==================================\n**Reply #' + numComments + ':** ' + args.splice(1).join(' ') + '\n');
+									} else {
+										message.edit(message.content + '\n**Reply #' + numComments + ':** ' + args.splice(1).join(' ') + '\n');
+									}
+									ev.channel.send('Reply posted! **Oink**! :pig:');
+								}
+							} else {
+								ev.channel.send('You need to specify the post id! **Oink**! :pig:');
+							}
+							break;
 						case 'attack':
 							var insults = ['noob', 'team stacker', 'feeder', 'leaver', 'rage-quitter', 'shithead', 'idiot', 'camper', 'Tobias\' cuck', 'so bad in Ninpou that I\'m pity', 'feeder as Madara', 'feeder as Minato', 'noob who doesn\'t know for what Smoke Bomb is for', 'noob who doesn\'t know the price of Oil', 'hentai lover', 'worse than Fexter', 'guy who lost 1v1 to Fexter', 'teenage with a girl\'s voice', 'coward who can\'t win 1v1', 'fool', 'guy who keeps dildos', 'vegan', 'Fexter', 'Tobias'];
 							ev.channel.send('*attacks ' + args[0] + ' and says: ' + args[0] + ' is a ' + insults[Math.floor(Math.random() * insults.length)] + '.* **Oink!** :pig:');
