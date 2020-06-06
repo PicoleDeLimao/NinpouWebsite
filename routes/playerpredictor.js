@@ -3,6 +3,7 @@
 var Game = require('../models/Game');
 var StatCalculator = require('./statcalculator');
 var jsregression = require('js-regression');
+var RFRegression = require('ml-random-forest').RandomForestRegression;
 
 async function getGameStats(players, cachedStats) {
     return new Promise(function(resolve) {
@@ -115,35 +116,45 @@ function getPlayerFeatures(slots, playerSlot) {
     if (strongestAllySlot != -1 && weakestAllySlot != -1 && strongestAllySlot != weakestAllySlot &&
             strongestEnemySlot != 1 && weakestEnemySlot != -1 && strongestEnemySlot != weakestEnemySlot) {
         return [
-            slots[playerSlot].kills / 25,
-            slots[playerSlot].deaths / 20,
-            slots[playerSlot].assists / 15,
+            //slots[playerSlot].kills / 25,
+            //slots[playerSlot].deaths / 20,
+            //slots[playerSlot].assists / 15,
+            slots[playerSlot].points / 300,
             slots[playerSlot].gpm / 25,
-            slots[playerSlot].score / 5000,
+            slots[playerSlot].gamesRanked / 100,
+            //slots[playerSlot].score / 5000,
             //slots[strongestAllySlot].points,
-            slots[strongestAllySlot].kills / 25,
-            slots[strongestAllySlot].deaths / 20,
-            slots[strongestAllySlot].assists / 15,
+            //slots[strongestAllySlot].kills / 25,
+            //slots[strongestAllySlot].deaths / 20,
+            //slots[strongestAllySlot].assists / 15,
+            slots[strongestAllySlot].points / 300,
             slots[strongestAllySlot].gpm / 25,
-            slots[strongestAllySlot].score / 1000,
+            slots[strongestAllySlot].gamesRanked / 100,
+            //slots[strongestAllySlot].score / 1000,
             //slots[weakestAllySlot].points,
-            slots[weakestAllySlot].kills / 25,
-            slots[weakestAllySlot].deaths / 20,
-            slots[weakestAllySlot].assists / 15,
+            //slots[weakestAllySlot].kills / 25,
+            //slots[weakestAllySlot].deaths / 20,
+            //slots[weakestAllySlot].assists / 15,
+            slots[weakestAllySlot].points / 300,
             slots[weakestAllySlot].gpm / 25,
-            slots[weakestAllySlot].score / 5000,
+            slots[weakestAllySlot].gamesRanked / 100,
+            //slots[weakestAllySlot].score / 5000,
             //slots[strongestEnemySlot].points,
-            slots[strongestEnemySlot].kills / 25,
-            slots[strongestEnemySlot].deaths / 20,
-            slots[strongestEnemySlot].assists / 15,
+            //slots[strongestEnemySlot].kills / 25,
+            //slots[strongestEnemySlot].deaths / 20,
+            //slots[strongestEnemySlot].assists / 15,
+            slots[strongestEnemySlot].points / 300,
             slots[strongestEnemySlot].gpm / 25,
-            slots[strongestEnemySlot].score / 1000,
+            slots[strongestEnemySlot].gamesRanked / 300,
+            //slots[strongestEnemySlot].score / 1000,
             //slots[weakestEnemySlot].points,
-            slots[weakestEnemySlot].kills / 25,
-            slots[weakestEnemySlot].deaths / 20,
-            slots[weakestEnemySlot].assists / 15,
+            //slots[weakestEnemySlot].kills / 25,
+            //slots[weakestEnemySlot].deaths / 20,
+            //slots[weakestEnemySlot].assists / 15,
+            slots[weakestEnemySlot].points / 300,
             slots[weakestEnemySlot].gpm / 25,
-            slots[weakestEnemySlot].score / 5000,
+            slots[weakestEnemySlot].gamesRanked / 300,
+            //slots[weakestEnemySlot].score / 5000,
             getEnemyTeamPoints(slots, playerSlot, true) / 3 / 300,
             getEnemyTeamPoints(slots, playerSlot, false) / 3 / 300
         ];
@@ -154,7 +165,7 @@ function getPlayerFeatures(slots, playerSlot) {
 function getPlayerLinearRegressionData(username, cachedStats, callback) {
     StatCalculator.getPlayerStats(username, function (err, allStat) {
         if (err) return callback(err);
-        Game.find({ 'slots.username': { $in: allStat.usernames }, 'ranked': true }).limit(25).sort('-_id').exec(async function (err, games) {
+        Game.find({ 'slots.username': { $in: allStat.usernames }, 'ranked': true }).limit(50).sort('-_id').exec(async function (err, games) {
             if (err) return res.status(500).json({ error: err });
             var data = [];
             for (var i = 0; i < games.length; i++) {
@@ -180,17 +191,7 @@ function getPlayerLinearRegressionData(username, cachedStats, callback) {
     });
 }
 
-function getMean(data) {
-    var mean = 0;
-    for (var i = 0; i < data.length; i++) {
-        mean += data[i];
-    }
-    mean /= data.length;
-    return mean;
-}
-
-function getStd(data) {
-    var mean = getMean(data);
+function getStd(data, mean) {
     var std = 0;
     for (var i = 0; i < data.length; i++) {
         std += Math.pow(data[i] - mean, 2);
@@ -205,19 +206,53 @@ async function getPlayerLinearRegression(username, cachedStats) {
         console.log("Getting linear regression for " + username + "...");
         getPlayerLinearRegressionData(username, cachedStats, function (err, data) {
             if (err) return reject(err);
-            var regression = new jsregression.LinearRegression({
+            /*var regression = new jsregression.LinearRegression({
                 alpha: 1e-3,
                 iterations: 10000,
-                lambda: 0.0
-            });
+                lambda: 0.01
+            });*/
             if (data.length > 5) {
                 var outputs = [];
                 for (var i = 0; i < data.length; i++) {
                     outputs.push(data[i][data[i].length - 1] * 300);
                 }
-                regression.fit(data);
-                regression.std = getStd(outputs);
-                regression.avg = getMean(outputs);
+                var regression = new RFRegression({
+                    maxFeatures: 4,
+                    replacement: true,
+                    nEstimators: 20,
+                    selectionMethod: "median",
+                    useSampleBagging: true
+                });
+                var trainingSet = new Array(data.length);
+                var predictions = new Array(data.length);
+                for (var i = 0; i < data.length; i++) {
+                    trainingSet[i] = data[i].slice(0, data[i].length - 1);
+                    predictions[i] = data[i][data[i].length - 1];
+                }
+                regression.train(trainingSet, predictions);
+                //regression.fit(data);
+                var stats = null;
+                for (var statUsername in cachedStats) {
+                    if (cachedStats[statUsername]._id == username || statUsername == username) {
+                        stats = cachedStats[statUsername];
+                    }
+                }
+                regression.std = getStd(outputs, stats.points);
+                regression.avg = stats.points;//getMean(outputs);
+                regression.residuals = [];
+                regression.games = data.length;
+                var mae = 0;
+                var modelPredictions = regression.predict(trainingSet);
+                for (var i = 0; i < data.length; i++) {
+                    var real = data[i][data[i].length - 1] * 300;
+                    var predicted = modelPredictions[i] * 300;
+                    mae += Math.abs(predicted - real);
+                    regression.residuals.push({
+                        predicted: predicted,
+                        real: real,
+                    });
+                }
+                regression.error = mae / data.length;
                 return resolve(regression);
             } else {
                 return resolve(null);

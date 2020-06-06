@@ -38,10 +38,19 @@ function slotToString(slot, largestName, largestRealm, largestCriteria, recorded
 			criteriaSpaces += ' ';
 		}
 		if (recorded && !spectator) {
-			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [P: ' + (' '.repeat(4 - (Math.abs(slot.points) + '').length)) + slot.points + '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + '] [' + (slot.hero && slot.hero.name ? slot.hero.name : 'Unknown' ) + ']\n'; 
+			response += '[' + nameSpaces + slot.username + ']' + ' [K: ' + (' '.repeat(2 - (slot.kills + '').length)) + slot.kills + '] [D: ' + (' '.repeat(2 - (slot.deaths + '').length)) + slot.deaths + '] [A: ' + (' '.repeat(2 - (slot.assists + '').length)) + slot.assists + '] [P: ' + (' '.repeat(4 - (Math.abs(slot.points) + '').length)) + slot.points + '] [GPM: ' + (' '.repeat(4 - ((slot.gpm * 100) + '').length)) + (slot.gpm * 100) + '] [' + (slot.hero && slot.hero.name ? slot.hero.name : 'Unknown' ) + ']'; 
 		} else {
-			response += '[' + nameSpaces + slot.username + ']' + ' [' + capitalizeFirstLetter(criteria) + ': ' + criteriaSpaces + Math.round(criteriaOnSlot(slot, criteria)) + ']\n';
+			response += '[' + nameSpaces + slot.username + ']' + ' [' + capitalizeFirstLetter(criteria) + ': ' + criteriaSpaces + Math.round(criteriaOnSlot(slot, criteria)) + ']';
 		}
+		console.log(slot.error);
+		if (slot.error) {
+			var errorStr = '' + slot.error.toFixed(2);
+			for (var i = 0; i < 4 - errorStr.length; i++) {
+				errorStr = ' ' + errorStr;
+			}
+			response += '[ Margin of error: ' + errorStr + ']';
+		}
+		response += '\n';
 	}
 	return response;
 }

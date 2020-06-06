@@ -137,11 +137,16 @@ router.post('/balance', function(req, res) {
 					var features = PlayerPredictor.getPlayerFeatures(game.slots, i);
 					if (features.length > 0) {
 						var model = regressions[game.slots[i].username];
-						var averagePonts = game.slots[i].kills * 10 + game.slots[i].assists * 2 - game.slots[i].deaths * 5;
-						var predictedPoints = model.transform(features) * 300;
+						var averagePonts = game.slots[i].points; //game.slots[i].kills * 10 + game.slots[i].assists * 2 - game.slots[i].deaths * 5;
+						var newFeatures = new Array(1);
+						newFeatures[0] = features;
+						var predictedPoints = model.predict(newFeatures)[0] * 300;
 						predictedPoints = Math.max(predictedPoints, model.avg - model.std);
 						predictedPoints = Math.min(predictedPoints, model.avg + model.std);
 						game.slots[i].points = (predictedPoints + averagePonts) / 2;
+						game.slots[i].points_mean = model.std;
+						game.slots[i].points_std = model.avg;
+						game.slots[i].error = model.error;
 					}
 				}
 			}

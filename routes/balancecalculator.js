@@ -25,15 +25,17 @@ function getBalanceFactor(slots, regressions) {
 		if (slots[i].username == null) {
 			slots[i].points = 0;
 		} else {
-			var averagePoints = (slots[i].kills * 10 + slots[i].assists * 2 - slots[i].deaths * 5);
+			var averagePoints = slots[i].points;//(slots[i].kills * 10 + slots[i].assists * 2 - slots[i].deaths * 5);
 			if (slots[i].gamesRanked > 5 && regressions[slots[i].username] != null) {
 				var features = PlayerPredictor.getPlayerFeatures(slots, i);
 				if (features.length > 0) {
 					var model = regressions[slots[i].username];
-					var predictedPoints = model.transform(features) * 300;
+					var newFeatures = new Array(1);
+					newFeatures[0] = features;
+					var predictedPoints = model.predict(newFeatures)[0] * 300;
 					predictedPoints = Math.max(predictedPoints, model.avg - model.std);
 					predictedPoints = Math.min(predictedPoints, model.avg + model.std);
-					slots[i].points = (predictedPoints + averagePoints) / 2;
+					slots[i].points = predictedPoints;
 				} else {
 					slots[i].points = averagePoints;
 				}
