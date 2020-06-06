@@ -217,11 +217,9 @@ async function getPlayerLinearRegression(username, cachedStats) {
                     outputs.push(data[i][data[i].length - 1] * 300);
                 }
                 var regression = new RFRegression({
-                    maxFeatures: 3,
+                    maxFeatures: 4,
                     replacement: true,
-                    nEstimators: 10,
-                    selectionMethod: "median",
-                    useSampleBagging: true
+                    nEstimators: 20
                 });
                 var trainingSet = new Array(data.length);
                 var predictions = new Array(data.length);
