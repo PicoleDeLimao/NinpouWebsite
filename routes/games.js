@@ -147,6 +147,7 @@ router.post('/balance', function(req, res) {
 						game.slots[i].points_mean = model.std;
 						game.slots[i].points_std = model.avg;
 						game.slots[i].error = model.error;
+						game.slots[i].points = averagePonts;
 					}
 				}
 			}
