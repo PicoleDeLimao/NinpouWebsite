@@ -1103,7 +1103,7 @@ bot.on('message', async function(ev) {
 								var channel = await bot.channels.fetch('692551415394205746');
 								channel.send(args.join(' ') + '\n\nReact with :thumbsup: to increase the priority of this bug.').then(function(message) {
 									message.react('👍').then(function(){
-										message.edit('__#' + message.id + '**__: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this bug.\n\n');
+										message.edit('__#' + message.id + '__: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this bug.\n\n');
 									});
 									ev.channel.send('Bug reported in <#692551415394205746> . Thank you!! **Oink!** :pig:');
 								});
