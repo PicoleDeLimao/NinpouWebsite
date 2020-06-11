@@ -1101,9 +1101,9 @@ bot.on('message', async function(ev) {
 						case 'bug':
 							if (args.length > 0) {
 								var channel = await bot.channels.fetch('692551415394205746');
-								channel.send(args.join(' ') + '\n\n**React with :thumbsup: to increase the priority of this bug.').then(function(message) {
+								channel.send(args.join(' ') + '\n\nReact with :thumbsup: to increase the priority of this bug.').then(function(message) {
 									message.react('👍').then(function(){
-										message.edit('**#' + message.id + '**: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this bug.**\n\n');
+										message.edit('__#' + message.id + '**__: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this bug.\n\n');
 									});
 									ev.channel.send('Bug reported in <#692551415394205746> . Thank you!! **Oink!** :pig:');
 								});
@@ -1114,12 +1114,10 @@ bot.on('message', async function(ev) {
 						case 'balance':
 							if (args.length > 0) {
 								var channel = await bot.channels.fetch('692551380786872352');
-								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree, :thinking: if you agree partially and :thumbsdown: if you disagree.').then(function(message) {
+								channel.send(args.join(' ') + '\n\nReact with :thumbsup: if you agree and :thumbsdown: if you disagree.').then(function(message) {
 									message.react('👍').then(function(){
-										message.react('🤔').then(function() {
-											message.react('👎').then(function() {
-												message.edit('**#' + message.id + '**: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this issue.**\n\n');
-											});
+										message.react('👎').then(function() {
+											message.edit('__#' + message.id + '__: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this issue.\n\n');
 										});
 									});
 									ev.channel.send('Issue created in <#692551380786872352> . Thank you!! **Oink!** :pig:');
@@ -1131,12 +1129,10 @@ bot.on('message', async function(ev) {
 						case 'idea':
 							if (args.length > 0) {
 								var channel = await bot.channels.fetch('692551338743037952');
-								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree, :thinking: if you agree partially and :thumbsdown: if you disagree.').then(function(message) {
+								channel.send(args.join(' ') + '\n\nReact with :thumbsup: if you agree and :thumbsdown: if you disagree.').then(function(message) {
 									message.react('👍').then(function(){
-										message.react('🤔').then(function() {
-											message.react('👎').then(function() {
-												message.edit('**#' + message.id + '**: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this idea.**\n\n');
-											});
+										message.react('👎').then(function() {
+											message.edit('__#' + message.id + '__: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this idea.\n\n');
 										});
 									});
 									ev.channel.send('Idea posted in <#692551338743037952> . Thank you!! **Oink!** :pig:');
@@ -1148,11 +1144,11 @@ bot.on('message', async function(ev) {
 						case 'poll':
 							if (args.length > 0) {
 								var channel = await bot.channels.fetch('692543421826727968');
-								channel.send(args.join(' ') + '\n\n**React with :thumbsup: if you agree, :neutral_face: if you are neutral and :thumbsdown: if you disagree.').then(function(message) {
+								channel.send(args.join(' ') + '\n\nReact with :thumbsup: if you agree, :neutral_face: if you are neutral and :thumbsdown: if you disagree.').then(function(message) {
 									message.react('👍').then(function(){
 										message.react('😐').then(function() {
 											message.react('👎').then(function() {
-												message.edit('**#' + message.id + '**: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this poll.**\n\n');
+												message.edit('__#' + message.id + '__: ' + message.content + ' Use `!reply ' + message.id + '` to reply to this poll.\n\n');
 											});
 										});
 									});
