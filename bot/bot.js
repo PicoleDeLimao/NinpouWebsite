@@ -1204,6 +1204,8 @@ bot.on('message', async function(ev) {
 								ev.channel.send('You need to specify the post id! **Oink**! :pig:');
 							}
 							break;
+						case 'lamen':
+							ev.channel.send('*give some ramen to ' + args[0] + ' 🍜🍜🍜.*');
 						case 'attack':
 							var insults = ['noob', 'team stacker', 'feeder', 'leaver', 'rage-quitter', 'shithead', 'idiot', 'camper', 'Tobias\' cuck', 'so bad in Ninpou that I\'m pity', 'feeder as Madara', 'feeder as Minato', 'noob who doesn\'t know for what Smoke Bomb is for', 'noob who doesn\'t know the price of Oil', 'hentai lover', 'worse than Fexter', 'guy who lost 1v1 to Fexter', 'teenage with a girl\'s voice', 'coward who can\'t win 1v1', 'fool', 'guy who keeps dildos', 'vegan', 'Fexter', 'Tobias'];
 							ev.channel.send('*attacks ' + args[0] + ' and says: ' + args[0] + ' is a ' + insults[Math.floor(Math.random() * insults.length)] + '.* **Oink!** :pig:');
