@@ -1207,7 +1207,7 @@ bot.on('message', async function(ev) {
 						case 'ramen':
 							ev.channel.send('*give some ramen to ' + args[0] + ' 🍜🍜🍜.*');
 							break;
-						case 'eat'
+						case 'eat':
 							ev.channel.send(ev.author.username + ' *just ate some ramen. Yummy!! 🍜🍜🍜.*');
 							break;
 						case 'attack':
