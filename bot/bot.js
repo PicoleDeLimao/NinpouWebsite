@@ -1207,6 +1207,9 @@ bot.on('message', async function(ev) {
 						case 'ramen':
 							ev.channel.send('*give some ramen to ' + args[0] + ' 🍜🍜🍜.*');
 							break;
+						case 'eat'
+							ev.channel.send(ev.author.username + ' *just ate some ramen. Yummy!! 🍜🍜🍜.*');
+							break;
 						case 'attack':
 							var insults = ['noob', 'stacker', 'feeder', 'leaver', 'shithead', 'noob who doesn\'t know the price of Oil', 'worse than Fexter', 'guy who lost x1 to Fexter', 'brazillian', 'vegan', 'Fexter', 'Tobias', 'Teo\'s daddy', 'tiny dick', 'swedish SJW'];
 							ev.channel.send('*attacks ' + args[0] + ' and says: ' + args[0] + ' is a ' + insults[Math.floor(Math.random() * insults.length)] + '.* **Oink!** :pig:');
