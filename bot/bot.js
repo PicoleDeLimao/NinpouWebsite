@@ -302,7 +302,14 @@ bot.on('messageReactionAdd', async function(ev, user) {
 					type = '🎵 music idea';
 				}
 				if (ev.emoji.name == '❌') {
-					var message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (to be approved you need at least 70% of approval):\n\n ' + content;
+					var message;
+					if (channelId == balanceIssueId) {
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (to balance issues be approved you need at least 70% of approval):\n\n ' + content;
+					} else if (channelId == mapIdeaId) {
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (ideas can be rejected at any point and to be approved you need at least 50% of approval):\n\n ' + content;
+					} else {
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎:\n\n ' + content;
+					}
 				} else {
 					var message = 'The following **' + type + '** was **✅ approved** to be released on version **' + version + '** with ' + countUp + '👍 / ' + countDown + '👎:\n\n ' + content;
 				}
