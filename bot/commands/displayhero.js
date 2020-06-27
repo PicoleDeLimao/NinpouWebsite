@@ -57,7 +57,7 @@ module.exports = function(ev, heroName, attribute) {
 					'Average points:      <' + Math.round(hero.points) + '> (Ranking <' + hero.ranking.points + '>)\n' +  
 					'Average gold/minute: <' + Math.round(hero.gpm) + '> (Ranking <' + hero.ranking.gpm + '>)\n' +   
 					'Chance of winning:   <' + (hero.chance).toFixed(2) + '%> (Ranking <' + hero.ranking.chance + '>)\n\n' +
-					'Top-5 best players (from ' + data.numPlayers + ' players in the last six months):\n';
+					'Top-5 best players (from ' + data.numPlayers + ' players in the last three months):\n';
 					if (data.numPlayers > 0) {
 						var players = [];
 						(function next(index) {
