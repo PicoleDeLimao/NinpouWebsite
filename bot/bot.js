@@ -302,7 +302,14 @@ bot.on('messageReactionAdd', async function(ev, user) {
 					type = '🎵 music idea';
 				}
 				if (ev.emoji.name == '❌') {
-					var message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (to be approved you need at least 70% of approval):\n\n ' + content;
+					var message;
+					if (channelId == balanceIssueId) {
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (to balance issues be approved you need at least 70% of approval):\n\n ' + content;
+					} else if (channelId == mapIdeaId) {
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (ideas can be rejected at any point and to be approved you need at least 50% of approval):\n\n ' + content;
+					} else {
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎:\n\n ' + content;
+					}
 				} else {
 					var message = 'The following **' + type + '** was **✅ approved** to be released on version **' + version + '** with ' + countUp + '👍 / ' + countDown + '👎:\n\n ' + content;
 				}
@@ -1197,8 +1204,14 @@ bot.on('message', async function(ev) {
 								ev.channel.send('You need to specify the post id! **Oink**! :pig:');
 							}
 							break;
+						case 'ramen':
+							ev.channel.send(ev.author.username + ' *gives some ramen to ' + args[0] + ' 🍜🍜🍜.*');
+							break;
+						case 'eat':
+							ev.channel.send(ev.author.username + ' *just ate some ramen. Yummy!! 🍜🍜🍜.*');
+							break;
 						case 'attack':
-							var insults = ['noob', 'team stacker', 'feeder', 'leaver', 'rage-quitter', 'shithead', 'idiot', 'camper', 'Tobias\' cuck', 'so bad in Ninpou that I\'m pity', 'feeder as Madara', 'feeder as Minato', 'noob who doesn\'t know for what Smoke Bomb is for', 'noob who doesn\'t know the price of Oil', 'hentai lover', 'worse than Fexter', 'guy who lost 1v1 to Fexter', 'teenage with a girl\'s voice', 'coward who can\'t win 1v1', 'fool', 'guy who keeps dildos', 'vegan', 'Fexter', 'Tobias'];
+							var insults = ['noob', 'stacker', 'feeder', 'leaver', 'shithead', 'noob who doesn\'t know the price of Oil', 'worse than Fexter', 'guy who lost x1 to Fexter', 'brazillian', 'vegan', 'Fexter', 'Tobias', 'Teo\'s daddy', 'tiny dick', 'swedish SJW'];
 							ev.channel.send('*attacks ' + args[0] + ' and says: ' + args[0] + ' is a ' + insults[Math.floor(Math.random() * insults.length)] + '.* **Oink!** :pig:');
 							break;
 					 }
