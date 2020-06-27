@@ -373,7 +373,7 @@ bot.on('message', async function(ev) {
 				'< ![r]ecord > <code>            : Record a game\n' +  
 				'< !ra[n]k > <game_id>           : Make a recorded game ranked so it will impact on players\' score\n' +
 				//'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
-				'< !heroes > [criteria]          : Display meta information about game heroes\n' + 
+				'< !heroes > [criteria] [months] : Display meta information about game heroes for a certain criteria in the last x months\n' + 
 				'< !hero > <name>                : Display meta information about specific hero\n' + 
 				//'< !tips > <hero_name>           : Show all tips related to a hero\n' +
 				//'< !tip > <hero_name> <tip>      : Create a tip for a hero and get gold proportional to your rank (<25/50/100/200/400/800> x lvl)!\n' +
@@ -977,7 +977,9 @@ bot.on('message', async function(ev) {
 							}
 							break;
 						case 'heroes':
-							if (args.length > 0) {
+							if (args.length > 1) {
+								displayHeroes(ev, args[0], args[1]);
+							} else if (args.length > 0) {
 								displayHeroes(ev, args[0]);
 							} else {
 								displayHeroes(ev);

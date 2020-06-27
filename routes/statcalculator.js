@@ -279,8 +279,8 @@ function getAllPlayersRanking(callback, minNumGames) {
 	});
 };
 
-function getAllHeroesRanking(callback) {
-	var timePeriod = moment().subtract(3, 'month').toDate();
+function getAllHeroesRanking(period, callback) {
+	var timePeriod = moment().subtract(period, 'month').toDate();
 	Game.aggregate([
 		{
 			$unwind: '$slots',

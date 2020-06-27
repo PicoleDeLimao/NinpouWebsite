@@ -22,7 +22,7 @@ router.post('/', function(req, res) {
 });
 
 router.get('/ranking', function(req, res) {  
-	StatCalculator.getAllHeroesRanking(function(err, stats) {
+	StatCalculator.getAllHeroesRanking(req.query.months, function(err, stats) {
 		if (err) return res.status(500).json({ error: err });
 		return res.json(stats);
 	});  
@@ -42,7 +42,7 @@ function getContainingAlias(alias, username) {
 router.get('/:name', function(req, res) {  
 	StatCalculator.getHeroStats(req.params.name, function(err, stats) {
 		if (err) return res.status(400).json({ error: err });
-		StatCalculator.getAllHeroesRanking(function(err, heroes) {
+		StatCalculator.getAllHeroesRanking(3, function(err, heroes) {
 			if (err) return res.status(400).json({ error: err });
 			stats = StatCalculator.getRankingPositions(heroes, stats); 
 			var timePeriod = moment().subtract(3, 'month').toDate();

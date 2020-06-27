@@ -2,9 +2,10 @@
 
 var http = require('http');
 
-module.exports = function(ev, attribute) { 
+module.exports = function(ev, attribute, months) { 
 	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'points' && attribute != 'gpm' && attribute != 'score' && attribute != 'chance' && attribute != 'games') attribute = 'points';
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/heroes/ranking' }, function(res) {
+	if (!months || months <= 0) months = 3;
+	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/heroes/ranking?months=' + months }, function(res) {
 		var statusCode = res.statusCode;
 		if (statusCode != 200) {
 			ev.channel.send('Couldn\'t fetch heroes. :( **Oink!** :pig:');
@@ -26,7 +27,7 @@ module.exports = function(ev, attribute) {
 				});
 				var begin = 0;
 				while (begin < ranking.length) {
-					var response = '```md\n';
+					var response = '```md\nStats from the last ' + months + ' months:\n';
 					for (var i = begin; i < Math.min(begin + 30, ranking.length); i++) {
 						response += (i + 1) + '. < ' + (ranking[i].hero && ranking[i].hero.name || 'Unknown') + ' >. Average ' + attribute + ': <' + Math.round(ranking[i][attribute]) + '>. Victories: <' + ranking[i].wins + '/' + ranking[i].games + '> <' + Math.round(ranking[i].wins / ranking[i].games * 100) + '%>\n';
 					}
