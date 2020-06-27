@@ -8,16 +8,17 @@ module.exports = function(ev, attribute, months, playerId) {
 	var url = '/heroes/ranking?months=' + months;
 	if (playerId) url += '&player=' + playerId;
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: url }, function(res) {
-		var statusCode = res.statusCode;
-		if (statusCode != 200) {
-			ev.channel.send('Couldn\'t fetch heroes. :( **Oink!** :pig:');
-			return;
-		} 
 		var body = '';
 		res.on('data', function(data) {
 			body += data; 
 		});
 		res.on('end', function() {
+			var statusCode = res.statusCode;
+			if (statusCode != 200) {
+				console.log(body);
+				ev.channel.send('Couldn\'t fetch heroes. :( **Oink!** :pig:');
+				return;
+			} 
 			try {
 				var ranking = JSON.parse(body);
 				ranking.sort(function(a, b) {

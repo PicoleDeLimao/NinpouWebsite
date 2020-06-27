@@ -290,6 +290,7 @@ async function getAllHeroesRanking(period, callback, playerId) {
 	if (playerId) {
 		var search = { $or: [{ alias: playerId.toLowerCase() }, { username: playerId.toLowerCase() }] };
 		try {
+			var alias = await Alias.find(search);
 			var usernames = []; 
 			if (alias.length > 0) {
 				usernames = alias[0].alias;
@@ -303,6 +304,7 @@ async function getAllHeroesRanking(period, callback, playerId) {
 			}
 			match['slots.username'] = { $in: usernames };
 		} catch (err) {
+			console.error(err);
 			return callback(err);
 		}
 	}
