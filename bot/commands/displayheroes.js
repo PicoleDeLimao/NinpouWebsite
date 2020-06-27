@@ -3,7 +3,7 @@
 var http = require('http');
 
 module.exports = function(ev, attribute) { 
-	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'points' && attribute != 'gpm' && attribute != 'score' && attribute != 'chance' && attribute != 'games') attribute = 'score';
+	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'points' && attribute != 'gpm' && attribute != 'score' && attribute != 'chance' && attribute != 'games') attribute = 'points';
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/heroes/ranking' }, function(res) {
 		var statusCode = res.statusCode;
 		if (statusCode != 200) {
