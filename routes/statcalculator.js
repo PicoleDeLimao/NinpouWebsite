@@ -178,18 +178,61 @@ function getPlayerStats(username, callback, autocomplete) {
 };
  
 function getHeroStats(name, callback) {
+	var timePeriod = moment().subtract(3, 'month').toDate();
 	Hero.findOne({ name: new RegExp(['^', escapeRegExp(name.toLowerCase()), '$'].join(''), 'i') }, function(err, hero) {
 		if (err) return callback(err);
 		else if (!hero) return callback('Hero not found.');
-		HeroStat.findOne({ hero: hero.id }).lean().exec(function(err, stat) {
+		Game.aggregate([
+			{
+				$unwind: '$slots',
+			},
+			{
+				$match: {
+					'createdAt': { $gt: timePeriod },
+					'slots.hero': hero.id,
+					'recorded': true,
+					'ranked': true
+				}
+			},
+			{
+				$group: {
+					_id: '$slots.hero',
+					kills: { $sum: '$slots.kills' },
+					deaths: { $sum: '$slots.deaths' },
+					assists: { $sum: '$slots.assists' },
+					points: { $sum: '$slots.points' },
+					gpm: { $sum: '$slots.gpm' },
+					wins: { $sum: { $cond: ['$slots.win', 1, 0] } },
+					games: { $sum: 1 }
+				}
+			}
+		]).exec(function(err, heroes) {
 			if (err) return callback(err);
+			var stat = { };
 			stat.hero = hero;
+			stat.kills = 0;
+			stat.deaths = 0;
+			stat.assists = 0;
+			stat.points = 0;
+			stat.gpm = 0;
+			stat.games = 0;
+			stat.wins = 0;
+			for (var i = 0; i < heroes.length; i++) {
+				stat.kills += heroes[i].kills;
+				stat.deaths += heroes[i].deaths;
+				stat.assists += heroes[i].assists;
+				stat.points += heroes[i].points;
+				stat.gpm += heroes[i].gpm;
+				stat.games += heroes[i].games; 
+				stat.wins += heroes[i].wins;
+			}
 			stat.chance = Calculator.AgrestiCoullLower(stat.games, stat.wins);
 			stat.kills /= stat.games;
 			stat.deaths /= stat.games;
 			stat.assists /= stat.games;
 			stat.points /= stat.games;
 			stat.gpm = stat.gpm / stat.games * 100; 
+			stat.chance = Calculator.AgrestiCoullLower(stat.games, stat.wins);
 			stat.chance *= 100;
 			stat.score = Calculator.calculateScore(stat); 
 			return callback(null, stat);
@@ -237,10 +280,40 @@ function getAllPlayersRanking(callback, minNumGames) {
 };
 
 function getAllHeroesRanking(callback) {
-	HeroStat.find({ }).lean().exec(function(err, heroes) {
+	var timePeriod = moment().subtract(3, 'month').toDate();
+	Game.aggregate([
+		{
+			$unwind: '$slots',
+		},
+		{
+			$match: {
+				'createdAt': { $gt: timePeriod },
+				'recorded': true,
+				'ranked': true
+			}
+		},
+		{
+			$group: {
+				_id: '$slots.hero',
+				kills: { $sum: '$slots.kills' },
+				deaths: { $sum: '$slots.deaths' },
+				assists: { $sum: '$slots.assists' },
+				points: { $sum: '$slots.points' },
+				gpm: { $sum: '$slots.gpm' },
+				wins: { $sum: { $cond: ['$slots.win', 1, 0] } },
+				games: { $sum: 1 }
+			}
+		}
+	]).exec(function(err, heroes) {
 		if (err) return callback(err);
 		(function next(i) {
 			if (i == heroes.length) {
+				for (var i = heroes.length - 1; i >= 0; i--) {
+					if (heroes[i].hero == null) {
+						heroes.splice(i, 1);
+					}
+				}
+				console.log(heroes);
 				heroes.sort(function(a, b) {
 					return b.score - a.score;
 				});
@@ -254,16 +327,13 @@ function getAllHeroesRanking(callback) {
 				heroes[i].gpm = heroes[i].gpm / heroes[i].games * 100; 
 				heroes[i].chance *= 100;
 				heroes[i].score = Calculator.calculateScore(heroes[i]); 
-				Hero.findOne({ id: heroes[i].hero }, function(err, hero) {
+				Hero.findOne({ id: heroes[i]._id }, function(err, hero) {
 					if (err) return callback(err);
 					heroes[i].hero = hero;
 					next(i + 1);
 				});
 			}
 		})(0);
-		heroes.sort(function(a, b) {
-			return b.score - a.score;
-		});
 	});
 };
 
