@@ -977,10 +977,20 @@ bot.on('message', async function(ev) {
 							}
 							break;
 						case 'heroes':
-							if (args.length > 1) {
-								displayHeroes(ev, args[0], args[1]);
+							if (args.length > 2 && ev.mentions.users.array().length > 0) {
+								displayHeroes(ev, args[1], args[2], ev.mentions.users.array()[0].id);
+							} else if (args.length > 1) {
+								if (ev.mentions.users.array().length > 0) {
+									displayHeroes(ev, args[1], 3, ev.mentions.users.array()[0].id);
+								} else {
+									displayHeroes(ev, args[0], args[1]);
+								}
 							} else if (args.length > 0) {
-								displayHeroes(ev, args[0]);
+								if (ev.mentions.users.array().length > 0) {
+									displayHeroes(ev, 'points', 3, ev.mentions.users.array()[0].id);
+								} else {
+									displayHeroes(ev, args[0]);
+								}
 							} else {
 								displayHeroes(ev);
 							}

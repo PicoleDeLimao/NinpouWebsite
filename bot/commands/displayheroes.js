@@ -2,10 +2,12 @@
 
 var http = require('http');
 
-module.exports = function(ev, attribute, months) { 
+module.exports = function(ev, attribute, months, playerId) { 
 	if (attribute != 'kills' && attribute != 'deaths' && attribute != 'assists' && attribute != 'points' && attribute != 'gpm' && attribute != 'score' && attribute != 'chance' && attribute != 'games') attribute = 'points';
 	if (!months || months <= 0) months = 3;
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/heroes/ranking?months=' + months }, function(res) {
+	var url = '/heroes/ranking?months=' + months;
+	if (playerId) url += '&player=' + playerId;
+	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: url }, function(res) {
 		var statusCode = res.statusCode;
 		if (statusCode != 200) {
 			ev.channel.send('Couldn\'t fetch heroes. :( **Oink!** :pig:');

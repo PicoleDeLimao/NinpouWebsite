@@ -133,6 +133,7 @@ function getPlayerStats(username, callback, autocomplete) {
 					}
 				}
 			]).exec(function(err, heroes) {
+				if (err) return callback(null, allStat, { 'mean': allStat.points, 'std': 0 });
 				if (heroes.length >= 1) {
 					mean = allStat.points;
 					var std = 0;
@@ -279,18 +280,38 @@ function getAllPlayersRanking(callback, minNumGames) {
 	});
 };
 
-function getAllHeroesRanking(period, callback) {
+async function getAllHeroesRanking(period, callback, playerId) {
 	var timePeriod = moment().subtract(period, 'month').toDate();
+	var match = {
+		'createdAt': { $gt: timePeriod },
+		'recorded': true,
+		'ranked': true
+	};
+	if (playerId) {
+		var search = { $or: [{ alias: playerId.toLowerCase() }, { username: playerId.toLowerCase() }] };
+		try {
+			var usernames = []; 
+			if (alias.length > 0) {
+				usernames = alias[0].alias;
+				var aliases = [];
+				for (var i = 0; i < usernames.length; i++) {
+					aliases.push(new RegExp(['^', escapeRegExp(usernames[i].toLowerCase()), '$'].join(''), 'i'));
+				}  
+				usernames = aliases; 
+			} else {
+				usernames = [new RegExp(['^', escapeRegExp(username.toLowerCase()), '$'].join(''), 'i')];
+			}
+			match['slots.username'] = { $in: usernames };
+		} catch (err) {
+			return callback(err);
+		}
+	}
 	Game.aggregate([
 		{
 			$unwind: '$slots',
 		},
 		{
-			$match: {
-				'createdAt': { $gt: timePeriod },
-				'recorded': true,
-				'ranked': true
-			}
+			$match: match
 		},
 		{
 			$group: {
@@ -313,7 +334,6 @@ function getAllHeroesRanking(period, callback) {
 						heroes.splice(i, 1);
 					}
 				}
-				console.log(heroes);
 				heroes.sort(function(a, b) {
 					return b.points - a.points;
 				});

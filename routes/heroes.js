@@ -25,7 +25,7 @@ router.get('/ranking', function(req, res) {
 	StatCalculator.getAllHeroesRanking(req.query.months, function(err, stats) {
 		if (err) return res.status(500).json({ error: err });
 		return res.json(stats);
-	});  
+	}, req.query.player);  
 });
  
 function getContainingAlias(alias, username) {
