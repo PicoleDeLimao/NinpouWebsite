@@ -13,7 +13,6 @@ var Calculator = require('./calculator');
 var StatCalculator = require('./statcalculator');
 var Decoder = require('./decoder');
 var Code = require('../models/Code');
-var PlayerPredictor = require('./playerpredictor');
 
 function getPlayerAlias(alias, callback) {
 	Alias.findOne({ alias: alias.toLowerCase() }, function(err, alias) {
@@ -362,36 +361,6 @@ router.delete('/players/:username', function(req, res) {
 		if (err) return res.status(500).json({ error: err });
 		return res.status(200).send();
 	});
-});
-
-router.get('/players/:username/model', async function(req, res) {
-	var model = await PlayerPredictor.getPlayerLinearRegression(req.params.username, {});
-	var index = 0;
-	/*var explation = { };
-	explation["Base"] = model.theta[index++] * 300;
-	var label = "Your ";
-	var variables = ["points", "gpm", "games"];
-	var weight = [25, 20, 15, 2500, 5000];
-	for (var i = 0; i < variables.length; i++) {
-		explation[label + variables[i]] = model.theta[index++] / weight[i] * 300;
-	}
-	label = "Strongest ally ";
-	for (var i = 0; i < variables.length; i++) {
-		explation[label + variables[i]] = model.theta[index++] / weight[i] * 300;
-	}
-	label = "Weakest ally ";
-	for (var i = 0; i < variables.length; i++) {
-		explation[label + variables[i]] = model.theta[index++] / weight[i] * 300;
-	}
-	label = "Strongest enemy ";
-	for (var i = 0; i < variables.length; i++) {
-		explation[label + variables[i]] = model.theta[index++] / weight[i] * 300;
-	}
-	label = "Weakest enemy ";
-	for (var i = 0; i < variables.length; i++) {
-		explation[label + variables[i]] = model.theta[index++] / weight[i] * 300;
-	}*/
-	return res.json({ "std points": model.std, "avg points": model.avg, "error": model.error, "num_games": model.games, "residuals": model.residuals });
 });
 
 router.post('/players/:username/merge/:another_username', function(req, res) {

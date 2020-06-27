@@ -1,7 +1,5 @@
 'use strict';
 
-var PlayerPredictor = require('./playerpredictor');
-
 function swapSlots(slots, swaps) {
 	var newSlots = slots.slice();
 	for (var i = 0; i < swaps.length; i++) {
@@ -25,26 +23,7 @@ function getBalanceFactor(slots, regressions) {
 		if (slots[i].username == null) {
 			slots[i].points = 0;
 		} else {
-			var averagePoints = slots[i].points;//(slots[i].kills * 10 + slots[i].assists * 2 - slots[i].deaths * 5);
-			if (slots[i].gamesRanked > 5 && regressions[slots[i].username] != null) {
-				var features = PlayerPredictor.getPlayerFeatures(slots, i);
-				if (features.length > 0) {
-					var model = regressions[slots[i].username];
-					var newFeatures = new Array(1);
-					newFeatures[0] = features;
-					var predictedPoints = model.predict(newFeatures)[0] * 300;
-					predictedPoints = Math.max(predictedPoints, model.avg - model.std);
-					predictedPoints = Math.min(predictedPoints, model.avg + model.std);
-					slots[i].points = averagePoints; // (2 * (predictedPoints * averagePoints) / (predictedPoints + averagePoints) + averagePoints) / 2;
-				} else {
-					slots[i].points = averagePoints;
-				}
-			} else {
-				slots[i].points = averagePoints;
-			}
-			if (isNaN(slots[i].points)) {
-				slots[i].points = averagePoints;
-			}
+			slots[i].points = regressions[slots[i].username].mean;
 		}
 	}
 	var team1 = [];
@@ -65,9 +44,6 @@ function getBalanceFactor(slots, regressions) {
 			team3.push(slots[i].points);
 		}
 	}
-	//team1 /= 3;
-	//team2 /= 3;
-	//team3 /= 3;
 	var sum = function(x) {
 		var s = 0;
 		for (var i = 0; i < x.length; i++) s += x[i];
@@ -81,9 +57,6 @@ function getBalanceFactor(slots, regressions) {
 	var a = Math.pow(sum(team1) - sum(team2), 2);
 	var b = Math.pow(sum(team2) - sum(team3), 2);
 	var c = Math.pow(sum(team1) - sum(team3), 2);
-	//var d = Math.pow(max(team1) - max(team2), 2);
-	//var e = Math.pow(max(team2) - max(team3), 2);
-	//var f = Math.pow(max(team1) - max(team3), 2);
 	return a + b + c;
 };
 

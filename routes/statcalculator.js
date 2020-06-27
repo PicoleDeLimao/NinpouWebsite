@@ -6,6 +6,7 @@ var Hero = require('../models/Hero');
 var HeroStat = require('../models/HeroStat');
 var Alias = require('../models/Alias');
 var Calculator = require('./calculator');
+var moment = require('moment');
 
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -106,7 +107,72 @@ function getPlayerStats(username, callback, autocomplete) {
 			allStat.score = Calculator.calculateScore(allStat);
 			//allStat.gpm = allStat.gpm * 100;
 			allStat.usernames = usernames; 
-			return callback(null, allStat);
+			var timePeriod = moment().subtract(3, 'month').toDate();
+			Game.aggregate([
+				{
+					$unwind: '$slots',
+				},
+				{
+					$match: {
+						'createdAt': { $gt: timePeriod },
+						'slots.username': { $in: usernames },
+						'recorded': true,
+						'ranked': true
+					}
+				},
+				{
+					$group: {
+						_id: '$slots.hero',
+						kills: { $sum: '$slots.kills' },
+						deaths: { $sum: '$slots.deaths' },
+						assists: { $sum: '$slots.assists' },
+						points: { $sum: '$slots.points' },
+						gpm: { $sum: '$slots.gpm' },
+						wins: { $sum: { $cond: ['$slots.win', 1, 0] } },
+						games: { $sum: 1 }
+					}
+				}
+			]).exec(function(err, heroes) {
+				if (heroes.length >= 1) {
+					mean = allStat.points;
+					var std = 0;
+					var numStrongHeroes = 0;
+					var numPlayedHeroes = 0;
+					for (var i = 0; i < heroes.length; i++) {
+						var points = heroes[i].points / heroes[i].games;
+						if (points >= allStat.points) {
+							numStrongHeroes++;
+						}
+						if (heroes[i].games >= 3) {
+							numPlayedHeroes++;
+						}
+						std += Math.pow(mean - points, 2);
+					}
+					std = Math.sqrt(std / heroes.length);
+					if (numStrongHeroes < 5) {
+						mean -= 20;
+					} else if (numStrongHeroes < 10) {
+						mean -= 15;
+					} else if (numStrongHeroes < 15) {
+						mean -= 10;
+					} else  if (numStrongHeroes < 20) {
+						mean -= 5;
+					}
+					if (numPlayedHeroes < 5) {
+						mean -= 20;
+					} else if (numPlayedHeroes < 10) {
+						mean -= 15;
+					} else if (numPlayedHeroes < 15) {
+						mean -= 10;
+					} else  if (numPlayedHeroes < 20) {
+						mean -= 5;
+					}
+				} else {
+					var mean = allStat.points;
+					var std = 0;
+				}
+				return callback(null, allStat, { 'mean': mean, 'std': std });
+			});
 		});
 	});
 };

@@ -10,9 +10,6 @@ var Alias = require('../models/Alias');
 var Hero = require('../models/Hero');
 var BalanceCalculator = require('./balancecalculator');
 var StatCalculator = require('./statcalculator');
-var PlayerPredictor = require('./playerpredictor');
-
-var cachedRegressions = { };
 
 router.get('/', function(req, response) {
 	var request = https.request({ host: 'wc3maps.com', path: '/vue/gamelist.php?_=' + (new Date()).getTime(), method: 'GET', headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
@@ -69,34 +66,26 @@ function getPlayerStats(players, callback) {
 	}
 	(async function next(i) {
 		if (i == players.length) {
-			var cache = { };
-			var regressions = { };
+			var regressions =  { };
 			for (var i = 0; i < slots.length; i++) {
-				if (slots[i].username !== null && slots[i].gamesRanked > 5) {
-					if (slots[i].username in cachedRegressions && cachedRegressions[slots[i].username].gamesRanked == slots[i].gamesRanked) {
-						regressions[slots[i].username] = cachedRegressions[slots[i].username].model;
-					} else {
-						regressions[slots[i].username] = await PlayerPredictor.getPlayerLinearRegression(slots[i].username, cache);
-						cachedRegressions[slots[i].username] = { gamesRanked: slots[i].gamesRanked, model: regressions[slots[i].username] };
-					}
-				}
+				regressions[slots[i].username] = slots[i];
 			}
 			callback(slots, regressions);
 		} else {
-			StatCalculator.getPlayerStats(players[i], function(err, stat) {
-				if (err) stat = null; 
-				if (stat == null) {
+			StatCalculator.getPlayerStats(players[i], function(err, stat, model) {
+				if (err) model = null; 
+				if (model == null) {
 					stat = {
 						username: players[i],
 						realm: 'Unknown'
 					}
 				} else {
-					stat.alias = stat._id;
-					stat.username = stat._id;
-					stat.realm = 'Unknown';
-					stat = JSON.parse(JSON.stringify(stat));
+					model.alias = stat._id;
+					model.username = stat._id;
+					model.realm = 'Unknown';
+					model = JSON.parse(JSON.stringify(model));
 				}
-				slots[i] = stat;
+				slots[i] = model;
 				next(i + 1);
 			}, true);
 		}
@@ -133,23 +122,11 @@ router.post('/balance', function(req, res) {
 				game.slots[swaps[j][1]] = tmp;
 			}
 			for (var i = 0; i < game.slots.length; i++) {
-				if (game.slots[i].gamesRanked > 5 && regressions[game.slots[i].username] != null) {
-					var features = PlayerPredictor.getPlayerFeatures(game.slots, i);
-					if (features.length > 0) {
-						var model = regressions[game.slots[i].username];
-						var averagePonts = game.slots[i].points; //game.slots[i].kills * 10 + game.slots[i].assists * 2 - game.slots[i].deaths * 5;
-						var newFeatures = new Array(1);
-						newFeatures[0] = features;
-						var predictedPoints = model.predict(newFeatures)[0] * 300;
-						predictedPoints = Math.max(predictedPoints, model.avg - model.std);
-						predictedPoints = Math.min(predictedPoints, model.avg + model.std);
-						game.slots[i].points = (predictedPoints + averagePonts) / 2;
-						game.slots[i].points_mean = model.std;
-						game.slots[i].points_std = model.avg;
-						game.slots[i].error = model.error;
-						game.slots[i].points = averagePonts;
-					}
-				}
+				var stats = regressions[game.slots[i].username];
+				game.slots[i].points = stats.mean;
+				game.slots[i].points_mean = stats.mean;
+				game.slots[i].points_std = stats.std;
+				game.slots[i].error = stats.std;
 			}
 			game.balance = 1;
 			return res.json({ game: game, swaps: swaps });
