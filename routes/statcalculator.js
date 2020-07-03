@@ -332,7 +332,7 @@ async function getAllHeroesRanking(period, callback, playerId) {
 		(function next(i) {
 			if (i == heroes.length) {
 				for (var i = heroes.length - 1; i >= 0; i--) {
-					if (heroes[i].hero == null || heroes[i].games < 3) {
+					if (heroes[i].hero == null || heroes[i].games <= 0) {
 						heroes.splice(i, 1);
 					}
 				}
