@@ -6,15 +6,16 @@ var getPlayerName = require('./getplayername');
 module.exports = function(ev, player, attribute, order) { 
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/ranking/' + (player || '') + '?sort=' + attribute + '&order=' + order }, function(res) {
 		var statusCode = res.statusCode;
-		if (statusCode != 200) {
-			ev.channel.send('Couldn\'t fetch ranking. :( **Oink!** :pig:');
-			return;
-		} 
 		var body = '';
 		res.on('data', function(data) {
 			body += data; 
 		});
 		res.on('end', function() {
+			if (statusCode != 200) {
+				console.error(body);
+				ev.channel.send('Couldn\'t fetch ranking. :( **Oink!** :pig:');
+				return;
+			} 
 			try {
 				var ranking = JSON.parse(body);
 				var maxPlayerName = 0;
