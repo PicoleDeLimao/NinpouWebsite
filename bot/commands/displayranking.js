@@ -29,7 +29,10 @@ module.exports = function(ev, player, attribute, order) {
 								return ev.channel.send(response); 
 							} else {
 								getPlayerName(ev, ranking.ranking[i]._id, function(err, playerName) { 
-									if (err) return ev.channel.send('Couldn\'t fetch ranking. :( **Oink!** :pig:');
+									if (err) {
+										console.error(err);
+										return ev.channel.send('Couldn\'t fetch ranking. :( **Oink!** :pig:');
+									} 
 									if (player && (ranking.minIndex + i + 1) == ranking.index) {
 										response += '>>> ';
 									}
@@ -48,7 +51,10 @@ module.exports = function(ev, player, attribute, order) {
 						})(0, ranking, response); 
 					} else { 
 						getPlayerName(ev, ranking.ranking[i]._id, function(err, playerName) {
-							if (err) return ev.channel.send('Couldn\'t fetch ranking. :( **Oink!** :pig:');
+							if (err) {
+								console.error(err);
+								return ev.channel.send('Couldn\'t fetch ranking. :( **Oink!** :pig:');
+							}
 							maxPlayerName = Math.max(maxPlayerName, playerName.length); 
 							next(i + 1, ranking); 
 						});
