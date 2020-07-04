@@ -913,7 +913,7 @@ bot.on('message', async function(ev) {
 						case 'n':
 						case 'rank':
 						case 'ranking': 
-							if (args.length == 1 && ev.mentions.users.array().length == 0 && args[0].startsWith('5e')) {
+							if (args.length == 1 && ev.mentions.users.array().length == 0 && args[0].startsWith('5')) {
 								recordRankedGame(bot, ev, args[0]);
 							} else if (args.length == 3) {
 								if (ev.mentions.users.array().length > 0) {

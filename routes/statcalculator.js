@@ -92,7 +92,8 @@ function getPlayerStats(username, callback, autocomplete) {
 				count: 0
 			};
 			if (!stats || stats.length == 0) {
-				return callback(null, allStat, { 'mean': 0, 'std': 0 });
+				return callback('Player hasn\'t played yet.');
+				//return callback(null, allStat, { 'mean': 0, 'std': 0 });
 			}
 			for (var i = 0; i < stats.length; i++) {
 				allStat.games += stats[i].games;
