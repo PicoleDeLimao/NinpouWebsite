@@ -73,9 +73,12 @@ function getPlayerStats(username, callback, autocomplete) {
 		}
 		Stat.find({ username: { $in: usernames } }).sort('_id').exec(function(err, stats) {
 			if (err) return callback(err); 
-			else if (!stats || stats.length == 0) return callback('This player hasn\'t played yet.');
+			var id  = alias.length > 0 && alias[0].username;
+			if (!id && stats.length > 0) {
+				id = stats[0].username;
+			}
 			var allStat = { 
-				_id: alias.length > 0 && alias[0].username || stats[0].username,
+				_id: id,
 				kills: 0,
 				deaths: 0,
 				assists: 0,
@@ -88,6 +91,9 @@ function getPlayerStats(username, callback, autocomplete) {
 				score: 0,
 				count: 0
 			};
+			if (!stats || stats.length == 0) {
+				return callback(null, allStat, { 'mean': 0, 'std': 0 });
+			}
 			for (var i = 0; i < stats.length; i++) {
 				allStat.games += stats[i].games;
 				allStat.wins += stats[i].wins;
