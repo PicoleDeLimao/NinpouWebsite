@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    version: '4.4',
-    download_link: 'https://drive.google.com/file/d/1ZCuWKQwR4AYis3cxqPpwL6MrHxG0XLhL/view?usp=sharing',
-    changelog: 'http://www.narutoninpou.com/#/forum/threads/5efa026215ce3f0015598bc5'
+    version: '4.5',
+    download_link: 'https://drive.google.com/file/d/1IRxc0ghQXjd4kJPC2Z9AoAFauaJlMCvs/view?usp=sharing',
+    changelog: 'http://www.narutoninpou.com/#/forum/threads/5f01f95278e6c30015e22e9f'
 }
