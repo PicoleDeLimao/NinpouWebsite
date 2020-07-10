@@ -304,9 +304,9 @@ bot.on('messageReactionAdd', async function(ev, user) {
 				if (ev.emoji.name == '❌') {
 					var message;
 					if (channelId == balanceIssueId) {
-						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (to balance issues be approved you need at least 70% of approval):\n\n ' + content;
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎:\n\n ' + content;
 					} else if (channelId == mapIdeaId) {
-						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (ideas can be rejected at any point and to be approved you need at least 50% of approval):\n\n ' + content;
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎:\n\n ' + content;
 					} else {
 						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎:\n\n ' + content;
 					}
