@@ -141,7 +141,7 @@ function getPlayerStats(username, callback, autocomplete) {
 				}
 			]).exec(function(err, heroes) {
 				if (err) return callback(null, allStat, { 'mean': allStat.points, 'std': 0 });
-				mean = allStat.points;
+				var mean = allStat.points;
 				var std = 0;
 				var numStrongHeroes = 0;
 				var numPlayedHeroes = 0;
