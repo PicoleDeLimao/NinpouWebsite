@@ -141,43 +141,42 @@ function getPlayerStats(username, callback, autocomplete) {
 				}
 			]).exec(function(err, heroes) {
 				if (err) return callback(null, allStat, { 'mean': allStat.points, 'std': 0 });
-				if (heroes.length >= 1) {
-					mean = allStat.points;
-					var std = 0;
-					var numStrongHeroes = 0;
-					var numPlayedHeroes = 0;
-					for (var i = 0; i < heroes.length; i++) {
-						var points = heroes[i].points / heroes[i].games;
-						if (points >= allStat.points) {
-							numStrongHeroes++;
-						}
-						if (heroes[i].games >= 3) {
-							numPlayedHeroes++;
-						}
-						std += Math.pow(mean - points, 2);
+				mean = allStat.points;
+				var std = 0;
+				var numStrongHeroes = 0;
+				var numPlayedHeroes = 0;
+				for (var i = 0; i < heroes.length; i++) {
+					var points = heroes[i].points / heroes[i].games;
+					if (points >= allStat.points) {
+						numStrongHeroes++;
 					}
+					if (heroes[i].games >= 3) {
+						numPlayedHeroes++;
+					}
+					std += Math.pow(mean - points, 2);
+				}
+				if (heroes.length > 1) {
 					std = Math.sqrt(std / heroes.length);
-					if (numStrongHeroes < 5) {
-						mean -= 20;
-					} else if (numStrongHeroes < 10) {
-						mean -= 15;
-					} else if (numStrongHeroes < 15) {
-						mean -= 10;
-					} else  if (numStrongHeroes < 20) {
-						mean -= 5;
-					}
-					if (numPlayedHeroes < 5) {
-						mean -= 20;
-					} else if (numPlayedHeroes < 10) {
-						mean -= 15;
-					} else if (numPlayedHeroes < 15) {
-						mean -= 10;
-					} else  if (numPlayedHeroes < 20) {
-						mean -= 5;
-					}
 				} else {
-					var mean = allStat.points;
-					var std = 0;
+					std = 0;	
+				}
+				if (numStrongHeroes < 5) {
+					mean -= 20;
+				} else if (numStrongHeroes < 10) {
+					mean -= 15;
+				} else if (numStrongHeroes < 15) {
+					mean -= 10;
+				} else  if (numStrongHeroes < 20) {
+					mean -= 5;
+				}
+				if (numPlayedHeroes < 5) {
+					mean -= 20;
+				} else if (numPlayedHeroes < 10) {
+					mean -= 15;
+				} else if (numPlayedHeroes < 15) {
+					mean -= 10;
+				} else  if (numPlayedHeroes < 20) {
+					mean -= 5;
 				}
 				return callback(null, allStat, { 'mean': mean, 'std': std });
 			});
