@@ -15,7 +15,7 @@ module.exports = {
 
 	calculateScore(stat) { 
 		stat.chance = stat.chance || this.AgrestiCoullLower(stat.gamesRanked, stat.wins);
-		var score = (stat.points * 1.5) * stat.chance;   
+		var score = stat.points * stat.chance;   
 		if (isNaN(score)) return 0;  
 		return score; 
 	}
