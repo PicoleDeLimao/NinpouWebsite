@@ -248,7 +248,7 @@ function getHeroStats(name, callback) {
 };
 
 function getAllPlayersRanking(callback, minNumGames) {
-	minNumGames = minNumGames || 10;
+	minNumGames = minNumGames || 25;
 	Stat.aggregate([
 	{
 		$group: {
