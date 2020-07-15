@@ -5,6 +5,7 @@ var express = require('express');
 var router = express.Router();
 var Alias = require('../models/Alias');
 var Stat = require('../models/Stat');
+var Game = require('../models/Game');
 var StatCalculator = require('./statcalculator');
 var moment = require('moment');
 
