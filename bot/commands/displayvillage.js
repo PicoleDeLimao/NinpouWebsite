@@ -32,7 +32,7 @@ async function getUserAvatar(ev, id) {
     return new Promise((resolve, reject) => {
         ev.client.users.fetch(id).then(function(user) {
             var avatarURL = user.avatar;
-            Jimp.read(avatar, function(err, image) {
+            Jimp.read(avatarURL, function(err, image) {
                 if (err) {
                     reject(err);
                     return;
