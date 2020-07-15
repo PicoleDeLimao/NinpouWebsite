@@ -23,10 +23,8 @@ router.get('/:name', function(req, res) {
         affiliations = [{ affiliation: 'akatsuki' }];
     }
     StatCalculator.getAllPlayersRanking(function(err, stats) {
-        console.log('a');
         if (err) return res.status(400).json({ error: err }); 
         Alias.find({ $or: affiliations }, function(err, aliases) {
-            console.log('oi');
             if (err) return res.status(400).json({ error: err }); 
             var aliasesId = {};
             for (var i = 0; i < aliases.length; i++) {
@@ -34,9 +32,11 @@ router.get('/:name', function(req, res) {
                     aliasesId[aliases[i].alias[j]] = aliases[i];
                 }
             }
+            console.log(aliasesId);
             var hierarchy = { 'kage': [], 'anbu': [], 'jounin': [], 'tokubetsu jounin': [], 'chunnin': [], 'genin': [] };
             for (var i = 0; i < stats.length; i++) {
-                if (aliasesId.hasOwnProperty(stats[i]._id)) {
+                console.log(stats[i]._id);
+                if (stats[i]._id in aliasesId) {
                     hierarchy[aliasesId[stats[i]._id].rank].push(stats[i]._id);
                 }
             }
