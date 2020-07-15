@@ -149,7 +149,7 @@ module.exports = async function(ev, villageName) {
                         }
                         layout.write('public/images/layouts/' + villageName.replace(' ', '_') + '.png');
                         var stats = data.average;
-                        var response = 'Average stats of the members of the village this month:\n\n' +   
+                        var response = 'Average stats of the members of the village this month:\n\n```ini\n' +   
 						'Average kills:       <' + Math.round(stats.kills / stats.games) + '>\n' + 
 						'Average deaths:      <' + Math.round(stats.deaths / stats.games) + '>\n' + 
 						'Average assists:     <' + Math.round(stats.assists / stats.games) + '>\n' + 
