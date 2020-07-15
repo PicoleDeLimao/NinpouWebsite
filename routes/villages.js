@@ -32,7 +32,6 @@ router.get('/:name', function(req, res) {
             }
             var hierarchy = { 'kage': [], 'anbu': [], 'jounin': [], 'tokubetsu jounin': [], 'chunnin': [], 'genin': [] };
             for (var i = 0; i < stats.length; i++) {
-                console.log(stats[i]._id);
                 if (stats[i]._id in aliasesId) {
                     hierarchy[aliasesId[stats[i]._id].rank].push(stats[i]._id);
                 }

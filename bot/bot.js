@@ -61,6 +61,7 @@ var tipsShow = require('./commands/tipsShow');
 var tipCreate = require('./commands/tipCreate');
 var heroExists = require('./commands/heroExists');
 var rerank = require('./commands/rerank');
+var displayVillage = require('./commands/displayvillage');
 
 var hostedGamesWC3 = [];
 var hostedGamesWC3Messages = {};
@@ -400,6 +401,7 @@ bot.on('message', async function(ev) {
 				'< !give > <user> <amount> : Give gold to an user\n' +   
 				'< !items >                : Display items available to be purchased\n' + 
 				'< !villages>              : Display villages available to join\n' + 
+				'< !village > [name]       : Display hierarchy of a village\n' + 
 				'< !characters >           : Display characters available to buy\n' + 
 				'< !summons >              : Display summons available to buy\n' + 
 				'< !status > <status>      : Set a status\n' + 
@@ -733,6 +735,13 @@ bot.on('message', async function(ev) {
 							'   Iwagakure : Requires level 5, 1,000g\n' +
 							'   Otogakure : Requires level 15, 100,000g\n' + 
 							'    Akatsuki : Requires level 50, 10,000,000g```');
+							break;
+						case 'village':
+							if (args.length > 0) {
+								displayVillage(ev, args.join(' ').toLowerCase());
+							} else {
+								displayVillage(ev);
+							}
 							break;
 						case 'join':
 							if (args.length == 1) {
