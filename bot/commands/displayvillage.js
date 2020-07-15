@@ -3,6 +3,7 @@
 var http = require('http'); 
 var getPlayerName = require('./getplayername');
 var Jimp = require('jimp');
+var Discord = require('discord.js');
 
 async function getVillageOfUser(user) {
     return new Promise((resolve, reject) => {
@@ -31,7 +32,7 @@ async function getVillageOfUser(user) {
 async function getUserAvatar(ev, id) {
     return new Promise((resolve, reject) => {
         ev.client.users.fetch(id).then(function(user) {
-            var avatarURL = user.avatar;
+            var avatarURL = user.displayAvatarURL();
             Jimp.read(avatarURL, function(err, image) {
                 if (err) {
                     reject(err);
