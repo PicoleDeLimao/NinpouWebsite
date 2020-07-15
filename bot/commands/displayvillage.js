@@ -69,7 +69,7 @@ module.exports = async function(ev, villageName) {
     if (villageName !== "otogakure" && villageName !== "akatsuki") {
         villageName = "shinobi alliance";
     }
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/villages/' + escapeURIComponent(villageName) }, function(res) {
+	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/villages/' + encodeURIComponent(villageName) }, function(res) {
 		var statusCode = res.statusCode;
 		var body = '';
 		res.on('data', function(data) {

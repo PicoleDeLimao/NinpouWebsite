@@ -10,18 +10,16 @@ var StatCalculator = require('./statcalculator');
 
 router.get('/:name', function(req, res) {
     var name = req.params.name;
-    console.log(name);
     if (name !== "shinobi alliance" && name !== "otogakure" && name !== "akatsuki") {
         return res.status(400).json({ error: 'Village not found.' });
     }
     var affiliations;
-    if (name === "shinobi") {
+    if (name === "shinobi alliance") {
         affiliations = { $or: [{ affiliation: 'konohagakure' }, { affiliation: 'sunagakure' }, {affiliation: 'kumogakure' }, { affiliation: 'iwagakure' }, { affiliation: 'kirigakure' }] };
-    } else if (name === "oto") {
-        affiliations = { affiliation: 'otogakure' };
     } else {
-        affiliations = { affiliation: 'akatsuki' };
+        affiliations = { affiliation: name };
     }
+    console.log(affiliations);
     StatCalculator.getAllPlayersRanking(function(err, stats) {
         if (err) return res.status(400).json({ error: err }); 
         Alias.find(affiliations, function(err, aliases) {
