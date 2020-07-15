@@ -70,7 +70,7 @@ router.get('/:name', function(req, res) {
                 }
             ]).exec(function(err, average) {
                 if (err) return res.status(400).json({ error: err }); 
-                hierarchy["average"] = average;
+                hierarchy["average"] = average[0];
                 return res.json(hierarchy);
             });
         });
