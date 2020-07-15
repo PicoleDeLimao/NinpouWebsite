@@ -28,11 +28,8 @@ router.get('/:name', function(req, res) {
             if (err) return res.status(400).json({ error: err }); 
             var aliasesId = {};
             for (var i = 0; i < aliases.length; i++) {
-                for (var j = 0; j < aliases[i].alias.length; j++) {
-                    aliasesId[aliases[i].alias[j]] = aliases[i];
-                }
+                aliasesId[aliases[i].username] = aliases[i];
             }
-            console.log(aliasesId);
             var hierarchy = { 'kage': [], 'anbu': [], 'jounin': [], 'tokubetsu jounin': [], 'chunnin': [], 'genin': [] };
             for (var i = 0; i < stats.length; i++) {
                 console.log(stats[i]._id);
