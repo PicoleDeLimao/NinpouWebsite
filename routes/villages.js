@@ -16,16 +16,16 @@ router.get('/:name', function(req, res) {
     }
     var affiliations;
     if (name === "shinobi") {
-        affiliations = ['konohagakure', 'sunagakure', 'kumogakure', 'iwagakure', 'kirigakure'];
+        affiliations = [{ affiliation: 'konohagakure' }, { affiliation: 'sunagakure' }, {affiliation: 'kumogakure' }, { affiliation: 'iwagakure' }, { affiliation: 'kirigakure' }];
     } else if (name === "oto") {
-        affiliations = ['otogakure'];
+        affiliations = [{ affiliation: 'otogakure' }];
     } else {
-        affiliations = ['akatsuki'];
+        affiliations = [{ affiliation: 'akatsuki' }];
     }
     StatCalculator.getAllPlayersRanking(function(err, stats) {
         console.log('a');
         if (err) return res.status(400).json({ error: err }); 
-        Alias.find({ affiliation: { $or: affiliations } }, function(err, aliases) {
+        Alias.find({ $or: affiliations }, function(err, aliases) {
             console.log('oi');
             if (err) return res.status(400).json({ error: err }); 
             var aliasesId = {};
