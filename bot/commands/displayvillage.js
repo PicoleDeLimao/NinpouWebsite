@@ -28,7 +28,7 @@ async function getVillageOfUser(user) {
     });
 }
 
-async function getUserAvatar(id) {
+async function getUserAvatar(ev, id) {
     return new Promise((resolve, reject) => {
         ev.client.users.fetch(id).then(function(user) {
             var avatarURL = user.avatar;
@@ -93,7 +93,7 @@ module.exports = async function(ev, villageName) {
                         for (var i = 0; i < Math.min(1, data.kage.length); i++) {
                             var id = data.kage[i];
                             try {
-                                var userAvatar = await getUserAvatar(id);
+                                var userAvatar = await getUserAvatar(ev, id);
                                 layout.composite(userAvatar, 150, 24);
                             } catch (err) {
                                 console.error(err);
@@ -102,7 +102,7 @@ module.exports = async function(ev, villageName) {
                         for (var i = 0; i < Math.min(2, data.anbu.length); i++) {
                             var id = data.anbu[i];
                             try {
-                                var userAvatar = await getUserAvatar(id);
+                                var userAvatar = await getUserAvatar(ev, id);
                                 if (i == 0) {
                                     layout.composite(userAvatar, 130, 84);
                                 } else if (i == 1) {
@@ -115,7 +115,7 @@ module.exports = async function(ev, villageName) {
                         for (var i = 0; i < Math.min(3, data.jounin.length); i++) {
                             var id = data.jounin[i];
                             try {
-                                var userAvatar = await getUserAvatar(id);
+                                var userAvatar = await getUserAvatar(ev, id);
                                 if (i == 0) {
                                     layout.composite(userAvatar, 111, 140);
                                 } else if (i == 1) {
@@ -130,7 +130,7 @@ module.exports = async function(ev, villageName) {
                         for (var i = 0; i < Math.min(3, data["tokubetsu jounin"].length); i++) {
                             var id = data["tokubetsu jounin"][i];
                             try {
-                                var userAvatar = await getUserAvatar(id);
+                                var userAvatar = await getUserAvatar(ev, id);
                                 if (i == 0) {
                                     layout.composite(userAvatar, 111, 200);
                                 } else if (i == 1) {
