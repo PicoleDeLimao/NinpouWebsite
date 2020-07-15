@@ -64,7 +64,7 @@ module.exports = async function(ev, villageName) {
 		res.on('data', function(data) {
 			body += data; 
 		});
-		res.on('end', function() {
+		res.on('end', async function() {
 			try {
 				var data = JSON.parse(body);
 				if (statusCode != 200) {
@@ -78,7 +78,7 @@ module.exports = async function(ev, villageName) {
                     } else {
                         filename = "layout_shinobi_alliance";
                     }
-					Jimp.read('public/images/' + filename + '.png', function(err, layout) {
+					Jimp.read('public/images/' + filename + '.png', async function(err, layout) {
                         if (err) {
                             console.error(err); 
                             ev.channel.send('Couldn\'t fetch village. :( **Oink!** :pig:');
