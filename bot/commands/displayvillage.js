@@ -58,6 +58,9 @@ module.exports = async function(ev, villageName) {
 		    ev.channel.send('Couldn\'t fetch village. :( **Oink!** :pig:');
         }
     }
+    if (villageName !== "otogakure" && villageName !== "akatsuki") {
+        villageName = "shinobi alliance";
+    }
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/villages/' + villageName }, function(res) {
 		var statusCode = res.statusCode;
 		var body = '';
