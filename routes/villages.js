@@ -9,6 +9,10 @@ var StatCalculator = require('./statcalculator');
 var moment = require('moment');
 
 
+function escapeRegExp(str) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+  
 router.get('/:name', function(req, res) {
     var name = req.params.name;
     if (name !== "shinobi alliance" && name !== "otogakure" && name !== "akatsuki") {
