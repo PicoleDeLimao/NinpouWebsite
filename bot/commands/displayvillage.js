@@ -32,13 +32,17 @@ async function getVillageOfUser(user) {
 async function getUserAvatar(ev, id) {
     return new Promise((resolve, reject) => {
         ev.client.users.fetch(id).then(function(user) {
-            var avatarURL = user.displayAvatarURL();
+            var avatarURL = user.displayAvatarURL({ format: 'png', size: 32 });
             Jimp.read(avatarURL, function(err, image) {
                 if (err) {
                     reject(err);
                     return;
                 }
-                resolve(image.resize(32, 32));
+                if (!image) {
+                    reject('User avatar not found');
+                } else {
+                    resolve(image);
+                }
             });
         }).catch(function(err) {
             reject(err);
