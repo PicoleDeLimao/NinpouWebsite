@@ -38,8 +38,10 @@ router.get('/:name', function(req, res) {
             for (var i = 0; i < stats.length; i++) {
                 if (aliasesId[stats[i]._id] !== undefined) {
                     hierarchy[aliasesId[stats[i]._id].rank].push(stats[i]._id);
-                    for (var j = 0; j < aliasesId[stats[i]._id].alias.length; j++) {
-                        usernames.push(new RegExp(['^', escapeRegExp(aliasesId[stats[i]._id].alias[j]), '$'].join(''), 'i')); 
+                    if (stats[i].games > 25) {
+                        for (var j = 0; j < aliasesId[stats[i]._id].alias.length; j++) {
+                            usernames.push(new RegExp(['^', escapeRegExp(aliasesId[stats[i]._id].alias[j]), '$'].join(''), 'i')); 
+                        }
                     }
                 }
             }
