@@ -16,15 +16,15 @@ router.get('/:name', function(req, res) {
     }
     var affiliations;
     if (name === "shinobi") {
-        affiliations = [{ affiliation: 'konohagakure' }, { affiliation: 'sunagakure' }, {affiliation: 'kumogakure' }, { affiliation: 'iwagakure' }, { affiliation: 'kirigakure' }];
+        affiliations = { $or: [{ affiliation: 'konohagakure' }, { affiliation: 'sunagakure' }, {affiliation: 'kumogakure' }, { affiliation: 'iwagakure' }, { affiliation: 'kirigakure' }] };
     } else if (name === "oto") {
-        affiliations = [{ affiliation: 'otogakure' }];
+        affiliations = { affiliation: 'otogakure' };
     } else {
-        affiliations = [{ affiliation: 'akatsuki' }];
+        affiliations = { affiliation: 'akatsuki' };
     }
     StatCalculator.getAllPlayersRanking(function(err, stats) {
         if (err) return res.status(400).json({ error: err }); 
-        Alias.find({ $or: affiliations }, function(err, aliases) {
+        Alias.find(affiliations, function(err, aliases) {
             if (err) return res.status(400).json({ error: err }); 
             var aliasesId = {};
             for (var i = 0; i < aliases.length; i++) {
@@ -32,7 +32,7 @@ router.get('/:name', function(req, res) {
             }
             var hierarchy = { 'kage': [], 'anbu': [], 'jounin': [], 'tokubetsu jounin': [], 'chunnin': [], 'genin': [] };
             for (var i = 0; i < stats.length; i++) {
-                if (stats[i]._id in aliasesId) {
+                if (aliasesId[stats[i]._id] !== undefined) {
                     hierarchy[aliasesId[stats[i]._id].rank].push(stats[i]._id);
                 }
             }
