@@ -58,6 +58,9 @@ module.exports = async function(ev, villageName) {
 		    ev.channel.send('Couldn\'t fetch village. :( **Oink!** :pig:');
         }
     }
+    if (villageName === "oto") {
+        villageName = "otogakure";
+    }
     if (villageName !== "otogakure" && villageName !== "akatsuki") {
         villageName = "shinobi alliance";
     }
