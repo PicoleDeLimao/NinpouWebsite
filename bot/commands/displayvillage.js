@@ -147,9 +147,9 @@ module.exports = async function(ev, villageName) {
                                 console.error(err);
                             }
                         }
-                        layout.write('public/images/layouts/' + villageName + '.png');
+                        layout.write('public/images/layouts/' + villageName.replace(' ', '_') + '.png');
 						var previewCacheUrl = '?_=' + (new Date()).getTime();
-                        var img = 'http://www.narutoninpou.com/images/layouts/' + villageName + '.png' + previewCacheUrl;
+                        var img = 'http://www.narutoninpou.com/images/layouts/' + villageName.replace(' ', '_') + '.png' + previewCacheUrl;
 						var msgEmbed = new Discord.MessageEmbed() 
 								.setImage(img);
                         ev.channel.send(msgEmbed);
