@@ -217,6 +217,10 @@ var characters = {
 		'level': 40,
 		'gold': 7500000
 	},
+	'mu': {
+		'level': 40,
+		'gold': 7500000
+	},
 	'gengetsu': {
 		'level': 40,
 		'gold': 7500000
