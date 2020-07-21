@@ -61,6 +61,7 @@ var tipsShow = require('./commands/tipsShow');
 var tipCreate = require('./commands/tipCreate');
 var heroExists = require('./commands/heroExists');
 var rerank = require('./commands/rerank');
+var displayVillage = require('./commands/displayvillage');
 
 var hostedGamesWC3 = [];
 var hostedGamesWC3Messages = {};
@@ -302,7 +303,14 @@ bot.on('messageReactionAdd', async function(ev, user) {
 					type = '🎵 music idea';
 				}
 				if (ev.emoji.name == '❌') {
-					var message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎 (to be approved you need at least 70% of approval):\n\n ' + content;
+					var message;
+					if (channelId == balanceIssueId) {
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎:\n\n ' + content;
+					} else if (channelId == mapIdeaId) {
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎:\n\n ' + content;
+					} else {
+						message = 'The following **' + type + '** was **❌ rejected** with ' +  countUp + ' 👍 / ' + countDown + ' 👎:\n\n ' + content;
+					}
 				} else {
 					var message = 'The following **' + type + '** was **✅ approved** to be released on version **' + version + '** with ' + countUp + '👍 / ' + countDown + '👎:\n\n ' + content;
 				}
@@ -366,7 +374,7 @@ bot.on('message', async function(ev) {
 				'< ![r]ecord > <code>            : Record a game\n' +  
 				'< !ra[n]k > <game_id>           : Make a recorded game ranked so it will impact on players\' score\n' +
 				//'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
-				'< !heroes > [criteria]          : Display meta information about game heroes\n' + 
+				'< !heroes > [criteria] [months] : Display meta information about game heroes for a certain criteria in the last x months\n' + 
 				'< !hero > <name>                : Display meta information about specific hero\n' + 
 				//'< !tips > <hero_name>           : Show all tips related to a hero\n' +
 				//'< !tip > <hero_name> <tip>      : Create a tip for a hero and get gold proportional to your rank (<25/50/100/200/400/800> x lvl)!\n' +
@@ -393,6 +401,7 @@ bot.on('message', async function(ev) {
 				'< !give > <user> <amount> : Give gold to an user\n' +   
 				'< !items >                : Display items available to be purchased\n' + 
 				'< !villages>              : Display villages available to join\n' + 
+				'< !village > [name]       : Display hierarchy of a village\n' + 
 				'< !characters >           : Display characters available to buy\n' + 
 				'< !summons >              : Display summons available to buy\n' + 
 				'< !status > <status>      : Set a status\n' + 
@@ -727,6 +736,13 @@ bot.on('message', async function(ev) {
 							'   Otogakure : Requires level 15, 100,000g\n' + 
 							'    Akatsuki : Requires level 50, 10,000,000g```');
 							break;
+						case 'village':
+							if (args.length > 0) {
+								displayVillage(ev, args.join(' ').toLowerCase());
+							} else {
+								displayVillage(ev);
+							}
+							break;
 						case 'join':
 							if (args.length == 1) {
 								join(ev, args[0].toLowerCase());
@@ -906,7 +922,7 @@ bot.on('message', async function(ev) {
 						case 'n':
 						case 'rank':
 						case 'ranking': 
-							if (args.length == 1 && ev.mentions.users.array().length == 0 && args[0].startsWith('5e')) {
+							if (args.length == 1 && ev.mentions.users.array().length == 0 && args[0].startsWith('5')) {
 								recordRankedGame(bot, ev, args[0]);
 							} else if (args.length == 3) {
 								if (ev.mentions.users.array().length > 0) {
@@ -970,8 +986,20 @@ bot.on('message', async function(ev) {
 							}
 							break;
 						case 'heroes':
-							if (args.length > 0) {
-								displayHeroes(ev, args[0]);
+							if (args.length > 2 && ev.mentions.users.array().length > 0) {
+								displayHeroes(ev, args[1], args[2], ev.mentions.users.array()[0].id);
+							} else if (args.length > 1) {
+								if (ev.mentions.users.array().length > 0) {
+									displayHeroes(ev, args[1], 3, ev.mentions.users.array()[0].id);
+								} else {
+									displayHeroes(ev, args[0], args[1]);
+								}
+							} else if (args.length > 0) {
+								if (ev.mentions.users.array().length > 0) {
+									displayHeroes(ev, 'points', 3, ev.mentions.users.array()[0].id);
+								} else {
+									displayHeroes(ev, args[0]);
+								}
 							} else {
 								displayHeroes(ev);
 							}
@@ -1197,8 +1225,14 @@ bot.on('message', async function(ev) {
 								ev.channel.send('You need to specify the post id! **Oink**! :pig:');
 							}
 							break;
+						case 'ramen':
+							ev.channel.send(ev.author.username + ' *gives some ramen to ' + args[0] + ' 🍜🍜🍜.*');
+							break;
+						case 'eat':
+							ev.channel.send(ev.author.username + ' *just ate some ramen. Yummy!! 🍜🍜🍜.*');
+							break;
 						case 'attack':
-							var insults = ['noob', 'team stacker', 'feeder', 'leaver', 'rage-quitter', 'shithead', 'idiot', 'camper', 'Tobias\' cuck', 'so bad in Ninpou that I\'m pity', 'feeder as Madara', 'feeder as Minato', 'noob who doesn\'t know for what Smoke Bomb is for', 'noob who doesn\'t know the price of Oil', 'hentai lover', 'worse than Fexter', 'guy who lost 1v1 to Fexter', 'teenage with a girl\'s voice', 'coward who can\'t win 1v1', 'fool', 'guy who keeps dildos', 'vegan', 'Fexter', 'Tobias'];
+							var insults = ['noob', 'stacker', 'feeder', 'leaver', 'shithead', 'noob who doesn\'t know the price of Oil', 'worse than Fexter', 'guy who lost x1 to Fexter', 'brazillian', 'vegan', 'Fexter', 'Tobias', 'Teo\'s daddy', 'tiny dick', 'swedish SJW'];
 							ev.channel.send('*attacks ' + args[0] + ' and says: ' + args[0] + ' is a ' + insults[Math.floor(Math.random() * insults.length)] + '.* **Oink!** :pig:');
 							break;
 					 }

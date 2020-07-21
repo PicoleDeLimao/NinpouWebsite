@@ -53,7 +53,7 @@ var characters = {
 		'level': 1,
 		'gold': 0
 	},
-	'gaara': {
+	'sai': {
 		'level': 1,
 		'gold': 0
 	},
@@ -93,7 +93,51 @@ var characters = {
 		'level': 5,
 		'gold': 10000
 	},
-	'orochimaru': {
+	'gaara': {
+		'level': 5,
+		'gold': 10000
+	},
+	'kankuro': {
+		'level': 5,
+		'gold': 10000
+	},
+	'temari': {
+		'level': 5,
+		'gold': 10000
+	},
+	'asuma': {
+		'level': 10,
+		'gold': 100000
+	},
+	'kurenai': {
+		'level': 10,
+		'gold': 100000
+	},
+	'yamato': {
+		'level': 10,
+		'gold': 100000
+	},
+	'kabuto': {
+		'level': 15,
+		'gold': 500000
+	},
+	'kimimaro': {
+		'level': 15,
+		'gold': 500000
+	},
+	'hanzo': {
+		'level': 15,
+		'gold': 500000
+	},
+	'haku': {
+		'level': 15,
+		'gold': 500000
+	},
+	'zabuza': {
+		'level': 15,
+		'gold': 500000
+	},
+	'jiraiya': {
 		'level': 20,
 		'gold': 1000000
 	},
@@ -101,25 +145,53 @@ var characters = {
 		'level': 20,
 		'gold': 1000000
 	},
-	'sasori': {
+	'orochimaru': {
+		'level': 20,
+		'gold': 1000000
+	},
+	'yugito': {
 		'level': 25,
 		'gold': 2000000
+	},
+	'yagura': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'roshi': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'han': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'utakata': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'fuu': {
+		'level': 25,
+		'gold': 2000000
+	},
+	'sasori': {
+		'level': 25,
+		'gold': 3500000
 	},
 	'deidara': {
 		'level': 25,
-		'gold': 2000000
+		'gold': 3500000
 	},
 	'hidan': {
 		'level': 25,
-		'gold': 2000000
+		'gold': 3500000
 	},
 	'kakuzu': {
 		'level': 25,
-		'gold': 2000000
+		'gold': 3500000
 	},
 	'konan': {
 		'level': 25,
-		'gold': 2000000
+		'gold': 3500000
 	},
 	'kisame': {
 		'level': 35,
@@ -133,11 +205,31 @@ var characters = {
 		'level': 35,
 		'gold': 5000000
 	},
+	'a': {
+		'level': 35,
+		'gold': 5000000
+	},
 	'bee': {
 		'level': 35,
 		'gold': 5000000
 	},
+	'danzo': {
+		'level': 40,
+		'gold': 7500000
+	},
+	'mu': {
+		'level': 40,
+		'gold': 7500000
+	},
+	'gengetsu': {
+		'level': 40,
+		'gold': 7500000
+	},
 	'tobirama': {
+		'level': 50,
+		'gold': 10000000
+	},
+	'hiruzen': {
 		'level': 50,
 		'gold': 10000000
 	},

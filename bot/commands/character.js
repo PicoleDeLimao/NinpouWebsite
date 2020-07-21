@@ -12,6 +12,8 @@ module.exports = function(ev, character) {
 			if (res.statusCode != 200) {
 				try {
 					var data = JSON.parse(body);
+					console.log(data);
+					console.log(res.statusCode);
 					ev.channel.send(data.error);
 				} catch (err) {
 					console.error(err);

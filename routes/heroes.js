@@ -22,10 +22,10 @@ router.post('/', function(req, res) {
 });
 
 router.get('/ranking', function(req, res) {  
-	StatCalculator.getAllHeroesRanking(function(err, stats) {
+	StatCalculator.getAllHeroesRanking(req.query.months, function(err, stats) {
 		if (err) return res.status(500).json({ error: err });
 		return res.json(stats);
-	});  
+	}, req.query.player);  
 });
  
 function getContainingAlias(alias, username) {
@@ -42,10 +42,10 @@ function getContainingAlias(alias, username) {
 router.get('/:name', function(req, res) {  
 	StatCalculator.getHeroStats(req.params.name, function(err, stats) {
 		if (err) return res.status(400).json({ error: err });
-		StatCalculator.getAllHeroesRanking(function(err, heroes) {
+		StatCalculator.getAllHeroesRanking(3, function(err, heroes) {
 			if (err) return res.status(400).json({ error: err });
 			stats = StatCalculator.getRankingPositions(heroes, stats); 
-			var timePeriod = moment().subtract(6, 'month').toDate();
+			var timePeriod = moment().subtract(3, 'month').toDate();
 			Game.aggregate([
 				{
 					$unwind: '$slots',
@@ -54,7 +54,8 @@ router.get('/:name', function(req, res) {
 					$match: {
 						'createdAt': { $gt: timePeriod },
 						'slots.hero': stats.hero.id,
-						'recorded': true
+						'recorded': true,
+						'ranked': true
 					}
 				},
 				{
@@ -63,6 +64,7 @@ router.get('/:name', function(req, res) {
 						kills: { $sum: '$slots.kills' },
 						deaths: { $sum: '$slots.deaths' },
 						assists: { $sum: '$slots.assists' },
+						points: { $sum: '$slots.points' },
 						gpm: { $sum: '$slots.gpm' },
 						wins: { $sum: { $cond: ['$slots.win', 1, 0] } },
 						games: { $sum: 1 }
@@ -82,6 +84,7 @@ router.get('/:name', function(req, res) {
 								gamesAggregated[alias[containingAlias].username].kills += games[i].kills;
 								gamesAggregated[alias[containingAlias].username].deaths += games[i].deaths;
 								gamesAggregated[alias[containingAlias].username].assists += games[i].assists;
+								gamesAggregated[alias[containingAlias].username].points += games[i].points;
 								gamesAggregated[alias[containingAlias].username].gpm += games[i].gpm;
 								gamesAggregated[alias[containingAlias].username].wins += games[i].wins;
 								gamesAggregated[alias[containingAlias].username].games += games[i].games;
@@ -95,11 +98,11 @@ router.get('/:name', function(req, res) {
 							kills: gamesAggregated[alias].kills / gamesAggregated[alias].games, 
 							deaths: gamesAggregated[alias].deaths / gamesAggregated[alias].games,
 							assists: gamesAggregated[alias].assists / gamesAggregated[alias].games,
+							points: gamesAggregated[alias].points / gamesAggregated[alias].games,
 							gpm: gamesAggregated[alias].gpm / gamesAggregated[alias].games, 
 							wins: gamesAggregated[alias].wins,
 							games: gamesAggregated[alias].games
 						};
-						obj.points = obj.kills * 10 + obj.assists * 2 - obj.deaths * 5;
 						if (obj.games >= 3) {
 							newGamesAggregated.push(obj);
 						}
