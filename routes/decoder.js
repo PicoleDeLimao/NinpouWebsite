@@ -103,42 +103,28 @@ encodedInts[4] = ".";
 encodedInts[88] = "=";
 encodedInts[48] = "\\";
 
-function decodeInt(string) {
+function _decodeInt(string) {
 	for (var i = 0; i < 90; i++) {
 		if (encodedInts[i] === string) {
 			return i;
 		}
 	}
 	return -1;
-};
+}
 
-function undecode(int) {
+function _undecode(int) {
 	for (var i = 0; i < 90; i++) {
 		return parseInt(encodedInts[int], 0);
 	}
-};
+}
 
-function getSlotId(playerId) {
+function _getSlotId(playerId) {
 	if (playerId < 3) return playerId;
 	else if (playerId > 3 && playerId < 7) return playerId - 1;
 	else return playerId - 2;
-};
+}
 
-function decodeCharacter(character) {
-	var i = 0;
-	for (; i < 90; i++) {
-		if (encodedInts[i] === character) {
-			break;
-		}
-	}
-	i = i - 10;
-	if (i < 0) {
-		i = 89 + i;
-	}
-	return encodedInts[i];
-};
-
-function addZero(s) {
+function _addZero(s) {
 	s = "" + s;
 	if (s.length == 1) {
 		return "0" + s;
@@ -146,69 +132,75 @@ function addZero(s) {
 	return s;
 }
 
-function decodeGame(body, game, callback) {
-	for (var i = 0; i < 9; i++) {
-		game.slots.push({
-			username: null,
-			realm: 'Unknown'
-		});
-	}
-	var decoded = [];
-	for (var i = 0; i < body.length; i++) {
-		decoded.push(decodeInt(body[i]));
-	}
-	var index = 0;
-	var count = 0;
-	var sum = decoded[index++];
-	game.duration = addZero(Math.floor(decoded[index] / 60)) + ":" + addZero(decoded[index] % 60) + ":00";
-	++index;
-	var winningTeam = decoded[index++];
-	for (var i = 0; i < 9; i++) {
-		var state;
-		do {
-			state = encodedInts[decoded[index++]];	
-		} while (state != '0' && state != '1' && state != '2' && index < decoded.length);
-		var playerIndex = encodedPlayersId[i];
-		var slot = getSlotId(encodedPlayersId[i]);
-		if (state == '0') {
-			game.slots[slot].state = 'EMPTY';
-		} else if (state != '1' && state != '2') {
-			return callback('Invalid code. Reason: 1');
-		} else {
-			++game.players;
-			if (state == '1') {
-				game.slots[slot].state = 'PLAYING';
-			} else { 
-				game.slots[slot].state = 'LEFT';
+function decodeGame(body, game) {
+	return new Promise(function(resolve, reject) {
+		try {
+			for (var i = 0; i < 9; i++) {
+				game.slots.push({
+					username: null,
+					realm: 'Unknown'
+				});
 			}
-			var letter = body[index++].toLowerCase();
-			game.slots[slot].hero = decoded[index++];
-			game.slots[slot].kills = decoded[index++];
-			game.slots[slot].deaths = decoded[index++];
-			game.slots[slot].assists = decoded[index++];
-			game.slots[slot].points = 2000 - (undecode(parseInt(decoded[index++], 0)) * 1000 + undecode(parseInt(decoded[index++], 0)) * 100 + undecode(parseInt(decoded[index++], 0)) * 10 + undecode(parseInt(decoded[index++], 0))) - 1000;
-			game.slots[slot].gpm = decoded[index++]; 
-			count += Math.floor(game.slots[slot].gpm / 10);
-			var nameLength = decoded[index++];
-			game.slots[slot].username = "";
-			for (var j = 0; j < nameLength; j++) {
-				var nameIndex = decoded[index++] - 10;
-				if (nameIndex < 0) nameIndex = 90 + nameIndex;
-				if (isNaN(nameIndex)) {
-					game.slots[slot].username += '_';
-					continue;
+			var decoded = [];
+			for (var i = 0; i < body.length; i++) {
+				decoded.push(_decodeInt(body[i]));
+			}
+			var index = 0;
+			var count = 0;
+			var sum = decoded[index++];
+			game.duration = _addZero(Math.floor(decoded[index] / 60)) + ":" + _addZero(decoded[index] % 60) + ":00";
+			++index;
+			var winningTeam = decoded[index++];
+			for (var i = 0; i < 9; i++) {
+				var state;
+				do {
+					state = encodedInts[decoded[index++]];	
+				} while (state != '0' && state != '1' && state != '2' && index < decoded.length);
+				var playerIndex = encodedPlayersId[i];
+				var slot = _getSlotId(encodedPlayersId[i]);
+				if (state == '0') {
+					game.slots[slot].state = 'EMPTY';
+				} else if (state != '1' && state != '2') {
+					return callback('Invalid code. Reason: 1');
+				} else {
+					++game.players;
+					if (state == '1') {
+						game.slots[slot].state = 'PLAYING';
+					} else { 
+						game.slots[slot].state = 'LEFT';
+					}
+					var letter = body[index++].toLowerCase();
+					game.slots[slot].hero = decoded[index++];
+					game.slots[slot].kills = decoded[index++];
+					game.slots[slot].deaths = decoded[index++];
+					game.slots[slot].assists = decoded[index++];
+					game.slots[slot].points = 2000 - (_undecode(parseInt(decoded[index++], 0)) * 1000 + _undecode(parseInt(decoded[index++], 0)) * 100 + _undecode(parseInt(decoded[index++], 0)) * 10 + _undecode(parseInt(decoded[index++], 0))) - 1000;
+					game.slots[slot].gpm = decoded[index++]; 
+					count += Math.floor(game.slots[slot].gpm / 10);
+					var nameLength = decoded[index++];
+					game.slots[slot].username = "";
+					for (var j = 0; j < nameLength; j++) {
+						var nameIndex = decoded[index++] - 10;
+						if (nameIndex < 0) nameIndex = 90 + nameIndex;
+						if (isNaN(nameIndex)) {
+							game.slots[slot].username += '_';
+							continue;
+						}
+						var c = encodedInts[nameIndex].toLowerCase();
+						if (c === ",") c = "k";
+						game.slots[slot].username += c;
+					}
+					//game.slots[slot].username = game.slots[slot].username.substring(0, game.slots[slot].username.length - 4);
+					if (/[a-zA-Z0-9]/.test(letter) && letter != game.slots[slot].username[0]) return callback('Invalid code. Reason: 2. Expected \'' + letter + '\', got \'' + game.slots[slot].username[0] + '\'');
+					game.slots[slot].win = (winningTeam == 3 && (playerIndex == 0 || playerIndex == 1 || playerIndex == 2)) || (winningTeam == 7 && (playerIndex == 4 || playerIndex == 5 || playerIndex == 6)) || (winningTeam == 11 && (playerIndex == 8 || playerIndex == 9 || playerIndex == 10));
 				}
-				var c = encodedInts[nameIndex].toLowerCase();
-				if (c === ",") c = "k";
-				game.slots[slot].username += c;
 			}
-			//game.slots[slot].username = game.slots[slot].username.substring(0, game.slots[slot].username.length - 4);
-			if (/[a-zA-Z0-9]/.test(letter) && letter != game.slots[slot].username[0]) return callback('Invalid code. Reason: 2. Expected \'' + letter + '\', got \'' + game.slots[slot].username[0] + '\'');
-			game.slots[slot].win = (winningTeam == 3 && (playerIndex == 0 || playerIndex == 1 || playerIndex == 2)) || (winningTeam == 7 && (playerIndex == 4 || playerIndex == 5 || playerIndex == 6)) || (winningTeam == 11 && (playerIndex == 8 || playerIndex == 9 || playerIndex == 10));
+			//if (count + 1 != sum) return callback('Invalid code. Reason: 3'); 
+			return resolve(game);
+		} catch (err) {
+			reject(err);
 		}
-	}
-	//if (count + 1 != sum) return callback('Invalid code. Reason: 3'); 
-	return callback(null, game);
+	});
 }
 
 module.exports = {

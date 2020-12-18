@@ -9,16 +9,17 @@ function dateFromObjectId(objectId) {
 
 module.exports = function(ev, page) {
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games/recorded?page=' + page }, function(res) {
-		var statusCode = res.statusCode;
-		if (statusCode != 200) {
-			ev.channel.send('Couldn\'t fetch last recorded games. :( **Oink!** :pig:');
-			return;
-		}
 		var body = '';
 		res.on('data', function(data) {
 			body += data; 
 		});
 		res.on('end', function() {
+			var statusCode = res.statusCode;
+			if (statusCode != 200) {
+				console.error(body);
+				ev.channel.send('Couldn\'t fetch last recorded games. :( **Oink!** :pig:');
+				return;
+			}
 			try {
 				var games = JSON.parse(body);
 				var response = '```md\n';

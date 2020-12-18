@@ -13,11 +13,27 @@ module.exports = {
 		// Upper bound is min(1,pest+radius)
 	},
 
-	calculateScore(stat) { 
+	calculateScore(stat) {
 		stat.chance = stat.chance || this.AgrestiCoullLower(stat.gamesRanked, stat.wins);
 		var score = stat.points * stat.chance;   
-		if (isNaN(score)) return 0;  
+		if (isNaN(score)) return 0;
 		return score; 
+	},
+
+	calculateScoreReadjusted(stat) {
+		stat.chance = stat.chance || this.AgrestiCoullLower(stat.gamesRanked, stat.wins);
+		var score = stat.points * stat.chance; 
+		var numberOfElapsesDays;
+		if (stat.lastRankedGame) {
+			numberOfElapsesDays = Math.abs(new Date() - stat.lastRankedGame) / (24 * 60 * 60 * 1000);
+		} else {
+			numberOfElapsesDays = 360;
+		}
+		if (numberOfElapsesDays > 10 && score > 0) {
+			score = score * Math.log(Math.min(numberOfElapsesDays, 30)) / Math.log(2.0) / 10.0;
+		}
+		if (isNaN(score)) return 0;
+		return score;
 	}
 
 };

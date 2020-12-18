@@ -53,163 +53,50 @@ var setColor = require('./commands/setcolor');
 var displayHeroes = require('./commands/displayheroes');
 var displayHero = require('./commands/displayhero');
 var displayCharacters = require('./commands/displaycharacters');
-var subscribe = require('./commands/subscribe');
-var inviteMessageToPlayers = require('./commands/sendgamealert');
-var inviteMessageToHost = require('./commands/sendgamealerthost');
 var syncRank = require('./commands/syncrank');
 var tipsShow = require('./commands/tipsShow');
 var tipCreate = require('./commands/tipCreate');
 var heroExists = require('./commands/heroExists');
-var rerank = require('./commands/rerank');
 var displayVillage = require('./commands/displayvillage');
+const { env } = require('process');
 
-var hostedGamesWC3 = [];
-var hostedGamesWC3Messages = {};
-var onlineStreams = [];
-var onlineStreamsMessages = {};
-var countUpdates = 0;
+var subscribed = [];
 
-setInterval(function() {
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games?_=' + (new Date()).getTime() }, function(res) {
-		var statusCode = res.statusCode;
-		if (statusCode != 200) return;
-		var body = '';
-		res.on('data', function(data) {
-			body += data; 
-		});
-		res.on('end', function() {
-			try {
-				hostedGamesWC3 = JSON.parse(body);
-			} catch (err) {
-				console.error(err);
-			}
-		});
-	}).on('error', function(err) {
-		
-	});
-}, 10000);
+Date.prototype.addHours = function(h){
+    this.setHours(this.getHours()+h);
+    return this;
+}
 
-setInterval(function() { 
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/streams/live' }, function(res) {
-		var statusCode = res.statusCode;
-		if (statusCode != 200) return;
-		var body = '';
-		res.on('data', function(data) {
-			body += data; 
-		});
-		res.on('end', function() {
-			try { 
-				var streams = JSON.parse(body); 
-				onlineStreams = [];
-				for (var i = 0; i < streams.length; i++) {
-					if (streams[i]) {
-						onlineStreams.push(streams[i]);
-					} else {
-						//console.log(streams);
-					}
-				} 
-			} catch(err) {
-				console.error(err);
-			}
-		}); 
-	}).on('error', function(err) {
-		console.error(err);
-	});
-}, 10000);
-
-var previewCacheUrl = '?_=' + (new Date()).getTime();
-
-setInterval(function() {
-	previewCacheUrl = '?_=' + (new Date()).getTime();
-}, 120000);
-
-var broadcastings = [];
-setInterval(function() {
-	for (var channelname in broadcastings) {
-		var channel = broadcastings[channelname];
-		if (!onlineStreamsMessages.hasOwnProperty(channelname)) {
-			onlineStreamsMessages[channelname] = {};
-		}
-		// remove offline streams 
-		for (var _id in onlineStreamsMessages[channelname]) {
-			var contains = false;
-			for (var i = 0; i < onlineStreams.length; i++) {
-				if (onlineStreams[i].stream._id === _id) {
-					contains = true;
-					break;
-				}
-			}
-			if (!contains && onlineStreamsMessages[channelname][_id].hasOwnProperty('embed')) {
-				onlineStreamsMessages[channelname][_id].embed.delete();
-				onlineStreamsMessages[channelname][_id].embed = null;
-				delete onlineStreamsMessages[channelname][_id];
-			} 
-		}
-		// create or edit messages for online streams 
-		for (var i = 0; i < onlineStreams.length; i++) {
-			(function(stream) {
-				var stream = stream.stream; 
-				var date = new Date(stream.created_at);
-				var m = moment(date);    
-				var msg = '@here **' + stream.channel.display_name + '** is online. Watch it now: <' + stream.channel.url + '>.';
-				var msgEmbed = new Discord.MessageEmbed()
-						.setTitle('Playing ' + stream.game)
-						.setAuthor(stream.channelname)  
-						.setDescription(stream.channel.status)
-						.setImage(stream.preview.large + previewCacheUrl)
-						.setURL(stream.channel.url)
-						.setThumbnail(stream.channel.logo)
-						.setFooter(stream.viewers + ' viewers | Started '  + m.fromNow());
-				if (onlineStreamsMessages[channelname].hasOwnProperty(stream._id)) {
-					if (onlineStreamsMessages[channelname][stream._id].embed && (countUpdates % 6 == 0)) {
-						onlineStreamsMessages[channelname][stream._id].embed.edit(msgEmbed);
-					}
-				} else {  
-					onlineStreamsMessages[channelname][stream._id] = { };
-					channel.channel.send(msgEmbed).then(function(msg) {
-						onlineStreamsMessages[channelname][stream._id].embed = msg;
-					}); 
-				}
-			})(onlineStreams[i]);
-		}
-		// remove non-existing games 
-		if (!hostedGamesWC3Messages.hasOwnProperty(channelname)) {
-			hostedGamesWC3Messages[channelname] = {};
-		}
-		// remove non existing games  
-		for (var id in hostedGamesWC3Messages[channelname]) {
-			var contains = false;
-			for (var i = 0; i < hostedGamesWC3.length; i++) {
-				if (hostedGamesWC3[i].id === id) {
-					contains = true;
-					break;
-				}
-			}
-			if (!contains && hostedGamesWC3Messages[channelname][id].hasOwnProperty('msg')) {
-				hostedGamesWC3Messages[channelname][id].msg.delete();
-				hostedGamesWC3Messages[channelname][id].msg = null;
-				delete hostedGamesWC3Messages[channelname][id];
-			} 
-		}
-		// create or edit games  
-		for (var i = 0; i < hostedGamesWC3.length; i++) {
-			(function(game) {
-				var msg = '@here ' + game.name + ' (' + game.playersa + '/' + game.playersb + ') on realm ' + game.realm;
-				if (hostedGamesWC3Messages[channelname].hasOwnProperty(game.id)) {
-					if (hostedGamesWC3Messages[channelname][game.id].msg) {
-						hostedGamesWC3Messages[channelname][game.id].msg.edit(msg);
-					}
-				} else {  
-					hostedGamesWC3Messages[channelname][game.id] = { };
-					channel.channel.send(msg).then(function(msg) {
-						hostedGamesWC3Messages[channelname][game.id].msg = msg;
-					}); 
-				}
-			})(hostedGamesWC3[i]);
+function subscribe(user, hours) {
+	var found = false;
+	for (var i = 0; i < subscribed.length; i++) {
+		if (subscribed[i].user == user) {
+			subscribed[i].expire = new Date().addHours(hours);
+			found = true;
+			break;
 		}
 	}
-	++countUpdates;
-}, 10000);
+	if (!found) {
+		subscribed.push({ user: user, expire: new Date().addHours(hours) });
+	}
+}
+
+async function broadcast(ev, message) {
+	for (var i = 0; i < subscribed.length; i++) {
+		ev.guild.members.fetch(subscribed[i].user).then(function(author) {
+			author.send(message);
+		});
+	}
+}
+
+setInterval(function() {
+	var currentDate = new Date();
+	for (var i = subscribed.length - 1; i >= 0; i--) {
+		if (currentDate > subscribed[i].expire) {
+			subscribed.splice(i, 1);
+		}
+	}
+}, 1000);
 
 function completeAllMissions(ev) {
 	missionRescue(ev, 'Rescue', function() {
@@ -364,9 +251,11 @@ bot.on('message', async function(ev) {
 		} else if (cmd == 'gamecmds') {
 			ev.channel.send(  
 				'Game-related commands:\n```md\n' + 
-				//'< ![h]ost > [location] [owner]  : Host a new game (on ENTConnect)\n' + 
+				//'< ![h]ost > [location] ![owner]  : Host a new game (on ENTConnect)\n' + 
 				//'< !lobby >                     : List games in lobby (on ENTConnect)\n' + 
-				'< ![o]ptimal > < name_of_players>: Display the optimal balance of a game composed by given player names\n' + 
+				'< ![o]ptimal > < name_of_players>: Display the optimal balance of a game composed by given player names\n' +
+				'< ![sub]scribe > [hours]         : Subscribe for all game announcements for N hours (default: 1 hour)\n' + 
+				'< ![b]roadcast > <message>        : Broadcast a message to all subscribed players\n' +   
 				//'< ![p]rogress >                : List games in progress (on ENTConnect)\n' + 
 				//'< ![l]ast >                    : Fetch last non-recorded played games (on ENTConnect)\n' + 
 				'< !recorded > [page]            : Fetch last recorded played games\n' + 
@@ -435,7 +324,6 @@ bot.on('message', async function(ev) {
 					ev.channel.send(  
 						'Admin-related commands:\n```md\n' + 
 						'< !a > unrank <game_id>                     : Make a ranked game not ranked\n' +
-						'< !a > rerank <player>                      : Recompute the stats for a player\n' +
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
 						'< !a > removealias <alias>                  : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
@@ -451,7 +339,7 @@ bot.on('message', async function(ev) {
 				}
 			});
 		} else if (cmd == 'a') {
-			ev.guild.members.fetch(ev.author.id).then(function(author) {
+			ev.guild.members.fetch(ev.author.id).then(async function(author) {
 				var isAdmin = false;
 				var isSuperAdmin = false; 
 				author.roles.cache.forEach(function(role) {
@@ -508,12 +396,6 @@ bot.on('message', async function(ev) {
 						}
 					} else if (args[0] == 'sync') {
 						syncRank(ev); 
-					} else if (args[0] == 'rerank') {
-						if (args.length == 2 && ev.mentions.users.array().length > 0) {
-							rerank(ev, ev.mentions.users.array()[0].id);
-						} else {
-							ev.channel.send('Me no understand! Use **!a rerank <player>**');
-						}
 					} else {
 						ev.channel.send('Admin command not found! **Oink!** :pig:');
 					}
@@ -908,17 +790,25 @@ bot.on('message', async function(ev) {
 								ev.channel.send('Me no understand! Use **!record <code>**');
 							}
 							break;
-						/*case 'subscribe':
-							subscribe(ev);
-							break;*/
-						/*case 'u':
-						case 'unrecordable':
+						case 'sub':
+						case 'subscribe':
 							if (args.length == 1) {
-								unrecordableGame(ev, args[0]);
-							} else { 
-								ev.channel.send('Me no understand! Use **!unrecordable <game_id>**');
+								subscribe(ev.author.id, parseInt(args[0], 0));
+								ev.channel.send('Subscribed for ' + args[0] + ' hours. Use !sub 0 to remove subscription.');
+							} else {
+								subscribe(ev.author.id, 1);
+								ev.channel.send('Subscribed for one hour. Use !sub 0 to remove subscription.');
 							}
-							break; */
+							break;
+						case 'b':
+						case 'broadcast':
+							if (args.length > 0) {
+								await broadcast(ev, args.join(' '));
+								ev.channel.send('Done! Number of people reached: ' + subscribed.length);
+							} else {
+								ev.channel.send('Me no understand! Use **!broadcast <message>**');
+							}
+							break;
 						case 'n':
 						case 'rank':
 						case 'ranking': 
@@ -1029,7 +919,7 @@ bot.on('message', async function(ev) {
 										if (!tip) {
 											tipsShow(ev, escape(args[0]), 0);
 										} else {
-											tipCreate(ev, escape(args[0]), tip);
+											tipCreate(bot, ev, escape(args[0]), tip);
 										}
 									} else {
 										var heroName = args[0] + ' ' + args[1];

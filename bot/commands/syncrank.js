@@ -4,7 +4,7 @@ var http = require('http');
 var getPlayerName = require('./getplayername');
 
 module.exports = async function(ev, mission) {  
-	await ev.guild.members.fetch(); 
+	//await ev.guild.members.fetch(); 
 	ev.guild.members.cache.forEach(async function(anotherMember) {
 		anotherMember.roles.cache.forEach(function(role) {
 			var roleName = role.name.toLowerCase();

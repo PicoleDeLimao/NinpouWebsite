@@ -79,7 +79,7 @@ module.exports = async function(ev, mission) {
 					}
 				} else { 
 					if (mission == 'kage') {
-						await ev.guild.members.fetch();
+						//await ev.guild.members.fetch();
 						ev.guild.members.cache.forEach(function(anotherMember) {
 							if (member.user.id != anotherMember.user.id) {
 								anotherMember.roles.cache.forEach(function(role) {
