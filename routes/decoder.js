@@ -161,7 +161,7 @@ function decodeGame(body, game) {
 				if (state == '0') {
 					game.slots[slot].state = 'EMPTY';
 				} else if (state != '1' && state != '2') {
-					return callback('Invalid code. Reason: 1');
+					return reject('Invalid code. Reason: 1');
 				} else {
 					++game.players;
 					if (state == '1') {
@@ -191,7 +191,7 @@ function decodeGame(body, game) {
 						game.slots[slot].username += c;
 					}
 					//game.slots[slot].username = game.slots[slot].username.substring(0, game.slots[slot].username.length - 4);
-					if (/[a-zA-Z0-9]/.test(letter) && letter != game.slots[slot].username[0]) return callback('Invalid code. Reason: 2. Expected \'' + letter + '\', got \'' + game.slots[slot].username[0] + '\'');
+					if (/[a-zA-Z0-9]/.test(letter) && letter != game.slots[slot].username[0]) return reject('Invalid code. Reason: 2. Expected \'' + letter + '\', got \'' + game.slots[slot].username[0] + '\'');
 					game.slots[slot].win = (winningTeam == 3 && (playerIndex == 0 || playerIndex == 1 || playerIndex == 2)) || (winningTeam == 7 && (playerIndex == 4 || playerIndex == 5 || playerIndex == 6)) || (winningTeam == 11 && (playerIndex == 8 || playerIndex == 9 || playerIndex == 10));
 				}
 			}
