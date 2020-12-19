@@ -2,8 +2,11 @@
 
 var express = require('express');
 var router = express.Router();
+var mongoose = require('mongoose');
+var HeroStat = require('../models/HeroStat');
 var Game = require('../models/Game');
 var Hero = require('../models/Hero');
+var Calculator = require('./calculator');
 var BalanceCalculator = require('./balancecalculator');
 var StatCalculator = require('./statcalculator');
 var Decoder = require('./decoder');
@@ -166,34 +169,39 @@ function _getPlayerPoints(game) {
 }
 
 router.post('/', async function (req, res) {
-	var game = new Game({
-		id: mongoose.Types.ObjectId().toString(),
-		createdAt: new Date(),
-		gamename: 'Naruto Ninpou Reforged',
-		map: 'Unknown',
-		owner: 'None',
-		duration: '00:00:00',
-		slots: [],
-		players: 0,
-		progress: false,
-		recorded: true,
-		recordable: true,
-		ranked: false
-	});
-	var body = req.body.contents.replace(/\n/g, '').replace(/\r/g, '').trim();
-	if (body.length < 11) return res.status(400).json({ error: 'Invalid code. Reason: 0' });
-	var code = await Code.findOne({ code: body });
-	if (code) return res.status(400).json({ error: 'This game was already recorded.' });
-	game = await Decoder.decodeGame(body, game);
-	if (game.players != 9) return res.status(400).json({ error: 'You can only record games with 9 players.' });
-	else if (parseInt(game.duration.split(':')[0]) == 0 && parseInt(game.duration.split(':')[1]) < 40) return res.status(400).json({ error: 'You can only record games past 40 minutes.' });
-	else if (parseInt(game.duration.split(':')[0]) > 0) return res.status(400).json({ error: 'You can only record games between 40 and 60 minutes.' });
-	var code = new Code({ code: body });
-	await code.save();
-	await game.save();
-	await _savePlayerGames(game);
-	await _saveHeroStats(game);
-	return res.status(200).json(game);
+	try {
+		var game = new Game({
+			id: mongoose.Types.ObjectId().toString(),
+			createdAt: new Date(),
+			gamename: 'Naruto Ninpou Reforged',
+			map: 'Unknown',
+			owner: 'None',
+			duration: '00:00:00',
+			slots: [],
+			players: 0,
+			progress: false,
+			recorded: true,
+			recordable: true,
+			ranked: false
+		});
+		var body = req.body.contents.replace(/\n/g, '').replace(/\r/g, '').trim();
+		if (body.length < 11) return res.status(400).json({ error: 'Invalid code. Reason: 0' });
+		var code = await Code.findOne({ code: body });
+		if (code) return res.status(400).json({ error: 'This game was already recorded.' });
+		game = await Decoder.decodeGame(body, game);
+		if (game.players != 9) return res.status(400).json({ error: 'You can only record games with 9 players.' });
+		else if (parseInt(game.duration.split(':')[0]) == 0 && parseInt(game.duration.split(':')[1]) < 40) return res.status(400).json({ error: 'You can only record games past 40 minutes.' });
+		else if (parseInt(game.duration.split(':')[0]) > 0) return res.status(400).json({ error: 'You can only record games between 40 and 60 minutes.' });
+		var code = new Code({ code: body });
+		await code.save();
+		await game.save();
+		await _savePlayerGames(game);
+		await _saveHeroStats(game);
+		return res.status(200).json(game);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).json({ error: err });
+	}
 });
 
 router.post('/ranked/:game_id', async function (req, res) {
