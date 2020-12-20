@@ -218,10 +218,8 @@ router.post('/ranked/:game_id', async function (req, res) {
 	game.balance = await BalanceCalculator.calculateBalanceFactor(slots);
 	await game.save();
 	var oldPoints = await _getPlayerPoints(game);
-	console.log(oldPoints);
 	await _savePlayerStats(game);
 	var newPoints = await _getPlayerPoints(game);
-	console.log(oldPoints);
 	var changes = [];
 	for (var username in oldPoints) {
 		changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
