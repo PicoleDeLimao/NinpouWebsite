@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var HeroStat = require('../models/HeroStat');
 var Game = require('../models/Game');
 var Hero = require('../models/Hero');
+var Stat = require('../models/Stat');
 var Calculator = require('./calculator');
 var BalanceCalculator = require('./balancecalculator');
 var StatCalculator = require('./statcalculator');
