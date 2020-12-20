@@ -158,8 +158,8 @@ function _getPlayerPoints(game) {
 				} catch (err) {
 					username = game.slots[slot].username.toLowerCase();
 				}
-				stats = await StatCalculator.getPlayerStats(username);
-				points[stat._id] = stat.stats.mean;
+				var stats = await StatCalculator.getPlayerStats(username);
+				points[stat._id] = stats.points;
 			}
 			resolve(points);
 		} catch (err) {
