@@ -51,7 +51,7 @@ function _getPlayerStats(players) {
 	});
 }
 
-function _getPlayerAlias(alias, callback) {
+function _getPlayerAlias(alias) {
 	return new Promise(async function(resolve, reject) {
 		try {
 			var alias = await Alias.findOne({ alias: alias.toLowerCase() });
@@ -93,7 +93,7 @@ function _saveHeroStats(game) {
 function _savePlayerGames(game) {
 	return new Promise(async function(resolve, reject) {
 		try {
-			for (var slot = 0; slot < Math.min(0, game.slots.length); slot++) {
+			for (var slot = 0; slot < game.slots.length; slot++) {
 				if (game.slots[slot].state == 'EMPTY' || (game.slots[slot].kills == 0 && game.slots[slot].deaths == 0 && game.slots[slot].assists == 0)) continue;
 				var stat = await Stat.findOne({ username: game.slots[slot].username.toLowerCase() });
 				if (!stat) stat = new Stat({
@@ -113,7 +113,7 @@ function _savePlayerGames(game) {
 function _savePlayerStats(game) {
 	return new Promise(async function(resolve, reject) {
 		try {
-			for (var slot = 0; slot < Math.min(0, game.slots.length); slot++) {
+			for (var slot = 0; slot < game.slots.length; slot++) {
 				if (game.slots[slot].state == 'EMPTY' || (game.slots[slot].kills == 0 && game.slots[slot].deaths == 0 && game.slots[slot].assists == 0)) continue;
 				var stat = await Stat.findOne({ username: game.slots[slot].username.toLowerCase() });
 				if (!stat) stat = new Stat({
@@ -150,7 +150,7 @@ function _getPlayerPoints(game) {
 	return new Promise(async function(resolve, reject) {
 		try {
 			var points = { };
-			for (var slot = 0; slot < Math.min(0, game.slots.length); slot++) {
+			for (var slot = 0; slot < game.slots.length; slot++) {
 				if (game.slots[slot].state == 'EMPTY') continue;
 				var username;
 				try {
@@ -217,8 +217,10 @@ router.post('/ranked/:game_id', async function (req, res) {
 	game.balance = await BalanceCalculator.calculateBalanceFactor(slots);
 	await game.save();
 	var oldPoints = await _getPlayerPoints(game);
+	console.log(oldPoints);
 	await _savePlayerStats(game);
 	var newPoints = await _getPlayerPoints(game);
+	console.log(oldPoints);
 	var changes = [];
 	for (var username in oldPoints) {
 		changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
