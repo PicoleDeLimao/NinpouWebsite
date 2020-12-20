@@ -160,7 +160,7 @@ function _getPlayerPoints(game) {
 					username = game.slots[slot].username.toLowerCase();
 				}
 				var stats = await StatCalculator.getPlayerStats(username);
-				points[stats._id] = stats.points;
+				points[game.slots[slot].username.toLowerCase()] = stats.points;
 			}
 			resolve(points);
 		} catch (err) {
