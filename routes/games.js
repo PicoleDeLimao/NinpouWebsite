@@ -160,7 +160,7 @@ function _getPlayerPoints(game) {
 					username = game.slots[slot].username.toLowerCase();
 				}
 				var stats = await StatCalculator.getPlayerStats(username);
-				points[game.slots[slot].username.toLowerCase()] = stats.points;
+				points[username] = stats.points;
 			}
 			resolve(points);
 		} catch (err) {
@@ -287,8 +287,8 @@ router.get('/:game_id', async function (req, res) {
 		var slots = await _getPlayerStats(players);
 		var balanceFactor = await BalanceCalculator.calculateBalanceFactor(slots);
 		game.balance = balanceFactor;
-		return res.json(game);
 	}
+	return res.json(game);
 });
 
 module.exports = router;
