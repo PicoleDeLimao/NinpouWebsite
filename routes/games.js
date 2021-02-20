@@ -12,7 +12,7 @@ var BalanceCalculator = require('./balancecalculator');
 var StatCalculator = require('./statcalculator');
 var Decoder = require('./decoder');
 var Code = require('../models/Code');
-var Alias = require('./models/Alias');
+var Alias = require('../models/Alias');
 
 function _getPlayerStats(players) {
 	return new Promise(async function (resolve, reject) {
