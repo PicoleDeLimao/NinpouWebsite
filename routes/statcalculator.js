@@ -280,7 +280,7 @@ function getHeroStats(name) {
 };
 
 function getRakingOfPlayers(minNumGames) {
-	minNumGames = minNumGames || 25;
+	minNumGames = minNumGames || 10;
 	return new Promise(async function(resolve, reject) {
 		try {
 			var stats = await Stat.aggregate([
