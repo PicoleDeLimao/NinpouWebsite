@@ -55,7 +55,27 @@ app.get('/donate', function(req, res) {
 	res.redirect('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3JF66XY2HPUSC');
 })
 
+async function fixAlias(alias) {
+	var usernames = alias.alias;
+	for (var username of usernames) {
+		var stat = await Stat.findOne({ username: username.toLowerCase() });
+		if (stat) {
+			stat.alias = alias.username;
+			await stat.save();
+		}
+	}
+}
+
+async function fixAliases() {
+	var aliases = await Alias.find({});
+	for (var alias of aliases) {
+		fixAlias(alias);
+	}
+}
+
 var port = process.env.PORT || 8080;
 app.listen(port, async function() {
 	console.log('Listening on port ' + port + '...');
+	setInterval(fixAliases, 1000 * 60 * 60);
+	await fixAliases();
 });

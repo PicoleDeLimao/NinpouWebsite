@@ -197,16 +197,15 @@ function getPositionsInTheRanking(players, player) {
 	return player; 
 }; 
 
-function getPlayerStats(username, timePeriod) {
+function getPlayerStats(username, timePeriod, substractPoints) {
 	timePeriod = timePeriod || 3;
 	timePeriod = moment().subtract(timePeriod, 'month').toDate();
 	return new Promise(async function(resolve, reject) {
 		try {
 			var usernames = await _getPlayerUsernames(username);
 			var allStat = await _getPlayerAllStats(usernames);
-			var stats = await  _getPlayerMeanAndStdPoints(allStat, usernames, timePeriod);
 			allStat.usernames = usernames; 
-			allStat.stats = stats;
+			allStat.stats = await _getPlayerMeanAndStdPoints(allStat, usernames, timePeriod);
 			resolve(allStat);
 		} catch (err) {
 			reject(err);

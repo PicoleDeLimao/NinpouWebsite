@@ -477,6 +477,11 @@ router.delete('/:alias', async function(req, res) {
 		}
 	}
 	await alias.save();
+	var stat = await Stat.findOne({ username: req.params.alias.toLowerCase() });
+	if (stat) {
+		stat.alias = null;
+		await stat.save();
+	}
 	return res.status(200).json(alias);
 });
 
