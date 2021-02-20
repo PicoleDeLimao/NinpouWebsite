@@ -23,7 +23,7 @@ module.exports = function(ev, gameId, callback) {
 				try {
 					var data = JSON.parse(body);
 					if (data.changes.length > 0) {
-						var msg = '```md\nAverage point changes:\n\n';
+						var msg = '```pf\nAverage point changes:\n\n';
 						(function next(i) {
 							if (i == data.changes.length) {
 								msg += '```';

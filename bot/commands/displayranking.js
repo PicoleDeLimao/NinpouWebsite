@@ -21,7 +21,7 @@ module.exports = function(ev, player, attribute, order) {
 				var maxPlayerName = 0;
 				(function next(i, ranking) {
 					if (i == ranking.ranking.length) {
-						var response = '```md\n';
+						var response = '```pf\n';
 						(function next(i, ranking, response) {  
 							if (i == ranking.ranking.length) {  
 								response += '```\n';

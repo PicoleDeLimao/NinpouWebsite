@@ -44,7 +44,7 @@ module.exports = function(ev) {
 			} else {  
 				try {
 					var data = JSON.parse(body);
-					var response = 'Here\'s the list of available missions (' + data.missions.length + ' available):\n```md\n';
+					var response = 'Here\'s the list of available missions (' + data.missions.length + ' available):\n```pf\n';
 					for (var i = 0; i < data.missions.length; i++) {
 						response += missions[data.missions[i]] + '\n';
 					}
@@ -78,7 +78,7 @@ module.exports = function(ev) {
 						if (response.length > 2000) {
 							try {
 								var response1 = response.substr(0, 1800) + '```';
-								var response2 = '```md\n' + response.substr(1800);
+								var response2 = '```pf\n' + response.substr(1800);
 								ev.channel.send(response1).then(function() {
 									ev.channel.send(response2);
 								});

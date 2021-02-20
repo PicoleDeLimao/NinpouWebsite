@@ -240,7 +240,7 @@ bot.on('message', async function(ev) {
         
         if (cmd == 'help') { 
 			ev.channel.send( 
-				'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
+				'**Oink, oink**!\nMe can do a lot of things. Check it:\n```pf\n' + 
 				'< !help >          : Display this message\n' + 
 				'< !gamecmds >      : Display game-related commands\n' + 
 				'< !playercmds >    : Display player-related commands\n' + 
@@ -250,7 +250,7 @@ bot.on('message', async function(ev) {
 			);    
 		} else if (cmd == 'gamecmds') {
 			ev.channel.send(  
-				'Game-related commands:\n```md\n' + 
+				'Game-related commands:\n```pf\n' + 
 				//'< ![h]ost > [location] ![owner]  : Host a new game (on ENTConnect)\n' + 
 				//'< !lobby >                     : List games in lobby (on ENTConnect)\n' + 
 				'< ![o]ptimal > < name_of_players>: Display the optimal balance of a game composed by given player names\n' +
@@ -272,7 +272,7 @@ bot.on('message', async function(ev) {
 			);  
 		} else if (cmd == 'playercmds') {
 			ev.channel.send(  
-				'Player-related commands:\n```md\n' + 
+				'Player-related commands:\n```pf\n' + 
 				'< !ra[n]k > [player_name]             : Display player position in Ninpou ranking\n' + 
 				'< ![s]core > [player_name]            : Display a player score in the ranking\n' + 
 				'< ![h]i[s]tory > [player_name] [hero] : Display the history of a player\n' + 
@@ -284,7 +284,7 @@ bot.on('message', async function(ev) {
 			);  
 		} else if (cmd == 'rpgcmds') {
 			ev.channel.send(  
-				'RPG-related commands:\n```md\n' + 
+				'RPG-related commands:\n```pf\n' + 
 				'< ![m]issions >           : List available missions\n' + 
 				'< ![g]et > [user]         : Display information about an user\n' + 
 				'< !give > <user> <amount> : Give gold to an user\n' +   
@@ -300,7 +300,7 @@ bot.on('message', async function(ev) {
 			);  
 		} else if (cmd == 'botcmds') {
 			ev.channel.send(  
-				'Bot-related commands:\n```md\n' + 
+				'Bot-related commands:\n```pf\n' + 
 				'< !bug > <description>          : Report a bug on #bug-reports\n' + 
 				'< !balance > <description>      : Report a balance issue on #balance-issues\n' +
 				'< !idea > <description>         : Post a map idea on #map-ideas\n' +
@@ -322,7 +322,7 @@ bot.on('message', async function(ev) {
 				});
 				if (isAdmin) {
 					ev.channel.send(  
-						'Admin-related commands:\n```md\n' + 
+						'Admin-related commands:\n```pf\n' + 
 						'< !a > unrank <game_id>                     : Make a ranked game not ranked\n' +
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
 						'< !a > removealias <alias>                  : Remove an alias from a player\n' + 
@@ -330,7 +330,7 @@ bot.on('message', async function(ev) {
 						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
 						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' +
 						'< !a > sync                                 : Sync bot rank with discord rank```' + 
-						'Super-admin commands:\n```md\n' +  
+						'Super-admin commands:\n```pf\n' +  
 						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
 						'```'
 					);   
@@ -427,7 +427,7 @@ bot.on('message', async function(ev) {
 						// !missions  
 						case 'missions': 
 							if (args[0] == 'titles') {
-								var response = 	'```md\n[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
+								var response = 	'```pf\n[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
 												'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n\n' + 
 												'[     -] [S-Rank] < !mission title-deaths >    : Be Top-1 on deaths ranking and get the "Untouchable" title\n\n' + 
 												'[     -] [S-Rank] < !mission title-assists >   : Be Top-1 on assists ranking and get the "Guardian angel" title\n\n' + 
@@ -437,7 +437,7 @@ bot.on('message', async function(ev) {
 												'[     -] [S-Rank] < !mission title-chance>     : Be Top-1 on chance of winning ranking and get the "Champion" title```';
 								ev.channel.send(response);
 							} else if (args[0] == 'ranks') {
-								var response = 	'```md\n' + 
+								var response = 	'```pf\n' + 
 												'[     -] [D-Rank] < !mission rank-chunnin >     : Play over <10> games, have more than <50> average points and play a ranked game today with >= <15> kills and <= <15> deaths\n\n' + 
 												'[     -] [C-Rank] < !mission rank-tokubetsu >   : Play over <25> games, have more than <100> average points and play a ranked game today with >= <20> kills and <= <12> deaths\n\n' + 
 												'[     -] [B-Rank] < !mission rank-jounin >      : Play over <35> games, have more than <150> average points and play a ranked game today with >= <30> kills and <= <10> deaths\n\n' + 
@@ -563,7 +563,7 @@ bot.on('message', async function(ev) {
 							break; 
 						case 'summons':
 							ev.channel.send('**Oink, oink**!\nHere are the summons you can buy\n' + 
-							'```md\nUse !summon <id> to buy a summon\n' + 
+							'```pf\nUse !summon <id> to buy a summon\n' + 
 							'[1] [Frog lvl. 1]     : Requires level 10, 100,000g (Increase mission reward by 150%)\n' + 
 							'[2] [Frog lvl. 2]     : Requires level 25, 1,000,000g (Increase mission reward by 250%)\n' + 
 							'[3] [Frog lvl. 3]     : Requires level 50, 10,000,000g (Increase mission reward by 500%)\n' + 
@@ -645,7 +645,7 @@ bot.on('message', async function(ev) {
 						// !shop 
 						case 'items':
 							ev.channel.send('**Oink, oink**!\nWelcome to my marvelous shop. Find all sort of ninja tools here!\n' +
-							'```md\nUse !buy <id> to buy an item\n' +
+							'```pf\nUse !buy <id> to buy an item\n' +
 								'< WEAPONS >\n' + 
 								'[ 1] [    100g] [Old Kunai]                 : +10 attack\n' + 
 								'[ 2] [   1000g] [Sharp Kunai]               : +50 attack\n' + 
@@ -683,7 +683,7 @@ bot.on('message', async function(ev) {
 						// !jutsus
 						case 'jutsus':  
 							ev.channel.send(
-								'**Oink, oink**!\nWelcome to the Ninja Academy. Learn all sort of jutsus here!\n```md\n' + 
+								'**Oink, oink**!\nWelcome to the Ninja Academy. Learn all sort of jutsus here!\n```pf\n' + 
 								'Use !learn <id> to learn a jutsu. You can gain xp completing missions.\n' + 
 								'[1] [                  -] Katon: Goukakyuu no Jutsu   : Deals 10 x level katon damage (5 turns cooldown)\n' + 
 								'[2] [                  -] Suirou no Jutsu             : Deals 2 x level suiton damage and binds enemy for one turn (5 turns cooldown)\n' + 

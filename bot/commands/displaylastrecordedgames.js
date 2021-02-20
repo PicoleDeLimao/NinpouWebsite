@@ -22,7 +22,7 @@ module.exports = function(ev, page) {
 			}
 			try {
 				var games = JSON.parse(body);
-				var response = '```md\n';
+				var response = '```pf\n';
 				for (var i = 0; i < games.length; i++) {
 					var date = dateFromObjectId(games[i]._id);
 					var m = moment(date);
