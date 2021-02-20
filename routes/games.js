@@ -157,6 +157,7 @@ function _getPlayerPoints(game) {
 				try {
 					username = await _getPlayerAlias(game.slots[slot].username.toLowerCase());
 				} catch (err) {
+					console.error(err);
 					username = game.slots[slot].username.toLowerCase();
 				}
 				var stats = await StatCalculator.getPlayerStats(username);

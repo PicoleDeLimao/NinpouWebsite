@@ -207,7 +207,7 @@ router.use('/ranking', function(req, res, next) {
 });
 
 router.get('/ranking', async function(req, res) {  
-	var minNumGames = 10;
+	var minNumGames = 25;
 	if (req.query.sort == 'games') {
 		minNumGames = -1;
 	}
