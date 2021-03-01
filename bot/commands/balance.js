@@ -26,7 +26,7 @@ module.exports = function(ev, players) {
 				} else { 
 					gameToString(ev, json.game, function(gameString) {
 						var response = '';
-						response += '**Optimal balance (predicting points for each player):**\n';
+						response += '**Optimal balance:**\n';
 						response += gameString; 
 						if (json.swaps.length > 0) {
 							response += 'To balance this game, type:\n```pf\n';
