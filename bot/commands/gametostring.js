@@ -47,7 +47,7 @@ function slotToString(slot, largestName, largestRealm, largestCriteria, recorded
 			for (var i = 0; i < 4 - errorStr.length; i++) {
 				errorStr = ' ' + errorStr;
 			}
-			response += '[Margin of error: ' + errorStr + ']';
+			response += ' [Margin of error: ' + errorStr + ']';
 		}
 		response += '\n';
 	}
