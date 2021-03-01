@@ -53,10 +53,10 @@ function _getPlayerStats(players) {
 	});
 }
 
-function _getPlayerAlias(alias) {
+function _getPlayerAlias(playerAlias) {
 	return new Promise(async function(resolve, reject) {
 		try {
-			var alias = await Alias.findOne({ alias: alias.toLowerCase() });
+			var alias = await Alias.findOne({ alias: playerAlias.toLowerCase() });
 			if (!alias) return resolve(null);
 			resolve(alias.username);
 		} catch (err) {
