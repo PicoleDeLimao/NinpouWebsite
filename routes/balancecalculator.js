@@ -11,27 +11,27 @@ function _flattenSlots(slots) {
 function _getBalanceFactor(slots) {
 	for (var i = 0; i < slots.length; i++) {
 		if (slots[i].username == null) {
-			slots[i].points = 0;
+			slots[i].score = 0;
 		} else {
-			slots[i].points = slots[i].stats.mean;
+			slots[i].score = slots[i].score;
 		}
 	}
 	var team1 = [];
 	var team2 = [];
 	var team3 = []; 
 	for (var i = 0; i < 3; i++) {
-		if (slots[i] && slots[i].points !== null && !isNaN(slots[i].points)) {
-			team1.push(slots[i].points);
+		if (slots[i] && slots[i].score !== null && !isNaN(slots[i].score)) {
+			team1.push(slots[i].score);
 		}
 	}
 	for (var i = 3; i < 6; i++) {
-		if (slots[i] && slots[i].points !== null && !isNaN(slots[i].points)) {
-			team2.push(slots[i].points);
+		if (slots[i] && slots[i].score !== null && !isNaN(slots[i].score)) {
+			team2.push(slots[i].score);
 		}
 	}
 	for (var i = 6; i < 9; i++) {
-		if (slots[i] && slots[i].points !== null && !isNaN(slots[i].points)) {
-			team3.push(slots[i].points);
+		if (slots[i] && slots[i].score !== null && !isNaN(slots[i].score)) {
+			team3.push(slots[i].score);
 		}
 	}
 	var sum = function(x) {
