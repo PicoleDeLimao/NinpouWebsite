@@ -66,6 +66,11 @@ module.exports = function(ev, game, callback, criteria) {
 				var response = '```ini\n'; 
 				if (game.recorded) {
 					response += '         Id; ' + game.id + '\n';
+					if (game.eventname) {
+					response += '      Event; ' + game.eventname + '\n';
+					} else {
+					response += '      Event; None\n';
+					}
 					response += '   Duration; ' + game.duration + '\n';
 					response += '    Balance; ' + (game.balance * 100).toFixed(2) + '%\n';
 					//response += 'Recordable?; ' + (game.recordable ? 'Yes' : 'No') + '\n';
