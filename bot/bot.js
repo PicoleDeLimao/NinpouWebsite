@@ -261,10 +261,12 @@ bot.on('message', async function(ev) {
 				'< !recorded > [page]            : Fetch last recorded played games\n' + 
 				'< ![i]nfo > <game_id>           : Fetch info about a played game\n' + 
 				'< ![r]ecord > <code>            : Record a game\n' +  
-				'< !ra[n]k > <game_id>           : Make a recorded game ranked so it will impact on players\' score\n' +
+				'< !ra[n]k > <game_id> [event]   : Make a recorded game ranked so it will impact on players\' score\n' +
 				//'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
 				'< !heroes > [criteria] [months] : Display meta information about game heroes for a certain criteria in the last x months\n' + 
 				'< !hero > <name>                : Display meta information about specific hero\n' + 
+				'< !events >                     : Display all hosted events\n' +
+				'< !event > <name>               : Display ranking of a particular event\n' +
 				//'< !tips > <hero_name>           : Show all tips related to a hero\n' +
 				//'< !tip > <hero_name> <tip>      : Create a tip for a hero and get gold proportional to your rank (<25/50/100/200/400/800> x lvl)!\n' +
 				//'< !subscribe >                  : Turn on/off Tonton private alert messages\n' +
@@ -323,17 +325,18 @@ bot.on('message', async function(ev) {
 				if (isAdmin) {
 					ev.channel.send(  
 						'Admin-related commands:\n```pf\n' + 
-						'< !a > unrank <game_id>                     : Make a ranked game not ranked\n' +
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
 						'< !a > removealias <alias>                  : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
 						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
 						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' +
-						'< !a > sync                                 : Sync bot rank with discord rank```' + 
+						'< !a > sync                                 : Sync bot rank with discord rank\n' + 
+						'< !a > createvent <event_name>              : Create a new event```' +
 						'Super-admin commands:\n```pf\n' +  
+						'< !a > unrank <game_id>                     : Make a ranked game not ranked\n' +
 						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
 						'```'
-					);   
+					);
 				} else {
 					ev.channel.send('Only admins can use this command! **Oink!** :pig:');
 				}
