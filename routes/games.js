@@ -299,11 +299,12 @@ router.put('/:game_id', async function (req, res) {
 	if (!game) return res.status(404).json({ error: 'Game not found.' });
 	if (req.body.event_name) {
 		try {
-			var event = await Game.findOne({ name: req.body.event_name.toLowerCase() });
+			var event = await Event.findOne({ name: req.body.event_name.toLowerCase() });
 			if (!event) throw 'Event not found';
 			game.eventname = req.body.event_name;
 			await game.save();
 		} catch (err) {
+			console.log(err);
 			return res.status(400).json({ error: 'Event not found.' });
 		}
 	} else {
