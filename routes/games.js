@@ -306,7 +306,9 @@ router.put('/:game_id', async function (req, res) {
 		} catch (err) {
 			return res.status(400).json({ error: 'Event not found.' });
 		}
-		
+	} else {
+		game.eventname = null;
+		await game.save();
 	}
 	return res.json(game);
 });
