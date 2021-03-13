@@ -13,7 +13,7 @@ router.post('/', async function (req, res) {
             name: req.body.event_name
         });
         await event.save();
-        return res.status(200).json(event);
+        return res.status(201).json(event);
 	} catch (err) {
 		console.error(err);
 		return res.status(500).json({ error: err });

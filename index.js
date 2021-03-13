@@ -35,6 +35,7 @@ app.use('/sections', require('./routes/sections'));
 app.use('/forum', require('./routes/forum'));
 app.use('/alias', require('./routes/alias'));
 app.use('/games', require('./routes/games'));
+app.use('/events', require('./routes/events'));  
 app.use('/stats', require('./routes/stats'));
 app.use('/streams', require('./routes/streams')); 
 app.use('/missions', require('./routes/missions')); 

@@ -58,6 +58,7 @@ var tipsShow = require('./commands/tipsShow');
 var tipCreate = require('./commands/tipCreate');
 var heroExists = require('./commands/heroExists');
 var displayVillage = require('./commands/displayvillage');
+var createEvent = require('./commands/createevent');
 const { env } = require('process');
 
 var subscribed = [];
@@ -253,20 +254,20 @@ bot.on('message', async function(ev) {
 				'Game-related commands:\n```pf\n' + 
 				//'< ![h]ost > [location] ![owner]  : Host a new game (on ENTConnect)\n' + 
 				//'< !lobby >                     : List games in lobby (on ENTConnect)\n' + 
-				'< ![o]ptimal > < name_of_players>: Display the optimal balance of a game composed by given player names\n' +
-				'< ![sub]scribe > [hours]         : Subscribe for all game announcements for N hours (default: 1 hour)\n' + 
+				'< ![o]ptimal > < name_of_players> : Display the optimal balance of a game composed by given player names\n' +
+				'< ![sub]scribe > [hours]          : Subscribe for all game announcements for N hours (default: 1 hour)\n' + 
 				'< ![b]roadcast > <message>        : Broadcast a message to all subscribed players\n' +   
 				//'< ![p]rogress >                : List games in progress (on ENTConnect)\n' + 
 				//'< ![l]ast >                    : Fetch last non-recorded played games (on ENTConnect)\n' + 
-				'< !recorded > [page]            : Fetch last recorded played games\n' + 
-				'< ![i]nfo > <game_id>           : Fetch info about a played game\n' + 
-				'< ![r]ecord > <code>            : Record a game\n' +  
-				'< !ra[n]k > <game_id> [event]   : Make a recorded game ranked so it will impact on players\' score\n' +
+				'< !recorded > [page]              : Fetch last recorded played games\n' + 
+				'< ![i]nfo > <game_id>             : Fetch info about a played game\n' + 
+				'< ![r]ecord > <code>              : Record a game\n' +  
+				'< !ra[n]k > <game_id> [event]     : Make a recorded game ranked so it will impact on players\' score\n' +
 				//'< ![u]nrecordable > <game_id>  : Set a game to be unrecordable\n' +
-				'< !heroes > [criteria] [months] : Display meta information about game heroes for a certain criteria in the last x months\n' + 
-				'< !hero > <name>                : Display meta information about specific hero\n' + 
-				'< !events >                     : Display all hosted events\n' +
-				'< !event > <name>               : Display ranking of a particular event\n' +
+				'< !heroes > [criteria] [months]   : Display meta information about game heroes for a certain criteria in the last x months\n' + 
+				'< !hero > <name>                  : Display meta information about specific hero\n' + 
+				'< !events >                       : Display all hosted events\n' +
+				'< !event > <name>                 : Display ranking of a particular event\n' +
 				//'< !tips > <hero_name>           : Show all tips related to a hero\n' +
 				//'< !tip > <hero_name> <tip>      : Create a tip for a hero and get gold proportional to your rank (<25/50/100/200/400/800> x lvl)!\n' +
 				//'< !subscribe >                  : Turn on/off Tonton private alert messages\n' +
@@ -399,6 +400,13 @@ bot.on('message', async function(ev) {
 						}
 					} else if (args[0] == 'sync') {
 						syncRank(ev); 
+					} else if (args[0] == 'createvent') {
+						if (args.length > 1) {
+							args.splice(0);
+							createEvent(ev, args.join(' ').toLowerCase());
+						} else {
+							ev.channel.send('Me no understand! Use **!createvent <event_name>**');
+						}
 					} else {
 						ev.channel.send('Admin command not found! **Oink!** :pig:');
 					}
