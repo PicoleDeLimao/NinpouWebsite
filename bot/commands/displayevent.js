@@ -37,7 +37,7 @@ module.exports = function(ev, eventName) {
 									for (var x = 0; x < maxPlayerName - playerName.length; x++) {
 										space += ' ';
 									}  
-									response += (i + 1) + '. < ' + playerName + ' >' + space + ' with <' + Math.round(data.games[i].points) + '> points and KDA <' + data.games[i].kills + '/' + data.games[i].points + '/' + data.games[i].assists+ '> over ' + data.games[i].games + ' games\n';
+									response += (i + 1) + '. < ' + playerName + ' >' + space + ' with <' + Math.round(data.games[i].wins) + '> wins; KDA <' + data.games[i].kills + '/' + data.games[i].points + '/' + data.games[i].assists+ '>; Points <' + data.games[i].points + '>\n';
 									return next(i + 1, data, response);
 								});
 							}
