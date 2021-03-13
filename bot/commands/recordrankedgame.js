@@ -39,7 +39,7 @@ function sendToChannel(bot, ev, gameId, eventName) {
 }
 
 module.exports = function(bot, ev, gameId, eventName) {
-	if (!eventname) {
+	if (!eventName) {
 		eventName = null;
 	}
 	module.exports = function(ev, eventName) {
