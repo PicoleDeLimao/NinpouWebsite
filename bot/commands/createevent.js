@@ -3,10 +3,12 @@
 var http = require('http');
 
 module.exports = function(ev, eventName) {
+	console.log(eventName);
 	var requestBody = JSON.stringify({
 		event_name: eventName
 	});
-	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/events', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': '' + requestBody.length } }, function(res) {
+	console.log(requestBody);
+	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/events', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(requestBody) } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
 			body += chunk;
