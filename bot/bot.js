@@ -402,7 +402,7 @@ bot.on('message', async function(ev) {
 						syncRank(ev); 
 					} else if (args[0] == 'createevent') {
 						if (args.length > 1) {
-							args = args.splice(0, 1);
+							args.splice(0, 1);
 							createEvent(ev, args.join(' ').toLowerCase());
 						} else {
 							ev.channel.send('Me no understand! Use **!createevent <event_name>**');
