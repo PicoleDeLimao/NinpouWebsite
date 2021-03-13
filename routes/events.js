@@ -55,7 +55,6 @@ router.get('/:event_name', async function (req, res) {
     ]);
     for (var i = 0; i < games.length; i++) {
         var alias = await Alias.findOne({ alias: { $eq: games[i]._id } });
-        console.log(alias);
         if (alias) {
             games[i].alias = alias.username;
         } else {

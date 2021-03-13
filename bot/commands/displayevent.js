@@ -19,7 +19,6 @@ module.exports = function(ev, eventName) {
 			} 
 			try {
 				var data = JSON.parse(body);
-				console.log(data);
 				var maxPlayerName = 0;
 				(function next(i, data) {
 					if (i == data.games.length) {
