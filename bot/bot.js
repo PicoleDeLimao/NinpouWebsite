@@ -824,8 +824,10 @@ bot.on('message', async function(ev) {
 						case 'n':
 						case 'rank':
 						case 'ranking': 
-							if (ev.mentions.users.array().length == 0 && (args[0].startsWith('5') || args[0].startsWith('6'))) {
-								recordRankedGame(bot, ev, args[0], args[1]);
+							if (args.length >= 1 && ev.mentions.users.array().length == 0 && (args[0].startsWith('5') || args[0].startsWith('6'))) {
+								var arg0 = args[0];
+								args.splice(0, 1);
+								recordRankedGame(bot, ev, arg0, args.join(' '));
 							} else if (args.length == 3) {
 								if (ev.mentions.users.array().length > 0) {
 									displayRanking(ev, ev.mentions.users.array()[0].id, args[1], args[2]);

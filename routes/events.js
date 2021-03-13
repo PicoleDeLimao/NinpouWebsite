@@ -4,11 +4,11 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Event = require('../models/Event');
-const Game = require('../models/Game');
+var Game = require('../models/Game');
 
 router.post('/', async function (req, res) {
 	try {
-        var event = await Event.findOne({ name: req.body.event_name });
+        var event = await Event.findOne({ name: req.body.event_name.toLowerCase() });
         if (event) return res.status(400).json({ error: 'Event already exists.' });
         event = new Event({
             id: mongoose.Types.ObjectId().toString(),
@@ -27,9 +27,35 @@ router.get('/', async function (req, res) {
 });
 
 router.get('/:event_name', async function (req, res) {
-	var event = await Event.findOne({ name: req.params.event_name });
+	var event = await Event.findOne({ name: req.params.event_name.toLowerCase() });
     if (!event) return res.status(404).json({ error: 'Event not found.' });
-    return res.json(event);
+    var games = await Game.aggregate([
+        {
+            $unwind: '$slots',
+        },
+        {
+            $match: {
+                'eventname': req.params.event_name.toLowerCase(),
+                'recorded': true,
+                'ranked': true
+            }
+        },
+        {
+            $group: {
+                _id: '$slots.alias',
+                kills: { $sum: '$slots.kills' },
+                deaths: { $sum: '$slots.deaths' },
+                assists: { $sum: '$slots.assists' },
+                points: { $sum: '$slots.points' },
+                wins: { $sum: { $cond: ['$slots.win', 1, 0] } },
+                games: { $sum: 1 }
+            }
+        }
+    ]);
+    games.sort(function(a, b) {
+        return b['points'] - a['points'];
+	}); 
+    return res.json({ event: event, games: games });
 });
 
 module.exports = router;
