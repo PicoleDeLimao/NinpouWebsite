@@ -59,6 +59,7 @@ var tipCreate = require('./commands/tipCreate');
 var heroExists = require('./commands/heroExists');
 var displayVillage = require('./commands/displayvillage');
 var createEvent = require('./commands/createevent');
+var displayEvents = require('./commands/displayEvents');
 const { env } = require('process');
 
 var subscribed = [];
@@ -885,6 +886,9 @@ bot.on('message', async function(ev) {
 							} else {
 								displayScore(ev, ev.author.id, true, escape(heroName));
 							}
+							break;
+						case 'events':
+							displayEvents();
 							break;
 						case 'heroes':
 							if (args.length > 2 && ev.mentions.users.array().length > 0) {
