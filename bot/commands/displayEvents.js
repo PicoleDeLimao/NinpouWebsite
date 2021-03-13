@@ -7,7 +7,7 @@ function dateFromObjectId(objectId) {
 	return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
 }
 
-module.exports = function(ev, page) {
+module.exports = function(ev) {
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/events' }, function(res) {
 		var body = '';
 		res.on('data', function(data) {

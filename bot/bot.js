@@ -888,7 +888,7 @@ bot.on('message', async function(ev) {
 							}
 							break;
 						case 'events':
-							displayEvents();
+							displayEvents(ev);
 							break;
 						case 'heroes':
 							if (args.length > 2 && ev.mentions.users.array().length > 0) {
