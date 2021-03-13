@@ -17,8 +17,8 @@ module.exports = function(ev, attribute) {
 		res.on('end', async function() {
 			try {
 				var ranking = JSON.parse(body);
-				await ev.guild.roles.fetch();
-				await ev.guild.members.fetch();
+				//await ev.guild.roles.fetch();
+				//await ev.guild.members.fetch();
 				ev.guild.members.fetch(ev.author.id).then(async function(author) {   
 					if (ranking.ranking[0]._id == ev.author.id || author.roles.highest.name.toLowerCase() == 'admin') {
 						var role = null; 

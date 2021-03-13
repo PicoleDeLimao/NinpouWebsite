@@ -88,7 +88,7 @@ module.exports = function(ev, playerName, hist, hero) {
 					getPlayerName(ev, ranking.stat._id, function(err, playerName) {
 						if (err) return ev.channel.send('Couldn\'t fetch player score. :( **Oink!** :pig:');
 						var player = ranking.stat;
-						var response = '```md\n';  
+						var response = '```pf\n';  
 						response += '< ' + playerName + ' > is on ranking <' + player.ranking.score + '> with a score of <' + Math.round(player.score) + '> and a win percentage of <' + (player.wins / player.gamesRanked * 100).toFixed(2) + '%> out of <' + player.gamesRanked + '> ranked games. More info:\n\n' +   
 						'Average kills:       <' + Math.round(player.kills) + '> (Ranking <' + player.ranking.kills + '>)\n' + 
 						'Average deaths:      <' + Math.round(player.deaths) + '> (Ranking <' + player.ranking.deaths + '>)\n' + 
@@ -98,7 +98,7 @@ module.exports = function(ev, playerName, hist, hero) {
 						'Chance of winning:   <' + (player.chance).toFixed(2) + '%> (Ranking <' + player.ranking.chance + '>)\n\n```';
 						if (!hist) ev.channel.send(response);
 						if (hist && (ranking.ranked.numGames + ranking.notRanked.numGames) > 0) {
-							response = '```md\nHistory (last six months):\n\n';
+							response = '```pf\nHistory (last six months):\n\n';
 							
 							if (hero) {
 								response += 'Hero ranking (from ' + ranking.numHeroes + ' played heroes):\n';
@@ -132,13 +132,13 @@ module.exports = function(ev, playerName, hist, hero) {
 							}
 							
 							if (ranking.ranked.numGames > 0) {
-								response = '```md';
+								response = '```pf';
 								response += getLastPlayedGames(hero, ranking.ranked, true);
 								response += '```';
 								ev.channel.send(response);
 							}
 							if (ranking.notRanked.numGames > 0) {
-								response = '```md';
+								response = '```pf';
 								response += getLastPlayedGames(hero, ranking.notRanked, false);
 								response += '```';
 								ev.channel.send(response);

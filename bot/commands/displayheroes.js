@@ -30,7 +30,7 @@ module.exports = function(ev, attribute, months, playerId) {
 				});
 				var begin = 0;
 				while (begin < ranking.length) {
-					var response = '```md\nStats from the last ' + months + ' months:\n';
+					var response = '```pf\nStats from the last ' + months + ' months:\n';
 					for (var i = begin; i < Math.min(begin + 30, ranking.length); i++) {
 						response += (i + 1) + '. < ' + (ranking[i].hero && ranking[i].hero.name || 'Unknown') + ' >. Average ' + attribute + ': <' + Math.round(ranking[i][attribute]) + '>. Victories: <' + ranking[i].wins + '/' + ranking[i].games + '> <' + Math.round(ranking[i].wins / ranking[i].games * 100) + '%>\n';
 					}

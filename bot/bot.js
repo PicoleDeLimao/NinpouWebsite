@@ -53,162 +53,50 @@ var setColor = require('./commands/setcolor');
 var displayHeroes = require('./commands/displayheroes');
 var displayHero = require('./commands/displayhero');
 var displayCharacters = require('./commands/displaycharacters');
-var subscribe = require('./commands/subscribe');
-var inviteMessageToPlayers = require('./commands/sendgamealert');
-var inviteMessageToHost = require('./commands/sendgamealerthost');
 var syncRank = require('./commands/syncrank');
 var tipsShow = require('./commands/tipsShow');
 var tipCreate = require('./commands/tipCreate');
 var heroExists = require('./commands/heroExists');
-var rerank = require('./commands/rerank');
+var displayVillage = require('./commands/displayvillage');
+const { env } = require('process');
 
-var hostedGamesWC3 = [];
-var hostedGamesWC3Messages = {};
-var onlineStreams = [];
-var onlineStreamsMessages = {};
-var countUpdates = 0;
+var subscribed = [];
 
-setInterval(function() {
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games?_=' + (new Date()).getTime() }, function(res) {
-		var statusCode = res.statusCode;
-		if (statusCode != 200) return;
-		var body = '';
-		res.on('data', function(data) {
-			body += data; 
-		});
-		res.on('end', function() {
-			try {
-				hostedGamesWC3 = JSON.parse(body);
-			} catch (err) {
-				console.error(err);
-			}
-		});
-	}).on('error', function(err) {
-		
-	});
-}, 10000);
+Date.prototype.addHours = function(h){
+    this.setHours(this.getHours()+h);
+    return this;
+}
 
-setInterval(function() { 
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/streams/live' }, function(res) {
-		var statusCode = res.statusCode;
-		if (statusCode != 200) return;
-		var body = '';
-		res.on('data', function(data) {
-			body += data; 
-		});
-		res.on('end', function() {
-			try { 
-				var streams = JSON.parse(body); 
-				onlineStreams = [];
-				for (var i = 0; i < streams.length; i++) {
-					if (streams[i]) {
-						onlineStreams.push(streams[i]);
-					} else {
-						//console.log(streams);
-					}
-				} 
-			} catch(err) {
-				console.error(err);
-			}
-		}); 
-	}).on('error', function(err) {
-		console.error(err);
-	});
-}, 10000);
-
-var previewCacheUrl = '?_=' + (new Date()).getTime();
-
-setInterval(function() {
-	previewCacheUrl = '?_=' + (new Date()).getTime();
-}, 120000);
-
-var broadcastings = [];
-setInterval(function() {
-	for (var channelname in broadcastings) {
-		var channel = broadcastings[channelname];
-		if (!onlineStreamsMessages.hasOwnProperty(channelname)) {
-			onlineStreamsMessages[channelname] = {};
-		}
-		// remove offline streams 
-		for (var _id in onlineStreamsMessages[channelname]) {
-			var contains = false;
-			for (var i = 0; i < onlineStreams.length; i++) {
-				if (onlineStreams[i].stream._id === _id) {
-					contains = true;
-					break;
-				}
-			}
-			if (!contains && onlineStreamsMessages[channelname][_id].hasOwnProperty('embed')) {
-				onlineStreamsMessages[channelname][_id].embed.delete();
-				onlineStreamsMessages[channelname][_id].embed = null;
-				delete onlineStreamsMessages[channelname][_id];
-			} 
-		}
-		// create or edit messages for online streams 
-		for (var i = 0; i < onlineStreams.length; i++) {
-			(function(stream) {
-				var stream = stream.stream; 
-				var date = new Date(stream.created_at);
-				var m = moment(date);    
-				var msg = '@here **' + stream.channel.display_name + '** is online. Watch it now: <' + stream.channel.url + '>.';
-				var msgEmbed = new Discord.MessageEmbed()
-						.setTitle('Playing ' + stream.game)
-						.setAuthor(stream.channelname)  
-						.setDescription(stream.channel.status)
-						.setImage(stream.preview.large + previewCacheUrl)
-						.setURL(stream.channel.url)
-						.setThumbnail(stream.channel.logo)
-						.setFooter(stream.viewers + ' viewers | Started '  + m.fromNow());
-				if (onlineStreamsMessages[channelname].hasOwnProperty(stream._id)) {
-					if (onlineStreamsMessages[channelname][stream._id].embed && (countUpdates % 6 == 0)) {
-						onlineStreamsMessages[channelname][stream._id].embed.edit(msgEmbed);
-					}
-				} else {  
-					onlineStreamsMessages[channelname][stream._id] = { };
-					channel.channel.send(msgEmbed).then(function(msg) {
-						onlineStreamsMessages[channelname][stream._id].embed = msg;
-					}); 
-				}
-			})(onlineStreams[i]);
-		}
-		// remove non-existing games 
-		if (!hostedGamesWC3Messages.hasOwnProperty(channelname)) {
-			hostedGamesWC3Messages[channelname] = {};
-		}
-		// remove non existing games  
-		for (var id in hostedGamesWC3Messages[channelname]) {
-			var contains = false;
-			for (var i = 0; i < hostedGamesWC3.length; i++) {
-				if (hostedGamesWC3[i].id === id) {
-					contains = true;
-					break;
-				}
-			}
-			if (!contains && hostedGamesWC3Messages[channelname][id].hasOwnProperty('msg')) {
-				hostedGamesWC3Messages[channelname][id].msg.delete();
-				hostedGamesWC3Messages[channelname][id].msg = null;
-				delete hostedGamesWC3Messages[channelname][id];
-			} 
-		}
-		// create or edit games  
-		for (var i = 0; i < hostedGamesWC3.length; i++) {
-			(function(game) {
-				var msg = '@here ' + game.name + ' (' + game.playersa + '/' + game.playersb + ') on realm ' + game.realm;
-				if (hostedGamesWC3Messages[channelname].hasOwnProperty(game.id)) {
-					if (hostedGamesWC3Messages[channelname][game.id].msg) {
-						hostedGamesWC3Messages[channelname][game.id].msg.edit(msg);
-					}
-				} else {  
-					hostedGamesWC3Messages[channelname][game.id] = { };
-					channel.channel.send(msg).then(function(msg) {
-						hostedGamesWC3Messages[channelname][game.id].msg = msg;
-					}); 
-				}
-			})(hostedGamesWC3[i]);
+function subscribe(user, hours) {
+	var found = false;
+	for (var i = 0; i < subscribed.length; i++) {
+		if (subscribed[i].user == user) {
+			subscribed[i].expire = new Date().addHours(hours);
+			found = true;
+			break;
 		}
 	}
-	++countUpdates;
-}, 10000);
+	if (!found) {
+		subscribed.push({ user: user, expire: new Date().addHours(hours) });
+	}
+}
+
+async function broadcast(ev, message) {
+	for (var i = 0; i < subscribed.length; i++) {
+		ev.guild.members.fetch(subscribed[i].user).then(function(author) {
+			author.send(message);
+		});
+	}
+}
+
+setInterval(function() {
+	var currentDate = new Date();
+	for (var i = subscribed.length - 1; i >= 0; i--) {
+		if (currentDate > subscribed[i].expire) {
+			subscribed.splice(i, 1);
+		}
+	}
+}, 1000);
 
 function completeAllMissions(ev) {
 	missionRescue(ev, 'Rescue', function() {
@@ -352,7 +240,7 @@ bot.on('message', async function(ev) {
         
         if (cmd == 'help') { 
 			ev.channel.send( 
-				'**Oink, oink**!\nMe can do a lot of things. Check it:\n```md\n' + 
+				'**Oink, oink**!\nMe can do a lot of things. Check it:\n```pf\n' + 
 				'< !help >          : Display this message\n' + 
 				'< !gamecmds >      : Display game-related commands\n' + 
 				'< !playercmds >    : Display player-related commands\n' + 
@@ -362,10 +250,12 @@ bot.on('message', async function(ev) {
 			);    
 		} else if (cmd == 'gamecmds') {
 			ev.channel.send(  
-				'Game-related commands:\n```md\n' + 
-				//'< ![h]ost > [location] [owner]  : Host a new game (on ENTConnect)\n' + 
+				'Game-related commands:\n```pf\n' + 
+				//'< ![h]ost > [location] ![owner]  : Host a new game (on ENTConnect)\n' + 
 				//'< !lobby >                     : List games in lobby (on ENTConnect)\n' + 
-				'< ![o]ptimal > < name_of_players>: Display the optimal balance of a game composed by given player names\n' + 
+				'< ![o]ptimal > < name_of_players>: Display the optimal balance of a game composed by given player names\n' +
+				'< ![sub]scribe > [hours]         : Subscribe for all game announcements for N hours (default: 1 hour)\n' + 
+				'< ![b]roadcast > <message>        : Broadcast a message to all subscribed players\n' +   
 				//'< ![p]rogress >                : List games in progress (on ENTConnect)\n' + 
 				//'< ![l]ast >                    : Fetch last non-recorded played games (on ENTConnect)\n' + 
 				'< !recorded > [page]            : Fetch last recorded played games\n' + 
@@ -382,7 +272,7 @@ bot.on('message', async function(ev) {
 			);  
 		} else if (cmd == 'playercmds') {
 			ev.channel.send(  
-				'Player-related commands:\n```md\n' + 
+				'Player-related commands:\n```pf\n' + 
 				'< !ra[n]k > [player_name]             : Display player position in Ninpou ranking\n' + 
 				'< ![s]core > [player_name]            : Display a player score in the ranking\n' + 
 				'< ![h]i[s]tory > [player_name] [hero] : Display the history of a player\n' + 
@@ -394,12 +284,13 @@ bot.on('message', async function(ev) {
 			);  
 		} else if (cmd == 'rpgcmds') {
 			ev.channel.send(  
-				'RPG-related commands:\n```md\n' + 
+				'RPG-related commands:\n```pf\n' + 
 				'< ![m]issions >           : List available missions\n' + 
 				'< ![g]et > [user]         : Display information about an user\n' + 
 				'< !give > <user> <amount> : Give gold to an user\n' +   
 				'< !items >                : Display items available to be purchased\n' + 
 				'< !villages>              : Display villages available to join\n' + 
+				'< !village > [name]       : Display hierarchy of a village\n' + 
 				'< !characters >           : Display characters available to buy\n' + 
 				'< !summons >              : Display summons available to buy\n' + 
 				'< !status > <status>      : Set a status\n' + 
@@ -409,7 +300,7 @@ bot.on('message', async function(ev) {
 			);  
 		} else if (cmd == 'botcmds') {
 			ev.channel.send(  
-				'Bot-related commands:\n```md\n' + 
+				'Bot-related commands:\n```pf\n' + 
 				'< !bug > <description>          : Report a bug on #bug-reports\n' + 
 				'< !balance > <description>      : Report a balance issue on #balance-issues\n' +
 				'< !idea > <description>         : Post a map idea on #map-ideas\n' +
@@ -431,16 +322,15 @@ bot.on('message', async function(ev) {
 				});
 				if (isAdmin) {
 					ev.channel.send(  
-						'Admin-related commands:\n```md\n' + 
+						'Admin-related commands:\n```pf\n' + 
 						'< !a > unrank <game_id>                     : Make a ranked game not ranked\n' +
-						'< !a > rerank <player>                      : Recompute the stats for a player\n' +
 						'< !a > addalias <user> <alias>              : Add an alias to a player\n' + 
 						'< !a > removealias <alias>                  : Remove an alias from a player\n' + 
 						'< !a > blockalias <alias>                   : Block an alias from being added to any account\n' + 
 						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
 						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' +
 						'< !a > sync                                 : Sync bot rank with discord rank```' + 
-						'Super-admin commands:\n```md\n' +  
+						'Super-admin commands:\n```pf\n' +  
 						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
 						'```'
 					);   
@@ -449,7 +339,7 @@ bot.on('message', async function(ev) {
 				}
 			});
 		} else if (cmd == 'a') {
-			ev.guild.members.fetch(ev.author.id).then(function(author) {
+			ev.guild.members.fetch(ev.author.id).then(async function(author) {
 				var isAdmin = false;
 				var isSuperAdmin = false; 
 				author.roles.cache.forEach(function(role) {
@@ -506,12 +396,6 @@ bot.on('message', async function(ev) {
 						}
 					} else if (args[0] == 'sync') {
 						syncRank(ev); 
-					} else if (args[0] == 'rerank') {
-						if (args.length == 2 && ev.mentions.users.array().length > 0) {
-							rerank(ev, ev.mentions.users.array()[0].id);
-						} else {
-							ev.channel.send('Me no understand! Use **!a rerank <player>**');
-						}
 					} else {
 						ev.channel.send('Admin command not found! **Oink!** :pig:');
 					}
@@ -543,7 +427,7 @@ bot.on('message', async function(ev) {
 						// !missions  
 						case 'missions': 
 							if (args[0] == 'titles') {
-								var response = 	'```md\n[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
+								var response = 	'```pf\n[     -] [S-Rank] < !mission title-score >     : Be Top-1 on score ranking and get the "One above all" title\n' + 
 												'[     -] [S-Rank] < !mission title-kills >     : Be Top-1 on kills ranking and get the "Solo killer" title\n\n' + 
 												'[     -] [S-Rank] < !mission title-deaths >    : Be Top-1 on deaths ranking and get the "Untouchable" title\n\n' + 
 												'[     -] [S-Rank] < !mission title-assists >   : Be Top-1 on assists ranking and get the "Guardian angel" title\n\n' + 
@@ -553,7 +437,7 @@ bot.on('message', async function(ev) {
 												'[     -] [S-Rank] < !mission title-chance>     : Be Top-1 on chance of winning ranking and get the "Champion" title```';
 								ev.channel.send(response);
 							} else if (args[0] == 'ranks') {
-								var response = 	'```md\n' + 
+								var response = 	'```pf\n' + 
 												'[     -] [D-Rank] < !mission rank-chunnin >     : Play over <10> games, have more than <50> average points and play a ranked game today with >= <15> kills and <= <15> deaths\n\n' + 
 												'[     -] [C-Rank] < !mission rank-tokubetsu >   : Play over <25> games, have more than <100> average points and play a ranked game today with >= <20> kills and <= <12> deaths\n\n' + 
 												'[     -] [B-Rank] < !mission rank-jounin >      : Play over <35> games, have more than <150> average points and play a ranked game today with >= <30> kills and <= <10> deaths\n\n' + 
@@ -679,7 +563,7 @@ bot.on('message', async function(ev) {
 							break; 
 						case 'summons':
 							ev.channel.send('**Oink, oink**!\nHere are the summons you can buy\n' + 
-							'```md\nUse !summon <id> to buy a summon\n' + 
+							'```pf\nUse !summon <id> to buy a summon\n' + 
 							'[1] [Frog lvl. 1]     : Requires level 10, 100,000g (Increase mission reward by 150%)\n' + 
 							'[2] [Frog lvl. 2]     : Requires level 25, 1,000,000g (Increase mission reward by 250%)\n' + 
 							'[3] [Frog lvl. 3]     : Requires level 50, 10,000,000g (Increase mission reward by 500%)\n' + 
@@ -734,6 +618,13 @@ bot.on('message', async function(ev) {
 							'   Otogakure : Requires level 15, 100,000g\n' + 
 							'    Akatsuki : Requires level 50, 10,000,000g```');
 							break;
+						case 'village':
+							if (args.length > 0) {
+								displayVillage(ev, args.join(' ').toLowerCase());
+							} else {
+								displayVillage(ev);
+							}
+							break;
 						case 'join':
 							if (args.length == 1) {
 								join(ev, args[0].toLowerCase());
@@ -754,7 +645,7 @@ bot.on('message', async function(ev) {
 						// !shop 
 						case 'items':
 							ev.channel.send('**Oink, oink**!\nWelcome to my marvelous shop. Find all sort of ninja tools here!\n' +
-							'```md\nUse !buy <id> to buy an item\n' +
+							'```pf\nUse !buy <id> to buy an item\n' +
 								'< WEAPONS >\n' + 
 								'[ 1] [    100g] [Old Kunai]                 : +10 attack\n' + 
 								'[ 2] [   1000g] [Sharp Kunai]               : +50 attack\n' + 
@@ -792,7 +683,7 @@ bot.on('message', async function(ev) {
 						// !jutsus
 						case 'jutsus':  
 							ev.channel.send(
-								'**Oink, oink**!\nWelcome to the Ninja Academy. Learn all sort of jutsus here!\n```md\n' + 
+								'**Oink, oink**!\nWelcome to the Ninja Academy. Learn all sort of jutsus here!\n```pf\n' + 
 								'Use !learn <id> to learn a jutsu. You can gain xp completing missions.\n' + 
 								'[1] [                  -] Katon: Goukakyuu no Jutsu   : Deals 10 x level katon damage (5 turns cooldown)\n' + 
 								'[2] [                  -] Suirou no Jutsu             : Deals 2 x level suiton damage and binds enemy for one turn (5 turns cooldown)\n' + 
@@ -899,21 +790,29 @@ bot.on('message', async function(ev) {
 								ev.channel.send('Me no understand! Use **!record <code>**');
 							}
 							break;
-						/*case 'subscribe':
-							subscribe(ev);
-							break;*/
-						/*case 'u':
-						case 'unrecordable':
+						case 'sub':
+						case 'subscribe':
 							if (args.length == 1) {
-								unrecordableGame(ev, args[0]);
-							} else { 
-								ev.channel.send('Me no understand! Use **!unrecordable <game_id>**');
+								subscribe(ev.author.id, parseInt(args[0], 0));
+								ev.channel.send('Subscribed for ' + args[0] + ' hours. Use !sub 0 to remove subscription.');
+							} else {
+								subscribe(ev.author.id, 1);
+								ev.channel.send('Subscribed for one hour. Use !sub 0 to remove subscription.');
 							}
-							break; */
+							break;
+						case 'b':
+						case 'broadcast':
+							if (args.length > 0) {
+								await broadcast(ev, args.join(' '));
+								ev.channel.send('Done! Number of people reached: ' + subscribed.length);
+							} else {
+								ev.channel.send('Me no understand! Use **!broadcast <message>**');
+							}
+							break;
 						case 'n':
 						case 'rank':
 						case 'ranking': 
-							if (args.length == 1 && ev.mentions.users.array().length == 0 && args[0].startsWith('5')) {
+							if (args.length == 1 && ev.mentions.users.array().length == 0 && (args[0].startsWith('5') || args[0].startsWith('6'))) {
 								recordRankedGame(bot, ev, args[0]);
 							} else if (args.length == 3) {
 								if (ev.mentions.users.array().length > 0) {
@@ -1020,7 +919,7 @@ bot.on('message', async function(ev) {
 										if (!tip) {
 											tipsShow(ev, escape(args[0]), 0);
 										} else {
-											tipCreate(ev, escape(args[0]), tip);
+											tipCreate(bot, ev, escape(args[0]), tip);
 										}
 									} else {
 										var heroName = args[0] + ' ' + args[1];

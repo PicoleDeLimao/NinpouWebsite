@@ -1,16 +1,16 @@
 'use strict';
 
-var canRecord = require('./canrecord');
 var getPlayerName = require('./getplayername');
 var http = require('http');
 
 module.exports = function(ev, gameId, callback) {
-	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/ranked/' + gameId, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': 0 } }, function(res) {
+	var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games/ranked/' + gameId, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': 0 } }, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
 			body += chunk;
 		});
 		res.on('end', function() {
+			console.log(body);
 			if (res.statusCode != 200) {
 				try { 
 					var json = JSON.parse(body);
@@ -23,7 +23,7 @@ module.exports = function(ev, gameId, callback) {
 				try {
 					var data = JSON.parse(body);
 					if (data.changes.length > 0) {
-						var msg = '```md\nAverage point changes:\n\n';
+						var msg = '```pf\nAverage point changes:\n\n';
 						(function next(i) {
 							if (i == data.changes.length) {
 								msg += '```';

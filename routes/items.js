@@ -1,157 +1,99 @@
 'use strict';
 
-var mongoose = require('mongoose');
 var express = require('express');
 var router = express.Router();
-var moment = require('moment');
 var Alias = require('../models/Alias'); 
 var Item = require('../models/Item');
-var Mission = require('../models/Mission');
 
-router.get('/reset', function(req, res) {
-	Alias.find({ }, function(err, alias) {
-		(function updateAlias(index) {
-			if (index == alias.length) {
-				return;
-			}
-			Mission.find({ username: alias[index].username }, function(err, missions) {
-				var gold = 0;
-				for (var i = 0; i < missions.length; i++) {
-					var amount = 0;
-					if (missions[i].name == 'rescue') {
-						amount = 10;
-					} else if (missions[i].name == 'play') {
-						amount = 50;
-					} else if (missions[i].name == 'win') {
-						amount = 200;
-					} else if (missions[i].name == 'top') {
-						amount = 1000;
-					}
-					gold += amount;
-				}
-				alias[index].gold = gold;
-				alias[index].save(function(err) {
-					updateAlias(index + 1);
-				});
-			});
-		})(0);
-		
-	});
-});
-
-router.post('/', function(req, res) {
-	var item = new Item(req.body);
-	item.save(function(err) {
-		if (err) return res.status(400).json({ error: err });
-		return res.status(201).json(item); 
-	});
-});
-
-router.delete('/:id', function(req, res) {
-	Item.findOne({ id: req.params.id }, function(err, item) {
-		if (err) return res.status(500).json({ error: err });
-		else if (!item) return res.status(404).json({ error: 'Item not found.' });
-		item.remove(function(err) {
-			if (err) return res.status(500).json({ error: err });
-			return res.status(200).json(item); 
-		});
-	});
-}); 
-
-router.get('/:classification', function(req, res) {
-	Item.find({ classification: req.params.classification }).sort('price').exec(function(err, items) {
-		if (err) return res.status(500).json({ error: err });
-		return res.status(200).json(items); 
-	});
-});
-
-router.use('/:alias', function(req, res, next) {
-	Alias.findOne({ username: req.params.alias.toLowerCase() }, function(err, alias) {
-		if (err) return res.status(500).json({ error: err });
-		else if (!alias) return res.status(404).json({ error: 'User not found.' });
-		req.alias = alias;
-		next(); 
-	});
-});
- 
-function printGold(x) {
+function _printGold(x) {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-router.post('/:alias/:type/level', function(req, res) {
+router.post('/', async function(req, res) {
+	var item = new Item(req.body);
+	await Item.save();
+	return res.status(201).json(item); 
+});
+
+router.delete('/:id', async function(req, res) {
+	var item = await Item.findOne({ id: req.params.id });
+	if (!item) return res.status(404).json({ error: 'Item not found.' });
+	await item.remove();
+	return res.status(200).json(item); 
+}); 
+
+router.get('/:classification', async function(req, res) {
+	var items = await Item.find({ classification: req.params.classification }).sort('price');
+	return res.status(200).json(items); 
+});
+
+router.use('/:alias', async function(req, res, next) {
+	var alias = await Alias.findOne({ username: req.params.alias.toLowerCase() });
+	if (!alias) return res.status(404).json({ error: 'User not found.' });
+	req.alias = alias;
+	next(); 
+});
+ 
+router.post('/:alias/:type/level', async function(req, res) {
 	var times = Math.max(1, parseInt(req.query.times, 0) || 1);
 	if (req.params.type == 'weapon') {
 		if (!req.alias.itemWeapon) {
 			return res.status(400).json({ error: 'You don\'t have a weapon.' });
 		} else {
-			Item.findOne({ id: req.alias.itemWeapon.id }, function(err, item) {
-				if (err) return res.status(400).json({ error: err });
-				var cost = item.price * Math.pow(2, (req.alias.itemWeapon.level || 1) + times - 1);
-				if (req.alias.gold < cost) {
-					return res.status(400).json({ error: 'You don\'t have enough gold (need ' + printGold(cost) + 'g).' })
-				} else {
-					req.alias.itemWeapon.level = (req.alias.itemWeapon.level || 1) + times;
-					req.alias.gold -= cost;
-					req.alias.save(function(err) {
-						if (err) return res.status(500).json({ error: err });
-						return res.status(200).send('Weapon leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemWeapon.level + '\n\n**Balance:** -' + printGold(cost) + 'g')
-					});
-				}
-			});
+			var item = await Item.findOne({ id: req.alias.itemWeapon.id });
+			var cost = item.price * Math.pow(2, (req.alias.itemWeapon.level || 1) + times - 1);
+			if (req.alias.gold < cost) {
+				return res.status(400).json({ error: 'You don\'t have enough gold (need ' + _printGold(cost) + 'g).' })
+			} else {
+				req.alias.itemWeapon.level = (req.alias.itemWeapon.level || 1) + times;
+				req.alias.gold -= cost;
+				await req.alias.save();
+				return res.status(200).send('Weapon leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemWeapon.level + '\n\n**Balance:** -' + _printGold(cost) + 'g')
+			}
 		}
 	} else if (req.params.type == 'cloth') {
 		if (!req.alias.itemArmor) {
 			return res.status(400).json({ error: 'You don\'t have a cloth.' });
 		} else {
-			Item.findOne({ id: req.alias.itemArmor.id }, function(err, item) {
-				if (err) return res.status(400).json({ error: err });
-				var cost = item.price * Math.pow(2, (req.alias.itemArmor.level || 1) + times - 1);
-				if (req.alias.gold < cost) {
-					return res.status(400).json({ error: 'You don\'t have enough gold (need ' + printGold(cost) + 'g).' })
-				} else {
-					req.alias.itemArmor.level = (req.alias.itemArmor.level || 1) + times;
-					req.alias.gold -= cost;
-					req.alias.save(function(err) {
-						if (err) return res.status(500).json({ error: err });
-						return res.status(200).send('Cloth leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemArmor.level + '\n\n**Balance:** -' + printGold(cost) + 'g')
-					});
-				}
-			});
+			var item = await Item.findOne({ id: req.alias.itemArmor.id });
+			var cost = item.price * Math.pow(2, (req.alias.itemArmor.level || 1) + times - 1);
+			if (req.alias.gold < cost) {
+				return res.status(400).json({ error: 'You don\'t have enough gold (need ' + _printGold(cost) + 'g).' })
+			} else {
+				req.alias.itemArmor.level = (req.alias.itemArmor.level || 1) + times;
+				req.alias.gold -= cost;
+				await req.alias.save();
+				return res.status(200).send('Cloth leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemArmor.level + '\n\n**Balance:** -' + _printGold(cost) + 'g')
+			}
 		}
 	} else if (req.params.type == 'support') {
 		if (!req.alias.itemSupport) {
 			return res.status(400).json({ error: 'You don\'t have a support item.' });
 		} else {
-			Item.findOne({ id: req.alias.itemSupport.id }, function(err, item) {
-				if (err) return res.status(400).json({ error: err });
-				var cost = item.price * Math.pow(2, (req.alias.itemSupport.level || 1) + times - 1);
-				if (req.alias.gold < cost) {
-					return res.status(400).json({ error: 'You don\'t have enough gold (need ' + printGold(cost) + 'g).' })
-				} else {
-					req.alias.itemSupport.level = (req.alias.itemSupport.level || 1) + times;
-					req.alias.gold -= cost;
-					req.alias.save(function(err) {
-						if (err) return res.status(500).json({ error: err });
-						return res.status(200).send('Support item leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemSupport.level + '\n\n**Balance:** -' + printGold(cost) + 'g')
-					});
-				}
-			});
+			var item = await Item.findOne({ id: req.alias.itemSupport.id });
+			var cost = item.price * Math.pow(2, (req.alias.itemSupport.level || 1) + times - 1);
+			if (req.alias.gold < cost) {
+				return res.status(400).json({ error: 'You don\'t have enough gold (need ' + _printGold(cost) + 'g).' })
+			} else {
+				req.alias.itemSupport.level = (req.alias.itemSupport.level || 1) + times;
+				req.alias.gold -= cost;
+				await req.alias.save();
+				return res.status(200).send('Support item leveled up! **Oink!** :pig:\nIt\'s now level: ' + req.alias.itemSupport.level + '\n\n**Balance:** -' + _printGold(cost) + 'g')
+			}
 		}
 	} else {
 		return res.status(400).json({ error: 'Item type not allowed.' });
 	}
 });
 
-router.use('/:alias/:item_id', function(req, res, next) {
-	Item.findOne({ id: parseInt(req.params.item_id) }, function(err, item) {
-		if (err) return res.status(500).json({ error: err });
-		else if (!item) return res.status(404).json({ error: 'Item not found.' });
-		req.item = item;
-		next(); 
-	});
+router.use('/:alias/:item_id', async function(req, res, next) {
+	var item = await Item.findOne({ id: parseInt(req.params.item_id) });
+	if (!item) return res.status(404).json({ error: 'Item not found.' });
+	req.item = item;
+	next(); 
 });
 
-router.post('/:alias/:item_id', function(req, res) {
+router.post('/:alias/:item_id', async function(req, res) {
 	if (req.alias.gold < req.item.price) {
 		return res.status(400).json({ error: 'You don\'t have enough gold.' });
 	}
@@ -175,10 +117,8 @@ router.post('/:alias/:item_id', function(req, res) {
 		}
 	}
 	req.alias.gold -= req.item.price; 
-	req.alias.save(function(err) {
-		if (err) return res.status(500).json({ error: err });
-		return res.status(200).json(req.alias); 
-	});
+	await req.alias.save();
+	return res.status(200).json(req.alias); 
 });
 
 module.exports = router;

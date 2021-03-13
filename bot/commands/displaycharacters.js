@@ -17,7 +17,7 @@ module.exports = function(ev, user) {
 				try { 
 					var data = JSON.parse(body); 
 					var msg = '**Oink, oink** :pig:!\nHere are the available characters to buy\n' + 
-					'```md\nUse !char <character> to buy a character\n';
+					'```pf\nUse !char <character> to buy a character\n';
 					var maxLength = 0;
 					for (var name in data.characters) {
 						maxLength = Math.max(maxLength, name.length + 1);

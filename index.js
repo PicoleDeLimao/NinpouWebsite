@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 app.use(auth.initialize());
 
 var mongooseConnection = process.env.DATABASE_URL || 'mongodb://localhost/narutoninpou';
+console.log(process.env.DATABASE_URL);
 mongoose.connect(mongooseConnection);
 
 var db = mongoose.connection;
@@ -54,46 +55,27 @@ app.get('/donate', function(req, res) {
 	res.redirect('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3JF66XY2HPUSC');
 })
 
-function updateAliases() {
-	Stat.find({ }, function(err, stats) {
-		if (err) {
-			console.error(err);
-			return;
+async function fixAlias(alias) {
+	var usernames = alias.alias;
+	for (var username of usernames) {
+		var stat = await Stat.findOne({ username: username.toLowerCase() });
+		if (stat) {
+			stat.alias = alias.username;
+			await stat.save();
 		}
-		Alias.find({ }, async function(err, alias) {
-			if (err) {
-				console.error(err);
-				return;
-			}
-			for (var i = 0; i < stats.length; i++) {
-				var found = false;
-				var oldValue = stats[i].alias;
-				for (var j = 0; j < alias.length; j++) {
-					for (var k = 0; k < alias[j].alias.length; k++) {
-						if (alias[j].alias[k].toLowerCase() == stats[i].username.toLowerCase()) {
-							found = true;
-						}
-					}
-					if (found) {
-						stats[i].alias = alias[j].username;
-						break;
-					}
-				}
-				if (!found) {
-					stats[i].alias = stats[i].username;
-				}
-				if (stats[i].alias != oldValue) {
-					await stats[i].save();
-				}
-			}
-			console.log('done');
-		});
-	});
+	}
+}
+
+async function fixAliases() {
+	var aliases = await Alias.find({});
+	for (var alias of aliases) {
+		fixAlias(alias);
+	}
 }
 
 var port = process.env.PORT || 8080;
 app.listen(port, async function() {
 	console.log('Listening on port ' + port + '...');
-	setInterval(updateAliases, 600000);
-	updateAliases();
+	setInterval(fixAliases, 1000 * 60 * 60);
+	await fixAliases();
 });

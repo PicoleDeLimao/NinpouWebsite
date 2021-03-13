@@ -42,12 +42,12 @@ function slotToString(slot, largestName, largestRealm, largestCriteria, recorded
 		} else {
 			response += '[' + nameSpaces + slot.username + ']' + ' [' + capitalizeFirstLetter(criteria) + ': ' + criteriaSpaces + Math.round(criteriaOnSlot(slot, criteria)) + ']';
 		}
-		if (slot.error != null) {
+		if (slot.error != null && criteria == 'points') {
 			var errorStr = '' + slot.error.toFixed(2);
 			for (var i = 0; i < 4 - errorStr.length; i++) {
 				errorStr = ' ' + errorStr;
 			}
-			response += '[Margin of error: ' + errorStr + ']';
+			response += ' [Margin of error: ' + errorStr + ']';
 		}
 		response += '\n';
 	}

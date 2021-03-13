@@ -26,15 +26,19 @@ module.exports = function(ev, players) {
 				} else { 
 					gameToString(ev, json.game, function(gameString) {
 						var response = '';
-						response += '**Optimal balance (predicting points for each player):**\n';
+						response += '**Optimal balance:**\n';
 						response += gameString; 
-						response += 'To balance this game, type:\n```md\n';
-						for (var i = 0; i < json.swaps.length; i++) {
-							response += '!swap ' + getSlot(json.swaps[i][0]) + ' ' + getSlot(json.swaps[i][1]) + '\n';
+						if (json.swaps.length > 0) {
+							response += 'To balance this game, type:\n```pf\n';
+							for (var i = 0; i < json.swaps.length; i++) {
+								response += '!swap ' + getSlot(json.swaps[i][0]) + ' ' + getSlot(json.swaps[i][1]) + '\n';
+							}
+							response += '```';
+						} else {
+							response += 'This game is already balanced.';
 						}
-						response += '```';
 						ev.channel.send(response);
-					}, 'points');
+					}, 'score');
 				}
 			} catch (err) {
 				console.error(err);

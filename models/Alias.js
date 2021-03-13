@@ -20,7 +20,7 @@ var aliasSchema = mongoose.Schema({
 	status: { type: String },
 	affiliation: { type: String, enum: ['none', 'konohagakure', 'sunagakure', 'kumogakure', 'iwagakure', 'kirigakure', 'otogakure', 'akatsuki'], default: 'none' },
 	rank: { type: String, enum: ['genin', 'chunnin', 'tokubetsu jounin', 'jounin', 'anbu', 'kage', 'rikuudou'], default: 'genin' },
-	character: { type: String, enum: ['none', 'naruto', 'sasuke', 'sakura', 'gaara', 'hinata', 'neji', 'lee', 'shino', 'kiba', 'tenten', 'ino', 'shikamaru', 'chouji', 'orochimaru', 'tsunade', 'sasori', 'deidara', 'hidan', 'kakuzu', 'konan', 'kisame', 'kakashi', 'gai', 'bee', 'tobirama', 'obito', 'minato', 'itachi', 'nagato', 'madara', 'hashirama', 'kaguya'], default: 'none' },
+	character: { type: String, enum: ['none', 'naruto', 'sasuke', 'sakura', 'gaara', 'hinata', 'neji', 'lee', 'shino', 'kiba', 'tenten', 'ino', 'shikamaru', 'chouji', 'orochimaru', 'tsunade', 'sasori', 'deidara', 'hidan', 'kakuzu', 'konan', 'kisame', 'kakashi', 'gai', 'bee', 'tobirama', 'obito', 'minato', 'itachi', 'nagato', 'madara', 'hashirama', 'kaguya', 'a', 'asuma', 'danzo', 'fuu', 'gengetsu', 'haku', 'han', 'hanzo', 'hiruzen', 'jiraiya', 'kabuto', 'kankuro', 'kimimaro', 'kurenai', 'mu', 'roshi', 'sai', 'temari', 'utakata', 'yagura', 'yamato', 'yugito', 'zabuza', 'mu'], default: 'none' },
 	summon: { type: String, enum: ['none', 'frog1', 'frog2', 'frog3', 'snake1', 'snake2', 'snake3', 'slug1', 'slug2', 'hawk', 'crow', 'dog'], default: 'none' },
 	subscribe: { type: Boolean, default: true }
 });
