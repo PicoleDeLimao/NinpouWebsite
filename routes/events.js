@@ -10,7 +10,7 @@ router.post('/', async function (req, res) {
         var event = await Event.findOne({ name: req.body_event_name });
         if (event) return res.status(400).json({ error: 'Event already exists.' });
         event = new Event({
-            name: req.body.event_name
+            name: req.body.event_name.toLowerCase()
         });
         await event.save();
         return res.status(201).json(event);

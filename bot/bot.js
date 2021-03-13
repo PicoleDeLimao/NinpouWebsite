@@ -332,7 +332,7 @@ bot.on('message', async function(ev) {
 						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
 						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' +
 						'< !a > sync                                 : Sync bot rank with discord rank\n' + 
-						'< !a > createvent <event_name>              : Create a new event```' +
+						'< !a > createevent <event_name>              : Create a new event```' +
 						'Super-admin commands:\n```pf\n' +  
 						'< !a > unrank <game_id>                     : Make a ranked game not ranked\n' +
 						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
@@ -400,12 +400,12 @@ bot.on('message', async function(ev) {
 						}
 					} else if (args[0] == 'sync') {
 						syncRank(ev); 
-					} else if (args[0] == 'createvent') {
+					} else if (args[0] == 'createevent') {
 						if (args.length > 1) {
 							args.splice(0);
 							createEvent(ev, args.join(' ').toLowerCase());
 						} else {
-							ev.channel.send('Me no understand! Use **!createvent <event_name>**');
+							ev.channel.send('Me no understand! Use **!createevent <event_name>**');
 						}
 					} else {
 						ev.channel.send('Admin command not found! **Oink!** :pig:');

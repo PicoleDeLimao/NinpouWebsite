@@ -17,16 +17,16 @@ module.exports = function(ev, eventName) {
 					var data = JSON.parse(body);
 					ev.channel.send(data.error);
 				} catch (err) {
-					ev.channel.send('Could not create event. :( **Oink!** :pig:');
+					ev.channel.send('Couldn\'t create event. :( **Oink!** :pig:');
 				} 
 			} else { 
-				ev.channel.send('Alias added! **Oink!** :pig:');
+				ev.channel.send('Event create! **Oink!** :pig:');
 			}
 		});
 	});
 	request.on('error', function(err) {
 		console.error(err);
-		ev.channel.send('Couldn\'t add alias. :( **Oink!** :pig:');
+		ev.channel.send('Couldn\'t create event. :( **Oink!** :pig:');
 	});
 	request.write(requestBody);
 	request.end();
