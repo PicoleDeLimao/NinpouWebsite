@@ -213,21 +213,26 @@ router.post('/ranked/:game_id', async function (req, res) {
 	if (!game) return res.status(404).json({ error: 'Game not found.' });
 	else if (game.ranked) return res.status(400).json({ error: 'This game is already ranked.' });
 	game.ranked = true;
-	var players = [];
-	for (var i = 0; i < game.slots.length; i++) {
-		players.push(game.slots[i].username);
+	if (!game.eventname) {
+		var players = [];
+		for (var i = 0; i < game.slots.length; i++) {
+			players.push(game.slots[i].username);
+		}
+		var slots = await _getPlayerStats(players);
+		game.balance = await BalanceCalculator.calculateBalanceFactor(slots);
+		await game.save();
+		var oldPoints = await _getPlayerPoints(game);
+		await _savePlayerStats(game);
+		var newPoints = await _getPlayerPoints(game);
+		var changes = [];
+		for (var username in oldPoints) {
+			changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
+		}
+		return res.status(200).json({ changes: changes });
+	} else {
+		await game.ave();
+		return res.status(200).json({ changes: [] });
 	}
-	var slots = await _getPlayerStats(players);
-	game.balance = await BalanceCalculator.calculateBalanceFactor(slots);
-	await game.save();
-	var oldPoints = await _getPlayerPoints(game);
-	await _savePlayerStats(game);
-	var newPoints = await _getPlayerPoints(game);
-	var changes = [];
-	for (var username in oldPoints) {
-		changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
-	}
-	return res.status(200).json({ changes: changes });
 });
 
 router.post('/balance', async function (req, res) {
