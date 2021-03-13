@@ -23,13 +23,13 @@ module.exports = function(ev, eventName) {
 				var maxPlayerName = 0;
 				(function next(i, data) {
 					if (i == data.games.length) {
-						var response = 'Leaderboard:\n```pf\n';
+						var response = '**Leaderboard**:\n```pf\n';
 						(function next(i, data, response) {  
 							if (i == data.games.length) {  
 								response += '```\n';
 								return ev.channel.send(response); 
 							} else {
-								getPlayerName(ev, data.games[i]._id, function(err, playerName) { 
+								getPlayerName(ev, data.games[i].alias, function(err, playerName) { 
 									if (err) {
 										console.error(err);
 										return ev.channel.send('Couldn\'t fetch event. :( **Oink!** :pig:');
@@ -44,7 +44,7 @@ module.exports = function(ev, eventName) {
 							}
 						})(0, data, response); 
 					} else { 
-						getPlayerName(ev, data.games[i]._id, function(err, playerName) {
+						getPlayerName(ev, data.games[i].alias, function(err, playerName) {
 							if (err) {
 								console.error(err);
 								return ev.channel.send('Couldn\'t fetch event. :( **Oink!** :pig:');
