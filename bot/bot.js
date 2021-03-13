@@ -825,7 +825,6 @@ bot.on('message', async function(ev) {
 						case 'event':
 						case 'ev':
 							if (args.length > 0) {
-								args.splice(0, 1);
 								displayEvent(ev, args.join(' '));
 							} else {
 								ev.channel.send('Me no understand! Use **!event <event_name>**');
