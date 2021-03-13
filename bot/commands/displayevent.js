@@ -18,6 +18,7 @@ module.exports = function(ev, eventName) {
 			} 
 			try {
 				var data = JSON.parse(body);
+				console.log(data);
 				var maxPlayerName = 0;
 				(function next(i, data) {
 					if (i == data.games.length) {
@@ -40,7 +41,7 @@ module.exports = function(ev, eventName) {
 									return next(i + 1, data, response);
 								});
 							}
-						})(0, ImageData, response); 
+						})(0, data, response); 
 					} else { 
 						getPlayerName(ev, data.games[i]._id, function(err, playerName) {
 							if (err) {

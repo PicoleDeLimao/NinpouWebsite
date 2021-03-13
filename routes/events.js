@@ -42,7 +42,7 @@ router.get('/:event_name', async function (req, res) {
         },
         {
             $group: {
-                _id: '$slots.alias',
+                _id: '$slots.username',
                 kills: { $sum: '$slots.kills' },
                 deaths: { $sum: '$slots.deaths' },
                 assists: { $sum: '$slots.assists' },
