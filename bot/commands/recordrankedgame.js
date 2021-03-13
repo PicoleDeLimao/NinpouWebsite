@@ -39,37 +39,36 @@ function sendToChannel(bot, ev, gameId, eventName) {
 }
 
 module.exports = function(bot, ev, gameId, eventName) {
-	if (eventName) {
-		module.exports = function(ev, eventName) {
-			var requestBody = JSON.stringify({
-				event_name: eventName
-			});
-			var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games/' + gameId, method: 'PUT', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(requestBody) } }, function(res) {
-				var body = '';
-				res.on('data', function(chunk) {
-					body += chunk;
-				});
-				res.on('end', function() {
-					if (res.statusCode != 201) {
-						try {
-							var data = JSON.parse(body);
-							ev.channel.send(data.error);
-						} catch (err) {
-							ev.channel.send('Couldn\'t rank game. :( **Oink!** :pig:');
-						} 
-					} else {
-						sendToChannel(bot, ev, gameId, eventName);
-					}
-				});
-			});
-			request.on('error', function(err) {
-				console.error(err);
-				ev.channel.send('Couldn\'t rank game. :( **Oink!** :pig:');
-			});
-			request.write(requestBody);
-			request.end();
-		};
-	} else {
-		sendToChannel(bot, ev, gameId);
+	if (!eventname) {
+		eventName = null;
 	}
+	module.exports = function(ev, eventName) {
+		var requestBody = JSON.stringify({
+			event_name: eventName
+		});
+		var request = http.request({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/games/' + gameId, method: 'PUT', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(requestBody) } }, function(res) {
+			var body = '';
+			res.on('data', function(chunk) {
+				body += chunk;
+			});
+			res.on('end', function() {
+				if (res.statusCode != 201) {
+					try {
+						var data = JSON.parse(body);
+						ev.channel.send(data.error);
+					} catch (err) {
+						ev.channel.send('Couldn\'t rank game. :( **Oink!** :pig:');
+					} 
+				} else {
+					sendToChannel(bot, ev, gameId, eventName);
+				}
+			});
+		});
+		request.on('error', function(err) {
+			console.error(err);
+			ev.channel.send('Couldn\'t rank game. :( **Oink!** :pig:');
+		});
+		request.write(requestBody);
+		request.end();
+	};
 };
