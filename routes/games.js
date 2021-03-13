@@ -230,7 +230,7 @@ router.post('/ranked/:game_id', async function (req, res) {
 		}
 		return res.status(200).json({ changes: changes });
 	} else {
-		await game.ave();
+		await game.save();
 		return res.status(200).json({ changes: [] });
 	}
 });

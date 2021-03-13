@@ -60,6 +60,7 @@ var heroExists = require('./commands/heroExists');
 var displayVillage = require('./commands/displayvillage');
 var createEvent = require('./commands/createevent');
 var displayEvents = require('./commands/displayevents');
+var displayEvent = require('./commands/displayevent');
 const { env } = require('process');
 
 var subscribed = [];
@@ -819,6 +820,15 @@ bot.on('message', async function(ev) {
 								ev.channel.send('Done! Number of people reached: ' + subscribed.length);
 							} else {
 								ev.channel.send('Me no understand! Use **!broadcast <message>**');
+							}
+							break;
+						case 'event':
+						case 'ev':
+							if (args.length > 0) {
+								args.splice(0, 1);
+								displayEvent(ev, args.join(' '));
+							} else {
+								ev.channel.send('Me no understand! Use **!event <event_name>**');
 							}
 							break;
 						case 'n':
