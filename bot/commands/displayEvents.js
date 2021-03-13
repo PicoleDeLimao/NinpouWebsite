@@ -24,7 +24,7 @@ module.exports = function(ev, page) {
 				var events = JSON.parse(body);
 				var response = '```pf\n';
 				for (var i = 0; i < events.length; i++) {
-					var date = dateFromObjectId(games[i]._id);
+					var date = dateFromObjectId(events[i]._id);
 					var m = moment(date);
 					response += '[' + m.fromNow() + '] <' + events[i].name + '>\n';
 				}
