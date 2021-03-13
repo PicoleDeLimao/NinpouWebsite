@@ -53,8 +53,9 @@ router.get('/:event_name', async function (req, res) {
         }
     ]);
     games.sort(function(a, b) {
-        return b['points'] - a['points'];
+        return b['wins'] - a['wins'];
 	}); 
+    games = games.slice(0, 10);
     return res.json({ event: event, games: games });
 });
 
