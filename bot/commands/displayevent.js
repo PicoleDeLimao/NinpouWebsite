@@ -23,7 +23,7 @@ module.exports = function(ev, eventName) {
 				var maxPlayerName = 0;
 				(function next(i, data) {
 					if (i == data.games.length) {
-						var response = '```pf\n';
+						var response = 'Leaderboard:\n```pf\n';
 						(function next(i, data, response) {  
 							if (i == data.games.length) {  
 								response += '```\n';
@@ -38,7 +38,7 @@ module.exports = function(ev, eventName) {
 									for (var x = 0; x < maxPlayerName - playerName.length; x++) {
 										space += ' ';
 									}  
-									response += (i + 1) + '. < ' + playerName + ' >' + space + ' with <' + Math.round(data.games[i].wins) + '> wins; KDA <' + data.games[i].kills + '/' + data.games[i].points + '/' + data.games[i].assists+ '>; Points <' + data.games[i].points + '>\n';
+									response += (i + 1) + '. < ' + playerName + ' >' + space + ' with <' + Math.round(data.games[i].wins) + '> wins; KDA <' + data.games[i].kills + '/' + data.games[i].deaths + '/' + data.games[i].assists+ '>; Points <' + data.games[i].points + '>\n';
 									return next(i + 1, data, response);
 								});
 							}
