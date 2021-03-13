@@ -26,7 +26,7 @@ module.exports = function(ev, page) {
 				for (var i = 0; i < games.length; i++) {
 					var date = dateFromObjectId(games[i]._id);
 					var m = moment(date);
-					var ranked = games[i].ranked ? '  Ranked  ' : 'Not ranked';
+					var ranked = games[i].ranked ? '  Ranked  ' : ' Not ranked ';
 					response += '[' + m.fromNow() + '] [' + ranked + '] <' + games[i].id + '>\n';
 				}
 				response += '```';

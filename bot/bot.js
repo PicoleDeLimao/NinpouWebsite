@@ -59,7 +59,7 @@ var tipCreate = require('./commands/tipCreate');
 var heroExists = require('./commands/heroExists');
 var displayVillage = require('./commands/displayvillage');
 var createEvent = require('./commands/createevent');
-var displayEvents = require('./commands/displayEvents');
+var displayEvents = require('./commands/displayevents');
 const { env } = require('process');
 
 var subscribed = [];
@@ -824,8 +824,8 @@ bot.on('message', async function(ev) {
 						case 'n':
 						case 'rank':
 						case 'ranking': 
-							if (args.length == 1 && ev.mentions.users.array().length == 0 && (args[0].startsWith('5') || args[0].startsWith('6'))) {
-								recordRankedGame(bot, ev, args[0]);
+							if (ev.mentions.users.array().length == 0 && (args[0].startsWith('5') || args[0].startsWith('6'))) {
+								recordRankedGame(bot, ev, args[0], args[1]);
 							} else if (args.length == 3) {
 								if (ev.mentions.users.array().length > 0) {
 									displayRanking(ev, ev.mentions.users.array()[0].id, args[1], args[2]);

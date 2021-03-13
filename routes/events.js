@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Event = require('../models/Event');
+const Game = require('../models/Game');
 
 router.post('/', async function (req, res) {
 	try {
