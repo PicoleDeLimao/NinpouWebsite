@@ -61,9 +61,8 @@ async function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith
 		if (i == slot || slots[i].hero == 0 || slots[i].kills == null) continue;
 		var username;
 		if (!slotUsernames.hasOwnProperty(slots[i].username)) {
-			var alias = await Alias.findOne({ alias: { $eq: slots[i].username } });
-			if (alias) {
-				slotUsernames[slots[i].username] = alias.username;
+			if (slots[i].alias) {
+				slotUsernames[slots[i].username] = slots[i].alias;
 			} else {
 				slotUsernames[slots[i].username] = slots[i].username;
 			}
