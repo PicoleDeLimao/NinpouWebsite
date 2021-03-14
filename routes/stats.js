@@ -79,7 +79,7 @@ async function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith
 			playedAgainst[username] = (playedAgainst[username] || 0) + 1;
 			if (slots[slot].win) {
 				winAgainst[username] = (winAgainst[username] || 0) + 1;
-			} else {
+			} else if (slots[i].win) {
 				loseAgainst[username] = (loseAgainst[username] || 0) + 1;
 			}
 		}
