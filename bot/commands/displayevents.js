@@ -26,7 +26,11 @@ module.exports = function(ev) {
 				for (var i = 0; i < events.length; i++) {
 					var date = dateFromObjectId(events[i]._id);
 					var m = moment(date);
-					response += '[' + m.fromNow() + '] <' + events[i].name + '>\n';
+					if (events[i].closed) {
+						response += '[' + m.fromNow() + '] [Closed] <' + events[i].name + '>\n';
+					} else {
+						response += '[' + m.fromNow() + '] [ Open ] <' + events[i].name + '>\n';
+					}
 				}
 				response += '```';
 				ev.channel.send(response);

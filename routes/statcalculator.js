@@ -50,6 +50,7 @@ function _getPlayerAllStats(usernames) {
 				score: 0,
 				count: 0,
 				lastRankedGame: null,
+				awards: []
 			};
 			if (!stats || stats.length == 0) {
 				return reject('Player hasn\'t played yet.');
@@ -61,6 +62,7 @@ function _getPlayerAllStats(usernames) {
 				if (allStat.lastRankedGame == null || (stats[i].lastRankedGame != null && stats[i].lastRankedGame > allStat.lastRankedGame)) {
 					allStat.lastRankedGame = stats[i].lastRankedGame;
 				}
+				allStat.awards = allStat.awards.concat(stats[i].awards || []);
 			}
 			if (allStat.gamesRanked > 0) {
 				for (var i = 0; i < stats.length; i++) {

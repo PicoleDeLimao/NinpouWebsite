@@ -62,7 +62,7 @@ router.get('/players/:username', async function(req, res) {
 		await StatCalculator.getRakingOfPlayers(),
 		await StatCalculator.getPlayerStats(req.params.username)
 	); 
-	var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'createdAt': { $gt: period } };
+	var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'eventname': null, 'createdAt': { $gt: period } };
 	if (heroId) {
 		query['slots'] = { '$elemMatch': { username: { $in: allStat.usernames }, hero: heroId } };
 	} else {

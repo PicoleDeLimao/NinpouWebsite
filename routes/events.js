@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var Event = require('../models/Event');
 var Game = require('../models/Game');
 var Alias = require('../models/Alias');
+var Stat = require('../models/Stat');
 
 router.post('/', async function (req, res) {
 	try {
@@ -27,9 +28,14 @@ router.get('/', async function (req, res) {
 	return res.json(await Event.find());
 });
 
-router.get('/:event_name', async function (req, res) {
-	var event = await Event.findOne({ name: req.params.event_name.toLowerCase() });
+router.use('/:event_name', function(req, res, next) {
+    var event = await Event.findOne({ name: req.params.event_name.toLowerCase() });
     if (!event) return res.status(404).json({ error: 'Event not found.' });
+    req.event = event;
+	next();
+});
+
+async function getEventLeaderboard(req, res) {
     var games = await Game.aggregate([
         {
             $unwind: '$slots',
@@ -68,7 +74,29 @@ router.get('/:event_name', async function (req, res) {
         return b['wins'] - a['wins'];
 	}); 
     games = games.slice(0, 10);
-    return res.json({ event: event, games: games });
+    return games;
+}
+
+router.get('/:event_name', async function (req, res) {
+    var games = await getEventLeaderboard(req, res);
+    return res.json({ event: req.event, games: games });
+});
+
+router.post('/:event_name/close', async function (req, res) {
+    req.event.closed = true;
+    var games = await getEventLeaderboard(req, res);
+    for (var i = 0; i < Math.min(3, games.length); i++) {
+        var stats = await Stat.findOne({ username: games[i]._id });
+        if (stats) {
+            stats.awards = stats.awards || [];
+            stats.awards.push({
+                eventname: req.event.name,
+                position: i
+            });
+            await stats.save();
+        }
+    }
+    await req.event.save(); 
 });
 
 module.exports = router;

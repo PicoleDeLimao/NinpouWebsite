@@ -305,7 +305,8 @@ router.put('/:game_id', async function (req, res) {
 	if (req.body.event_name) {
 		try {
 			var event = await Event.findOne({ name: req.body.event_name.toLowerCase() });
-			if (!event) throw 'Event not found';
+			if (!event) return res.status(404).json({ error: 'Event not found' });
+			else if (event.closed) return res.status(400).json({ error: 'Event is closed.' });
 			game.eventname = req.body.event_name;
 			await game.save();
 		} catch (err) {
