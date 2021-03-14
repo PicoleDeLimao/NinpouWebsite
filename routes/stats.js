@@ -95,13 +95,22 @@ async function getTop(dict) {
 		return b.times - a.times;
 	});
 	values = values.slice(0, 3);
+	var newValues = [];
 	for (var i = 0; i < values.length; i++) {
 		var alias = await Alias.find({ alias: { $eq: values[i].username } });
 		if (alias) {
-			values[i].username = alias.username;
+			newValues.push({
+				username: alias.username,
+				times: values[i].times
+			});
+		} else {
+			newValues.push({
+				username: values[i].username,
+				times: values[i].times
+			});
 		}
 	}
-	return values;
+	return newValues;
 }
 
 router.get('/players/:username', async function(req, res) {
