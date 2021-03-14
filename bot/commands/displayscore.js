@@ -145,12 +145,12 @@ module.exports = function(ev, playerName, hist, hero) {
 								ev.channel.send(response);
 							}
 							response = '```pf\nTeam statistics:\n';
-							response += 'Played most with: <' + (await getPlayerNameAsync(ranking.teamStats.playedWith.username)) + '> (' + ranking.teamStats.playedWith.times + ' games)\n';
-							response += 'Played most against: <' + (await getPlayerNameAsync(ranking.teamStats.playedAgainst.username)) + '> (' + ranking.teamStats.playedAgainst.times + ' games)\n';
-							response += 'Won most with: <' + (await getPlayerNameAsync(ranking.teamStats.winWith.username)) + '> (' + ranking.teamStats.winWith.times + ' games)\n';
-							response += 'Won most against: <' + (await getPlayerNameAsync(ranking.teamStats.winAgainst.username)) + '> (' + ranking.teamStats.winAgainst.times + ' games)\n';
-							response += 'Lost most with: <' + (await getPlayerNameAsync(ranking.teamStats.loseWith.username)) + '> (' + ranking.teamStats.loseWith.times + ' games)\n';
-							response += 'Lost most against: <' + (await getPlayerNameAsync(ranking.teamStats.loseAgainst.username)) + '> (' + ranking.teamStats.loseAgainst.times + ' games)\n';
+							response += '* Played most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.playedWith.username)) + '> (' + ranking.teamStats.playedWith.times + ' games)\n';
+							response += '* Played most against: <' + (await getPlayerNameAsync(rev, anking.teamStats.playedAgainst.username)) + '> (' + ranking.teamStats.playedAgainst.times + ' games)\n';
+							response += '* Won most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.winWith.username)) + '> (' + ranking.teamStats.winWith.times + ' games)\n';
+							response += '* Won most against: <' + (await getPlayerNameAsync(ev, ranking.teamStats.winAgainst.username)) + '> (' + ranking.teamStats.winAgainst.times + ' games)\n';
+							response += '* Lost most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.loseWith.username)) + '> (' + ranking.teamStats.loseWith.times + ' games)\n';
+							response += '* Lost most against: <' + (await getPlayerNameAsync(ev, ranking.teamStats.loseAgainst.username)) + '> (' + ranking.teamStats.loseAgainst.times + ' games)\n';
 							response += '```';
 							ev.channel.send(response);
 							if (ranking.stat.awards.length > 0) {
