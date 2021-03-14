@@ -59,6 +59,7 @@ var tipCreate = require('./commands/tipCreate');
 var heroExists = require('./commands/heroExists');
 var displayVillage = require('./commands/displayvillage');
 var createEvent = require('./commands/createevent');
+var closeEvent = require('./commands/closeevent');
 var displayEvents = require('./commands/displayevents');
 var displayEvent = require('./commands/displayevent');
 const { env } = require('process');
@@ -334,7 +335,8 @@ bot.on('message', async function(ev) {
 						'< !a > unblockalias <alias>                 : Unblock an alias\n' + 
 						'< !a > mergealiases <old_alias> <new_alias> : Merge two aliases (be careful: this cannot be undone)\n' +
 						'< !a > sync                                 : Sync bot rank with discord rank\n' + 
-						'< !a > createevent <event_name>              : Create a new event```' +
+						'< !a > createevent <event_name>             : Create a new event\n' +
+						'< !a > closeevent <event_name>              : Close an event```' +
 						'Super-admin commands:\n```pf\n' +  
 						'< !a > unrank <game_id>                     : Make a ranked game not ranked\n' +
 						'< !a > deletealias <alias>                  : Delete all stats from an alias (be careful: this cannot be undone)\n' + 
@@ -408,6 +410,13 @@ bot.on('message', async function(ev) {
 							createEvent(ev, args.join(' ').toLowerCase());
 						} else {
 							ev.channel.send('Me no understand! Use **!createevent <event_name>**');
+						}
+					} else if (args[0] == 'closeevent') {
+						if (args.length > 1) {
+							args.splice(0, 1);
+							closeEvent(ev, args.join(' ').toLowerCase());
+						} else {
+							ev.channel.send('Me no understand! Use **!closeevent <event_name>**');
 						}
 					} else {
 						ev.channel.send('Admin command not found! **Oink!** :pig:');

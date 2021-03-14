@@ -143,6 +143,24 @@ module.exports = function(ev, playerName, hist, hero) {
 								response += '```';
 								ev.channel.send(response);
 							}
+							if (ranking.stat.awards.length > 0) {
+								response = '```pf\nAwards:\n';
+								for (var i = 0; i < ranking.stats.awards.length; i++) {
+									response += '- ';
+									if (ranking.stats.awards[i].position == 0) {
+										response += '1st';
+									} else if (ranking.stats.awards[i].position == 1) {
+										response += '2nd';
+									} else if (ranking.stats.awards[i].position == 2) {
+										response += '3rd';
+									} else {
+										response += (ranking.stats.awards[i].position) + 'th';
+									}
+									response += ' place on event <' + ranking.stats.awards[i].eventname + '>\n';
+								}
+								response += '```';
+								ev.channel.send(response);
+							}
 						} 
 						if (ranking.numGames == 0) {
 							ev.channel.send('Nothing to display.');

@@ -4,8 +4,7 @@ var http = require('http');
 var getPlayerName = require('./getplayername');
 
 module.exports = function(ev, eventName) { 
-	console.log(eventName);
-	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/events/' + eventName }, function(res) {
+	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/events/' + encodeURIComponent(eventName) }, function(res) {
 		var statusCode = res.statusCode;
 		var body = '';
 		res.on('data', function(data) {
