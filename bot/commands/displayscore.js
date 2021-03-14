@@ -73,7 +73,7 @@ function getLastPlayedGames(hero, games, ranked) {
 	return response;
 }
 
-function getMostPlayedPlayers(ev, arr) {
+async function getMostPlayedPlayers(ev, arr) {
 	response = '';
 	for (var i = 0; i < arr.length; i++) {
 		if (i > 0) response += ', ';
@@ -156,12 +156,12 @@ module.exports = function(ev, playerName, hist, hero) {
 							}
 							if (ranking.ranked.numGames > 0) {
 								response = '```pf\nTeam statistics (from ' + ranking.ranked.numGames + ' games):\n';
-								response += '* Played most with: ' + getMostPlayedPlayers(ev, ranking.teamStats.playedWith) + '\n';
-								response += '* Played most against: ' + getMostPlayedPlayers(ev, ranking.teamStats.playedAgainst) + '\n';
-								response += '* Won most with: ' + getMostPlayedPlayers(ev, ranking.teamStats.winWith) + '\n';
-								response += '* Won most against: ' + getMostPlayedPlayers(ev, ranking.teamStats.winAgainst) + '\n';
-								response += '* Lost most with: ' + getMostPlayedPlayers(ev, ranking.teamStats.loseWith) + '\n';
-								response += '* Lost most against: ' + getMostPlayedPlayers(ev, ranking.teamStats.loseAgainst) + '\n';
+								response += '* Played most with: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.playedWith)) + '\n';
+								response += '* Played most against: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.playedAgainst)) + '\n';
+								response += '* Won most with: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.winWith)) + '\n';
+								response += '* Won most against: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.winAgainst)) + '\n';
+								response += '* Lost most with: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.loseWith)) + '\n';
+								response += '* Lost most against: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.loseAgainst)) + '\n';
 								response += '```';
 								ev.channel.send(response);
 							}
