@@ -74,7 +74,7 @@ function getLastPlayedGames(hero, games, ranked) {
 }
 
 async function getMostPlayedPlayers(ev, arr) {
-	response = '';
+	var response = '';
 	for (var i = 0; i < arr.length; i++) {
 		if (i > 0) response += ', ';
 		var playerName = await getPlayerNameAsync(ev, arr[i].username);
