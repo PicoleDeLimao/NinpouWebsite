@@ -45,7 +45,7 @@ function _getPlayerSlotInGame(usernames, game) {
 	return -1;
 }
 
-function populatePlayerStats(slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst) {
+function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst) {
 	var enemies = [];
 	var alias = [];
 	for (var i = 0; i < slots.length; i++) {
@@ -75,6 +75,18 @@ function populatePlayerStats(slots, slot, playedWith, playedAgainst, winWith, lo
 			}
 		}
 	}
+}
+
+function getTop(dict) {
+	var max = 0;
+	var maxKey = null;
+	for (var key in dict) {
+		if  (dict[key] > max) {
+			max = dict[key];
+			maxKey = key;
+		}
+	}
+	return maxKey;
 }
 
 router.get('/players/:username', async function(req, res) {
@@ -125,7 +137,7 @@ router.get('/players/:username', async function(req, res) {
 			};
 			if (games[i].ranked) {
 				newGamesRanked.push(game);
-				populatePlayerStats(games[i].slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst);
+				populateTeamStats(games[i].slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst);
 			} else {
 				newGamesNotRanked.push(game);
 			}
@@ -193,12 +205,12 @@ router.get('/players/:username', async function(req, res) {
 			'numHeroes': allHeroes.length, 
 			'mostPlayed': allHeroes.slice(0, 5),
 			'teamStats': {
-				'playedWith': playedWith,
-				'playedAgainst': playedAgainst,
-				'winWith': winWith,
-				'winAgainst': winAgainst,
-				'loseWith': loseWith,
-				'loseAgainst': loseAgainst
+				'playedWith': getTop(playedWith),
+				'playedAgainst': getTop(playedAgainst),
+				'winWith': getTop(winWith),
+				'winAgainst': getTop(winAgainst),
+				'loseWith': getTop(loseWith),
+				'loseAgainst': getTop(loseAgainst)
 			}
 		});
 	}
