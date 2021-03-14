@@ -46,7 +46,8 @@ function _getPlayerSlotInGame(usernames, game) {
 	return -1;
 }
 
-function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst) {
+async function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst) {
+	var slotUsernames = {};
 	var enemies = [];
 	var alias = [];
 	for (var i = 0; i < slots.length; i++) {
@@ -60,19 +61,29 @@ function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith, lose
 	}
 	for (var i = 0; i < slots.length; i++) {
 		if (i == slot || slots[i].hero == 0 || slots[i].kills == null) continue;
-		if (slots[i].team == slots[slot].team) {
-			playedWith[slots[i].username] = (playedWith[slots[i].username] || 0) + 1;
-			if (slots[slot].win) {
-				winWith[slots[i].username] = (winWith[slots[i].username] || 0) + 1;
+		var username;
+		if (!slotUsernames.hasOwnProperty(slots[i].username)) {
+			var alias = await Alias.findOne({ alias: { $eq: slots[i].username } });
+			if (alias) {
+				slotUsernames[slots[i].username] = alias.username;
 			} else {
-				loseWith[slots[i].username] = (loseWith[slots[i].username] || 0) + 1;
+				slotUsernames[slots[i].username] = slots[i].username;
+			}
+		}
+		username = slotUsernames[slots[i].username];
+		if (slots[i].team == slots[slot].team) {
+			playedWith[username] = (playedWith[username] || 0) + 1;
+			if (slots[slot].win) {
+				winWith[username] = (winWith[username] || 0) + 1;
+			} else {
+				loseWith[username] = (loseWith[username] || 0) + 1;
 			}
 		} else {
-			playedAgainst[slots[i].username] = (playedAgainst[slots[i].username] || 0) + 1;
+			playedAgainst[username] = (playedAgainst[username] || 0) + 1;
 			if (slots[slot].win) {
-				winAgainst[slots[i].username] = (winAgainst[slots[i].username] || 0) + 1;
+				winAgainst[username] = (winAgainst[username] || 0) + 1;
 			} else {
-				loseAgainst[slots[i].username] = (loseAgainst[slots[i].username] || 0) + 1;
+				loseAgainst[username] = (loseAgainst[username] || 0) + 1;
 			}
 		}
 	}
@@ -87,16 +98,7 @@ async function getTop(dict) {
 		return b[0] - a[0];
 	});
 	values = values.slice(0, 3);
-	var finalValues = [];
-	for (var i = 0; i < values.length; i++) {
-		var alias = await Alias.findOne({ alias: { $eq: values[i][1]} });
-		if (alias) {
-			finalValues.push({ username: alias.username, times: values[i][0] });
-		} else {
-			finalValues.push({ username: values[i][1], times: values[i][0] });
-		}
-	}
-	return finalValues;
+	return values;
 }
 
 router.get('/players/:username', async function(req, res) {
@@ -147,7 +149,7 @@ router.get('/players/:username', async function(req, res) {
 			};
 			if (games[i].ranked) {
 				newGamesRanked.push(game);
-				populateTeamStats(games[i].slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst);
+				await populateTeamStats(games[i].slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst);
 			} else {
 				newGamesNotRanked.push(game);
 			}
