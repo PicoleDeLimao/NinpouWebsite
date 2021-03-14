@@ -95,6 +95,12 @@ async function getTop(dict) {
 		return b.times - a.times;
 	});
 	values = values.slice(0, 3);
+	for (var i = 0; i < values.length; i++) {
+		var alias = await Alias.find({ alias: { $eq: values[i].username } });
+		if (alias) {
+			values[i].username = alias.username;
+		}
+	}
 	return values;
 }
 
