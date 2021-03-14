@@ -86,7 +86,7 @@ module.exports = function(ev, playerName, hist, hero) {
 				if (statusCode != 200) {
 					ev.channel.send(ranking.error);
 				} else { 
-					getPlayerName(ev, ranking.stat._id, function(err, playerName) {
+					getPlayerName(ev, ranking.stat._id, async function(err, playerName) {
 						if (err) return ev.channel.send('Couldn\'t fetch player score. :( **Oink!** :pig:');
 						var player = ranking.stat;
 						var response = '```pf\n';  
