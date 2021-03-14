@@ -59,7 +59,7 @@ function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith, lose
 		}
 	}
 	for (var i = 0; i < slots.length; i++) {
-		if (i == slot) continue;
+		if (i == slot || slots[i].hero == 0 || slots[i].kills == null) continue;
 		if (slots[i].team == slots[slot].team) {
 			playedWith[slots[i].username] = (playedWith[slots[i].username] || 0) + 1;
 			if (slots[slot].win) {
