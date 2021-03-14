@@ -97,7 +97,7 @@ async function getTop(dict) {
 	values = values.slice(0, 3);
 	var newValues = [];
 	for (var i = 0; i < values.length; i++) {
-		var alias = await Alias.find({ alias: { $eq: values[i].username } });
+		var alias = await Alias.findOne({ alias: { $eq: values[i].username } });
 		if (alias) {
 			newValues.push({
 				username: alias.username,
