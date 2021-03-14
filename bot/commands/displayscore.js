@@ -144,8 +144,8 @@ module.exports = function(ev, playerName, hist, hero) {
 								response += '```';
 								ev.channel.send(response);
 							}
-							if (ranking.teamStats.playedWith.username) {
-								response = '```pf\nTeam statistics:\n';
+							if (ranking.ranked.numGames > 0) {
+								response = '```pf\nTeam statistics (from ' + ranking.ranked.games + 'games):\n';
 								response += '* Played most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.playedWith.username)) + '> (' + ranking.teamStats.playedWith.times + ' games)\n';
 								response += '* Played most against: <' + (await getPlayerNameAsync(ev, ranking.teamStats.playedAgainst.username)) + '> (' + ranking.teamStats.playedAgainst.times + ' games)\n';
 								response += '* Won most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.winWith.username)) + '> (' + ranking.teamStats.winWith.times + ' games)\n';
