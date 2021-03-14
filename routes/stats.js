@@ -86,7 +86,7 @@ function getTop(dict) {
 			maxKey = key;
 		}
 	}
-	return maxKey;
+	return { username: maxKey, times: max };
 }
 
 router.get('/players/:username', async function(req, res) {
