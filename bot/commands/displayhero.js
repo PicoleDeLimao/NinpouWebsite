@@ -70,7 +70,7 @@ module.exports = function(ev, heroName, attribute) {
 								ev.channel.send(response);
 							} else {
 								getPlayerName(ev, data.bestPlayers[index].alias, function(err, playerName) {
-									players.push('' + (index + 1) + '.\t' + playerName + '\tKDA: <' + Math.floor(data.bestPlayers[index].kills) + '/' + Math.floor(data.bestPlayers[index].deaths) + '/' + Math.floor(data.bestPlayers[index].assists) + '>\tPoints: <' + Math.floor(data.bestPlayers[index].points) + '>\tVictories: <' + data.bestPlayers[index].wins + '/' + data.bestPlayers[index].games + '>\n');
+									players.push('' + (index + 1) + '.\t' + playerName + '\tKDA: <' + Math.floor(data.bestPlayers[index].kills) + '/' + Math.floor(data.bestPlayers[index].deaths) + '/' + Math.floor(data.bestPlayers[index].assists) + '>\tPoints: <' + Math.floor(data.bestPlayers[index].points) + '>\tWins: <' + data.bestPlayers[index].wins + '/' + data.bestPlayers[index].games + '>\n');
 									next(index + 1);
 								});
 							}

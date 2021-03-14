@@ -9,7 +9,7 @@ function getGameString(game) {
 }
 
 function getHeroString(hero, index) {
-	return (index + 1) + '.\t< ' + (hero.hero || 'Unknown') + ' >\tKDA: <' + Math.round(hero.kills) + '/' + Math.round(hero.deaths) + '/' + Math.round(hero.assists) + '>\tPoints: <' + Math.round(hero.points) + '>\tVictories: <' + hero.wins + '/' + hero.games + '>\n';
+	return (index + 1) + '.\t< ' + (hero.hero || 'Unknown') + ' >\tKDA: <' + Math.round(hero.kills) + '/' + Math.round(hero.deaths) + '/' + Math.round(hero.assists) + '>\tPoints: <' + Math.round(hero.points) + '>\tWins: <' + hero.wins + '/' + hero.games + '>\n';
 }
 
 function getMaximumLength(strings, index) {
@@ -70,6 +70,16 @@ function getLastPlayedGames(hero, games, ranked) {
 		response += gameStrings[1];
 	}
 	response + '\n\n';
+	return response;
+}
+
+function getMostPlayedPlayers(ev, arr) {
+	response = '';
+	for (var i = 0; i < arr.length; i++) {
+		if (i > 0) response += ', ';
+		var playerName = await getPlayerNameAsync(ev, arr[i].username);
+		response += '<' + playerName + '> (' + arr[i].times + ' games)';
+	}
 	return response;
 }
 
@@ -146,12 +156,12 @@ module.exports = function(ev, playerName, hist, hero) {
 							}
 							if (ranking.ranked.numGames > 0) {
 								response = '```pf\nTeam statistics (from ' + ranking.ranked.numGames + ' games):\n';
-								response += '* Played most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.playedWith.username)) + '> (' + ranking.teamStats.playedWith.times + ' games)\n';
-								response += '* Played most against: <' + (await getPlayerNameAsync(ev, ranking.teamStats.playedAgainst.username)) + '> (' + ranking.teamStats.playedAgainst.times + ' games)\n';
-								response += '* Won most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.winWith.username)) + '> (' + ranking.teamStats.winWith.times + ' games)\n';
-								response += '* Won most against: <' + (await getPlayerNameAsync(ev, ranking.teamStats.winAgainst.username)) + '> (' + ranking.teamStats.winAgainst.times + ' games)\n';
-								response += '* Lost most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.loseWith.username)) + '> (' + ranking.teamStats.loseWith.times + ' games)\n';
-								response += '* Lost most against: <' + (await getPlayerNameAsync(ev, ranking.teamStats.loseAgainst.username)) + '> (' + ranking.teamStats.loseAgainst.times + ' games)\n';
+								response += '* Played most with: ' + getMostPlayedPlayers(ev, ranking.teamStats.playedWith) + '\n';
+								response += '* Played most against: ' + getMostPlayedPlayers(ev, ranking.teamStats.playedAgainst) + '\n';
+								response += '* Won most with: ' + getMostPlayedPlayers(ev, ranking.teamStats.winWith) + '\n';
+								response += '* Won most against: ' + getMostPlayedPlayers(ev, ranking.teamStats.winAgainst) + '\n';
+								response += '* Lost most with: ' + getMostPlayedPlayers(ev, ranking.teamStats.loseWith) + '\n';
+								response += '* Lost most against: ' + getMostPlayedPlayers(ev, ranking.teamStats.loseAgainst) + '\n';
 								response += '```';
 								ev.channel.send(response);
 							}

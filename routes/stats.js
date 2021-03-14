@@ -79,19 +79,24 @@ function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith, lose
 }
 
 async function getTop(dict) {
-	var max = 0;
-	var maxKey = null;
+	var values = [];
 	for (var key in dict) {
-		if  (dict[key] > max) {
-			max = dict[key];
-			maxKey = key;
+		values.push([dict[key], key]);
+	}
+	values.sort(function(a, b) {
+		return b[0] - a[0];
+	});
+	values = values.slice(0, 3);
+	var finalValues = [];
+	for (var i = 0; i < values.length; i++) {
+		var alias = await Alias.findOne({ alias: { $eq: values[i][1]} });
+		if (alias) {
+			finalValues.append({ username: alias.username, times: values[i][0] });
+		} else {
+			finalValues.append({ username: values[i][1], times: values[i][0] });
 		}
 	}
-	var alias = await Alias.findOne({ alias: { $eq: maxKey} });
-	if (alias) {
-		maxKey = alias.username;
-	}
-	return { username: maxKey, times: max };
+	return finalValues;
 }
 
 router.get('/players/:username', async function(req, res) {
