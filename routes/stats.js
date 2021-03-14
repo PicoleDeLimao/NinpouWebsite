@@ -89,7 +89,7 @@ async function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith
 async function getTop(dict) {
 	var values = [];
 	for (var key in dict) {
-		values.push({ username: dict[key], times: key});
+		values.push({ username: key, times: dict[key]});
 	}
 	values.sort(function(a, b) {
 		return b.times - a.times;
