@@ -45,6 +45,38 @@ function _getPlayerSlotInGame(usernames, game) {
 	return -1;
 }
 
+function populatePlayerStats(slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst) {
+	var enemies = [];
+	var alias = [];
+	for (var i = 0; i < slots.length; i++) {
+		if (i <= 2) {
+			slots[i].team = 0;
+		} else if (i <= 5) {
+			slots[i].team = 1;
+		} else {
+			slots[i].team = 2;
+		}
+	}
+	for (var i = 0; i < slots.length; i++) {
+		if (i == slot) continue;
+		if (slots[i].team == slots[slot].team) {
+			playedWith[slots[i].username] = (playedWith[slots[i].username] || 0) + 1;
+			if (slots[slot].win) {
+				winWith[slots[i].username] = (winWith[slots[i].username] || 0) + 1;
+			} else {
+				loseWith[slots[i].username] = (loseWith[slots[i].username] || 0) + 1;
+			}
+		} else {
+			playedAgainst[slots[i].username] = (playedAgainst[slots[i].username] || 0) + 1;
+			if (slots[slot].win) {
+				winAgainst[slots[i].username] = (winAgainst[slots[i].username] || 0) + 1;
+			} else {
+				loseAgainst[slots[i].username] = (loseAgainst[slots[i].username] || 0) + 1;
+			}
+		}
+	}
+}
+
 router.get('/players/:username', async function(req, res) {
 	var timePeriod = req.query.timePeriod || 6;
 	var period = moment().subtract(timePeriod, 'month').toDate();
@@ -71,6 +103,12 @@ router.get('/players/:username', async function(req, res) {
 	var games = await Game.find(query).sort('-_id');
 	var newGamesRanked = [];
 	var newGamesNotRanked = [];
+	var playedWith = {};
+	var playedAgainst = {};
+	var winWith = {};
+	var winAgainst = {};
+	var loseWith = {};
+	var loseAgainst = {};
 	for (var i = 0; i < games.length; i++) {
 		var slot = _getPlayerSlotInGame(allStat.usernames, games[i]);
 		if (slot != -1 && games[i].slots[slot].hero != 0 && games[i].slots[slot].kills != null) {
@@ -87,6 +125,7 @@ router.get('/players/:username', async function(req, res) {
 			};
 			if (games[i].ranked) {
 				newGamesRanked.push(game);
+				populatePlayerStats(games[i].slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst);
 			} else {
 				newGamesNotRanked.push(game);
 			}
@@ -152,7 +191,15 @@ router.get('/players/:username', async function(req, res) {
 			'bestHeroes': bestHeroes, 
 			'worstHeroes': worstHeroes, 
 			'numHeroes': allHeroes.length, 
-			'mostPlayed': allHeroes.slice(0, 5)
+			'mostPlayed': allHeroes.slice(0, 5),
+			'teamStats': {
+				'playedWith': playedWith,
+				'playedAgainst': playedAgainst,
+				'winWith': winWith,
+				'winAgainst': winAgainst,
+				'loseWith': loseWith,
+				'loseAgainst': loseAgainst
+			}
 		});
 	}
 });
