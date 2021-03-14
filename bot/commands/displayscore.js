@@ -147,7 +147,7 @@ module.exports = function(ev, playerName, hist, hero) {
 							if (ranking.teamStats.playedWith.username) {
 								response = '```pf\nTeam statistics:\n';
 								response += '* Played most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.playedWith.username)) + '> (' + ranking.teamStats.playedWith.times + ' games)\n';
-								response += '* Played most against: <' + (await getPlayerNameAsync(ev, anking.teamStats.playedAgainst.username)) + '> (' + ranking.teamStats.playedAgainst.times + ' games)\n';
+								response += '* Played most against: <' + (await getPlayerNameAsync(ev, ranking.teamStats.playedAgainst.username)) + '> (' + ranking.teamStats.playedAgainst.times + ' games)\n';
 								response += '* Won most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.winWith.username)) + '> (' + ranking.teamStats.winWith.times + ' games)\n';
 								response += '* Won most against: <' + (await getPlayerNameAsync(ev, ranking.teamStats.winAgainst.username)) + '> (' + ranking.teamStats.winAgainst.times + ' games)\n';
 								response += '* Lost most with: <' + (await getPlayerNameAsync(ev, ranking.teamStats.loseWith.username)) + '> (' + ranking.teamStats.loseWith.times + ' games)\n';
@@ -158,15 +158,15 @@ module.exports = function(ev, playerName, hist, hero) {
 							if (ranking.stat.awards.length > 0) {
 								response = '```pf\nAwards:\n';
 								for (var i = 0; i < ranking.stats.awards.length; i++) {
-									response += '- ';
+									response += '* ';
 									if (ranking.stats.awards[i].position == 0) {
-										response += '1st';
+										response += '<1st>';
 									} else if (ranking.stats.awards[i].position == 1) {
-										response += '2nd';
+										response += '<2nd>';
 									} else if (ranking.stats.awards[i].position == 2) {
-										response += '3rd';
+										response += '<3rd>';
 									} else {
-										response += (ranking.stats.awards[i].position) + 'th';
+										response += '<' + (ranking.stats.awards[i].position) + 'th>';
 									}
 									response += ' place on event <' + ranking.stats.awards[i].eventname + '>\n';
 								}
