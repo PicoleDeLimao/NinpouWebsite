@@ -10,6 +10,7 @@ var Hero = require('../models/Hero');
 var HeroStat = require('../models/HeroStat');
 var Calculator = require('./calculator');
 var StatCalculator = require('./statcalculator');
+var Alias = require('../models/Alias');
 
 function _dateFromObjectId(objectId) {
 	return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
