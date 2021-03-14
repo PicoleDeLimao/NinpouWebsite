@@ -2,7 +2,7 @@
 
 var http = require('http');
 
-module.exports = function(ev, name) {
+module.exports = function(ev, name, hideRole) {
 	return new Promise((resolve, reject) => {
 		if (!name) resolve(null);
 		if (!isNaN(parseInt(name))) {
@@ -14,7 +14,7 @@ module.exports = function(ev, name) {
 			}
 			members.fetch(name).then(function(member) { 
 				var roleName = member.roles.hoist.name;
-				return resolve(member.displayName + (hideRole ? '' : ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')' )); 
+				return resolve(member.displayName); 
 			}).catch(function(err) { 
 				http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/alias/' + name, headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 					var body = '';
@@ -24,14 +24,14 @@ module.exports = function(ev, name) {
 					res.on('end', function() { 
 						if (res.statusCode != 200) { 
 							console.error(body);
-							return resolve('null (LEFT)');
+							return resolve('null');
 						} else {
 							try { 
 								var data = JSON.parse(body); 
-								return resolve(data.alias[0] + ' (LEFT)');
+								return resolve(data.alias[0]);
 							} catch (err) {
 								console.error(err);
-								return resolve(user.username + ' (LEFT)');
+								return resolve(user.username);
 							}
 						}
 					});
