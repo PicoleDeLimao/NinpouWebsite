@@ -28,7 +28,7 @@ router.get('/', async function (req, res) {
 	return res.json(await Event.find());
 });
 
-router.use('/:event_name', function(req, res, next) {
+router.use('/:event_name', async function(req, res, next) {
     var event = await Event.findOne({ name: req.params.event_name.toLowerCase() });
     if (!event) return res.status(404).json({ error: 'Event not found.' });
     req.event = event;
