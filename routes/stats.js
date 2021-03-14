@@ -48,8 +48,6 @@ function _getPlayerSlotInGame(usernames, game) {
 
 async function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst) {
 	var slotUsernames = {};
-	var enemies = [];
-	var alias = [];
 	for (var i = 0; i < slots.length; i++) {
 		if (i <= 2) {
 			slots[i].team = 0;
@@ -59,7 +57,7 @@ async function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith
 			slots[i].team = 2;
 		}
 	}
-	for (var i = 0; i < slots.length; i++) {
+	for (var i = 0; i < Math.min(9, slots.length); i++) {
 		if (i == slot || slots[i].hero == 0 || slots[i].kills == null) continue;
 		var username;
 		if (!slotUsernames.hasOwnProperty(slots[i].username)) {
