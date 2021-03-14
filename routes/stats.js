@@ -77,7 +77,7 @@ function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith, lose
 	}
 }
 
-function getTop(dict) {
+async function getTop(dict) {
 	var max = 0;
 	var maxKey = null;
 	for (var key in dict) {
@@ -85,6 +85,10 @@ function getTop(dict) {
 			max = dict[key];
 			maxKey = key;
 		}
+	}
+	var alias = await Alias.findOne({ alias: { $eq: maxKey} });
+	if (alias) {
+		maxKey = alias.username;
 	}
 	return { username: maxKey, times: max };
 }
@@ -205,12 +209,12 @@ router.get('/players/:username', async function(req, res) {
 			'numHeroes': allHeroes.length, 
 			'mostPlayed': allHeroes.slice(0, 5),
 			'teamStats': {
-				'playedWith': getTop(playedWith),
-				'playedAgainst': getTop(playedAgainst),
-				'winWith': getTop(winWith),
-				'winAgainst': getTop(winAgainst),
-				'loseWith': getTop(loseWith),
-				'loseAgainst': getTop(loseAgainst)
+				'playedWith': await getTop(playedWith),
+				'playedAgainst': await getTop(playedAgainst),
+				'winWith': await getTop(winWith),
+				'winAgainst': await getTop(winAgainst),
+				'loseWith': await getTop(loseWith),
+				'loseAgainst': await getTop(loseAgainst)
 			}
 		});
 	}
