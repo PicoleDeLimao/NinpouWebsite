@@ -28,7 +28,7 @@ module.exports = function(ev, page) {
 					var m = moment(date);
 					var ranked = games[i].ranked ? '  Ranked  ' : ' Not ranked ';
 					if (games[i].eventname) {
-						response += '[Event: ' + games[i].eventname + '] [' + m.fromNow() + '] [' + ranked + '] <' + games[i].id + '>\n';
+						response += '[' + m.fromNow() + '] [Event: ' + games[i].eventname + '] <' + games[i].id + '>\n';
 					} else {
 						response += '[' + m.fromNow() + '] [' + ranked + '] <' + games[i].id + '>\n';
 					}
