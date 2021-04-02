@@ -10,6 +10,7 @@ var Hero = require('../models/Hero');
 var HeroStat = require('../models/HeroStat');
 var Calculator = require('./calculator');
 var StatCalculator = require('./statcalculator');
+var Alias = require('../models/Alias');
 
 function _dateFromObjectId(objectId) {
 	return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
@@ -45,6 +46,73 @@ function _getPlayerSlotInGame(usernames, game) {
 	return -1;
 }
 
+async function populateTeamStats(slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst) {
+	var slotUsernames = {};
+	for (var i = 0; i < slots.length; i++) {
+		if (i <= 2) {
+			slots[i].team = 0;
+		} else if (i <= 5) {
+			slots[i].team = 1;
+		} else {
+			slots[i].team = 2;
+		}
+	}
+	for (var i = 0; i < Math.min(9, slots.length); i++) {
+		if (i == slot || slots[i].hero == 0 || slots[i].kills == null) continue;
+		var username;
+		if (!slotUsernames.hasOwnProperty(slots[i].username)) {
+			if (slots[i].alias) {
+				slotUsernames[slots[i].username] = slots[i].alias;
+			} else {
+				slotUsernames[slots[i].username] = slots[i].username;
+			}
+		}
+		username = slotUsernames[slots[i].username];
+		if (slots[i].team == slots[slot].team) {
+			playedWith[username] = (playedWith[username] || 0) + 1;
+			if (slots[slot].win) {
+				winWith[username] = (winWith[username] || 0) + 1;
+			} else {
+				loseWith[username] = (loseWith[username] || 0) + 1;
+			}
+		} else {
+			playedAgainst[username] = (playedAgainst[username] || 0) + 1;
+			if (slots[slot].win) {
+				winAgainst[username] = (winAgainst[username] || 0) + 1;
+			} else if (slots[i].win) {
+				loseAgainst[username] = (loseAgainst[username] || 0) + 1;
+			}
+		}
+	}
+}
+
+async function getTop(dict) {
+	var values = [];
+	for (var key in dict) {
+		values.push({ username: key, times: dict[key]});
+	}
+	values.sort(function(a, b) {
+		return b.times - a.times;
+	});
+	values = values.slice(0, 3);
+	var newValues = [];
+	for (var i = 0; i < values.length; i++) {
+		var alias = await Alias.findOne({ alias: { $eq: values[i].username } });
+		if (alias) {
+			newValues.push({
+				username: alias.username,
+				times: values[i].times
+			});
+		} else {
+			newValues.push({
+				username: values[i].username,
+				times: values[i].times
+			});
+		}
+	}
+	return newValues;
+}
+
 router.get('/players/:username', async function(req, res) {
 	var timePeriod = req.query.timePeriod || 6;
 	var period = moment().subtract(timePeriod, 'month').toDate();
@@ -62,7 +130,7 @@ router.get('/players/:username', async function(req, res) {
 		await StatCalculator.getRakingOfPlayers(),
 		await StatCalculator.getPlayerStats(req.params.username)
 	); 
-	var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'createdAt': { $gt: period } };
+	var query = { 'slots.username': { $in: allStat.usernames }, 'recorded': true, 'eventname': null, 'createdAt': { $gt: period } };
 	if (heroId) {
 		query['slots'] = { '$elemMatch': { username: { $in: allStat.usernames }, hero: heroId } };
 	} else {
@@ -71,6 +139,12 @@ router.get('/players/:username', async function(req, res) {
 	var games = await Game.find(query).sort('-_id');
 	var newGamesRanked = [];
 	var newGamesNotRanked = [];
+	var playedWith = {};
+	var playedAgainst = {};
+	var winWith = {};
+	var winAgainst = {};
+	var loseWith = {};
+	var loseAgainst = {};
 	for (var i = 0; i < games.length; i++) {
 		var slot = _getPlayerSlotInGame(allStat.usernames, games[i]);
 		if (slot != -1 && games[i].slots[slot].hero != 0 && games[i].slots[slot].kills != null) {
@@ -87,6 +161,7 @@ router.get('/players/:username', async function(req, res) {
 			};
 			if (games[i].ranked) {
 				newGamesRanked.push(game);
+				await populateTeamStats(games[i].slots, slot, playedWith, playedAgainst, winWith, loseWith, winAgainst, loseAgainst);
 			} else {
 				newGamesNotRanked.push(game);
 			}
@@ -152,7 +227,15 @@ router.get('/players/:username', async function(req, res) {
 			'bestHeroes': bestHeroes, 
 			'worstHeroes': worstHeroes, 
 			'numHeroes': allHeroes.length, 
-			'mostPlayed': allHeroes.slice(0, 5)
+			'mostPlayed': allHeroes.slice(0, 5),
+			'teamStats': {
+				'playedWith': await getTop(playedWith),
+				'playedAgainst': await getTop(playedAgainst),
+				'winWith': await getTop(winWith),
+				'winAgainst': await getTop(winAgainst),
+				'loseWith': await getTop(loseWith),
+				'loseAgainst': await getTop(loseAgainst)
+			}
 		});
 	}
 });

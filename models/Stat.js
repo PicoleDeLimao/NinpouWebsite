@@ -15,6 +15,10 @@ var playerStatSchema = mongoose.Schema({
 	alias: { type: String },
 	count: { type: Number, default: 0 },
 	lastRankedGame: { type: Date },
+	awards: [{
+		eventname: { type: String },
+		position: { type: Number }
+	}]
 });
  
 var PlayerState = mongoose.model('PlayerStat', playerStatSchema);

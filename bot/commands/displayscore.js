@@ -2,13 +2,14 @@
 
 var http = require('http'); 
 var getPlayerName = require('./getplayername');
+var getPlayerNameAsync = require('./getplayernameasync');
 
 function getGameString(game) {
 	return '<' + game.id + '>\t< ' + (game.hero && game.hero || 'Unknown') + ' >\tKDA: <' + game.kills + '/' + game.deaths + '/' + game.assists + '>\tPoints: <' + game.points + '>\t' + (game.win ? '< VICTORY >' : '< DEFEAT >') + '\t(' + game.date + ')\n';
 }
 
 function getHeroString(hero, index) {
-	return (index + 1) + '.\t< ' + (hero.hero || 'Unknown') + ' >\tKDA: <' + Math.round(hero.kills) + '/' + Math.round(hero.deaths) + '/' + Math.round(hero.assists) + '>\tPoints: <' + Math.round(hero.points) + '>\tVictories: <' + hero.wins + '/' + hero.games + '>\n';
+	return (index + 1) + '.\t< ' + (hero.hero || 'Unknown') + ' >\tKDA: <' + Math.round(hero.kills) + '/' + Math.round(hero.deaths) + '/' + Math.round(hero.assists) + '>\tPoints: <' + Math.round(hero.points) + '>\tWins: <' + hero.wins + '/' + hero.games + '>\n';
 }
 
 function getMaximumLength(strings, index) {
@@ -72,6 +73,16 @@ function getLastPlayedGames(hero, games, ranked) {
 	return response;
 }
 
+async function getMostPlayedPlayers(ev, arr) {
+	var response = '';
+	for (var i = 0; i < arr.length; i++) {
+		if (i > 0) response += ', ';
+		var playerName = await getPlayerNameAsync(ev, arr[i].username);
+		response += '<' + playerName + '> (' + arr[i].times + ' games)';
+	}
+	return response;
+}
+
 module.exports = function(ev, playerName, hist, hero) {
 	http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/stats/players/' + playerName + ( hero ? '?hero=' + hero : '' ) }, function(res) {
 		var statusCode = res.statusCode;
@@ -85,7 +96,7 @@ module.exports = function(ev, playerName, hist, hero) {
 				if (statusCode != 200) {
 					ev.channel.send(ranking.error);
 				} else { 
-					getPlayerName(ev, ranking.stat._id, function(err, playerName) {
+					getPlayerName(ev, ranking.stat._id, async function(err, playerName) {
 						if (err) return ev.channel.send('Couldn\'t fetch player score. :( **Oink!** :pig:');
 						var player = ranking.stat;
 						var response = '```pf\n';  
@@ -140,6 +151,35 @@ module.exports = function(ev, playerName, hist, hero) {
 							if (ranking.notRanked.numGames > 0) {
 								response = '```pf';
 								response += getLastPlayedGames(hero, ranking.notRanked, false);
+								response += '```';
+								ev.channel.send(response);
+							}
+							if (ranking.ranked.numGames > 0) {
+								response = '```pf\nTeam statistics (from ' + ranking.ranked.numGames + ' games):\n';
+								response += '* Played most with: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.playedWith)) + '\n';
+								response += '* Played most against: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.playedAgainst)) + '\n';
+								response += '* Won most with: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.winWith)) + '\n';
+								response += '* Won most against: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.winAgainst)) + '\n';
+								response += '* Lost most with: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.loseWith)) + '\n';
+								response += '* Lost most against: ' + (await getMostPlayedPlayers(ev, ranking.teamStats.loseAgainst)) + '\n';
+								response += '```';
+								ev.channel.send(response);
+							}
+							if (ranking.stat.awards.length > 0) {
+								response = '```pf\nAwards:\n';
+								for (var i = 0; i < ranking.stats.awards.length; i++) {
+									response += '* ';
+									if (ranking.stats.awards[i].position == 0) {
+										response += '<1st>';
+									} else if (ranking.stats.awards[i].position == 1) {
+										response += '<2nd>';
+									} else if (ranking.stats.awards[i].position == 2) {
+										response += '<3rd>';
+									} else {
+										response += '<' + (ranking.stats.awards[i].position) + 'th>';
+									}
+									response += ' place on event <' + ranking.stats.awards[i].eventname + '>\n';
+								}
 								response += '```';
 								ev.channel.send(response);
 							}

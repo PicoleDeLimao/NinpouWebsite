@@ -13,6 +13,7 @@ var StatCalculator = require('./statcalculator');
 var Decoder = require('./decoder');
 var Code = require('../models/Code');
 var Alias = require('../models/Alias');
+var Event = require('../models/Event');
 
 function _getPlayerStats(players) {
 	return new Promise(async function (resolve, reject) {
@@ -212,21 +213,26 @@ router.post('/ranked/:game_id', async function (req, res) {
 	if (!game) return res.status(404).json({ error: 'Game not found.' });
 	else if (game.ranked) return res.status(400).json({ error: 'This game is already ranked.' });
 	game.ranked = true;
-	var players = [];
-	for (var i = 0; i < game.slots.length; i++) {
-		players.push(game.slots[i].username);
+	if (!game.eventname) {
+		var players = [];
+		for (var i = 0; i < game.slots.length; i++) {
+			players.push(game.slots[i].username);
+		}
+		var slots = await _getPlayerStats(players);
+		game.balance = await BalanceCalculator.calculateBalanceFactor(slots);
+		await game.save();
+		var oldPoints = await _getPlayerPoints(game);
+		await _savePlayerStats(game);
+		var newPoints = await _getPlayerPoints(game);
+		var changes = [];
+		for (var username in oldPoints) {
+			changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
+		}
+		return res.status(200).json({ changes: changes });
+	} else {
+		await game.save();
+		return res.status(200).json({ changes: [] });
 	}
-	var slots = await _getPlayerStats(players);
-	game.balance = await BalanceCalculator.calculateBalanceFactor(slots);
-	await game.save();
-	var oldPoints = await _getPlayerPoints(game);
-	await _savePlayerStats(game);
-	var newPoints = await _getPlayerPoints(game);
-	var changes = [];
-	for (var username in oldPoints) {
-		changes.push({ alias: username, oldPoints: oldPoints[username], newPoints: newPoints[username] });
-	}
-	return res.status(200).json({ changes: changes });
 });
 
 router.post('/balance', async function (req, res) {
@@ -289,6 +295,27 @@ router.get('/:game_id', async function (req, res) {
 		var slots = await _getPlayerStats(players);
 		var balanceFactor = await BalanceCalculator.calculateBalanceFactor(slots);
 		game.balance = balanceFactor;
+	}
+	return res.json(game);
+});
+
+router.put('/:game_id', async function (req, res) {
+	var game = await Game.findOne({ id: req.params.game_id });
+	if (!game) return res.status(404).json({ error: 'Game not found.' });
+	if (req.body.event_name) {
+		try {
+			var event = await Event.findOne({ name: req.body.event_name.toLowerCase() });
+			if (!event) return res.status(404).json({ error: 'Event not found' });
+			else if (event.closed) return res.status(400).json({ error: 'Event is closed.' });
+			game.eventname = req.body.event_name;
+			await game.save();
+		} catch (err) {
+			console.log(err);
+			return res.status(400).json({ error: 'Event not found.' });
+		}
+	} else {
+		game.eventname = null;
+		await game.save();
 	}
 	return res.json(game);
 });

@@ -26,8 +26,12 @@ module.exports = function(ev, page) {
 				for (var i = 0; i < games.length; i++) {
 					var date = dateFromObjectId(games[i]._id);
 					var m = moment(date);
-					var ranked = games[i].ranked ? '  Ranked  ' : 'Not ranked';
-					response += '[' + m.fromNow() + '] [' + ranked + '] <' + games[i].id + '>\n';
+					var ranked = games[i].ranked ? '  Ranked  ' : ' Not ranked ';
+					if (games[i].eventname) {
+						response += '[' + m.fromNow() + '] [Event: ' + games[i].eventname + '] <' + games[i].id + '>\n';
+					} else {
+						response += '[' + m.fromNow() + '] [' + ranked + '] <' + games[i].id + '>\n';
+					}
 				}
 				response += '```';
 				ev.channel.send(response);
