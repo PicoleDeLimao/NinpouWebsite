@@ -38,7 +38,7 @@ module.exports = function(ev, players) {
 							response += 'This game is already balanced.';
 						}
 						ev.channel.send(response);
-					}, 'score');
+					}, 'points');
 				}
 			} catch (err) {
 				console.error(err);
