@@ -1,7 +1,5 @@
 'use strict';
 
-const { set } = require("mongoose");
-
 function _flattenSlots(slots) {
 	var newSlots = [];
 	for (var i = 0; i < slots.length; i++) {
@@ -13,27 +11,27 @@ function _flattenSlots(slots) {
 function _getBalanceFactor(slots) {
 	for (var i = 0; i < slots.length; i++) {
 		if (slots[i].username == null) {
-			slots[i].score = 0;
+			slots[i].points = 0;
 		} else {
-			slots[i].score = slots[i].score;
+			slots[i].points = slots[i].stats.mean;
 		}
 	}
 	var team1 = [];
 	var team2 = [];
 	var team3 = []; 
 	for (var i = 0; i < 3; i++) {
-		if (slots[i] && slots[i].score !== null && !isNaN(slots[i].score)) {
-			team1.push(slots[i].score);
+		if (slots[i] && slots[i].points !== null && !isNaN(slots[i].points)) {
+			team1.push(slots[i].points);
 		}
 	}
 	for (var i = 3; i < 6; i++) {
-		if (slots[i] && slots[i].score !== null && !isNaN(slots[i].score)) {
-			team2.push(slots[i].score);
+		if (slots[i] && slots[i].points !== null && !isNaN(slots[i].points)) {
+			team2.push(slots[i].points);
 		}
 	}
 	for (var i = 6; i < 9; i++) {
-		if (slots[i] && slots[i].score !== null && !isNaN(slots[i].score)) {
-			team3.push(slots[i].score);
+		if (slots[i] && slots[i].points !== null && !isNaN(slots[i].points)) {
+			team3.push(slots[i].points);
 		}
 	}
 	var sum = function(x) {
@@ -84,25 +82,6 @@ function swapSlots(slots, swaps) {
 	return newSlots;
 };
 
-function areEquals(a, b) {
-	if (a.length != b.length) return false;
-	for (var i = 0; i < a.length; i++) if (a[i] != b[i]) return false;
-	return true;
-}
-
-function areTeamsCorrect(setsA, setsB) {
-	for (var i = 0; i < setsA.length; i++) {
-		var found = false;
-		setsA[i].sort();
-		for (var j = 0; j < setsB.length; j++) {
-			setsB[j].sort();
-			if (areEquals(setsA[i], setsB[j])) found = true;
-		}
-		if (!found) return false;
-	}
-	return true;
-}
-
 function getOptimalBalance(stats, minimize) {
 	return new Promise(function(resolve, reject) {
 		try {
@@ -112,36 +91,41 @@ function getOptimalBalance(stats, minimize) {
 			}
 			var allStates = [];
 			_getAllStates([], 0, allStates);
-			var newSlots = slots.slice();
-			newSlots.sort(function(a, b) {
-				return b[1].points - a[1].points
-			});
-			var rightSets = {
-				0: [newSlots[0][0], newSlots[5][0], newSlots[8][0]],
-				1: [newSlots[1][0], newSlots[4][0], newSlots[7][0]],
-				2: [newSlots[2][0], newSlots[3][0], newSlots[6][0]]
-			}
 			for (var i = 0; i < allStates.length; i++) {
-				var swappedSlots = swapSlots(slots, allStates[i]);
-				var sets = {0: [], 1: [], 2: []};
-				for (var j = 0; j < swappedSlots.length; j++) {
-					var team;
-					if (j == 0 || j == 1 || j == 2) team = 0;
-					else if (j == 3 || j == 4 || j == 5) team = 1;
-					else team = 2;
-					sets[team].push(swappedSlots[j][0]);
+				allStates[i] = [_getBalanceFactor(_flattenSlots(swapSlots(slots, allStates[i]))), allStates[i]];
+			}
+			allStates.sort(function(a, b) {
+				return minimize ? a[0] - b[0] : b[0] - a[0];
+			});
+			var bestStates = [];
+			for (var i = 0; i < allStates.length; i++) {
+				if (allStates[i][0] == allStates[0][0]) {
+					bestStates.push(allStates[i]);
+				} else {
+					break;
 				}
-				if (areTeamsCorrect(Object.values(rightSets), Object.values(sets))) {
-					resolve(allStates[i]);
+			}
+			for (var i = 0; i < bestStates.length; i++) {
+				bestStates[i][0] = bestStates[i][1].length;
+			}
+			bestStates.sort(function(a, b) {
+				return a[0] - b[0];
+			});
+			var bestState = bestStates[0][1];
+			for (var i = 0; i < bestStates.length; i++) {
+				if (bestStates[i][0] == bestStates[0][0] && swapSlots(slots, bestStates[i][1])[0][0] == 0) {
+					bestState = bestStates[i][1];
+					break;
+				} else if (bestStates[i][0] != bestStates[0][0]) {
 					break;
 				}
 			} 
+			resolve(bestState);
 		} catch (err) {
 			reject(err);
 		}
 	});
 };
-
 
 function calculateBalanceFactor(gameSlots) {
 	return new Promise(async function(resolve, reject) {
