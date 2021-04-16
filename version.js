@@ -2,6 +2,6 @@
 
 module.exports = {
     version: '7.0',
-    download_link: 'https://drive.google.com/file/d/121Jamymhnohu7dnmjkMbFKCeaJuIq_ob/view?usp=sharing',
+    download_link: 'https://drive.google.com/file/d/1RZ5fxpcZO0POJXAOAZSn7EVJoSnk5lFY/view?usp=sharing',
     changelog: 'http://www.narutoninpou.com/#/forum/threads/602aa9d385a02400177afdc8'
 }
