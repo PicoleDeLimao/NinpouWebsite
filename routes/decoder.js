@@ -102,9 +102,19 @@ encodedInts[31] = ")";
 encodedInts[4] = ".";
 encodedInts[88] = "=";
 encodedInts[48] = "\\";
+encodedInts[90] = "á";
+encodedInts[91] = "é";
+encodedInts[92] = "ó";
+encodedInts[93] = "ú";
+encodedInts[94] = "Á";
+encodedInts[95] = "É";
+encodedInts[96] = "Ó";
+encodedInts[97] = "Ú";
+encodedInts[98] = "ã";
+encodedInts[99] = "õ";
 
 function _decodeInt(string) {
-	for (var i = 0; i < 90; i++) {
+	for (var i = 0; i < 100; i++) {
 		if (encodedInts[i] === string) {
 			return i;
 		}
@@ -113,7 +123,7 @@ function _decodeInt(string) {
 }
 
 function _undecode(int) {
-	for (var i = 0; i < 90; i++) {
+	for (var i = 0; i < 100; i++) {
 		return parseInt(encodedInts[int], 0);
 	}
 }
@@ -181,7 +191,7 @@ function decodeGame(body, game) {
 					game.slots[slot].username = "";
 					for (var j = 0; j < nameLength; j++) {
 						var nameIndex = decoded[index++] - 10;
-						if (nameIndex < 0) nameIndex = 90 + nameIndex;
+						if (nameIndex < 0) nameIndex = 100 + nameIndex;
 						if (isNaN(nameIndex)) {
 							game.slots[slot].username += '_';
 							continue;
