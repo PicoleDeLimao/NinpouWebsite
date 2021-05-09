@@ -13,7 +13,7 @@ module.exports = function(ev, name, callback, hideRole) {
 		}
 		console.log("discord: " + name);
 		members.fetch(name).then(function(member) { 
-			var roleName = "";
+			var roleName = "Academy Student";
 			if (member.roles.hoist != null) {
 				roleName = member.roles.hoist.name;
 			}
