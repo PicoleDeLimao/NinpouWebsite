@@ -20,7 +20,7 @@ module.exports = function(ev, attribute) {
 				//await ev.guild.roles.fetch();
 				//await ev.guild.members.fetch();
 				ev.guild.members.fetch(ev.author.id).then(async function(author) {   
-					if (ranking.ranking[0]._id == ev.author.id || author._roles.highest.name.toLowerCase() == 'admin') {
+					if (ranking.ranking[0]._id == ev.author.id || author.roles.highest.name.toLowerCase() == 'admin') {
 						var role = null; 
 						if (attribute == 'score') {
 							ev.guild.roles.cache.forEach(function(guildRole) {
