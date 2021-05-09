@@ -155,7 +155,6 @@ function _getPlayerPoints(game) {
 			var points = { };
 			for (var slot = 0; slot < game.slots.length; slot++) {
 				if (game.slots[slot].state == 'EMPTY') continue;
-				console.log(game.slots[slot].username);
 				var username;
 				try {
 					username = await _getPlayerAlias(game.slots[slot].username.toLowerCase());
