@@ -13,7 +13,7 @@ module.exports = function(ev, name, callback, hideRole) {
 		}
 		console.log("discord: " + name);
 		members.fetch(name).then(function(member) { 
-			var roleName = member.roles.hoist.name;
+			var roleName = member._roles.hoist.name;
 			return callback(null, (member.nickname || member.user.username) + (hideRole ? '' : ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')' )); 
 		}).catch(function(err) { 
 			console.log(err);
