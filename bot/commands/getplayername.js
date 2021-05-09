@@ -14,7 +14,7 @@ module.exports = function(ev, name, callback, hideRole) {
 		console.log("discord: " + name);
 		members.fetch(name).then(function(member) { 
 			var roleName = member.roles.hoist.name;
-			return callback(null, member.user.username + (hideRole ? '' : ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')' )); 
+			return callback(null, (member.nickname || member.user.username) + (hideRole ? '' : ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')' )); 
 		}).catch(function(err) { 
 			http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/alias/' + name, headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 				var body = '';
