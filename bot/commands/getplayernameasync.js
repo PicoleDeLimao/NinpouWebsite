@@ -14,7 +14,7 @@ module.exports = function(ev, name, hideRole) {
 			}
 			members.fetch(name).then(function(member) { 
 				var roleName = member.roles.hoist.name;
-				return resolve(member.user.username); 
+				return resolve(member.nickname || member.user.username); 
 			}).catch(function(err) { 
 				http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/alias/' + name, headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 					var body = '';
