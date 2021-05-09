@@ -167,18 +167,18 @@ module.exports = function(ev, playerName, hist, hero) {
 							}
 							if (ranking.stat.awards.length > 0) {
 								response = '```pf\nAwards:\n';
-								for (var i = 0; i < ranking.stats.awards.length; i++) {
+								for (var i = 0; i < ranking.stat.awards.length; i++) {
 									response += '* ';
-									if (ranking.stats.awards[i].position == 0) {
+									if (ranking.stat.awards[i].position == 0) {
 										response += '<1st>';
-									} else if (ranking.stats.awards[i].position == 1) {
+									} else if (ranking.stat.awards[i].position == 1) {
 										response += '<2nd>';
-									} else if (ranking.stats.awards[i].position == 2) {
+									} else if (ranking.stat.awards[i].position == 2) {
 										response += '<3rd>';
 									} else {
-										response += '<' + (ranking.stats.awards[i].position) + 'th>';
+										response += '<' + (ranking.stat.awards[i].position) + 'th>';
 									}
-									response += ' place on event <' + ranking.stats.awards[i].eventname + '>\n';
+									response += ' place on event <' + ranking.stat.awards[i].eventname + '>\n';
 								}
 								response += '```';
 								ev.channel.send(response);
