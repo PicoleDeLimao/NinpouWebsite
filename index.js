@@ -70,6 +70,10 @@ async function fixAlias(alias) {
 async function fixAliases() {
 	var aliases = await Alias.find({});
 	for (var alias of aliases) {
+		if (alias.gold > 100000000000) {
+			alias.gold = 100000000000;
+			await alias.save();
+		}
 		fixAlias(alias);
 	}
 }
