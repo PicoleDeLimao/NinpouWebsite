@@ -302,6 +302,7 @@ bot.on('message', async function(ev) {
 				'< !summons >              : Display summons available to buy\n' + 
 				'< !status > <status>      : Set a status\n' + 
 				'< !upgrade > <weapon|cloth|support> [times] : Double the attributes of an item in your inventory\n' +
+				'< !flip >                 : Flip a coin\n' + 
 				//'< !jutsus >            : Display jutsus available to be purchased\n' +
 				'```'
 			);  
@@ -456,6 +457,13 @@ bot.on('message', async function(ev) {
 				} else {
 					alias.push(ev.author.id);
 					switch(cmd) {
+						case 'flip':
+							if (Math.random() < 0.5) {
+								ev.channel.send('Heads');
+							} else {
+								ev.channel.send('Tails');
+							}
+							break;
 						case 'nextbalance':
 							var channel = await ev.guild.channels.resolve("692551380786872352");
 							var messages = await channel.messages.fetch();
