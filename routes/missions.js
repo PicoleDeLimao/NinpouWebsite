@@ -173,7 +173,7 @@ router.post('/:username/rescue', async function(req, res) {
 	if (doneToday) {
 		return res.status(400).json({ error: 'You already completed this mission today! **Oink!**' });
 	}
-	var amount = req.user.gold * 0.01;
+	var amount = 1000;
 	var streak = doneYesterday;
 	var double = Math.round(Math.random() * 10) == 0;
 	/*if (req.user.summon == 'frog1') {

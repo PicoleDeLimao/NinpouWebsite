@@ -252,7 +252,7 @@ bot.on('message', async function(ev) {
 				'< !botcmds >       : Display bot-related commands\n' + 
 				'< !admincmds >     : Admin only commands\n' + 
 				'< !balancercmds>   : Balancer commands```'
-			);    
+			);
 		} else if (cmd == 'gamecmds') {
 			ev.channel.send(  
 				'Game-related commands:\n```pf\n' + 
