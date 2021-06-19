@@ -9,17 +9,6 @@ var Game = require('../models/Game');
 var Alias = require('../models/Alias');
 var StatCalculator = require('./statcalculator');
 
-function _getContainingAlias(alias, username) {
-	for (var i = 0; i < alias.length; i++) {
-		for (var j = 0; j < alias[i].alias.length; j++) {
-			if (username == alias[i].alias[j]) {
-				return i;
-			}
-		}
-	}
-	return -1;
-}
-
 router.post('/', async function(req, res) {
 	var hero = new Hero({ id: req.body.id, name: req.body.name });
 	await hero.save();
