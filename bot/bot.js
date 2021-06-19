@@ -566,13 +566,13 @@ bot.on('message', async function(ev) {
 									case 'rescue':
 										missionRescue(ev);
 										break;
-									case 'gamble':
+									/*case 'gamble':
 										if (args.length == 2) {
 											missionGamble(ev, args[1]);
 										} else {
 											ev.channel.send('Me no understand! Use **!mission gamble <amount>**');
 										}
-										break;
+										break;*/
 									case 'rob':
 										if (ev.mentions.users.array().length == 1) {
 											if (ev.mentions.users.array()[0].id == ev.author.id) { 
