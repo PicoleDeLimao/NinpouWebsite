@@ -162,6 +162,9 @@ function _getPlayerPoints(game) {
 					console.error(err);
 					username = game.slots[slot].username.toLowerCase();
 				}
+				if (username == null) {
+					username = game.slots[slot].username.toLowerCase();	
+				}
 				var stats = await StatCalculator.getPlayerStats(username);
 				points[username] = stats.points;
 			}

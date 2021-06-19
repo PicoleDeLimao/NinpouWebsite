@@ -11,10 +11,15 @@ module.exports = function(ev, name, callback, hideRole) {
 		} else {
 			members = ev.guild.members;
 		}
+		console.log("discord: " + name);
 		members.fetch(name).then(function(member) { 
-			var roleName = member.roles.hoist.name;
-			return callback(null, member.displayName + (hideRole ? '' : ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')' )); 
+			var roleName = "Academy Student";
+			if (member.roles.hoist != null) {
+				roleName = member.roles.hoist.name;
+			}
+			return callback(null, (member.nickname || member.user.username) + (hideRole ? '' : ' (' + roleName.replace('ū', 'uu').replace('ō', 'ou') + ')' )); 
 		}).catch(function(err) { 
+			console.log(err);
 			http.get({ host: '127.0.0.1', port: (process.env.PORT || 8080), path: '/alias/' + name, headers: { 'Content-Type': 'application/json', 'Content-Length': '0' } }, function(res) {
 				var body = '';
 				res.on('data', function(chunk) {
@@ -37,6 +42,7 @@ module.exports = function(ev, name, callback, hideRole) {
 			}).end();
 		});
 	} else {  
+		console.log("non discord: " + name);
 		return callback(null, name);
 	}
 };
