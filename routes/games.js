@@ -126,7 +126,8 @@ function _savePlayerStats(game) {
 					assists: game.slots[slot].assists,
 					points: game.slots[slot].points,
 					gpm: game.slots[slot].gpm,
-					gamesRanked: 0
+					gamesRanked: 0,
+					wins: 0
 				});
 				var alpha = Math.min(1 - 1.0 / (stat.gamesRanked + 1), 0.95);
 				var beta = 1 - alpha; 

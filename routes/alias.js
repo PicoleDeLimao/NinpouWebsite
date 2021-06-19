@@ -524,7 +524,7 @@ router.put('/:username/character/:character', async function(req, res) {
 		await alias.save();
 		return res.status(200).send();
 	}
-	var heroStat = await StatCalculator.getHeroStat(req.params.username, 3, 999999);
+	var heroStat = await StatCalculator.getHeroStat(req.params.character, 3, 999999);
 	var buyerIndex = heroStat.bestPlayers.length;
 	var ownerIndex = heroState.bestPlayers.length;
 	for (var i = 0; i < heroStat.bestPlayers.length; i++) {
@@ -534,6 +534,7 @@ router.put('/:username/character/:character', async function(req, res) {
 			ownerIndex = i;
 		}
 	}
+	console.log(buyerIndex + " " + ownerIndex);
 	if (buyerIndex > ownerIndex) {
 		return res.status(400).json({ error: 'This character is already owned by someone with higher points with this hero.' });
 	}
