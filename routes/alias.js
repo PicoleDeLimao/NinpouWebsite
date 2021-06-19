@@ -488,6 +488,7 @@ router.delete('/:alias', async function(req, res) {
 router.post('/:owner/give', async function(req, res) {
 	var owner = await Alias.findOne({ username: req.params.owner.toLowerCase() });
 	if (!owner) return res.status(404).json({ error: 'Alias not found.' });
+	else if (owner.alias == "308349583145173012") return res.status(400).json({ error: 'BAD TRICK! '});
 	var user = await Alias.findOne({ username: req.body.user.toLowerCase() });
 	if (!user) return res.status(404).json({ error: 'Player not found.' });
 	if (owner.gold < req.body.amount) return res.status(400).json({ error: 'You don\'t have that amount!' });
