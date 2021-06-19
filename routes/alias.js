@@ -526,7 +526,7 @@ router.put('/:username/character/:character', async function(req, res) {
 	}
 	var heroStat = await StatCalculator.getHeroStat(req.params.character, 3, 999999);
 	var buyerIndex = heroStat.bestPlayers.length;
-	var ownerIndex = heroState.bestPlayers.length;
+	var ownerIndex = heroStat.bestPlayers.length;
 	for (var i = 0; i < heroStat.bestPlayers.length; i++) {
 		if (heroStat.bestPlayers[i].alias == alias.username) {
 			buyerIndex = i;
