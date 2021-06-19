@@ -250,7 +250,8 @@ bot.on('message', async function(ev) {
 				'< !playercmds >    : Display player-related commands\n' + 
 				'< !rpgcmds >       : Display RPG-related commands\n' + 
 				'< !botcmds >       : Display bot-related commands\n' + 
-				'< !admincmds >     : Admin only commands```' 
+				'< !admincmds >     : Admin only commands\n' + 
+				'< !balancercmds>   : Balancer commands```'
 			);    
 		} else if (cmd == 'gamecmds') {
 			ev.channel.send(  
@@ -318,11 +319,19 @@ bot.on('message', async function(ev) {
 				'< !trivia ninpou >          : Start a Ninpou trivia (use < !trivia > again to disable it)\n' + 
 				'```'
 			);  
+		} else if (cmd == 'balancercmds') {
+			ev.channel.send(  
+				'Balancer-related commands:\n```pf\n' + 
+				'< !nextbalance >                : Display next balance issue to be fixed\n' + 
+				'< !nextbug >                    : Display next bug to be fixed\n' +
+				'< !cleanbalances >              : Clean all invalid balance issues\n' +
+				'```'
+			);  
 		} else if (cmd == 'admincmds' && ev && ev.guild) {
 			ev.guild.members.fetch(ev.author.id).then(function(author) {
 				var isAdmin = false;
 				author.roles.cache.forEach(function(role) {
-					if (role == '340206323708985345') {
+					if (role == '340206323708985345' || role == '417775674586169355') {
 						isAdmin = true; 
 					}
 				});
@@ -355,6 +364,7 @@ bot.on('message', async function(ev) {
 						isAdmin = true; 
 					} else if (role == '417775674586169355') {
 						isSuperAdmin = true; 
+						isAdmin = true;
 					}
 				});
 				if (isAdmin) { 
@@ -446,6 +456,79 @@ bot.on('message', async function(ev) {
 				} else {
 					alias.push(ev.author.id);
 					switch(cmd) {
+						case 'nextbalance':
+							var channel = await ev.guild.channels.resolve("692551380786872352");
+							var messages = await channel.messages.fetch();
+							var validMessages = [];
+							messages.forEach((message) => {
+								var daysElapsed = (new Date().getTime() - message.createdTimestamp) / (1000 * 60 * 60 * 24);
+								if (daysElapsed > 7) {
+									var reactionsPositive = message.reactions.cache.get("👍").count;
+									var reactionsNegative = message.reactions.cache.get("👎").count;
+									if (reactionsPositive / (reactionsPositive + reactionsNegative) >= 0.7) {
+										validMessages.push(message);
+									}
+								}
+							});
+							validMessages.sort(function(a, b) {
+								return a.createdTimestamp - b.createdTimestamp;
+							});
+							if (validMessages.length > 0) {
+								ev.channel.send('Next balance issue to fix: ' + validMessages[0].url);
+							} else {
+								ev.channel.send('No balance issues to fix.');
+							}
+							break;
+						case 'cleanbalances':
+							var channel = await ev.guild.channels.resolve("692551380786872352");
+							var messages = await channel.messages.fetch();
+							var hasCleaned = false;
+							messages.forEach(async (message) => {
+								var daysElapsed = (new Date().getTime() - message.createdTimestamp) / (1000 * 60 * 60 * 24);
+								if (daysElapsed > 7) {
+									var reactionsPositive = message.reactions.cache.get("👍").count;
+									var reactionsNegative = message.reactions.cache.get("👎").count;
+									var upvoteRatio = reactionsPositive / (reactionsPositive + reactionsNegative); 
+									if (upvoteRatio < 0.7) {
+										ev.channel.send("Rejecting balance issue below (upvote ratio " + upvoteRatio.toFixed(2) + " < 0.7):\n\n" + message.content)
+										message.react("❌");
+										hasCleaned = true;
+									}
+								}
+							});
+							if (!hasCleaned) {
+								ev.channel.send('No balance issues to reject.');
+							}
+							break;
+						case 'nextbug':
+							var channel = await ev.guild.channels.resolve("692551415394205746");
+							var messages = await channel.messages.fetch();
+							var messagesPerCount = [];
+							messages.forEach((message) => {
+								var hasIgnore = false;
+								message.reactions.cache.forEach((reaction) => {
+									if (reaction._emoji.name == 'hmm') {
+										hasIgnore = true;
+									}
+								});
+								if (!hasIgnore) {
+									var reactionsPositive = message.reactions.cache.get("👍").count;
+									messagesPerCount.push([reactionsPositive, message]);
+								}
+							});
+							messagesPerCount.sort(function(a, b) {
+								if (a[0] == b[0]) {
+									return a[1].createdTimestamp - b[1].createdTimestamp;
+								} else {
+									return b[0] - a[0];
+								}
+							});
+							if (messagesPerCount.length > 0) {
+								ev.channel.send('Next bug to fix: ' + messagesPerCount[0][1].url + ' (' + messagesPerCount[0][0] + ' upvotes).');
+							} else {
+								ev.channel.send('No bug to fix.');
+							}
+							break;
 						// !missions  
 						case 'missions': 
 							if (args[0] == 'titles') {
