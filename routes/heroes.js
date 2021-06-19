@@ -32,76 +32,7 @@ router.get('/ranking', async function(req, res) {
 });
  
 router.get('/:name', async function(req, res) {  
-	var period = 3;
-	var timePeriod = moment().subtract(3, 'month').toDate();
-	var stats = await StatCalculator.getHeroStats(req.params.name);
-	var heroes = await StatCalculator.getRankingOfHeroes(period);
-	stats = StatCalculator.getPositionsInTheRanking(heroes, stats); 
-	var games = await Game.aggregate([
-		{
-			$unwind: '$slots',
-		},
-		{
-			$match: {
-				'createdAt': { $gt: timePeriod },
-				'slots.hero': stats.hero.id,
-				'recorded': true,
-				'ranked': true
-			}
-		},
-		{
-			$group: {
-				_id: '$slots.username',
-				kills: { $sum: '$slots.kills' },
-				deaths: { $sum: '$slots.deaths' },
-				assists: { $sum: '$slots.assists' },
-				points: { $sum: '$slots.points' },
-				gpm: { $sum: '$slots.gpm' },
-				wins: { $sum: { $cond: ['$slots.win', 1, 0] } },
-				games: { $sum: 1 }
-			}
-		}
-	]);
-	var alias = await Alias.find({ });
-	var gamesAggregated = { };
-	for (var i = 0; i < games.length; i++) {
-		var containingAlias = _getContainingAlias(alias, games[i]._id.toLowerCase());
-		if (containingAlias == -1) {
-			gamesAggregated[games[i]._id.toLowerCase()] = games[i];
-		} else {
-			if (!(alias[containingAlias].username in gamesAggregated)) {
-				gamesAggregated[alias[containingAlias].username] = games[i];
-			} else {
-				gamesAggregated[alias[containingAlias].username].kills += games[i].kills;
-				gamesAggregated[alias[containingAlias].username].deaths += games[i].deaths;
-				gamesAggregated[alias[containingAlias].username].assists += games[i].assists;
-				gamesAggregated[alias[containingAlias].username].points += games[i].points;
-				gamesAggregated[alias[containingAlias].username].gpm += games[i].gpm;
-				gamesAggregated[alias[containingAlias].username].wins += games[i].wins;
-				gamesAggregated[alias[containingAlias].username].games += games[i].games;
-			}
-		}
-	}
-	var newGamesAggregated = [];
-	for (var alias in gamesAggregated) {
-		var obj = {
-			alias: alias, 
-			kills: gamesAggregated[alias].kills / gamesAggregated[alias].games, 
-			deaths: gamesAggregated[alias].deaths / gamesAggregated[alias].games,
-			assists: gamesAggregated[alias].assists / gamesAggregated[alias].games,
-			points: gamesAggregated[alias].points / gamesAggregated[alias].games,
-			gpm: gamesAggregated[alias].gpm / gamesAggregated[alias].games, 
-			wins: gamesAggregated[alias].wins,
-			games: gamesAggregated[alias].games
-		};
-		if (obj.games >= 3) {
-			newGamesAggregated.push(obj);
-		}
-	}
-	newGamesAggregated.sort(function(a, b) {
-		return b.points - a.points;
-	});
-	return res.json({ stats: stats, bestPlayers: newGamesAggregated.slice(0, 5), numPlayers: newGamesAggregated.length });
+	return res.json(await StatCalculator.getHeroStat(req.params.name, 3, 5));
 });
 
 router.get('/:name/tip', async function(req, res) {
