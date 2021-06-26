@@ -126,6 +126,21 @@ bot.on('ready', async function (evt) {
 	console.error('Logged in as: ' + bot.user.tag);
 	var channel = await bot.channels.fetch('356042944173834242');
 	channel.send('Broadcasting hosted games on battle.net.\nVia: http://wc3maps.com');
+	console.log(await bot.api.applications(bot.user.id).commands.get());
+	await bot.api.applications(bot.user.id).commands.post({
+		data: {
+			name: 'help',
+			description: 'Display all commands',
+			type: 3,
+		}
+	});
+	await bot.api.applications(bot.user.id).commands.post({
+		data: {
+			name: 'optimal',
+			description: 'Display optiomal balance',
+			type: 3,
+		}
+	});
 });
 
 bot.on('messageReactionAdd', async function(ev, user) {
