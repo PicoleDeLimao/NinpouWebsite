@@ -16,6 +16,7 @@ module.exports = function(ev, title) {
 					data = JSON.parse(body);
 					ev.channel.send(data.error);
 				} catch (err) {
+					console.error(err);
 					ev.channel.send('Couldn\'t set title. :( **Oink!** :pig:');
 				}
 			} else { 
