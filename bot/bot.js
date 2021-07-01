@@ -47,6 +47,7 @@ var summon = require('./commands/summon');
 var character = require('./commands/character');
 var giveGold = require('./commands/givegold');
 var setStatus = require('./commands/setstatus');
+var setTitle = require('./commands/settitle');
 var balance = require('./commands/balance');
 var displayMissions = require('./commands/missions');
 var setColor = require('./commands/setcolor');
@@ -287,6 +288,7 @@ bot.on('message', async function(ev) {
 				'< !hero > <name>                  : Display meta information about specific hero\n' + 
 				'< !events >                       : Display all hosted events\n' +
 				'< !event > <name>                 : Display ranking of a particular event\n' +
+				'< !title > <title>                : Set in-game title\n' + 
 				//'< !tips > <hero_name>           : Show all tips related to a hero\n' +
 				//'< !tip > <hero_name> <tip>      : Create a tip for a hero and get gold proportional to your rank (<25/50/100/200/400/800> x lvl)!\n' +
 				//'< !subscribe >                  : Turn on/off Tonton private alert messages\n' +
@@ -1100,6 +1102,13 @@ bot.on('message', async function(ev) {
 								setStatus(ev, args.join(' '));
 							} else {
 								ev.channel.send('Me no understand! Use **!status <status>**');
+							}
+							break;
+						case 'title':
+							if (args.length > 0) { 
+								setTitle(ev, args.join(' '));
+							} else {
+								ev.channel.send('Me no understand! Use **!title <title>**');
 							}
 							break;
 						case 'upgrade':

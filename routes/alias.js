@@ -499,9 +499,17 @@ router.post('/:owner/give', async function(req, res) {
 	return res.status(200).send({ amount: owner.gold });
 });
 
+router.use('/:username', function(req, res, next) {
+	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, user) {
+		if (err) return res.status(500).json({ 'error': err });
+		if (!alias) return res.status(404).json({ error: 'Player not found.' });
+		req.user = user;
+		next();
+	});
+});
+
 router.put('/:username/affiliation/:affiliation', async function(req, res) {
-	var alias = await Alias.findOne({ username: req.params.username.toLowerCase() });
-	if (!alias) return res.status(404).json({ error: 'Player not found.' });
+	var alias = req.user;
 	if (!affiliations[req.params.affiliation]) return res.status(404).json({ error: 'Affiliation not found.' });
 	else if (alias.level < affiliations[req.params.affiliation].level) return res.status(400).json({ error: 'You don\'t have enough level to join this village.' });
 	else if (alias.gold < affiliations[req.params.affiliation].gold) return res.status(400).json({ error: 'You don\'t have enough gold to join this village.' });
@@ -513,9 +521,8 @@ router.put('/:username/affiliation/:affiliation', async function(req, res) {
 });
 
 router.put('/:username/character/:character', async function(req, res) {
-	var alias = await Alias.findOne({ username: req.params.username.toLowerCase() });
-	if (!alias) return res.status(404).json({ error: 'Player not found.' });
-	else if (!characters[req.params.character]) return res.status(404).json({ error: 'Character not found' });
+	var alias = req.user;
+	if (!characters[req.params.character]) return res.status(404).json({ error: 'Character not found' });
 	else if (alias.level < characters[req.params.character].level) return res.status(400).json({ error: 'You don\'t have enough level to buy this character.' });
 	else if (alias.gold < characters[req.params.character].gold) return res.status(400).json({ error: 'You don\'t have enough gold to buy this character.' });
 	var anotherAlias = await Alias.findOne({ character: req.params.character });
@@ -548,13 +555,21 @@ router.put('/:username/character/:character', async function(req, res) {
 });
 
 router.put('/:username/summon/:summon', async function(req, res) {
-	var alias = await Alias.findOne({ username: req.params.username.toLowerCase() });
-	if (!alias) return res.status(404).json({ error: 'Player not found.' });
-	else if (!summons[req.params.summon]) return res.status(404).json({ error: 'Summon not found' });
+	var alias = req.user;
+	if (!summons[req.params.summon]) return res.status(404).json({ error: 'Summon not found' });
 	else if (alias.level < summons[req.params.summon].level) return res.status(400).json({ error: 'You don\'t have enough level to buy this summon.' });
 	else if (alias.gold < summons[req.params.summon].gold) return res.status(400).json({ error: 'You don\'t have enough gold to buy this summon.' });
 	alias.summon = req.params.summon;
 	alias.gold -= summons[req.params.summon].gold;
+	await alias.save();
+	return res.status(200).send();
+});
+
+router.put('/:username/title', async function(req, res) {
+	var alias = req.user;
+	if (alias.gold < 1000000) return res.status(400).json({ error: 'You do not have enough money' });
+	alias.gold -= 1000000;
+	alias.title = req.body.title;
 	await alias.save();
 	return res.status(200).send();
 });
