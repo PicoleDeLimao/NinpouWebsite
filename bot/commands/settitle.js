@@ -13,7 +13,7 @@ module.exports = function(ev, title) {
 		res.on('end', function() {
 			if (res.statusCode != 200) { 
 				try {
-					data = JSON.parse(body);
+					var data = JSON.parse(body);
 					ev.channel.send(data.error);
 				} catch (err) {
 					console.error(err);
