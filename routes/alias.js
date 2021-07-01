@@ -440,34 +440,6 @@ router.delete('/block/:alias', async function(req, res) {
 	return res.status(200).send();
 });
  
-router.put('/:username/:alias', async function(req, res) {
-	if (!req.params.username || !req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
-	var alias = await BlockedAlias.findOne({ alias: req.params.alias.toLowerCase() });
-	if (alias) {
-		return res.status(400).json({ error: 'This alias is blocked.' });
-	}
-	alias = await Alias.findOne({ alias: req.params.alias.toLowerCase() });
-	if (alias) {
-		return res.status(400).json({ error: 'Alias is already being used.' });
-	}
-	alias = await Alias.findOne({ username: req.params.username.toLowerCase() });
-	if (alias) {
-		alias.alias.push(req.params.alias.toLowerCase());
-	} else {
-		alias = new Alias({
-			username: req.params.username.toLowerCase(),
-			alias: [req.params.alias.toLowerCase()]
-		});
-	}
-	await alias.save();
-	var stat = await Stat.findOne({ username: req.params.alias.toLowerCase() });
-	if (stat) {
-		stat.alias = alias.username;
-		await stat.save();
-	}
-	return res.status(201).send();
-});
- 
 router.delete('/:alias', async function(req, res) {
 	if (!req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
 	var alias = await Alias.findOne({ alias: req.params.alias.toLowerCase() });
@@ -574,4 +546,32 @@ router.put('/:username/title', async function(req, res) {
 	return res.status(200).send();
 });
 
+router.put('/:username/:alias', async function(req, res) {
+	if (!req.params.username || !req.params.alias) return res.status(400).json({ error: 'Alias not found.' });
+	var alias = await BlockedAlias.findOne({ alias: req.params.alias.toLowerCase() });
+	if (alias) {
+		return res.status(400).json({ error: 'This alias is blocked.' });
+	}
+	alias = await Alias.findOne({ alias: req.params.alias.toLowerCase() });
+	if (alias) {
+		return res.status(400).json({ error: 'Alias is already being used.' });
+	}
+	alias = await Alias.findOne({ username: req.params.username.toLowerCase() });
+	if (alias) {
+		alias.alias.push(req.params.alias.toLowerCase());
+	} else {
+		alias = new Alias({
+			username: req.params.username.toLowerCase(),
+			alias: [req.params.alias.toLowerCase()]
+		});
+	}
+	await alias.save();
+	var stat = await Stat.findOne({ username: req.params.alias.toLowerCase() });
+	if (stat) {
+		stat.alias = alias.username;
+		await stat.save();
+	}
+	return res.status(201).send();
+});
+ 
 module.exports = router;
