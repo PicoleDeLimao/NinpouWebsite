@@ -474,7 +474,7 @@ router.post('/:owner/give', async function(req, res) {
 router.use('/:username', function(req, res, next) {
 	Alias.findOne({ username: req.params.username.toLowerCase() }, function(err, user) {
 		if (err) return res.status(500).json({ 'error': err });
-		if (!alias) return res.status(404).json({ error: 'Player not found.' });
+		if (!user) return res.status(404).json({ error: 'Player not found.' });
 		req.user = user;
 		next();
 	});
